@@ -62,7 +62,7 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The initial release executable is 2,363,040 bytes (2.25 MiB), dynamically linked
+The initial release executable is 2,363,568 bytes (2.25 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
@@ -73,20 +73,26 @@ Recorded checks:
 | --- | --- | --- |
 | GNU help/version comparisons | 428/428 pass | Both multicall and symlink entry forms |
 | Valgrind help paths | 107/107 pass | Help only |
-| Normal/error behavior fixtures | 112/112 match GNU | Streams, status, contents, modes, link topology |
-| Valgrind normal/error fixtures | 108/112 clean | 4 findings also occur in native GNU baseline |
+| Normal/error behavior fixtures | 125/125 match GNU | Streams, status, contents, modes, link topology |
+| Valgrind normal/error fixtures | 125/125 clean | Bounded fixtures; retained allocations recorded separately |
 | Original GNU cp tests | 89 pass, 13 prerequisite skips, 30 excluded | 66 scripts, root and ordinary-user profiles |
 | cp mutation comparisons | 879 pass | Bounded local backup/removal/error fixtures |
 | cp backup comparisons | 75 pass | Backup names and preserved fixture data |
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 non-following `tail` file records, and `tr` construct lists (including parse
-failures). Selected original GNU tests pass: 22 `expr` cases, 56 `tr` cases,
-and six date/tail/cat/dd/split shell scripts. These selections are pinned in
+failures). Selected original GNU tests pass: 22 `expr`, 56 `tr`, 54 `tac`, and 33 `pr`
+cases, plus seven date/tail/cat/dd/split/sort shell scripts. These selections are pinned in
 `inventory/gnu-reviewed-tests.json`; they do not certify the whole suites.
 
-The remaining normal-path Valgrind findings are working storage retained by
-`pr`, `tac`, and the temporary C `sort` entry. The `env` fixture
+`pr` now releases its filename list. `tac` frees the base of its working
+buffer after all operands and closes its cached temporary stream after the
+final use, including stdin reuse. The temporary C `sort` entry releases its
+independent argv-name vector on normal completion; its token-file ownership
+path remains unchanged. Native source adaptations are separately hashed and
+compiled into helper copies; the GNU oracle is preserved. All current
+behavior/Valgrind fixtures pass, including bounded buffer growth and stdin.
+This does not establish cleanliness for every option or failure path. The `env` fixture
 now runs the pinned GNU `printenv`; its earlier host-child findings remain in
 the previous committed evidence. Baseline equivalence does not count as Valgrind
 cleanliness. A follow-up cleanup closes the directory descriptor owned by
@@ -94,7 +100,7 @@ cleanliness. A follow-up cleanup closes the directory descriptor owned by
 errno. All 10 current `cp` behavior/Valgrind fixtures pass; the GNU baseline
 still retains that descriptor. This does not certify every `cp` exit path.
 Retained allocations and lost allocations are recorded separately. The test
-runner returns failure while these findings remain open.
+runner returns failure when a selected fixture has an unresolved finding.
 
 No command is certified complete. Full provider suites, missing prerequisites,
 numerical C entry replacements, memory/descriptor cleanup, and other GNU

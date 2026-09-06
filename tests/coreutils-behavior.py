@@ -78,6 +78,13 @@ CASES = [
     ('split', ['-b', '7', 'input', 'part']),
     ('split', ['-C', '16', 'input', 'part']),
     ('split', ['-d', '-l', '2', 'input', 'part']),
+    ('pr', ['-t', '-m', 'left', 'right']), ('pr', ['-t', '-n', 'input']),
+    ('pr', ['-t', 'missing']),
+    ('tac', ['-s', ' ', 'input']), ('tac', ['-r', '-s', '\\n', 'input']),
+    ('tac', ['record']), ('tac', ['missing']), ('tac', []),
+    ('sort', ['input']), ('sort', ['-u', 'input']),
+    ('sort', ['-k2,2', 'input']), ('sort', ['-n', '-r', 'numbers']),
+    ('tac', ['-', '-']),
 ]
 
 
@@ -88,6 +95,7 @@ def fixture(root):
                        'numbers': b'10\n2\n-3\n1.5\n', 'left': b'a 1\nb 2\n',
                        'right': b'b 3\nc 4\n', 'edges': b'a b\nb c\n',
                        'dates': b'2000-02-29\n2001-03-01\n',
+                       'record': b'a' * 40000 + b'\nend\n',
                        'dir/file': b'fixture data\x00\xff\n'}.items():
         (root/name).write_bytes(data)
         (root/name).chmod(0o644)

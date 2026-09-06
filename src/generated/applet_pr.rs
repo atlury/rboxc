@@ -1781,6 +1781,7 @@ pub unsafe extern "C" fn single_binary_main_pr(
         }
     }
     cleanup();
+    free(file_names.cast());
     if have_read_stdin as ::core::ffi::c_int != 0 && fclose(stdin) == EOF {
         if 0 != 0 {
             error(

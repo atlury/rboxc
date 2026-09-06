@@ -1427,6 +1427,7 @@ unsafe extern "C" fn tac_seekable(
         }
     }
 }
+static mut RBOXC_TEMP_STREAM: *mut FILE = ::core::ptr::null_mut();
 unsafe extern "C" fn copy_to_temp(
     mut g_tmp: *mut *mut FILE,
     mut g_tempfile: *mut *mut ::core::ffi::c_char,
@@ -1439,6 +1440,7 @@ unsafe extern "C" fn copy_to_temp(
     if !temp_stream(&raw mut fp, &raw mut file_name) {
         return -1 as off_t;
     }
+    RBOXC_TEMP_STREAM = fp;
     loop {
         let mut bytes_read: ssize_t =
             read(input_fd, G_buffer as *mut ::core::ffi::c_void, read_size);
@@ -1956,6 +1958,15 @@ pub unsafe extern "C" fn single_binary_main_tac(
             });
         };
         ok = r#false != 0;
+    }
+    let offset = if sentinel_length != 0 { sentinel_length } else { 1 };
+    ::libc::free(G_buffer.sub(offset as usize).cast());
+    G_buffer = ::core::ptr::null_mut();
+    if !RBOXC_TEMP_STREAM.is_null() {
+        let saved_errno = *::libc::__errno_location();
+        ::libc::fclose(RBOXC_TEMP_STREAM.cast());
+        RBOXC_TEMP_STREAM = ::core::ptr::null_mut();
+        *::libc::__errno_location() = saved_errno;
     }
     return if ok as ::core::ffi::c_int != 0 {
         0 as ::core::ffi::c_int

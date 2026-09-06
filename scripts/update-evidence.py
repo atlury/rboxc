@@ -38,6 +38,12 @@ summary = {
     'valgrind_help': {'passed': valgrind['passed'], 'total': valgrind['total']},
     'behavior': {key: behavior[key] for key in ('behavior_passed', 'valgrind_passed', 'total')},
     'gnu_cp_original': read('evidence/gnu-cp-original.json')['counts'],
+    'reviewed_original': {
+        'passed_selections': read('evidence/gnu-reviewed-original.json')['passed'],
+        'total_selections': read('evidence/gnu-reviewed-original.json')['total'],
+        'selected_perl_cases': sum(len(row.get('cases', [])) for row in read('inventory/gnu-reviewed-tests.json')),
+    },
+    'allocation_adapter': read('evidence/aligned-alloc.json'),
     'complete_commands': 0,
 }
 (ROOT/'evidence/status.json').write_text(json.dumps(summary, indent=2)+'\n')

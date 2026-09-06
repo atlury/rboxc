@@ -7,6 +7,7 @@ import re
 import shutil
 import subprocess
 import sys
+from native_cleanup import sort_cleanup
 
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT/'build/gnu-coreutils'
@@ -46,6 +47,7 @@ entries = {Path(row['gnu_object']).name for row in rows if row['active_rust']}
 allowed = {row['entry'] for row in rows if not row['active_rust']}
 prepared = {}
 link = []
+native_changes = []
 for item in inputs:
     if item.startswith('-'):
         link.append(item)
@@ -59,6 +61,11 @@ for item in inputs:
             remove = [member for member in members if member in entries]
             if remove:
                 subprocess.run(['ar', 'd', copied, *remove], check=True)
+            if path.name == 'libsinglebin_sort.a' and 'single_binary_main_sort' in allowed:
+                row = next(row for row in rows if row['name'] == 'sort')
+                obj, adaptation = sort_cleanup(ROOT, row)
+                subprocess.run(['ar', 'r', copied, obj], check=True)
+                native_changes.append(adaptation)
             symbols = subprocess.check_output(['nm', '-g', '--defined-only', copied], text=True, stderr=subprocess.DEVNULL)
             remaining = set(re.findall(r' T (single_binary_main_\w+)', symbols))
             assert remaining <= allowed, (item, remaining-allowed)
@@ -91,6 +98,7 @@ link.insert(0, str(formatted))
 (ROOT/'evidence/link.json').write_text(json.dumps({'entries':len(rows),
     'rust_entries':sum(row['active_rust'] for row in rows), 'temporary_C_entries':failed,
     'C_entry_objects_removed_for_all_active_Rust_commands':True, 'helper_archives':list(prepared),
-    'aligned_allocation_adapter': 'round backing size to alignment multiple; GNU oracle unchanged'}, indent=2)+'\n')
+    'aligned_allocation_adapter': 'round backing size to alignment multiple; GNU oracle unchanged',
+    'native_entry_cleanups': native_changes}, indent=2)+'\n')
 (ROOT/'evidence/translation.json').write_text(json.dumps(rows,indent=2)+'\n')
 print(f'Prepared {len(rows)-len(failed)} Rust entries, {len(failed)} explicit temporary C entries, and {len(prepared)} helper archives')
