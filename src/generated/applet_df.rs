@@ -3667,6 +3667,7 @@ pub unsafe extern "C" fn single_binary_main_df(
             });
         };
     }
+    ::libc::free(stats.cast());
     return exit_status;
 }
 pub const MANUAL_URL: [::core::ffi::c_char; 61] = unsafe {

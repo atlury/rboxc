@@ -66,7 +66,7 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The initial release executable is 2,388,632 bytes (2.28 MiB), dynamically linked
+The initial release executable is 2,390,424 bytes (2.28 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
@@ -77,9 +77,9 @@ Recorded checks:
 | --- | --- | --- |
 | GNU help/version comparisons | 428/428 pass | Both multicall and symlink entry forms |
 | Valgrind help paths | 107/107 pass | Help only |
-| Normal/error behavior fixtures | 177/177 match GNU | Streams, status, contents, modes, link topology |
-| Valgrind normal/error fixtures | 177/177 clean | Bounded fixtures; retained allocations recorded separately |
-| Instrumented GNU comparisons | 177/177 pass | Saved Valgrind observations, assessed separately from native arithmetic |
+| Normal/error behavior fixtures | 231/231 match GNU | All 107 commands; streams, status, contents, modes, owners, link topology |
+| Valgrind normal/error fixtures | 231/231 clean | Bounded fixtures; retained allocations recorded separately |
+| Instrumented GNU comparisons | 231/231 pass | Saved Valgrind observations, assessed separately from native arithmetic |
 | Original GNU cp tests | 89 pass, 13 prerequisite skips, 30 excluded | 66 scripts, root and ordinary-user profiles |
 | cp mutation comparisons | 879 pass | Bounded local backup/removal/error fixtures |
 | cp backup comparisons | 75 pass | Backup names and preserved fixture data |
@@ -87,7 +87,7 @@ Recorded checks:
 Cleanup now releases `expr` results, `date` timezone/format storage,
 non-following `tail` file records, and `tr` construct lists (including parse
 failures). Selected original GNU tests pass: 22 `expr`, 56 `tr`, 54 `tac`, and 33 `pr`
-cases, plus 51 `numfmt` and 67 `seq` cases and ten date/tail/cat/dd/split/sort/od/printf
+cases, plus 51 `numfmt` and 67 `seq` cases and twelve date/tail/cat/dd/split/sort/od/printf/df/stdbuf
 shell scripts. These selections are pinned in
 `inventory/gnu-reviewed-tests.json`; they do not certify the whole suites.
 
@@ -109,14 +109,36 @@ Retained allocations and lost allocations are recorded separately. The test
 runner returns failure when a selected fixture has an unresolved finding.
 
 `numfmt` now frees its stdin line buffer after reading; `seq` frees the
-allocated custom format after printing. The complete current set of 177
-behavior fixtures was rerun after both changes. Numeric tests cover all five
+allocated custom format after printing. The complete current set of 231
+behavior fixtures was rerun after the latest ownership and descriptor changes. Numeric tests cover all five
 `od` float formats and byte swapping, `printf` precision and errors, general
 numeric sorting, `numfmt` rounding/units/fields, and finite `seq` paths.
 Some long-double outputs differ between native execution and Valgrind in both
 GNU and rboxc. Native comparisons establish numerical equivalence; the separate
 instrumented assessment compares their Valgrind streams and fixture effects,
 requires rboxc's native exit status, and requires clean memory/descriptor results.
+
+Every registered command now has at least one bounded behavior or argument-error
+fixture; `mktemp` and `uptime` currently exercise argument rejection. This is
+entry coverage, not full option coverage. `yes` is tested through a consumer
+that reads only 64 bytes and closes its pipe. `hostname` frees its result,
+`df` frees operand statistics, and `shuf` releases random-source, permutation,
+input, and reservoir storage, including an unused buffer after early EOF.
+`stdbuf` now releases its borrowed environment strings when exec fails.
+
+Assembly copies the matching GNU `libstdbuf.so` (21,600 bytes) beside the release
+executable. Keep that helper alongside the binary when moving it. The original
+GNU buffering test passes. A narrow `freopen_safer` adaptation checks descriptor
+validity with `fcntl(F_GETFD)` instead of self-duplication, preserving GNU's
+reopen/protection flow and avoiding Valgrind's self-duplication findings.
+All 24 descriptor-preservation cases pass, including close-on-exec flags,
+closed neighboring streams, failed opens, and Valgrind checks.
+
+Initial host NSS-library findings, native GNU child allocations, and the
+previous descriptor-probe observation are retained in
+`evidence/host-dependency-findings.json`; they are not passing fixtures.
+Ownership fixtures now use explicit numeric IDs, and the stdbuf child fixture
+uses the pinned GNU printf. No Valgrind suppressions are used.
 
 No command is certified complete. Full provider suites, missing prerequisites,
 additional memory/descriptor paths, and other GNU providers remain outstanding. Excluded original tests are listed with reasons
@@ -155,6 +177,7 @@ python3 tests/coreutils-valgrind.py
 python3 tests/coreutils-behavior.py
 python3 tests/valgrind-equivalence.py
 python3 tests/aligned-alloc.py
+python3 tests/freopen-safer.py
 python3 tests/gnu/cp-original.py
 python3 tests/gnu/reviewed-original.py
 python3 tests/gnu/cp-backups.py

@@ -94,6 +94,7 @@ extern "C" {
         __domainname: *const ::core::ffi::c_char,
         __dirname: *const ::core::ffi::c_char,
     ) -> *mut ::core::ffi::c_char;
+    fn randint_all_free(source: *mut randint_source) -> ::core::ffi::c_int;
     fn xmalloc(s: size_t) -> *mut ::core::ffi::c_void;
     fn xpalloc(
         pa: *mut ::core::ffi::c_void,
@@ -1246,6 +1247,10 @@ unsafe extern "C" fn read_input_reservoir_sampling(
             });
         };
     }
+    let kept = (k as usize).min(n_lines as usize);
+    for index in kept..n_alloc_lines as usize {
+        freebuffer(rsrv.add(index));
+    }
     *out_rsrv = rsrv;
     return (if (k as randint) < n_lines {
         k as randint
@@ -2245,6 +2250,21 @@ pub unsafe extern "C" fn single_binary_main_shuf(
     }
     if i != 0 as ::core::ffi::c_int {
         write_error();
+    }
+    ::libc::free(permutation.cast());
+    randint_all_free(randint_source);
+    if !input_lines.is_null() {
+        ::libc::free((*input_lines).cast());
+        ::libc::free(input_lines.cast());
+    }
+    if echo && !line.is_null() {
+        ::libc::free((*line).cast());
+    }
+    if !reservoir.is_null() {
+        for index in 0..n_lines as usize {
+            freebuffer(reservoir.add(index));
+        }
+        ::libc::free(reservoir.cast());
     }
     return 0 as ::core::ffi::c_int;
 }

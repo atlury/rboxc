@@ -742,6 +742,7 @@ pub unsafe extern "C" fn single_binary_main_hostname(
             };
         }
         puts(hostname);
+        ::libc::free(hostname.cast());
     }
     return 0 as ::core::ffi::c_int;
 }

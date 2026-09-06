@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Link translated entries with GNU helper archives, excluding C entry objects."""
 import json
+import hashlib
 import os
 from pathlib import Path
 import re
@@ -102,11 +103,36 @@ subprocess.run(['gcc', '-O2', '-I'+str(BUILD/'lib'), '-I'+str(SOURCE/'lib'),
                 '-I'+str(BUILD/'src'), '-I'+str(SOURCE/'src'), '-c', source, '-o', formatted], check=True)
 # Put this helper before archives that satisfy its own dependencies.
 link.insert(0, str(formatted))
+original_fd_helper = (SOURCE/'lib/freopen-safer.c').read_text()
+fd_helper = original_fd_helper
+for fd in ('STDIN_FILENO', 'STDOUT_FILENO', 'STDERR_FILENO'):
+    before = f'dup2 ({fd}, {fd}) != {fd}'
+    assert fd_helper.count(before) == 1
+    fd_helper = fd_helper.replace(before, f'fcntl ({fd}, F_GETFD) < 0')
+fd_source = ROOT/'src/bridges/freopen-safer.c'
+fd_source.write_text(fd_helper)
+fd_object = target/'freopen-safer.o'
+subprocess.run(['gcc', '-O2', '-I'+str(BUILD/'lib'), '-I'+str(SOURCE/'lib'),
+                '-c', fd_source, '-o', fd_object], check=True)
+link.insert(0, str(fd_object))
 (ROOT/'build/rust-link-inputs.txt').write_text('\n'.join(link)+'\n')
+# GNU stdbuf locates its preload helper beside the executable. Keep the
+# matching GNU build product there for the release profile used by this port.
+runtime_helper = ROOT/'target/release/libstdbuf.so'
+runtime_helper.parent.mkdir(parents=True, exist_ok=True)
+shutil.copy2(BUILD/'src/libstdbuf.so', runtime_helper)
 (ROOT/'evidence/link.json').write_text(json.dumps({'entries':len(rows),
     'rust_entries':sum(row['active_rust'] for row in rows), 'temporary_C_entries':failed,
     'C_entry_objects_removed_for_all_active_Rust_commands':True, 'helper_archives':list(prepared),
     'aligned_allocation_adapter': 'round backing size to alignment multiple; GNU oracle unchanged',
-    'native_entry_cleanups': native_changes}, indent=2)+'\n')
+    'native_entry_cleanups': native_changes,
+    'descriptor_probe_adapter': {
+        'source': 'lib/freopen-safer.c',
+        'original_sha256': hashlib.sha256(original_fd_helper.encode()).hexdigest(),
+        'adapted_sha256': hashlib.sha256(fd_helper.encode()).hexdigest(),
+        'scope': 'test descriptor validity with fcntl F_GETFD; preserve GNU reopen/protection flow'},
+    'runtime_helpers': [{'path': str(runtime_helper.relative_to(ROOT)),
+                         'bytes': runtime_helper.stat().st_size,
+                         'sha256': hashlib.sha256(runtime_helper.read_bytes()).hexdigest()}]}, indent=2)+'\n')
 (ROOT/'evidence/translation.json').write_text(json.dumps(rows,indent=2)+'\n')
 print(f'Prepared {len(rows)-len(failed)} Rust entries, {len(failed)} explicit temporary C entries, and {len(prepared)} helper archives')

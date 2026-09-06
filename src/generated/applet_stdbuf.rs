@@ -994,6 +994,34 @@ unsafe extern "C" fn optc_to_fileno(mut c: ::core::ffi::c_int) -> ::core::ffi::c
     }
     return ret;
 }
+// putenv borrows these four possible strings until exec. If exec
+// fails, remove the borrowed environment entries before freeing their storage.
+static mut RBOXC_ENV_STORAGE: [*mut ::core::ffi::c_char; 4] = [::core::ptr::null_mut(); 4];
+static mut RBOXC_ENV_COUNT: usize = 0;
+unsafe fn rboxc_putenv_owned(value: *mut ::core::ffi::c_char) -> ::core::ffi::c_int {
+    let result = putenv(value);
+    if result == 0 {
+        assert!(RBOXC_ENV_COUNT < 4);
+        RBOXC_ENV_STORAGE[RBOXC_ENV_COUNT] = value;
+        RBOXC_ENV_COUNT += 1;
+    }
+    result
+}
+unsafe fn rboxc_free_environment() {
+    for index in 0..RBOXC_ENV_COUNT {
+        let value = RBOXC_ENV_STORAGE[index];
+        let equal = ::libc::strchr(value, b'=' as i32);
+        assert!(!equal.is_null());
+        let length = equal.offset_from(value) as usize;
+        let mut name = [0 as ::core::ffi::c_char; 64];
+        assert!(length < name.len());
+        ::core::ptr::copy_nonoverlapping(value, name.as_mut_ptr(), length);
+        ::libc::unsetenv(name.as_ptr());
+        ::libc::free(value.cast());
+        RBOXC_ENV_STORAGE[index] = ::core::ptr::null_mut();
+    }
+    RBOXC_ENV_COUNT = 0;
+}
 unsafe extern "C" fn set_LD_PRELOAD() {
     let mut ret: ::core::ffi::c_int = 0;
     let mut preload_env: *const ::core::ffi::c_char =
@@ -1114,7 +1142,7 @@ unsafe extern "C" fn set_LD_PRELOAD() {
         xalloc_die();
     }
     free(libstdbuf as *mut ::core::ffi::c_void);
-    ret = putenv(LD_PRELOAD);
+    ret = rboxc_putenv_owned(LD_PRELOAD);
     if ret != 0 as ::core::ffi::c_int {
         if 0 != 0 {
             error(
@@ -1184,7 +1212,7 @@ unsafe extern "C" fn set_libstdbuf_options() -> bool {
             if ret < 0 as ::core::ffi::c_int {
                 xalloc_die();
             }
-            if putenv(var) != 0 as ::core::ffi::c_int {
+            if rboxc_putenv_owned(var) != 0 as ::core::ffi::c_int {
                 if 0 != 0 {
                     error(
                         C2Rust_Unnamed_0::EXIT_CANCELED.0 as ::core::ffi::c_int,
@@ -1511,6 +1539,7 @@ pub unsafe extern "C" fn single_binary_main_stdbuf(
             };
         });
     };
+    rboxc_free_environment();
     return exit_status;
 }
 pub const MANUAL_URL: [::core::ffi::c_char; 61] = unsafe {

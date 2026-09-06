@@ -36,7 +36,8 @@ summary = {
     'temporary_C_entries': [r['name'] for r in translation.values() if not r['active_rust']],
     'help_version': {'passed': smoke['passed'], 'total': smoke['total']},
     'valgrind_help': {'passed': valgrind['passed'], 'total': valgrind['total']},
-    'behavior': {key: behavior[key] for key in ('behavior_passed', 'valgrind_passed', 'total')},
+    'behavior': {**{key: behavior[key] for key in ('behavior_passed', 'valgrind_passed', 'total')},
+                 'commands_covered': len({row['name'] for row in behavior['results']})},
     'instrumented_equivalence': {key: read('evidence/valgrind-equivalence.json')[key]
                                  for key in ('passed', 'total')},
     'gnu_cp_original': read('evidence/gnu-cp-original.json')['counts'],
@@ -46,6 +47,10 @@ summary = {
         'selected_perl_cases': sum(len(row.get('cases', [])) for row in read('inventory/gnu-reviewed-tests.json')),
     },
     'allocation_adapter': read('evidence/aligned-alloc.json'),
+    'descriptor_probe_adapter': {key: read('evidence/freopen-safer.json')[key]
+                                 for key in ('passed', 'total')},
+    'runtime_helpers': read('evidence/link.json').get('runtime_helpers', []),
+    'external_dependency_observations': len(read('evidence/host-dependency-findings.json')['results']),
     'complete_commands': 0,
 }
 (ROOT/'evidence/status.json').write_text(json.dumps(summary, indent=2)+'\n')

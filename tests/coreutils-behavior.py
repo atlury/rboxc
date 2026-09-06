@@ -7,11 +7,13 @@ import json
 import os
 from pathlib import Path
 import re
+import selectors
 import stat
 import struct
 import subprocess
 import sys
 import tempfile
+import time
 
 ROOT = Path(__file__).resolve().parents[1]
 GNU = ROOT/'build/gnu-coreutils/src'
@@ -125,6 +127,36 @@ CASES = [
     ('seq', ['3', '1']), ('seq', ['1', '0', '2']),
     ('seq', ['nan']), ('seq', ['bad']),
     ('seq', ['-f', '%g%g', '2']),
+    ('arch', []), ('chgrp', ['+65534', 'input']), ('chown', ['+65534:+65534', 'input']),
+    ('chroot', ['missing', '/missing']), ('coreutils', ['--coreutils-prog=true']),
+    ('df', ['--output=fstype', 'input']), ('dircolors', ['--sh', 'color-config']),
+    ('du', ['-bs', 'dir']), ('groups', []), ('hostid', []), ('hostname', []),
+    ('id', ['-u']), ('kill', ['-l', 'TERM']), ('logname', []),
+    ('mkfifo', ['-m', '600', 'output']), ('mknod', ['-m', '600', 'output', 'p']),
+    ('mktemp', ['xx']), ('nice', ['-n', '1', str(GNU/'true')]),
+    ('nohup', [str(GNU/'true')]), ('nproc', ['--all']),
+    ('pinky', ['rboxc-nonexistent-fixture-user']), ('ptx', ['input']),
+    ('pwd', ['-P']), ('shred', ['-n', '0', '-z', 'input']),
+    ('shuf', ['-i', '7-7', '-n', '1']), ('sleep', ['0']),
+    ('stdbuf', ['-oL', str(GNU/'printf'), '%s\\n', 'fixture']), ('stty', ['-a']),
+    ('sync', ['-d', 'input']), ('timeout', ['5', str(GNU/'true')]),
+    ('tty', []), ('uname', ['-srm']), ('uptime', ['--invalid-fixture-option']),
+    ('users', ['empty-utmp']), ('who', ['empty-utmp']), ('whoami', []),
+    ('yes', ['fixture']),
+    ('hostname', ['--invalid-fixture-option']),
+    ('df', ['--output=fstype', 'missing']),
+    ('shuf', ['-e', 'single']), ('shuf', ['-e']),
+    ('shuf', ['-n', '1']), ('shuf', ['-n', '10']),
+    ('shuf', ['-r', '-n', '3', '-e', 'single']),
+    ('shuf', ['-n', '0']), ('shuf', ['empty-utmp']),
+    ('shuf', ['--random-source=zeros', 'input']),
+    ('shuf', ['--random-source=zeros', '-n', '2']),
+    ('shuf', ['--random-source=zeros', '-r', '-n', '8', 'input']),
+    ('shuf', ['--random-source=zeros', '-o', 'output', '-e', 'one', 'two', 'three']),
+    ('stdbuf', ['-oL', str(GNU/'printenv'), '_STDBUF_O']),
+    ('stdbuf', ['-o0', 'rboxc-nonexistent-fixture-command']),
+    ('stdbuf', ['-i0', '-oL', '-e0', 'rboxc-nonexistent-fixture-command']),
+    ('shuf', ['--random-source=zeros', '-o', 'output', 'input']),
 ]
 
 
@@ -138,6 +170,9 @@ def fixture(root):
                        'record': b'a' * 40000 + b'\nend\n',
                        'floating': b'nan\n-inf\n-1e30\n-0\n0\n1e-30\n1.00000000000000001\n1.00000000000000002\ninf\nnan\n',
                        'float-keys': b'a 1e30\nb -0\nc 0\nd 1e-30\ne nan\n',
+                       'color-config': b'TERM *\nDIR 01;34\nLINK 01;36\n',
+                       'empty-utmp': b'',
+                       'zeros': bytes(128),
                        'dir/file': b'fixture data\x00\xff\n'}.items():
         (root/name).write_bytes(data)
         (root/name).chmod(0o644)
@@ -163,7 +198,8 @@ def tree(root):
     for path in sorted(root.rglob('*')):
         info = path.lstat()
         name = str(path.relative_to(root))
-        entry = {'mode': stat.S_IMODE(info.st_mode), 'kind': stat.S_IFMT(info.st_mode)}
+        entry = {'mode': stat.S_IMODE(info.st_mode), 'kind': stat.S_IFMT(info.st_mode),
+                 'uid': info.st_uid, 'gid': info.st_gid}
         if path.is_symlink():
             entry['target'] = os.readlink(path)
         elif path.is_file():
@@ -192,9 +228,38 @@ def run(index, name, args, implementation, instrument=True):
                                     '--trace-children=yes',
                                     '--errors-for-leak-kinds=definite,indirect,possible',
                                     '--log-file='+str(log)] if instrument else []
-        completed = subprocess.run([*prefix, *command, *args],
-                                   input=b'alpha alpha\nbeta\n', capture_output=True, cwd=root,
-                                   env=env, timeout=45)
+        if name == 'yes':
+            # Read a bounded prefix, then close the consumer. Both programs
+            # should terminate from SIGPIPE; never accumulate unbounded output.
+            with subprocess.Popen([*prefix, *command, *args], stdin=subprocess.DEVNULL,
+                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                  cwd=root, env=env) as process:
+                deadline = time.monotonic() + 45
+                output = b''
+                try:
+                    with selectors.DefaultSelector() as selector:
+                        selector.register(process.stdout, selectors.EVENT_READ)
+                        while len(output) < 64:
+                            if not selector.select(max(0, deadline - time.monotonic())):
+                                raise subprocess.TimeoutExpired(process.args, 45)
+                            chunk = os.read(process.stdout.fileno(), 64-len(output))
+                            if not chunk:
+                                break
+                            output += chunk
+                    process.stdout.close()
+                    process.stdout = None
+                    _, stderr = process.communicate(timeout=max(0, deadline-time.monotonic()))
+                except BaseException:
+                    process.kill()
+                    process.wait()
+                    raise
+                completed = subprocess.CompletedProcess(process.args, process.returncode, output, stderr)
+        else:
+            completed = subprocess.run([*prefix, *command, *args],
+                                       input=(b'a\nb\nc\nd\n' if '--random-source=zeros' in args else b'one\n'*5)
+                                             if name == 'shuf' else b'alpha alpha\nbeta\n',
+                                       capture_output=True, cwd=root,
+                                       env=env, timeout=45)
         report = log.read_text() if instrument and log.exists() else ''
         errors = re.search(r'ERROR SUMMARY: ([\d,]+) errors', report)
         lost = {kind: int(match[1].replace(',', ''))

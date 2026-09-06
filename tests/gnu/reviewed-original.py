@@ -39,11 +39,14 @@ def main():
                 run = Path(temporary)
                 (run/'src').mkdir()
                 candidate = BUILD/'src/coreutils' if implementation == 'gnu' else ROOT/'target/release/rboxc'
-                (run/'src'/row['command']).symlink_to(candidate)
+                commands = row.get('commands', [row['command']])
+                assert row['command'] in commands
+                for command in commands:
+                    (run/'src'/command).symlink_to(candidate)
                 (run/'src/getlimits').symlink_to(BUILD/'src/getlimits')
                 environment = {
                     **os.environ, 'PATH': f'{run}/src:/opt/gnu/coreutils-9.11/bin:/usr/bin:/bin',
-                    'LC_ALL': 'C', 'LANGUAGE': 'C', 'TZ': 'UTC0', 'built_programs': row['command'],
+                    'LC_ALL': 'C', 'LANGUAGE': 'C', 'TZ': 'UTC0', 'built_programs': ' '.join(commands),
                     'srcdir': str(SOURCE), 'top_srcdir': str(SOURCE), 'abs_srcdir': str(SOURCE),
                     'abs_top_srcdir': str(SOURCE), 'abs_top_builddir': str(run),
                     'CONFIG_HEADER': str(BUILD/'lib/config.h'), 'LOCALE_FR': '',

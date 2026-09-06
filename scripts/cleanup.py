@@ -9,6 +9,72 @@ def replace_once(text, before, after):
 
 
 def cleanup(name, text):
+    if name == 'stdbuf':
+        declaration = 'unsafe extern "C" fn set_LD_PRELOAD() {'
+        helper = '''// putenv borrows these four possible strings until exec. If exec
+// fails, remove the borrowed environment entries before freeing their storage.
+static mut RBOXC_ENV_STORAGE: [*mut ::core::ffi::c_char; 4] = [::core::ptr::null_mut(); 4];
+static mut RBOXC_ENV_COUNT: usize = 0;
+unsafe fn rboxc_putenv_owned(value: *mut ::core::ffi::c_char) -> ::core::ffi::c_int {
+    let result = putenv(value);
+    if result == 0 {
+        assert!(RBOXC_ENV_COUNT < 4);
+        RBOXC_ENV_STORAGE[RBOXC_ENV_COUNT] = value;
+        RBOXC_ENV_COUNT += 1;
+    }
+    result
+}
+unsafe fn rboxc_free_environment() {
+    for index in 0..RBOXC_ENV_COUNT {
+        let value = RBOXC_ENV_STORAGE[index];
+        let equal = ::libc::strchr(value, b'=' as i32);
+        assert!(!equal.is_null());
+        let length = equal.offset_from(value) as usize;
+        let mut name = [0 as ::core::ffi::c_char; 64];
+        assert!(length < name.len());
+        ::core::ptr::copy_nonoverlapping(value, name.as_mut_ptr(), length);
+        ::libc::unsetenv(name.as_ptr());
+        ::libc::free(value.cast());
+        RBOXC_ENV_STORAGE[index] = ::core::ptr::null_mut();
+    }
+    RBOXC_ENV_COUNT = 0;
+}
+'''
+        text = replace_once(text, declaration, helper+declaration)
+        text = replace_once(text, 'putenv(LD_PRELOAD)', 'rboxc_putenv_owned(LD_PRELOAD)')
+        text = replace_once(text, 'putenv(var)', 'rboxc_putenv_owned(var)')
+        anchor = '    return exit_status;\n}\npub const MANUAL_URL'
+        text = replace_once(text, anchor, '    rboxc_free_environment();\n'+anchor)
+    if name == 'hostname':
+        text = replace_once(text, '        puts(hostname);',
+                            '        puts(hostname);\n        ::libc::free(hostname.cast());')
+    if name == 'df':
+        anchor = '    return exit_status;\n}\npub const MANUAL_URL'
+        text = replace_once(text, anchor, '    ::libc::free(stats.cast());\n'+anchor)
+    if name == 'shuf':
+        text = replace_once(text, '    fn xmalloc(s: size_t)',
+                            '    fn randint_all_free(source: *mut randint_source) -> ::core::ffi::c_int;\n'
+                            '    fn xmalloc(s: size_t)')
+        # On an early EOF, the slot beyond the returned count can own a
+        # buffer. Release it while the allocation count is still in scope.
+        text = replace_once(text, '    *out_rsrv = rsrv;',
+                            '    let kept = (k as usize).min(n_lines as usize);\n'
+                            '    for index in kept..n_alloc_lines as usize {\n'
+                            '        freebuffer(rsrv.add(index));\n    }\n'
+                            '    *out_rsrv = rsrv;')
+        anchor = '    return 0 as ::core::ffi::c_int;\n}\npub const __CHAR_BIT__'
+        text = replace_once(text, anchor,
+                            '    ::libc::free(permutation.cast());\n'
+                            '    randint_all_free(randint_source);\n'
+                            '    if !input_lines.is_null() {\n'
+                            '        ::libc::free((*input_lines).cast());\n'
+                            '        ::libc::free(input_lines.cast());\n    }\n'
+                            '    if echo && !line.is_null() {\n'
+                            '        ::libc::free((*line).cast());\n    }\n'
+                            '    if !reservoir.is_null() {\n'
+                            '        for index in 0..n_lines as usize {\n'
+                            '            freebuffer(reservoir.add(index));\n        }\n'
+                            '        ::libc::free(reservoir.cast());\n    }\n'+anchor)
     if name == 'pr':
         text = replace_once(text, '    cleanup();\n', '    cleanup();\n    free(file_names.cast());\n')
     if name == 'tac':
