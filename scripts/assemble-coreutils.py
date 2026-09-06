@@ -68,6 +68,10 @@ for item in inputs:
 bridge = target/'cpu-supports.o'
 subprocess.run(['gcc', '-O2', '-c', ROOT/'src/bridges/cpu-supports.c', '-o', bridge], check=True)
 link.append(str(bridge))
+allocation_bridge = target/'aligned-alloc.o'
+subprocess.run(['gcc', '-O2', '-Wall', '-Wextra', '-Werror', '-c',
+                ROOT/'src/bridges/aligned-alloc.c', '-o', allocation_bridge], check=True)
+link.extend([str(allocation_bridge), '-Wl,--wrap=aligned_alloc'])
 system = (SOURCE/'src/system.h').read_text()
 begin = system.index('static inline void\noprintf_ (')
 opening = system.index('{', begin)
@@ -86,6 +90,7 @@ link.insert(0, str(formatted))
 (ROOT/'build/rust-link-inputs.txt').write_text('\n'.join(link)+'\n')
 (ROOT/'evidence/link.json').write_text(json.dumps({'entries':len(rows),
     'rust_entries':sum(row['active_rust'] for row in rows), 'temporary_C_entries':failed,
-    'C_entry_objects_removed_for_all_active_Rust_commands':True, 'helper_archives':list(prepared)}, indent=2)+'\n')
+    'C_entry_objects_removed_for_all_active_Rust_commands':True, 'helper_archives':list(prepared),
+    'aligned_allocation_adapter': 'round backing size to alignment multiple; GNU oracle unchanged'}, indent=2)+'\n')
 (ROOT/'evidence/translation.json').write_text(json.dumps(rows,indent=2)+'\n')
 print(f'Prepared {len(rows)-len(failed)} Rust entries, {len(failed)} explicit temporary C entries, and {len(prepared)} helper archives')

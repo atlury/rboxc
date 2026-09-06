@@ -2424,6 +2424,8 @@ pub unsafe extern "C" fn single_binary_main_cat(
             });
         };
     }
+    ::libc::free(outbuf.cast());
+    ::libc::free(inbuf.cast());
     return if ok as ::core::ffi::c_int != 0 {
         EXIT_SUCCESS
     } else {

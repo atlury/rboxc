@@ -71,6 +71,13 @@ CASES = [
     ('tr', ['[:lower:]', '[:upper:]']), ('tr', ['-ds', 'a', 'b']),
     ('tr', ['-c', 'a-z', '?']), ('tr', ['-t', 'a-z', 'AB']),
     ('tr', ['z-a', 'x']), ('tr', ['a', 'z-a']),
+    ('cat', ['input', 'left']), ('cat', ['-A', 'dir/file']),
+    ('cat', ['-b', '-s', 'input']), ('cat', ['missing']),
+    ('dd', ['if=input', 'of=output', 'bs=1', 'conv=ucase', 'status=none']),
+    ('dd', ['if=input', 'of=output', 'bs=4096', 'status=none']),
+    ('split', ['-b', '7', 'input', 'part']),
+    ('split', ['-C', '16', 'input', 'part']),
+    ('split', ['-d', '-l', '2', 'input', 'part']),
 ]
 
 

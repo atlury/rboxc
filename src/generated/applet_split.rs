@@ -5313,6 +5313,7 @@ pub unsafe extern "C" fn single_binary_main_split(
         filter_pid,
         outfile,
     );
+    ::libc::free(buf.cast());
     return 0 as ::core::ffi::c_int;
 }
 pub const __CHAR_BIT__: ::core::ffi::c_int = 8 as ::core::ffi::c_int;
