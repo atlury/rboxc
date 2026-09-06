@@ -37,6 +37,8 @@ summary = {
     'help_version': {'passed': smoke['passed'], 'total': smoke['total']},
     'valgrind_help': {'passed': valgrind['passed'], 'total': valgrind['total']},
     'behavior': {key: behavior[key] for key in ('behavior_passed', 'valgrind_passed', 'total')},
+    'instrumented_equivalence': {key: read('evidence/valgrind-equivalence.json')[key]
+                                 for key in ('passed', 'total')},
     'gnu_cp_original': read('evidence/gnu-cp-original.json')['counts'],
     'reviewed_original': {
         'passed_selections': read('evidence/gnu-reviewed-original.json')['passed'],

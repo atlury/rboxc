@@ -50,20 +50,23 @@ Coreutils set still require source/version confirmation before implementation.
 
 ## Status
 
-The executable registers 107 Coreutils commands, with 105 active Rust command
-entries. `numfmt` and `seq` temporarily retain C entries while their unsupported
-floating conversions are adapted. `printf`, `sort`, and `od` now use Rust entries
-with native numeric helpers: floating values stay inside GNU C functions and
-cross the boundary only as bytes or text. This preserves the host's x87
-`long double` representation without using C2Rust's incompatible IEEE binary128
-ABI. See `evidence/translation.json` for per-command results and helper hashes.
+The executable registers 107 Coreutils commands, all with active Rust command
+entries. No native C command entry remains, and assembly succeeds without the
+C-entry opt-in. `printf`, `sort`, `od`, `numfmt`, and `seq` use native numeric
+helpers: floating values stay inside GNU C functions and cross the boundary
+only as bytes or text. This preserves the host's x87 `long double`
+representation without using C2Rust's incompatible IEEE binary128 ABI.
+`numfmt` keeps options and field processing in Rust; `seq` keeps its command
+control and integer generation path in Rust. Their numeric helpers share
+prefixed Rust-owned option state. Native C assertions check the opaque storage
+and operand layout. See `evidence/translation.json` for source and helper hashes.
 
 GNU helper bodies remain native C. For example, `cp.c` is translated, while
 `copy.c` and its data-copy helpers remain C. Every active Rust command's C entry
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The initial release executable is 2,382,472 bytes (2.27 MiB), dynamically linked
+The initial release executable is 2,388,632 bytes (2.28 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
@@ -74,8 +77,9 @@ Recorded checks:
 | --- | --- | --- |
 | GNU help/version comparisons | 428/428 pass | Both multicall and symlink entry forms |
 | Valgrind help paths | 107/107 pass | Help only |
-| Normal/error behavior fixtures | 148/148 match GNU | Streams, status, contents, modes, link topology |
-| Valgrind normal/error fixtures | 148/148 clean | Bounded fixtures; retained allocations recorded separately |
+| Normal/error behavior fixtures | 177/177 match GNU | Streams, status, contents, modes, link topology |
+| Valgrind normal/error fixtures | 177/177 clean | Bounded fixtures; retained allocations recorded separately |
+| Instrumented GNU comparisons | 177/177 pass | Saved Valgrind observations, assessed separately from native arithmetic |
 | Original GNU cp tests | 89 pass, 13 prerequisite skips, 30 excluded | 66 scripts, root and ordinary-user profiles |
 | cp mutation comparisons | 879 pass | Bounded local backup/removal/error fixtures |
 | cp backup comparisons | 75 pass | Backup names and preserved fixture data |
@@ -83,7 +87,8 @@ Recorded checks:
 Cleanup now releases `expr` results, `date` timezone/format storage,
 non-following `tail` file records, and `tr` construct lists (including parse
 failures). Selected original GNU tests pass: 22 `expr`, 56 `tr`, 54 `tac`, and 33 `pr`
-cases, plus ten date/tail/cat/dd/split/sort/od/printf shell scripts. These selections are pinned in
+cases, plus 51 `numfmt` and 67 `seq` cases and ten date/tail/cat/dd/split/sort/od/printf
+shell scripts. These selections are pinned in
 `inventory/gnu-reviewed-tests.json`; they do not certify the whole suites.
 
 `pr` now releases its filename list. `tac` frees the base of its working
@@ -103,9 +108,18 @@ still retains that descriptor. This does not certify every `cp` exit path.
 Retained allocations and lost allocations are recorded separately. The test
 runner returns failure when a selected fixture has an unresolved finding.
 
+`numfmt` now frees its stdin line buffer after reading; `seq` frees the
+allocated custom format after printing. The complete current set of 177
+behavior fixtures was rerun after both changes. Numeric tests cover all five
+`od` float formats and byte swapping, `printf` precision and errors, general
+numeric sorting, `numfmt` rounding/units/fields, and finite `seq` paths.
+Some long-double outputs differ between native execution and Valgrind in both
+GNU and rboxc. Native comparisons establish numerical equivalence; the separate
+instrumented assessment compares their Valgrind streams and fixture effects,
+requires rboxc's native exit status, and requires clean memory/descriptor results.
+
 No command is certified complete. Full provider suites, missing prerequisites,
-numerical C entry replacements, memory/descriptor cleanup, and other GNU
-providers remain outstanding. Excluded original tests are listed with reasons
+additional memory/descriptor paths, and other GNU providers remain outstanding. Excluded original tests are listed with reasons
 and source hashes in `inventory/gnu-cp-tests.json`; they are not counted as passes.
 Build products and raw test logs stay outside Git; source, scripts, pins, and
 result summaries are committed. `evidence/status.json` records the binary hash
@@ -131,7 +145,7 @@ The default GNU source location is `/opt/src/coreutils-9.11`; set
 sh scripts/bootstrap-c2rust.sh
 sh scripts/prepare-coreutils.sh
 python3 scripts/translate-coreutils.py
-python3 scripts/assemble-coreutils.py --allow-c-entries
+python3 scripts/assemble-coreutils.py
 cargo build --locked --release
 target/release/rboxc --list
 target/release/rboxc cp --help
@@ -139,6 +153,7 @@ target/release/rboxc cp --help
 python3 tests/coreutils-smoke.py
 python3 tests/coreutils-valgrind.py
 python3 tests/coreutils-behavior.py
+python3 tests/valgrind-equivalence.py
 python3 tests/aligned-alloc.py
 python3 tests/gnu/cp-original.py
 python3 tests/gnu/reviewed-original.py
@@ -147,8 +162,8 @@ python3 tests/gnu/cp-mutations.py
 python3 scripts/update-evidence.py
 ```
 
-The C-entry opt-in is explicit: assembly without `--allow-c-entries` refuses an
-incomplete translation. The two imported cp differential scripts currently use
+Assembly without `--allow-c-entries` refuses an incomplete translation. The
+current 107-command Coreutils set needs no opt-in. The two imported cp differential scripts currently use
 the separately installed GNU oracle at `/opt/gnu/coreutils-9.11`; their environment
 overrides are documented in the script variables.
 

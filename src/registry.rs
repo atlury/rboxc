@@ -108,7 +108,8 @@ mod applet_nl;
 mod applet_nohup;
 #[path = "generated/applet_nproc.rs"]
 mod applet_nproc;
-extern "C" { fn single_binary_main_numfmt(argc: c_int, argv: *mut *mut c_char) -> c_int; }
+#[path = "generated/applet_numfmt.rs"]
+mod applet_numfmt;
 #[path = "generated/applet_od.rs"]
 mod applet_od;
 #[path = "generated/applet_paste.rs"]
@@ -135,7 +136,8 @@ mod applet_realpath;
 mod applet_rm;
 #[path = "generated/applet_rmdir.rs"]
 mod applet_rmdir;
-extern "C" { fn single_binary_main_seq(argc: c_int, argv: *mut *mut c_char) -> c_int; }
+#[path = "generated/applet_seq.rs"]
+mod applet_seq;
 #[path = "generated/applet_sha1sum.rs"]
 mod applet_sha1sum;
 #[path = "generated/applet_sha224sum.rs"]
@@ -268,7 +270,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"nl", applet_nl::single_binary_main_nl),
     (b"nohup", applet_nohup::single_binary_main_nohup),
     (b"nproc", applet_nproc::single_binary_main_nproc),
-    (b"numfmt", single_binary_main_numfmt),
+    (b"numfmt", applet_numfmt::single_binary_main_numfmt),
     (b"od", applet_od::single_binary_main_od),
     (b"paste", applet_paste::single_binary_main_paste),
     (b"pathchk", applet_pathchk::single_binary_main_pathchk),
@@ -282,7 +284,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"realpath", applet_realpath::single_binary_main_realpath),
     (b"rm", applet_rm::single_binary_main_rm),
     (b"rmdir", applet_rmdir::single_binary_main_rmdir),
-    (b"seq", single_binary_main_seq),
+    (b"seq", applet_seq::single_binary_main_seq),
     (b"sha1sum", applet_sha1sum::single_binary_main_sha1sum),
     (b"sha224sum", applet_sha224sum::single_binary_main_sha224sum),
     (b"sha256sum", applet_sha256sum::single_binary_main_sha256sum),

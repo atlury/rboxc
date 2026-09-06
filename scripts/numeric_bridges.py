@@ -37,7 +37,7 @@ def braced_end(text, opening):
 
 
 def function(text, name):
-    match = re.search(r'^static [^\n]+\n'+re.escape(name)+r' \(', text, re.M)
+    match = re.search(r'^(?:ATTRIBUTE_\w+\n)*static [^\n]+\n'+re.escape(name)+r' \(', text, re.M)
     assert match, name
     opening = text.index('{', match.end())
     return text[match.start():braced_end(text, opening)]
@@ -109,6 +109,151 @@ def prepare(root, name, source, stage):
         text = text.replace('typedef _Float16 float16;', 'typedef struct { unsigned char bytes[2]; } float16;')
         text = text.replace('typedef __bf16 bfloat16;', 'typedef struct { unsigned char bytes[2]; } bfloat16;')
         text = text.replace('sizeof (long double)', '16 /* pinned x86-64 GNU long double size */')
+    elif name == 'numfmt':
+        # Keep CLI/field processing in Rust. The numeric worker uses the same
+        # Rust-owned option state, with prefixed symbols avoiding other applets.
+        state = original[original.index('static enum scale_type scale_from ='):
+                         original.index('static bool\nnewline_or_blank')]
+        declarations = re.findall(r'^static [^\n]+;', state, re.M)
+        assert len(declarations) == 28
+        aliases = ''
+        prefix = original[:original.index('\nvoid\nusage (')]
+        for declaration in declarations:
+            declarator = declaration.removeprefix('static ').split(' =')[0].rstrip(';')
+            symbol = re.search(r'(\w+)$', declarator)[1]
+            aliases += '#define '+symbol+' rboxc_numfmt_'+symbol+'\n'
+            text = text.replace(declaration, declaration.removeprefix('static '), 1)
+            prefix = prefix.replace(declaration, 'extern '+declarator+';', 1)
+        marker = '/* The official name of this program'
+        text = text.replace(marker, aliases+'\n'+marker, 1)
+        prefix = prefix.replace(marker, aliases+'\n'+marker, 1)
+        worker_names = ['parse_human_number', 'prepare_padded_number', 'process_suffixed_number']
+        bridge = prefix+'\n'+'\n'.join(function(original, n) for n in worker_names)
+        bridge += '''
+_Static_assert(sizeof(long double) == 16 && _Alignof(long double) == 16,
+               "pinned x86-64 GNU long double storage");
+bool rboxc_numfmt_process_suffixed(char *text, void *value, size_t *precision, long field)
+{ return process_suffixed_number(text, value, precision, field); }
+bool rboxc_numfmt_prepare(void const *value, size_t precision, intmax_t *padding)
+{ return prepare_padded_number(*(long double const *)value, precision, padding); }
+'''
+        floating_names = ['powerld', 'absld', 'expld', 'simple_round_ceiling',
+                          'simple_round_floor', 'simple_round_from_zero', 'simple_round_to_zero',
+                          'simple_round_nearest', 'simple_round', 'simple_strtod_int',
+                          'simple_strtod_float', 'simple_strtod_human', 'simple_strtod_fatal',
+                          'double_to_human', *worker_names]
+        for method in floating_names:
+            text = text.replace(function(original, method), '')
+        field = function(text, 'process_field')
+        replacement = field.replace('long double val = 0;',
+                                     'struct { _Alignas(16) unsigned char bytes[16]; } val = {0};')
+        replacement = replacement.replace('process_suffixed_number (', 'rboxc_numfmt_process_suffixed (')
+        replacement = replacement.replace('prepare_padded_number (val,', 'rboxc_numfmt_prepare (&val,')
+        prototypes = ('extern bool rboxc_numfmt_process_suffixed(char *, void *, size_t *, long);\n'
+                      'extern bool rboxc_numfmt_prepare(void const *, size_t, intmax_t *);\n')
+        text = text.replace(field, prototypes+replacement)
+        stdin_done = ('      if (ferror (stdin))\n'
+                      '        error (EXIT_FAILURE, errno, _("error reading input"));\n')
+        assert text.count(stdin_done) == 1
+        text = text.replace(stdin_done, stdin_done+'      free (line);\n')
+        helpers = ['rboxc_numfmt_process_suffixed', 'rboxc_numfmt_prepare']
+    elif name == 'seq':
+        prefix = original[:original.index('\nvoid\nusage (')]
+        aliases = ''
+        for symbol in ['locale_ok', 'equal_width', 'separator', 'terminator']:
+            declaration = re.search(r'^static [^\n]*\b'+symbol+r'\b[^\n]*;', original, re.M)[0]
+            declarator = declaration.removeprefix('static ').split(' =')[0].rstrip(';')
+            aliases += '#define '+symbol+' rboxc_seq_'+symbol+'\n'
+            text = text.replace(declaration, declaration.removeprefix('static '), 1)
+            prefix = prefix.replace(declaration, 'extern '+declarator+';', 1)
+        marker = '/* True if the locale settings were honored.'
+        text = text.replace(marker, aliases+'\n'+marker, 1)
+        prefix = prefix.replace(marker, aliases+'\n'+marker, 1)
+        # The worker calls the translated command's existing usage function.
+        prefix = prefix.replace('#include <config.h>', '#define usage _usage_seq\n#include <config.h>', 1)
+        types = original[original.index('struct operand\n'):original.index('/* Read a long double value')]
+        workers = ['scan_arg', 'print_numbers', 'get_default_format']
+        bridge = prefix+'\n'+types+'\n'+'\n'.join(function(original, n) for n in workers)
+        wrappers = '''
+_Static_assert(sizeof(long double) == 16 && _Alignof(long double) == 16,
+               "pinned x86-64 GNU long double storage");
+_Static_assert(sizeof(operand) == 32 && offsetof(operand, width) == 16
+               && offsetof(operand, precision) == 24, "operand layout");
+void rboxc_seq_one(operand *out)
+{ *out = (operand){1, 1, 0}; }
+void rboxc_seq_scan(char const *arg, operand *out)
+{ *out = scan_arg(arg); }
+bool rboxc_seq_parse_step(char const *arg, void *value)
+{ return xstrtold(arg, NULL, value, cl_strtold); }
+bool rboxc_seq_fast_step(void const *value)
+{ long double v = *(long double const *)value; return 0 < v && v <= SEQ_FAST_STEP_LIMIT; }
+bool rboxc_seq_zero(void const *value)
+{ return *(long double const *)value == 0; }
+bool rboxc_seq_nonnegative(void const *value)
+{ return 0 <= *(long double const *)value; }
+bool rboxc_seq_finite(void const *value)
+{ return isfinite(*(long double const *)value); }
+uintmax_t rboxc_seq_uintmax(void const *value)
+{ return *(long double const *)value; }
+char *rboxc_seq_integer_string(void const *value)
+{ return xasprintf("%0.Lf", *(long double const *)value); }
+char const *rboxc_seq_default(operand const *first, operand const *step, operand const *last)
+{ return get_default_format(*first, *step, *last); }
+void rboxc_seq_print(char const *fmt, struct layout const *layout,
+                     void const *first, void const *step, void const *last)
+{ print_numbers(fmt, *layout, *(long double const *)first,
+                *(long double const *)step, *(long double const *)last); }
+'''
+        bridge += wrappers
+        prototypes = '''
+extern void rboxc_seq_one(operand *);
+extern void rboxc_seq_scan(char const *, operand *);
+extern bool rboxc_seq_parse_step(char const *, void *);
+extern bool rboxc_seq_fast_step(void const *);
+extern bool rboxc_seq_zero(void const *);
+extern bool rboxc_seq_nonnegative(void const *);
+extern bool rboxc_seq_finite(void const *);
+extern uintmax_t rboxc_seq_uintmax(void const *);
+extern char *rboxc_seq_integer_string(void const *);
+extern char const *rboxc_seq_default(operand const *, operand const *, operand const *);
+extern void rboxc_seq_print(char const *, struct layout const *, void const *, void const *, void const *);
+'''
+        for method in workers:
+            text = text.replace(function(original, method), prototypes if method == 'scan_arg' else '')
+        changes = {
+            'long double value;': 'struct { _Alignas(16) unsigned char bytes[16]; } value;',
+            'operand step = { 1, 1, 0 };': 'operand step; rboxc_seq_one(&step);',
+            'operand first = { 1, 1, 0 };': 'operand first; rboxc_seq_one(&first);',
+            'operand last = scan_arg (argv[optind++]);': 'operand last; rboxc_seq_scan(argv[optind++], &last);',
+            'last = scan_arg (argv[optind++]);': 'rboxc_seq_scan(argv[optind++], &last);',
+            'xstrtold (argv[optind + 1], NULL, &step.value, cl_strtold)': 'rboxc_seq_parse_step(argv[optind + 1], &step.value)',
+            '0 < step.value && step.value <= SEQ_FAST_STEP_LIMIT': 'rboxc_seq_fast_step(&step.value)',
+            'seq_fast (s1, s2, step.value)': 'seq_fast (s1, s2, rboxc_seq_uintmax(&step.value))',
+            'step.value == 0': 'rboxc_seq_zero(&step.value)',
+            'isfinite (first.value)': 'rboxc_seq_finite(&first.value)',
+            'isfinite (last.value)': 'rboxc_seq_finite(&last.value)',
+            '0 <= first.value': 'rboxc_seq_nonnegative(&first.value)',
+            '0 <= last.value': 'rboxc_seq_nonnegative(&last.value)',
+            'xasprintf ("%0.Lf", first.value)': 'rboxc_seq_integer_string(&first.value)',
+            'xasprintf ("%0.Lf", last.value)': 'rboxc_seq_integer_string(&last.value)',
+            'get_default_format (first, step, last)': 'rboxc_seq_default(&first, &step, &last)',
+            'print_numbers (format_str, layout, first.value, step.value, last.value)':
+                'rboxc_seq_print(format_str, &layout, &first.value, &step.value, &last.value)',
+        }
+        for before, after in changes.items():
+            assert before in text, before
+            text = text.replace(before, after)
+        format_setup = ('  if (format_str)\n'
+                        '    format_str = long_double_format (format_str, &layout);')
+        assert text.count(format_setup) == 1
+        text = text.replace(format_setup,
+                            '  char *owned_format = NULL;\n  if (format_str) {\n'
+                            '    format_str = long_double_format (format_str, &layout);\n'
+                            '    owned_format = (char *)format_str;\n  }')
+        done = '  main_exit (EXIT_SUCCESS);\n}'
+        assert text.count(done) == 1
+        text = text.replace(done, '  free (owned_format);\n'+done)
+        helpers = re.findall(r'\b(rboxc_seq_\w+)\(', prototypes)
     else:
         return source, None
     adapted = stage/(name+'.c')

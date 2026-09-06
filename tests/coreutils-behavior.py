@@ -102,6 +102,29 @@ CASES = [
     *[('od', ['-An', '-v', '-tf'+kind, 'float-'+kind]) for kind in 'B H F D L'.split()],
     *[('od', ['-An', '-v', '--endian=big', '-tf'+kind, 'float-'+kind+'-be']) for kind in 'B H F D L'.split()],
     ('od', ['-An', '-v', '-tfFz', '-N', '9', 'float-F']),
+    ('numfmt', ['--from=iec-i', '--to=si', '1Ki', '1.5Mi', '2Gi']),
+    ('numfmt', ['--from=auto', '--to=iec-i', '1K', '1Ki', '1M', '1Mi']),
+    *[('numfmt', ['--round='+style, '--to-unit=10', '--', '15', '-15', '14', '-14'])
+      for style in ['up', 'down', 'from-zero', 'towards-zero', 'nearest']],
+    ('numfmt', ['--to=si', '--format=[%10.2f]', '--suffix=B', '1500B', '2500000B']),
+    ('numfmt', ['--to=iec', '--padding=-12', '1024', '1536']),
+    ('numfmt', ['--from-unit=512', '--to-unit=1024', '3', '5']),
+    ('numfmt', ['--delimiter=:', '--field=2', '--to=iec', 'one:1024:tail', 'two:1536:end']),
+    ('numfmt', ['--invalid=warn', '--from=auto', '1K', 'bad', '2Ki']),
+    ('numfmt', ['--debug', '--to=si', '12345678901234567890']),
+    ('numfmt', ['--invalid=ignore']),
+    ('seq', ['5']), ('seq', ['3', '-1', '-2']),
+    ('seq', ['0', '0.000001', '0.000003']),
+    ('seq', ['0.8', '0.1', '0.9']),
+    ('seq', ['-w', '9', '0.5', '10']),
+    ('seq', ['-f', '[%06.2f]', '-s', ', ', '1', '0.5', '2']),
+    ('seq', ['-f', '%a', '0x1p0', '0x1p-1', '0x1p1']),
+    ('seq', ['1e1', '2e0', '1.4e1']),
+    ('seq', ['-s', '::', '1', '3']),
+    ('seq', ['99999999999999999998', '100000000000000000002']),
+    ('seq', ['3', '1']), ('seq', ['1', '0', '2']),
+    ('seq', ['nan']), ('seq', ['bad']),
+    ('seq', ['-f', '%g%g', '2']),
 ]
 
 
@@ -156,9 +179,12 @@ def run(index, name, args, implementation, instrument=True):
         root = Path(temporary)
         fixture(root)
         log = ROOT/'evidence/raw'/f'behavior-{index:03d}-{name}-{implementation}.log'
-        command = [ROOT/'build/behavior-oracle'/name] if implementation == 'gnu' else [BINARY, name]
+        # Resolve the GNU symlink through PATH so both entries receive the
+        # same argv[0]; GNU's try-help message preserves that argument.
+        command = [name] if implementation == 'gnu' else [BINARY, name]
         env = {**os.environ, 'LC_ALL': 'C', 'LANGUAGE': 'C', 'TZ': 'UTC0',
-               'RBOXC_FIXTURE': 'local-test', 'TERM': 'dumb'}
+               'RBOXC_FIXTURE': 'local-test', 'TERM': 'dumb',
+               'PATH': str(ROOT/'build/behavior-oracle')+os.pathsep+os.environ['PATH']}
         for key in ('POSIXLY_CORRECT', 'VERSION_CONTROL', 'SIMPLE_BACKUP_SUFFIX'):
             env.pop(key, None)
         prefix = ['valgrind', '--error-exitcode=97', '--leak-check=full',
