@@ -2,11 +2,13 @@
 """Bounded local GNU comparisons, including Valgrind and fixture effects."""
 # SPDX-License-Identifier: GPL-3.0-or-later
 import hashlib
+import ctypes
 import json
 import os
 from pathlib import Path
 import re
 import stat
+import struct
 import subprocess
 import sys
 import tempfile
@@ -85,6 +87,21 @@ CASES = [
     ('sort', ['input']), ('sort', ['-u', 'input']),
     ('sort', ['-k2,2', 'input']), ('sort', ['-n', '-r', 'numbers']),
     ('tac', ['-', '-']),
+    ('printf', ['%a %A %e %E %g %G\\n', '0.1', '-0', '1e-30', '1e30', '1.23456789', '9.87654321']),
+    ('printf', ['%*.*f|%*.0f|%.*g\\n', '12', '5', '1.23456789', '-8', '2.5', '18', '1.00000000000000001']),
+    ('printf', ['%.20Lf\\n', '1.00000000000000001']),
+    ('printf', ['%.3f %.3f\\n', "'A", '0x1.8p+2']),
+    ('printf', ['%f\\n', '12oops']),
+    ('printf', ['%f\\n', 'oops']),
+    ('printf', ['%g %g %g\\n', 'inf', '-inf', 'nan']),
+    ('sort', ['-g', 'floating']),
+    ('sort', ['-gr', 'floating']),
+    ('sort', ['-gu', 'floating']),
+    ('sort', ['-g', '--debug', 'floating']),
+    ('sort', ['-s', '-k2,2g', 'float-keys']),
+    *[('od', ['-An', '-v', '-tf'+kind, 'float-'+kind]) for kind in 'B H F D L'.split()],
+    *[('od', ['-An', '-v', '--endian=big', '-tf'+kind, 'float-'+kind+'-be']) for kind in 'B H F D L'.split()],
+    ('od', ['-An', '-v', '-tfFz', '-N', '9', 'float-F']),
 ]
 
 
@@ -96,9 +113,22 @@ def fixture(root):
                        'right': b'b 3\nc 4\n', 'edges': b'a b\nb c\n',
                        'dates': b'2000-02-29\n2001-03-01\n',
                        'record': b'a' * 40000 + b'\nend\n',
+                       'floating': b'nan\n-inf\n-1e30\n-0\n0\n1e-30\n1.00000000000000001\n1.00000000000000002\ninf\nnan\n',
+                       'float-keys': b'a 1e30\nb -0\nc 0\nd 1e-30\ne nan\n',
                        'dir/file': b'fixture data\x00\xff\n'}.items():
         (root/name).write_bytes(data)
         (root/name).chmod(0o644)
+    # Values exactly representable in every format; native long double bytes
+    # include the platform padding and avoid a binary128 ABI assumption.
+    values = (0.0, -0.0, 1.5, -2.25, 0.125)
+    encodings = {kind: [struct.pack('<'+code, v) for v in values]
+                 for kind, code in [('H', 'e'), ('F', 'f'), ('D', 'd')]}
+    encodings['B'] = [struct.pack('<f', v)[2:] for v in values]
+    assert ctypes.sizeof(ctypes.c_longdouble) == 16, 'pinned x86-64 profile'
+    encodings['L'] = [bytes(ctypes.c_longdouble(v))[:10] + bytes(6) for v in values]
+    for kind, words in encodings.items():
+        (root/('float-'+kind)).write_bytes(b''.join(words))
+        (root/('float-'+kind+'-be')).write_bytes(b''.join(word[::-1] for word in words))
     (root/'link').symlink_to('input')
     for path in root.rglob('*'):
         os.utime(path, ns=(946684800000000000,)*2, follow_symlinks=False)

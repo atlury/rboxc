@@ -50,19 +50,20 @@ Coreutils set still require source/version confirmation before implementation.
 
 ## Status
 
-The first executable registers 107 Coreutils commands. 104 command entry units
-transpile; 102 are active Rust implementations. `numfmt`, `od`, `printf`, `seq`,
-and `sort` temporarily retain their native C command entries. `numfmt`, `od`, and `seq`
-fail translation on unsupported floating-point conversions/types;
-`printf` and `sort` are held because generated IEEE binary128 is not ABI-equivalent
-to x86-64 GNU `long double`. See `evidence/translation.json` for per-command results.
+The executable registers 107 Coreutils commands, with 105 active Rust command
+entries. `numfmt` and `seq` temporarily retain C entries while their unsupported
+floating conversions are adapted. `printf`, `sort`, and `od` now use Rust entries
+with native numeric helpers: floating values stay inside GNU C functions and
+cross the boundary only as bytes or text. This preserves the host's x87
+`long double` representation without using C2Rust's incompatible IEEE binary128
+ABI. See `evidence/translation.json` for per-command results and helper hashes.
 
 GNU helper bodies remain native C. For example, `cp.c` is translated, while
 `copy.c` and its data-copy helpers remain C. Every active Rust command's C entry
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The initial release executable is 2,363,568 bytes (2.25 MiB), dynamically linked
+The initial release executable is 2,382,472 bytes (2.27 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
@@ -73,8 +74,8 @@ Recorded checks:
 | --- | --- | --- |
 | GNU help/version comparisons | 428/428 pass | Both multicall and symlink entry forms |
 | Valgrind help paths | 107/107 pass | Help only |
-| Normal/error behavior fixtures | 125/125 match GNU | Streams, status, contents, modes, link topology |
-| Valgrind normal/error fixtures | 125/125 clean | Bounded fixtures; retained allocations recorded separately |
+| Normal/error behavior fixtures | 148/148 match GNU | Streams, status, contents, modes, link topology |
+| Valgrind normal/error fixtures | 148/148 clean | Bounded fixtures; retained allocations recorded separately |
 | Original GNU cp tests | 89 pass, 13 prerequisite skips, 30 excluded | 66 scripts, root and ordinary-user profiles |
 | cp mutation comparisons | 879 pass | Bounded local backup/removal/error fixtures |
 | cp backup comparisons | 75 pass | Backup names and preserved fixture data |
@@ -82,12 +83,12 @@ Recorded checks:
 Cleanup now releases `expr` results, `date` timezone/format storage,
 non-following `tail` file records, and `tr` construct lists (including parse
 failures). Selected original GNU tests pass: 22 `expr`, 56 `tr`, 54 `tac`, and 33 `pr`
-cases, plus seven date/tail/cat/dd/split/sort shell scripts. These selections are pinned in
+cases, plus ten date/tail/cat/dd/split/sort/od/printf shell scripts. These selections are pinned in
 `inventory/gnu-reviewed-tests.json`; they do not certify the whole suites.
 
 `pr` now releases its filename list. `tac` frees the base of its working
 buffer after all operands and closes its cached temporary stream after the
-final use, including stdin reuse. The temporary C `sort` entry releases its
+final use, including stdin reuse. The Rust `sort` entry releases its
 independent argv-name vector on normal completion; its token-file ownership
 path remains unchanged. Native source adaptations are separately hashed and
 compiled into helper copies; the GNU oracle is preserved. All current

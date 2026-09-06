@@ -1087,11 +1087,31 @@
     "source": "/opt/src/coreutils-9.11/src/od.c",
     "source_sha256": "76e729aea9e73e53de309fefa83d6194c752755ff802092103628635c9423330",
     "gnu_object": "src/libsinglebin_od_a-od.o",
-    "exit_status": 1,
-    "elapsed_seconds": 0.54,
+    "exit_status": 0,
+    "elapsed_seconds": 0.775,
     "log": "evidence/raw/transpile-od.log",
-    "translated": false,
-    "active_rust": false
+    "native_numeric_helpers": {
+      "helpers": [
+        "rboxc_print_bfloat",
+        "rboxc_print_halffloat",
+        "rboxc_print_float",
+        "rboxc_print_double",
+        "rboxc_print_long_double"
+      ],
+      "bridge_file": "src/bridges/od-numeric.c",
+      "adapted_source_sha256": "51a9062bc89c94ee0ce8d968a922f913c4c807b3479a962d9f3d91fd41dad799",
+      "bridge_sha256": "0af15705224f57fc2d40c1012465bfc5acfcdfc2945e2da019aa2130407f0b22",
+      "boundary": "byte pointers, integer flags, and callbacks; no floating values cross into Rust"
+    },
+    "translated": true,
+    "rust_file": "src/generated/applet_od.rs",
+    "opaque_pointer_types": [
+      "_IO_wide_data",
+      "_IO_codecvt",
+      "_IO_marker"
+    ],
+    "generated_lines": 4731,
+    "active_rust": true
   },
   {
     "name": "paste",
@@ -1196,8 +1216,17 @@
     "source_sha256": "997fd0203fa4310afba9988ba46eafebb49f78aaf463196191432f05129b0c89",
     "gnu_object": "src/libsinglebin_printf_a-printf.o",
     "exit_status": 0,
-    "elapsed_seconds": 0.602,
+    "elapsed_seconds": 0.579,
     "log": "evidence/raw/transpile-printf.log",
+    "native_numeric_helpers": {
+      "helpers": [
+        "rboxc_printf_float"
+      ],
+      "bridge_file": "src/bridges/printf-numeric.c",
+      "adapted_source_sha256": "d5571158c60d90785e05450c5941da729ade05a5396ee1cccc6db17076d583e3",
+      "bridge_sha256": "f5e868ec7b4919826954fe744b9a0ba354caa2ab09371e5b2503a1d7ead69de9",
+      "boundary": "byte pointers, integer flags, and callbacks; no floating values cross into Rust"
+    },
     "translated": true,
     "rust_file": "src/generated/applet_printf.rs",
     "opaque_pointer_types": [
@@ -1205,9 +1234,8 @@
       "_IO_codecvt",
       "_IO_marker"
     ],
-    "generated_lines": 2034,
-    "active_rust": false,
-    "hold_reason": "x87 long double ABI requires native helper boundary; generated IEEE binary128 is not equivalent"
+    "generated_lines": 1973,
+    "active_rust": true
   },
   {
     "name": "ptx",
@@ -1480,8 +1508,18 @@
     "source_sha256": "1720eb34d236684b516249e3cdc52d81fc981c127e72ce1bc04ab1546b95babe",
     "gnu_object": "src/libsinglebin_sort_a-sort.o",
     "exit_status": 0,
-    "elapsed_seconds": 1.265,
+    "elapsed_seconds": 1.234,
     "log": "evidence/raw/transpile-sort.log",
+    "native_numeric_helpers": {
+      "helpers": [
+        "rboxc_general_numcompare",
+        "rboxc_strtold_end"
+      ],
+      "bridge_file": "src/bridges/sort-numeric.c",
+      "adapted_source_sha256": "f0c7c4e012e35ca93b1314b8fbc0dfa37721b7aa87bea5509ae059b72210b601",
+      "bridge_sha256": "914df4400c67cf1bc85c1ebe8a8f2043139f9f30debea3c14bc265aea8c9b9b7",
+      "boundary": "byte pointers, integer flags, and callbacks; no floating values cross into Rust"
+    },
     "translated": true,
     "rust_file": "src/generated/applet_sort.rs",
     "opaque_pointer_types": [
@@ -1493,9 +1531,8 @@
       "heap",
       "randread_source"
     ],
-    "generated_lines": 9777,
-    "active_rust": false,
-    "hold_reason": "x87 long double ABI requires native helper boundary; generated IEEE binary128 is not equivalent"
+    "generated_lines": 9720,
+    "active_rust": true
   },
   {
     "name": "split",

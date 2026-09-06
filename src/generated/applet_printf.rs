@@ -24,7 +24,6 @@ pub struct _IO_codecvt { _opaque: [u8; 0] }
 #[repr(C)]
 pub struct _IO_marker { _opaque: [u8; 0] }
 use ::c2rust_bitfields;
-use ::f128;
 extern "C" {
     static mut stdout: *mut FILE;
     static mut stderr: *mut FILE;
@@ -136,7 +135,6 @@ extern "C" {
         s: quoting_style,
         arg: *const ::core::ffi::c_char,
     ) -> *mut ::core::ffi::c_char;
-    fn cl_strtold(_: *const ::core::ffi::c_char, _: *mut *mut ::core::ffi::c_char) -> ::f128::f128;
     fn quote(arg: *const ::core::ffi::c_char) -> *const ::core::ffi::c_char;
     fn print_unicode_char(
         stream: *mut FILE,
@@ -144,6 +142,18 @@ extern "C" {
         exit_on_error: ::core::ffi::c_int,
     );
     fn xprintf(format: *const ::core::ffi::c_char, ...) -> off64_t;
+    fn rboxc_printf_float(
+        p: *const ::core::ffi::c_char,
+        argument: *const ::core::ffi::c_char,
+        have_field_width: bool,
+        field_width: ::core::ffi::c_int,
+        have_precision: bool,
+        precision: ::core::ffi::c_int,
+        posixly_correct_0: bool,
+        verify_numeric_0: Option<
+            unsafe extern "C" fn(*const ::core::ffi::c_char, *const ::core::ffi::c_char) -> (),
+        >,
+    );
 }
 pub type size_t = usize;
 pub type __uint64_t = u64;
@@ -1031,77 +1041,6 @@ unsafe extern "C" fn vstrtoumax(mut s: *const ::core::ffi::c_char) -> uintmax_t 
     }
     return val;
 }
-unsafe extern "C" fn vstrtold(mut s: *const ::core::ffi::c_char) -> ::f128::f128 {
-    let mut end: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
-    let mut val: ::f128::f128 = ::f128::f128::ZERO;
-    if (*s as ::core::ffi::c_int == '"' as ::core::ffi::c_int
-        || *s as ::core::ffi::c_int == '\'' as ::core::ffi::c_int)
-        && *s.offset(1 as ::core::ffi::c_int as isize) as ::core::ffi::c_int != 0
-    {
-        s = s.offset(1);
-        let mut ch: ::core::ffi::c_uchar = *s as ::core::ffi::c_uchar;
-        val = ::f128::f128::new(ch);
-        if __ctype_get_mb_cur_max() > 1 as size_t
-            && *s.offset(1 as ::core::ffi::c_int as isize) as ::core::ffi::c_int != 0
-        {
-            let mut mbstate: mbstate_t = mbstate_t {
-                __count: 0,
-                __value: C2Rust_Unnamed { __wch: 0 },
-            };
-            mbszero(&raw mut mbstate);
-            let mut wc: wchar_t = 0;
-            let mut slen: size_t = strlen(s);
-            let mut bytes: ssize_t = 0;
-            bytes = rpl_mbrtowc(&raw mut wc, s, slen, &raw mut mbstate) as ssize_t;
-            if (0 as ssize_t) < bytes {
-                val = ::f128::f128::new(wc);
-                s = s.offset((bytes - 1 as ssize_t) as isize);
-            }
-        }
-        s = s.offset(1);
-        if *s as ::core::ffi::c_int != 0 as ::core::ffi::c_int && !posixly_correct {
-            if 0 != 0 {
-                error(
-                    0 as ::core::ffi::c_int,
-                    0 as ::core::ffi::c_int,
-                    dcgettext(
-                        ::core::ptr::null::<::core::ffi::c_char>(),
-                        cfcc_msg,
-                        5 as ::core::ffi::c_int,
-                    ),
-                    s,
-                );
-                if 0 as ::core::ffi::c_int != 0 as ::core::ffi::c_int {
-                    unreachable!();
-                } else {
-                };
-            } else {
-                ({
-                    let __errstatus: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-                    error(
-                        __errstatus,
-                        0 as ::core::ffi::c_int,
-                        dcgettext(
-                            ::core::ptr::null::<::core::ffi::c_char>(),
-                            cfcc_msg,
-                            5 as ::core::ffi::c_int,
-                        ),
-                        s,
-                    );
-                    if __errstatus != 0 as ::core::ffi::c_int {
-                        unreachable!();
-                    } else {
-                    };
-                });
-            };
-        }
-    } else {
-        *__errno_location() = 0 as ::core::ffi::c_int;
-        val = cl_strtold(s, &raw mut end);
-        verify_numeric(s, end);
-    }
-    return val;
-}
 unsafe extern "C" fn print_esc_char(mut c: ::core::ffi::c_char) {
     match c as ::core::ffi::c_int {
         97 => {
@@ -1456,22 +1395,22 @@ unsafe extern "C" fn print_direc(
             }
         }
         97 | 65 | 101 | 69 | 102 | 70 | 103 | 71 => {
-            let mut arg_1: ::f128::f128 = if !argument.is_null() {
-                vstrtold(argument)
-            } else {
-                ::f128::f128::new(0 as ::core::ffi::c_int)
-            };
-            if !have_field_width {
-                if !have_precision {
-                    xprintf(p, arg_1);
-                } else {
-                    xprintf(p, precision, arg_1);
-                }
-            } else if !have_precision {
-                xprintf(p, field_width, arg_1);
-            } else {
-                xprintf(p, field_width, precision, arg_1);
-            }
+            rboxc_printf_float(
+                p,
+                argument,
+                have_field_width,
+                field_width,
+                have_precision,
+                precision,
+                posixly_correct,
+                Some(
+                    verify_numeric
+                        as unsafe extern "C" fn(
+                            *const ::core::ffi::c_char,
+                            *const ::core::ffi::c_char,
+                        ) -> (),
+                ),
+            );
         }
         99 => {
             let mut c: ::core::ffi::c_char = (if !argument.is_null() {

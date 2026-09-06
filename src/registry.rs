@@ -109,7 +109,8 @@ mod applet_nohup;
 #[path = "generated/applet_nproc.rs"]
 mod applet_nproc;
 extern "C" { fn single_binary_main_numfmt(argc: c_int, argv: *mut *mut c_char) -> c_int; }
-extern "C" { fn single_binary_main_od(argc: c_int, argv: *mut *mut c_char) -> c_int; }
+#[path = "generated/applet_od.rs"]
+mod applet_od;
 #[path = "generated/applet_paste.rs"]
 mod applet_paste;
 #[path = "generated/applet_pathchk.rs"]
@@ -120,7 +121,8 @@ mod applet_pinky;
 mod applet_pr;
 #[path = "generated/applet_printenv.rs"]
 mod applet_printenv;
-extern "C" { fn single_binary_main_printf(argc: c_int, argv: *mut *mut c_char) -> c_int; }
+#[path = "generated/applet_printf.rs"]
+mod applet_printf;
 #[path = "generated/applet_ptx.rs"]
 mod applet_ptx;
 #[path = "generated/applet_pwd.rs"]
@@ -150,7 +152,8 @@ mod applet_shred;
 mod applet_shuf;
 #[path = "generated/applet_sleep.rs"]
 mod applet_sleep;
-extern "C" { fn single_binary_main_sort(argc: c_int, argv: *mut *mut c_char) -> c_int; }
+#[path = "generated/applet_sort.rs"]
+mod applet_sort;
 #[path = "generated/applet_split.rs"]
 mod applet_split;
 #[path = "generated/applet_stat.rs"]
@@ -266,13 +269,13 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"nohup", applet_nohup::single_binary_main_nohup),
     (b"nproc", applet_nproc::single_binary_main_nproc),
     (b"numfmt", single_binary_main_numfmt),
-    (b"od", single_binary_main_od),
+    (b"od", applet_od::single_binary_main_od),
     (b"paste", applet_paste::single_binary_main_paste),
     (b"pathchk", applet_pathchk::single_binary_main_pathchk),
     (b"pinky", applet_pinky::single_binary_main_pinky),
     (b"pr", applet_pr::single_binary_main_pr),
     (b"printenv", applet_printenv::single_binary_main_printenv),
-    (b"printf", single_binary_main_printf),
+    (b"printf", applet_printf::single_binary_main_printf),
     (b"ptx", applet_ptx::single_binary_main_ptx),
     (b"pwd", applet_pwd::single_binary_main_pwd),
     (b"readlink", applet_readlink::single_binary_main_readlink),
@@ -288,7 +291,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"shred", applet_shred::single_binary_main_shred),
     (b"shuf", applet_shuf::single_binary_main_shuf),
     (b"sleep", applet_sleep::single_binary_main_sleep),
-    (b"sort", single_binary_main_sort),
+    (b"sort", applet_sort::single_binary_main_sort),
     (b"split", applet_split::single_binary_main_split),
     (b"stat", applet_stat::single_binary_main_stat),
     (b"stdbuf", applet_stdbuf::single_binary_main_stdbuf),

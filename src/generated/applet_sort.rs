@@ -38,7 +38,6 @@ pub struct heap { _opaque: [u8; 0] }
 #[repr(C)]
 pub struct randread_source { _opaque: [u8; 0] }
 use ::c2rust_bitfields;
-use ::f128;
 use ::libc;
 extern "C" {
     fn __assert_fail(
@@ -86,10 +85,6 @@ extern "C" {
         __cond: *mut pthread_cond_t,
         __mutex: *mut pthread_mutex_t,
     ) -> ::core::ffi::c_int;
-    fn strtold(
-        __nptr: *const ::core::ffi::c_char,
-        __endptr: *mut *mut ::core::ffi::c_char,
-    ) -> ::f128::f128;
     fn malloc(__size: size_t) -> *mut ::core::ffi::c_void;
     fn atexit(__func: Option<unsafe extern "C" fn() -> ()>) -> ::core::ffi::c_int;
     fn exit(__status: ::core::ffi::c_int) -> !;
@@ -276,12 +271,6 @@ extern "C" {
         __format: *const ::core::ffi::c_char,
         __arg: ::core::ffi::VaList,
     ) -> ::core::ffi::c_int;
-    fn snprintf(
-        __s: *mut ::core::ffi::c_char,
-        __maxlen: size_t,
-        __format: *const ::core::ffi::c_char,
-        ...
-    ) -> ::core::ffi::c_int;
     fn vasprintf(
         __ptr: *mut *mut ::core::ffi::c_char,
         __f: *const ::core::ffi::c_char,
@@ -441,6 +430,11 @@ extern "C" {
         _: *const ::core::ffi::c_char,
     );
     fn rpl_nl_langinfo(item: nl_item) -> *mut ::core::ffi::c_char;
+    fn rboxc_general_numcompare(
+        _: *const ::core::ffi::c_char,
+        _: *const ::core::ffi::c_char,
+    ) -> ::core::ffi::c_int;
+    fn rboxc_strtold_end(_: *const ::core::ffi::c_char, _: *mut *mut ::core::ffi::c_char);
     fn dlopen(
         __file: *const ::core::ffi::c_char,
         __mode: ::core::ffi::c_int,
@@ -3369,7 +3363,8 @@ unsafe extern "C" fn stream_open(
                 __assert_fail(
                     b"!\"unexpected mode passed to stream_open\"\0".as_ptr()
                         as *const ::core::ffi::c_char,
-                    b"/opt/src/coreutils-9.11/src/sort.c\0".as_ptr() as *const ::core::ffi::c_char,
+                    b"/root/rboxc/build/translation/sort/sort.c\0".as_ptr()
+                        as *const ::core::ffi::c_char,
                     1018 as ::core::ffi::c_uint,
                     __ASSERT_FUNCTION.as_ptr(),
                 );
@@ -5080,61 +5075,6 @@ unsafe extern "C" fn numcompare(
     }
     return strnumcmp(a, b, decimal_point as ::core::ffi::c_int, thousands_sep);
 }
-unsafe extern "C" fn nan_compare(mut a: ::f128::f128, mut b: ::f128::f128) -> ::core::ffi::c_int {
-    let mut buf: [[::core::ffi::c_char; 135]; 2] = [[0; 135]; 2];
-    snprintf(
-        &raw mut *(&raw mut buf as *mut [::core::ffi::c_char; 135]).offset(0isize)
-            as *mut ::core::ffi::c_char,
-        ::core::mem::size_of::<[::core::ffi::c_char; 135]>(),
-        b"%Lf\0".as_ptr() as *const ::core::ffi::c_char,
-        a,
-    );
-    snprintf(
-        &raw mut *(&raw mut buf as *mut [::core::ffi::c_char; 135]).offset(1isize)
-            as *mut ::core::ffi::c_char,
-        ::core::mem::size_of::<[::core::ffi::c_char; 135]>(),
-        b"%Lf\0".as_ptr() as *const ::core::ffi::c_char,
-        b,
-    );
-    return strcmp(
-        &raw mut *(&raw mut buf as *mut [::core::ffi::c_char; 135]).offset(0isize)
-            as *mut ::core::ffi::c_char,
-        &raw mut *(&raw mut buf as *mut [::core::ffi::c_char; 135]).offset(1isize)
-            as *mut ::core::ffi::c_char,
-    );
-}
-unsafe extern "C" fn general_numcompare(
-    mut sa: *const ::core::ffi::c_char,
-    mut sb: *const ::core::ffi::c_char,
-) -> ::core::ffi::c_int {
-    let mut ea: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
-    let mut eb: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
-    let mut a: ::f128::f128 = strtold(sa, &raw mut ea);
-    let mut b: ::f128::f128 = strtold(sb, &raw mut eb);
-    if sa == ea as *const ::core::ffi::c_char {
-        return if sb == eb as *const ::core::ffi::c_char {
-            0 as ::core::ffi::c_int
-        } else {
-            -1 as ::core::ffi::c_int
-        };
-    }
-    if sb == eb as *const ::core::ffi::c_char {
-        return 1 as ::core::ffi::c_int;
-    }
-    return if a < b {
-        -1 as ::core::ffi::c_int
-    } else if a > b {
-        1 as ::core::ffi::c_int
-    } else if a == b {
-        0 as ::core::ffi::c_int
-    } else if b == b {
-        -1 as ::core::ffi::c_int
-    } else if a == a {
-        1 as ::core::ffi::c_int
-    } else {
-        nan_compare(a, b)
-    };
-}
 unsafe extern "C" fn getmonth(
     mut month: *const ::core::ffi::c_char,
     mut ea: *mut *mut ::core::ffi::c_char,
@@ -5717,7 +5657,7 @@ unsafe extern "C" fn debug_key(mut line: *const line, mut key: *const keyfield) 
             } else if (*key).month {
                 getmonth(beg, &raw mut tighter_lim);
             } else if (*key).general_numeric {
-                strtold(beg, &raw mut tighter_lim);
+                rboxc_strtold_end(beg, &raw mut tighter_lim);
             } else if (*key).numeric as ::core::ffi::c_int != 0
                 || (*key).human_numeric as ::core::ffi::c_int != 0
             {
@@ -6585,7 +6525,7 @@ unsafe extern "C" fn keycompare(mut a: *const line, mut b: *const line) -> ::cor
             if (*key).numeric {
                 diff = numcompare(ta, tb);
             } else if (*key).general_numeric {
-                diff = general_numcompare(ta, tb);
+                diff = rboxc_general_numcompare(ta, tb);
             } else if (*key).human_numeric {
                 diff = human_numcompare(ta, tb);
             } else if (*key).month {
@@ -8648,7 +8588,7 @@ pub unsafe extern "C" fn single_binary_main_sort(
             *files.offset(c2rust_fresh45 as isize) = *argv.offset(c2rust_fresh44 as isize);
         } else {
             's_757: {
-                'c_39579: {
+                'c_39431: {
                     match c {
                         1 => {
                             key = ::core::ptr::null_mut::<keyfield>();
@@ -8748,10 +8688,10 @@ pub unsafe extern "C" fn single_binary_main_sort(
                                 argmatch_die,
                                 r#true != 0,
                             ) as usize] as ::core::ffi::c_int;
-                            break 'c_39579;
+                            break 'c_39431;
                         }
                         98 | 100 | 102 | 103 | 104 | 105 | 77 | 110 | 114 | 82 | 86 => {
-                            break 'c_39579;
+                            break 'c_39431;
                         }
                         128 => {
                             c = if !optarg.is_null() {
@@ -9766,6 +9706,9 @@ pub unsafe extern "C" fn single_binary_main_sort(
             ),
             b"-\0".as_ptr() as *const ::core::ffi::c_char,
         );
+    }
+    if files_from.is_null() {
+        free(files as *mut ::core::ffi::c_void);
     }
     return 0 as ::core::ffi::c_int;
 }

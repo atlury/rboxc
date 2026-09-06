@@ -10,6 +10,7 @@ import subprocess
 import time
 import sys
 from postprocess import normalize
+from numeric_bridges import prepare
 
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT/'build/gnu-coreutils'
@@ -49,7 +50,10 @@ def translate(item):
         args += ['-include', str(ROOT/'src/bridges/cpu-supports.h')]
     if suffix == 'coreutils':
         args += ['-Dmain=single_binary_main_coreutils']
-    command = {**original, 'arguments': args}
+    adapted_source, numeric = prepare(ROOT, suffix, Path(original['file']), stage)
+    if numeric:
+        args = [str(adapted_source) if arg == original['file'] else arg for arg in args]
+    command = {**original, 'file': str(adapted_source), 'arguments': args}
     database = stage/'compile_commands.json'
     database.write_text(json.dumps([command], indent=2)+'\n')
     log_path = ROOT/'evidence/raw'/f'transpile-{suffix}.log'
@@ -64,6 +68,8 @@ def translate(item):
            'source_sha256':hashlib.sha256(Path(original['file']).read_bytes()).hexdigest(),
            'gnu_object':original['output'], 'exit_status':result.returncode,
            'elapsed_seconds':round(time.monotonic()-start,3), 'log':str(log_path.relative_to(ROOT))}
+    if numeric:
+        row['native_numeric_helpers'] = numeric
     if result.returncode == 0 and len(outputs) == 1:
         text = outputs[0].read_text()
         # These GNU opaque types are used only through pointers. Preserve

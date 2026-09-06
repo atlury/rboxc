@@ -14,8 +14,8 @@ BUILD = ROOT/'build/gnu-coreutils'
 SOURCE = Path(os.environ.get('GNU_COREUTILS_SOURCE', '/opt/src/coreutils-9.11'))
 rows = json.loads((ROOT/'evidence/translation.json').read_text())
 for row in rows:
-    row['active_rust'] = row['translated'] and row['name'] not in ('printf', 'sort')
-    if row['name'] in ('printf', 'sort'):
+    row['active_rust'] = row['translated'] and (row['name'] not in ('printf', 'sort') or 'native_numeric_helpers' in row)
+    if row['name'] in ('printf', 'sort') and not row['active_rust']:
         row['hold_reason'] = 'x87 long double ABI requires native helper boundary; generated IEEE binary128 is not equivalent'
 failed = [row['name'] for row in rows if not row['active_rust']]
 if failed and '--allow-c-entries' not in sys.argv:
@@ -72,6 +72,14 @@ for item in inputs:
             prepared[item] = copied
         path = prepared[item]
     link.append(str(path))
+for row in rows:
+    if row['active_rust'] and 'native_numeric_helpers' in row:
+        info = row['native_numeric_helpers']
+        obj = target/(row['name']+'-numeric.o')
+        subprocess.run(['gcc', '-O2', '-I'+str(BUILD/'lib'), '-I'+str(SOURCE/'lib'),
+                        '-I'+str(BUILD/'src'), '-I'+str(SOURCE/'src'),
+                        '-c', ROOT/info['bridge_file'], '-o', obj], check=True)
+        link.insert(0, str(obj))
 bridge = target/'cpu-supports.o'
 subprocess.run(['gcc', '-O2', '-c', ROOT/'src/bridges/cpu-supports.c', '-o', bridge], check=True)
 link.append(str(bridge))
