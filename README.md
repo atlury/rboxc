@@ -35,7 +35,9 @@ An external GNU executable used as an oracle is never counted as a port.
 - C2Rust revision `e1e5bf257863107c54e9f42b345c2aeccd925458` is pinned. The
   released 0.22.1 failed on generic selections in the current GNU/glibc headers;
   the pinned revision translated the trial successfully.
-- The initial platform is Linux x86-64 with glibc 2.43, Clang 21, and Rust 1.93.
+- The initial platform is Linux x86-64 with glibc 2.43 and Clang 21.1.8.
+  C2Rust is built with Rust 1.93.0; the generated executable uses pinned
+  `nightly-2026-01-22` for C variadic definitions.
 - GNU's compiler configuration is retained for the C oracle/helper build.
   Translation uses the documented GNU17 parser adaptation where needed.
 
@@ -48,6 +50,88 @@ Coreutils set still require source/version confirmation before implementation.
 
 ## Status
 
-The workspace and inventory are being established. No command is certified
-complete. Build products and full test logs stay outside Git; reproducible
-scripts, translated source, source pins, and result summaries are committed.
+The first executable registers 107 Coreutils commands. 104 command entry units
+transpile; 102 are active Rust implementations. `numfmt`, `od`, `printf`, `seq`,
+and `sort` temporarily retain their native C command entries. `numfmt`, `od`, and `seq`
+fail translation on unsupported floating-point conversions/types;
+`printf` and `sort` are held because generated IEEE binary128 is not ABI-equivalent
+to x86-64 GNU `long double`. See `evidence/translation.json` for per-command results.
+
+GNU helper bodies remain native C. For example, `cp.c` is translated, while
+`copy.c` and its data-copy helpers remain C. Every active Rust command's C entry
+object is removed from the linked helper archives. This is a behavior-first
+port in progress, not a claim that every implementation body is already Rust.
+
+The initial release executable is 2,362,448 bytes (2.25 MiB), dynamically linked
+on the recorded host profile. This does not include native shared-library
+dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
+Cross-platform builds and release packaging remain open.
+
+Recorded checks:
+
+| Check | Result | Coverage limit |
+| --- | --- | --- |
+| GNU help/version comparisons | 428/428 pass | Both multicall and symlink entry forms |
+| Valgrind help paths | 107/107 pass | Help only |
+| Normal/error behavior fixtures | 80/80 match GNU | Streams, status, contents, modes, link topology |
+| Valgrind normal/error fixtures | 67/80 clean | 13 findings also occur in native GNU baseline |
+| Original GNU cp tests | 89 pass, 13 prerequisite skips, 30 excluded | 66 scripts, root and ordinary-user profiles |
+| cp mutation comparisons | 879 pass | Bounded local backup/removal/error fixtures |
+| cp backup comparisons | 75 pass | Backup names and preserved fixture data |
+
+The normal-path Valgrind findings include exit-time allocations, GNU/glibc
+aligned-allocation diagnostics, and an open parent-directory descriptor in
+`cp --parents`. Baseline equivalence does not count as Valgrind cleanliness.
+Retained allocations and lost allocations are recorded separately. The test
+runner returns failure while these findings remain open.
+
+No command is certified complete. Full provider suites, missing prerequisites,
+numerical C entry replacements, memory/descriptor cleanup, and other GNU
+providers remain outstanding. Excluded original tests are listed with reasons
+and source hashes in `inventory/gnu-cp-tests.json`; they are not counted as passes.
+Build products and raw test logs stay outside Git; source, scripts, pins, and
+result summaries are committed. `evidence/status.json` records the binary hash
+and current results.
+
+## Build and reproduce
+
+The current host needs GCC, GNU Make, Python 3, binutils, Clang/LLVM 21 development
+libraries, CMake, Rust 1.93.0 with rustfmt, the pinned nightly, and GNU Coreutils
+9.11 source. Test dependencies include Valgrind 3.26, strace, Perl, and ordinary
+GNU shell utilities. Optional filesystem/locale prerequisites produce recorded
+skips. `inventory/sources.json` pins the GNU archive hash and C2Rust revision.
+The default GNU source location is `/opt/src/coreutils-9.11`; set
+`GNU_COREUTILS_SOURCE` consistently to use another location.
+
+```sh
+sh scripts/bootstrap-c2rust.sh
+sh scripts/prepare-coreutils.sh
+python3 scripts/translate-coreutils.py
+python3 scripts/assemble-coreutils.py --allow-c-entries
+cargo build --locked --release
+target/release/rboxc --list
+target/release/rboxc cp --help
+
+python3 tests/coreutils-smoke.py
+python3 tests/coreutils-valgrind.py
+python3 tests/coreutils-behavior.py
+python3 tests/gnu/cp-original.py
+python3 tests/gnu/cp-backups.py
+python3 tests/gnu/cp-mutations.py
+python3 scripts/update-evidence.py
+```
+
+The C-entry opt-in is explicit: assembly without `--allow-c-entries` refuses an
+incomplete translation. The two imported cp differential scripts currently use
+the separately installed GNU oracle at `/opt/gnu/coreutils-9.11`; their environment
+overrides are documented in the script variables.
+
+Reproducible adaptations live in `scripts/postprocess.py` and the translation
+driver: GNU17 parsing of current headers, opaque pointer declarations, pinned
+Rust `va_list` and pointer APIs, and GNU's portable arithmetic fallback for
+`factor`. C bridges preserve GNU's CPU-feature query and variadic formatting
+helper. Build warnings concerning generated ABI declarations and pointer
+comparisons remain visible; compilation is not a safety proof.
+
+This repository has local incremental commits and no configured remote. The old
+Rbox remote is not used as an implicit publication destination for this project.
