@@ -62,7 +62,7 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The initial release executable is 2,362,448 bytes (2.25 MiB), dynamically linked
+The initial release executable is 2,362,360 bytes (2.25 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
@@ -74,14 +74,18 @@ Recorded checks:
 | GNU help/version comparisons | 428/428 pass | Both multicall and symlink entry forms |
 | Valgrind help paths | 107/107 pass | Help only |
 | Normal/error behavior fixtures | 80/80 match GNU | Streams, status, contents, modes, link topology |
-| Valgrind normal/error fixtures | 67/80 clean | 13 findings also occur in native GNU baseline |
+| Valgrind normal/error fixtures | 68/80 clean | 12 findings also occur in native GNU baseline |
 | Original GNU cp tests | 89 pass, 13 prerequisite skips, 30 excluded | 66 scripts, root and ordinary-user profiles |
 | cp mutation comparisons | 879 pass | Bounded local backup/removal/error fixtures |
 | cp backup comparisons | 75 pass | Backup names and preserved fixture data |
 
-The normal-path Valgrind findings include exit-time allocations, GNU/glibc
-aligned-allocation diagnostics, and an open parent-directory descriptor in
-`cp --parents`. Baseline equivalence does not count as Valgrind cleanliness.
+The remaining normal-path Valgrind findings include exit-time allocations,
+GNU/glibc aligned-allocation diagnostics, and findings in the native child
+executed by the `env` fixture. Baseline equivalence does not count as Valgrind
+cleanliness. A follow-up cleanup closes the directory descriptor owned by
+`cp` after copying and restoring parent metadata, preserving GNU status and
+errno. All 10 current `cp` behavior/Valgrind fixtures pass; the GNU baseline
+still retains that descriptor. This does not certify every `cp` exit path.
 Retained allocations and lost allocations are recorded separately. The test
 runner returns failure while these findings remain open.
 

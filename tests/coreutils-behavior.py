@@ -8,6 +8,7 @@ from pathlib import Path
 import re
 import stat
 import subprocess
+import sys
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -126,7 +127,11 @@ def run(index, name, args, implementation, instrument=True):
 
 
 def main():
-    results = []
+    selected = set(sys.argv[1:])
+    assert selected <= {name for name, _ in CASES}, 'unknown command selection'
+    previous_path = ROOT/'evidence/behavior.json'
+    previous = json.loads(previous_path.read_text())['results'] if selected and previous_path.exists() else []
+    results_by_case = {(row['name'], tuple(row['arguments'])): row for row in previous}
     oracle_links = ROOT/'build/behavior-oracle'
     oracle_links.mkdir(exist_ok=True)
     for name, _ in CASES:
@@ -134,6 +139,8 @@ def main():
         if not link.exists():
             link.symlink_to(GNU/'coreutils')
     for index, (name, arguments) in enumerate(CASES):
+        if selected and name not in selected:
+            continue
         expected = run(index, name, arguments, 'gnu', instrument=False)
         actual = run(index, name, arguments, 'rboxc', instrument=False)
         expected_memory = run(index, name, arguments, 'gnu')
@@ -141,11 +148,13 @@ def main():
         differences = [key for key in ('status', 'stdout', 'stderr', 'tree') if actual[key] != expected[key]]
         memory_pass = actual_memory['errors'] == 0 and actual_memory['non_inherited_descriptors'] == 0
         ok = not differences and memory_pass
-        results.append({'name': name, 'arguments': arguments, 'pass': ok,
+        results_by_case[name, tuple(arguments)] = {'name': name, 'arguments': arguments, 'pass': ok,
                         'behavior_pass': not differences, 'valgrind_pass': memory_pass,
                         'differences': differences, 'gnu': expected, 'rboxc': actual,
-                        'gnu_valgrind': expected_memory, 'rboxc_valgrind': actual_memory})
+                        'gnu_valgrind': expected_memory, 'rboxc_valgrind': actual_memory}
         print('PASS' if ok else 'OPEN', name, arguments, differences, actual_memory['errors'], flush=True)
+    results = [results_by_case[name, tuple(args)] for name, args in CASES
+               if (name, tuple(args)) in results_by_case]
     report = {'scope': 'bounded local fixtures; status, streams, contents, modes, link topology; Valgrind both implementations',
               'passed': sum(row['pass'] for row in results),
               'behavior_passed': sum(row['behavior_pass'] for row in results),
@@ -153,7 +162,7 @@ def main():
               'total': len(results), 'results': results}
     (ROOT/'evidence/behavior.json').write_text(json.dumps(report, indent=2)+'\n')
     print(report['passed'], '/', report['total'])
-    return report['passed'] != report['total']
+    return any(not row['pass'] for row in results if not selected or row['name'] in selected)
 
 
 if __name__ == '__main__':

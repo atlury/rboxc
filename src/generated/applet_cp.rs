@@ -2855,6 +2855,11 @@ unsafe extern "C" fn do_copy(
             ::core::ptr::null_mut::<bool>(),
         );
     }
+    if target_dirfd >= 0 {
+        let saved_errno = *::libc::__errno_location();
+        ::libc::close(target_dirfd);
+        *::libc::__errno_location() = saved_errno;
+    }
     return ok;
 }
 unsafe extern "C" fn cp_option_init(mut x: *mut cp_options) {

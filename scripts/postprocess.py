@@ -28,6 +28,20 @@ def normalize(name, text):
     if name == 'du':
         text = text.replace('static mut posix_prefix:', 'static mut GNU_POSIX_PREFIX:')
         text = text.replace('&raw const posix_prefix', '&raw const GNU_POSIX_PREFIX')
+    if name == 'cp':
+        # GNU leaves this directory descriptor for process exit. Release it
+        # after the final operand and metadata restoration. Negative values
+        # are GNU sentinel descriptors and must not be closed. Preserve errno
+        # and the copy result; this descriptor carries no buffered output.
+        anchor = '    return ok;\n}\nunsafe extern "C" fn cp_option_init'
+        replacement = ('    if target_dirfd >= 0 {\n'
+                       '        let saved_errno = *::libc::__errno_location();\n'
+                       '        ::libc::close(target_dirfd);\n'
+                       '        *::libc::__errno_location() = saved_errno;\n'
+                       '    }\n' + anchor)
+        if replacement not in text:
+            assert text.count(anchor) == 1, 'GNU cp do_copy cleanup anchor changed'
+            text = text.replace(anchor, replacement, 1)
     return text
 
 if __name__ == '__main__':
