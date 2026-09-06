@@ -1290,7 +1290,9 @@ pub unsafe extern "C" fn single_binary_main_expr(
         };
     }
     printv(v);
-    return null(v) as ::core::ffi::c_int;
+    let status = null(v) as ::core::ffi::c_int;
+    freev(v);
+    return status;
 }
 unsafe extern "C" fn int_value(mut i: ::core::ffi::c_ulong) -> *mut VALUE {
     let mut v: *mut VALUE = xmalloc(::core::mem::size_of::<VALUE>()) as *mut VALUE;

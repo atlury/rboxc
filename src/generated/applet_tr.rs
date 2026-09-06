@@ -2339,6 +2339,17 @@ unsafe extern "C" fn get_s2_spec_stats(mut s2: *mut Spec_list, mut len_s1: count
         (*s2).length = len_s1;
     }
 }
+// Each list owns its dummy head and every appended element.
+unsafe fn rboxc_free_spec(spec: *mut Spec_list) {
+    if spec.is_null() { return; }
+    let mut element = (*spec).head;
+    while !element.is_null() {
+        let next = (*element).next;
+        free(element.cast());
+        element = next;
+    }
+    (*spec).head = ::core::ptr::null_mut();
+}
 unsafe extern "C" fn spec_init(mut spec_list: *mut Spec_list) {
     let mut new: *mut List_element =
         xmalloc(::core::mem::size_of::<List_element>()) as *mut List_element;
@@ -3195,6 +3206,7 @@ pub unsafe extern "C" fn single_binary_main_tr(
     }
     spec_init(s1);
     if !parse_str(*argv.offset(optind as isize), s1) {
+        rboxc_free_spec(s1);
         return 1 as ::core::ffi::c_int;
     }
     if non_option_args == 2 as ::core::ffi::c_int {
@@ -3203,6 +3215,8 @@ pub unsafe extern "C" fn single_binary_main_tr(
             *argv.offset((optind + 1 as ::core::ffi::c_int) as isize),
             s2,
         ) {
+            rboxc_free_spec(s1);
+            rboxc_free_spec(s2);
             return 1 as ::core::ffi::c_int;
         }
     } else {
@@ -3531,6 +3545,8 @@ pub unsafe extern "C" fn single_binary_main_tr(
             });
         };
     }
+    rboxc_free_spec(s1);
+    rboxc_free_spec(s2);
     return 0 as ::core::ffi::c_int;
 }
 pub const __INT_MAX__: ::core::ffi::c_int = 2147483647 as ::core::ffi::c_int;

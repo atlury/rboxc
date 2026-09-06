@@ -6162,6 +6162,7 @@ pub unsafe extern "C" fn single_binary_main_tail(
             });
         };
     }
+    if !forever { free(F.cast()); }
     return if ok as ::core::ffi::c_int != 0 {
         0 as ::core::ffi::c_int
     } else {

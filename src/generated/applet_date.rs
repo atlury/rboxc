@@ -72,6 +72,7 @@ extern "C" {
     fn rpl_nl_langinfo(item: nl_item) -> *mut ::core::ffi::c_char;
     fn __ctype_b_loc() -> *mut *const ::core::ffi::c_ushort;
     fn tzalloc(__name: *const ::core::ffi::c_char) -> timezone_t;
+    fn tzfree(tz: timezone_t);
     fn stat(__file: *const ::core::ffi::c_char, __buf: *mut stat) -> ::core::ffi::c_int;
     fn strcmp(
         __s1: *const ::core::ffi::c_char,
@@ -2603,6 +2604,8 @@ pub unsafe extern "C" fn single_binary_main_date(
             & show_date_helper(format_res, format_in_c_locale, when, tz) as ::core::ffi::c_int
             != 0;
     }
+    free(format_copy.cast());
+    tzfree(tz);
     return if ok as ::core::ffi::c_int != 0 {
         0 as ::core::ffi::c_int
     } else {

@@ -1,6 +1,7 @@
 """Version-specific C2Rust output repairs; keep transformations reproducible."""
 from pathlib import Path
 import re
+from cleanup import cleanup
 
 def normalize(name, text):
     # Pinned nightly's VaList owns the cursor and directly implements the
@@ -42,7 +43,7 @@ def normalize(name, text):
         if replacement not in text:
             assert text.count(anchor) == 1, 'GNU cp do_copy cleanup anchor changed'
             text = text.replace(anchor, replacement, 1)
-    return text
+    return cleanup(name, text)
 
 if __name__ == '__main__':
     for path in (Path(__file__).resolve().parents[1]/'src/generated').glob('applet_*.rs'):

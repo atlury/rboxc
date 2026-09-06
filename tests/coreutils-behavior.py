@@ -37,7 +37,7 @@ CASES = [
     ('sha384sum', ['input']), ('sha512sum', ['input']),
     ('date', ['-u', '-d', '@0', '+%Y-%m-%dT%H:%M:%S']),
     ('dd', ['if=input', 'of=output', 'bs=7', 'count=3', 'status=none']),
-    ('env', ['-i', 'NAME=value', '/usr/bin/printenv', 'NAME']),
+    ('env', ['-i', 'NAME=value', str(GNU/'printenv'), 'NAME']),
     ('printenv', ['RBOXC_FIXTURE']), ('false', []), ('true', []),
     ('test', ['-f', 'input']), ('[', ['-d', 'absent', ']']),
     ('chmod', ['u=rw,go=r', 'input']), ('mkdir', ['-p', 'new/nested']),
@@ -57,6 +57,20 @@ CASES = [
     ('cp', ['-P', 'link', 'output']), ('cp', ['missing', 'output']),
     ('cp', ['--attributes-only', 'input', 'numbers']),
     ('cp', ['-l', 'input', 'output']), ('cp', ['-s', 'input', 'output']),
+    ('expr', ['0']), ('expr', ['length', 'alpha']),
+    ('expr', ['substr', 'alphabet', '2', '3']),
+    ('expr', ['12345678901234567890', '*', '98765432109876543210']),
+    ('expr', ['alpha', ':', 'a.*']), ('expr', ['alpha', ':', 'z.*']),
+    ('date', ['-u', '-d', '2000-02-29 12:34:56', '+%s %F %T']),
+    ('date', ['-u', '-r', 'input', '+%s']),
+    ('date', ['-u', '-f', 'dates', '+%F']),
+    ('tail', ['-c', '7', 'input']), ('tail', ['-n', '+2', 'input']),
+    ('tail', ['-n', '0', 'input']), ('tail', ['-n', '2', 'input', 'left']),
+    ('tail', ['missing']), ('tail', ['-n', '2']),
+    ('tr', ['-d', 'a-z']), ('tr', ['-s', 'a']),
+    ('tr', ['[:lower:]', '[:upper:]']), ('tr', ['-ds', 'a', 'b']),
+    ('tr', ['-c', 'a-z', '?']), ('tr', ['-t', 'a-z', 'AB']),
+    ('tr', ['z-a', 'x']), ('tr', ['a', 'z-a']),
 ]
 
 
@@ -66,6 +80,7 @@ def fixture(root):
     for name, data in {'input': b'alpha one\nbeta\ttwo\n\ngamma three\ngamma three\n',
                        'numbers': b'10\n2\n-3\n1.5\n', 'left': b'a 1\nb 2\n',
                        'right': b'b 3\nc 4\n', 'edges': b'a b\nb c\n',
+                       'dates': b'2000-02-29\n2001-03-01\n',
                        'dir/file': b'fixture data\x00\xff\n'}.items():
         (root/name).write_bytes(data)
         (root/name).chmod(0o644)
