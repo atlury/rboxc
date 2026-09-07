@@ -9,6 +9,45 @@ def replace_once(text, before, after):
 
 
 def cleanup(name, text):
+    if name == 'ginstall':
+        declaration = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_ginstall('
+        helper = '''extern "C" { fn hash_free(table: *mut Hash_table); }
+static mut RBOXC_INSTALL_DIR_FD: ::core::ffi::c_int = -1;
+static mut RBOXC_INSTALL_DEST_INFO: *mut Hash_table = ::core::ptr::null_mut();
+static mut RBOXC_INSTALL_STRIP: *mut ::core::ffi::c_char = ::core::ptr::null_mut();
+unsafe extern "C" fn rboxc_free_install_resources() {
+    let saved_errno = *::libc::__errno_location();
+    let fd = RBOXC_INSTALL_DIR_FD;
+    RBOXC_INSTALL_DIR_FD = -1;
+    if fd >= 0 { ::libc::close(fd); }
+    let table = RBOXC_INSTALL_DEST_INFO;
+    RBOXC_INSTALL_DEST_INFO = ::core::ptr::null_mut();
+    if !table.is_null() { hash_free(table); }
+    let strip = RBOXC_INSTALL_STRIP;
+    RBOXC_INSTALL_STRIP = ::core::ptr::null_mut();
+    ::libc::free(strip.cast());
+    *::libc::__errno_location() = saved_errno;
+}
+'''
+        text = replace_once(text, declaration, helper+declaration)
+        anchor = '    atexit(Some(close_stdin as unsafe extern "C" fn() -> ()));'
+        text = replace_once(text, anchor, anchor+'\n    atexit(Some(rboxc_free_install_resources));')
+        # Both operand parsing and -D can open the directory. GNU retains it
+        # through every copy, including fatal mode/ownership option errors.
+        for anchor, fd in (
+            ('        target_dirfd = target_directory_operand(target_directory, &raw mut sb);', 'target_dirfd'),
+            ('            target_dirfd = fd;', 'fd'),
+            ('            *target_dirfd = fd;', 'fd'),
+        ):
+            text = replace_once(text, anchor, anchor+f'\n        RBOXC_INSTALL_DIR_FD = {fd};')
+        anchor = '            dest_info_init(&raw mut x);'
+        text = replace_once(text, anchor, anchor+'\n            RBOXC_INSTALL_DEST_INFO = x.dest_info;')
+        anchor = '                strip_program = xstrdup(optarg);'
+        text = replace_once(text, anchor,
+                            '                let next_strip = xstrdup(optarg);\n'
+                            '                ::libc::free(RBOXC_INSTALL_STRIP.cast());\n'
+                            '                strip_program = next_strip;\n'
+                            '                RBOXC_INSTALL_STRIP = next_strip;')
     if name == 'dd':
         declaration = 'unsafe extern "C" fn iclose(mut fd: ::core::ffi::c_int) -> ::core::ffi::c_int {'
         helper = '''// Only named inputs/outputs reopened by dd belong to this finalizer.

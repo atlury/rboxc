@@ -66,7 +66,7 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The current release executable is 2,397,496 bytes (2.29 MiB), dynamically linked
+The current release executable is 2,398,064 bytes (2.29 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
@@ -77,17 +77,17 @@ Recorded checks:
 | --- | --- | --- |
 | GNU help/version comparisons | 428/428 pass | Both multicall and symlink entry forms |
 | Valgrind help paths | 107/107 pass | Help only |
-| Normal/error behavior fixtures | 257/257 match GNU | All 107 commands; streams, status, contents, modes, owners, link topology |
-| Valgrind normal/error fixtures | 257/257 clean | Bounded fixtures; retained allocations recorded separately |
-| Instrumented GNU comparisons | 257/257 pass | Saved Valgrind observations, assessed separately from native arithmetic |
+| Normal/error behavior fixtures | 263/263 match GNU | All 107 commands; streams, status, contents, modes, owners, link topology |
+| Valgrind normal/error fixtures | 263/263 clean | Bounded fixtures; retained allocations recorded separately |
+| Instrumented GNU comparisons | 263/263 pass | Saved Valgrind observations, assessed separately from native arithmetic |
 | Original GNU cp tests | 89 pass, 13 prerequisite skips, 30 excluded | 66 scripts, root and ordinary-user profiles |
 | cp mutation comparisons | 879 pass | Bounded local backup/removal/error fixtures |
 | cp backup comparisons | 75 pass | Backup names and preserved fixture data |
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 non-following `tail` file records, and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 239 scripts/selections:
-203 shell scripts and 1,885 Perl cases. Twenty-one Perl scripts run their complete
+failures). The reviewed original GNU runner now passes 268 scripts/selections:
+230 shell scripts and 1,952 Perl cases. Twenty-three Perl scripts run their complete
 runtime case lists; 15 others retain explicit case selections. Case-count
 checks also cover scripts that call GNU's Perl harness more than once.
 GNU's three generic scripts pass across all 107 commands. New coverage includes
@@ -104,15 +104,16 @@ script; `--report-name` gives independent batches distinct evidence files.
 New results record tested binary hashes, and exec-wrapper tests can request
 Valgrind child tracing.
 
-The reviewed Valgrind evidence records 195 clean results out of 200 scripts
-or selections: 1,496 Perl cases and 4,312 candidate/descendant process logs.
+The reviewed Valgrind evidence records 223 clean results out of 229 scripts
+or selections: 1,563 Perl cases and 4,627 candidate/descendant process logs.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
 memory and descriptors retained by host script interpreters. Both pass natively.
 Matching GNU findings are not counted as clean.
-Three more results remain open: dd's intentionally closed-stderr diagnostics,
-install's destination-directory/table ownership, and install's external strip
-children whose successful exec leaves incomplete instrumentation logs.
+Four more results remain open: dd's intentionally closed-stderr diagnostics,
+install's external strip children whose successful exec leaves incomplete logs,
+cat's injected pipe-creation failure interfering with Valgrind startup, and
+wc's filename-list stream ownership/closed-input metadata query.
 A test-only C launcher uses Valgrind's client request to avoid nested Valgrind
 when env clears PATH or launches another instrumented command; env-null passes.
 
@@ -132,6 +133,22 @@ supplementary groups 0 and 2; the parent group list remains unchanged. All seven
 install scripts pass natively, including ordinary-user permissions and strip
 inputs. The two originals that strip staged executables run natively because
 instrumentation replaces those paths with shell launchers.
+
+install now releases its destination-directory descriptor, its destination
+bookkeeping table (including entries), and owned strip-program strings. Repeated
+strip-program options release the preceding value. Tracking begins at each
+acquisition and covers early option failures as well as normal completion.
+The original multi-file directory-creation test now passes under Valgrind.
+Six new behavior fixtures cover existing and newly created directories, a
+missing source, invalid modes, and repeated strip-program options. All seven
+install originals still pass natively; four of its five instrumented originals
+are clean, with the external-strip observation retained separately.
+
+Additional native coverage includes four cat scripts, five df scripts, three
+shred scripts on disposable files, all three wc filename-list/parallel scripts,
+the complete 53-case printf coverage suite, and thirteen ls display scripts.
+Completed instrumentation results and remaining observations are recorded
+individually; native success alone does not mark a Valgrind pass.
 
 The runner preserves exit statuses for GNU assertions and then assesses memory
 and descriptors separately. `scripts/merge-reviewed-evidence.py` merges completed
@@ -218,9 +235,9 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 267 scripts
+the original test evidence into `evidence/gnu-suite-coverage.json`: 296 scripts
 passed, three passed with profile skips, 15 have selected-case coverage, five
-skipped, 26 are excluded, and 417 remain pending. Partial selections and skips
+skipped, 26 are excluded, and 388 remain pending. Partial selections and skips
 are not full-suite passes; passing scripts can contain platform-conditional
 branches. No command is certified complete.
 

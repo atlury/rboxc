@@ -183,6 +183,12 @@ CASES = [
     ('mktemp', ['aXXXX/b']),
     ('mktemp', ['-d', '--suffix=X', 'aXX']),
     ('mktemp', ['--tmpdir=.', '/aXXXX']),
+    ('install', ['input', 'left', '-t', 'empty']),
+    ('install', ['-D', 'input', 'numbers', '-t', 'new/nested']),
+    ('install', ['-m', 'invalid', '-t', 'empty', 'input']),
+    ('install', ['input', 'missing', '-t', 'empty']),
+    ('install', ['--strip-program=first', '--strip-program=second', '--invalid-option']),
+    ('install', ['-C', '-s', '--strip-program=first', '--strip-program=second', 'input', 'output']),
 ]
 
 

@@ -2967,6 +2967,7 @@ unsafe extern "C" fn install_file_in_dir(
             ret = r#false != 0;
         } else {
             *target_dirfd = fd;
+        RBOXC_INSTALL_DIR_FD = fd;
         }
     }
     if ret {
@@ -2979,6 +2980,23 @@ unsafe extern "C" fn install_file_in_dir(
     }
     free(to as *mut ::core::ffi::c_void);
     return ret;
+}
+extern "C" { fn hash_free(table: *mut Hash_table); }
+static mut RBOXC_INSTALL_DIR_FD: ::core::ffi::c_int = -1;
+static mut RBOXC_INSTALL_DEST_INFO: *mut Hash_table = ::core::ptr::null_mut();
+static mut RBOXC_INSTALL_STRIP: *mut ::core::ffi::c_char = ::core::ptr::null_mut();
+unsafe extern "C" fn rboxc_free_install_resources() {
+    let saved_errno = *::libc::__errno_location();
+    let fd = RBOXC_INSTALL_DIR_FD;
+    RBOXC_INSTALL_DIR_FD = -1;
+    if fd >= 0 { ::libc::close(fd); }
+    let table = RBOXC_INSTALL_DEST_INFO;
+    RBOXC_INSTALL_DEST_INFO = ::core::ptr::null_mut();
+    if !table.is_null() { hash_free(table); }
+    let strip = RBOXC_INSTALL_STRIP;
+    RBOXC_INSTALL_STRIP = ::core::ptr::null_mut();
+    ::libc::free(strip.cast());
+    *::libc::__errno_location() = saved_errno;
 }
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_ginstall(
@@ -3047,6 +3065,7 @@ pub unsafe extern "C" fn single_binary_main_ginstall(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(close_stdin as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_free_install_resources));
     cp_option_init(&raw mut x);
     umask(0 as __mode_t);
     let mut optc: ::core::ffi::c_int = 0;
@@ -3081,7 +3100,10 @@ pub unsafe extern "C" fn single_binary_main_ginstall(
                 x.debug = x.verbose;
             }
             130 => {
-                strip_program = xstrdup(optarg);
+                let next_strip = xstrdup(optarg);
+                ::libc::free(RBOXC_INSTALL_STRIP.cast());
+                strip_program = next_strip;
+                RBOXC_INSTALL_STRIP = next_strip;
                 strip_program_specified = r#true != 0;
             }
             100 => {
@@ -3615,6 +3637,7 @@ pub unsafe extern "C" fn single_binary_main_ginstall(
         }
     } else if !target_directory.is_null() {
         target_dirfd = target_directory_operand(target_directory, &raw mut sb);
+        RBOXC_INSTALL_DIR_FD = target_dirfd;
         if !(target_dirfd_valid(target_dirfd) as ::core::ffi::c_int != 0
             || mkdir_and_install as ::core::ffi::c_int != 0 && *__errno_location() == ENOENT)
         {
@@ -3665,6 +3688,7 @@ pub unsafe extern "C" fn single_binary_main_ginstall(
         let mut fd: ::core::ffi::c_int = target_directory_operand(lastfile, &raw mut sb);
         if target_dirfd_valid(fd) {
             target_dirfd = fd;
+        RBOXC_INSTALL_DIR_FD = fd;
             target_directory = lastfile;
             n_files -= 1;
         } else if (2 as ::core::ffi::c_int) < n_files {
@@ -3904,6 +3928,7 @@ pub unsafe extern "C" fn single_binary_main_ginstall(
             }
         } else {
             dest_info_init(&raw mut x);
+            RBOXC_INSTALL_DEST_INFO = x.dest_info;
             let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             while i < n_files {
                 if !install_file_in_dir(
