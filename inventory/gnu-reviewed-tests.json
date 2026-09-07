@@ -9735,5 +9735,17 @@
     "timeout_seconds": 1200,
     "valgrind": false,
     "valgrind_reason": "The original imposes native virtual-memory limits and short per-writer deadlines. The separate original misc/io-errors.sh comparison supplies Valgrind write-error coverage."
+  },
+  {
+    "script": "tests/shuf/shuf-reservoir.sh",
+    "command": "shuf",
+    "sha256": "3630a411e51a48afa76991bbb0bff9fe7c92baeb2b4dfa6347aa6dda9b941f6a",
+    "clean_environment": true,
+    "expensive": true,
+    "valgrind": true,
+    "native_launcher": true,
+    "upstream_valgrind": true,
+    "timeout_seconds": 900,
+    "profile_note": "Full original 9 by 9 bounded reservoir-sampling matrix. The original invokes Valgrind itself; the instrumented profile captures its logs and traces the launcher exec while preserving the original leak-check and exit-status options."
   }
 ]

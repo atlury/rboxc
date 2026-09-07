@@ -165,6 +165,8 @@ def main():
         script = materialize(ROOT, SOURCE, row) if row.get('generator_inputs') else SOURCE/row['script']
         assert hashlib.sha256(script.read_bytes()).hexdigest() == row['sha256'], row['script']
         assert row.get('profile') in (None, 'ordinary-user', 'loopback-device', 'private-mount'), 'unknown execution profile'
+        if row.get('upstream_valgrind'):
+            assert row['script'] == 'tests/shuf/shuf-reservoir.sh' and row.get('native_launcher')
         if row.get('valgrind_log_fd'):
             assert row.get('native_launcher') and row['script'] == 'tests/chroot/chroot-credentials.sh', 'log descriptor mode requires a reviewed exec-only profile'
             assert row.get('valgrind_vgdb') is False, 'credential changes require disabling vgdb files'
@@ -333,6 +335,12 @@ def main():
                     wrapper = run/'src/chroot'
                     wrapper.write_text('#!/bin/sh\nexec '+shlex.join([sys.executable,
                         str(ROOT/'tests/gnu/nproc-quota-profile.py'), str(quota_config)])+' "$@"\n')
+                    wrapper.chmod(0o755)
+                if instrument and row.get('upstream_valgrind'):
+                    wrapper = run/'src/valgrind'
+                    wrapper.write_text('#!/bin/sh\nexec '+shlex.join(['/usr/bin/valgrind',
+                        '--track-fds=yes', '--show-leak-kinds=all', '--trace-children=yes',
+                        '--log-file='+str(runtime_memory_dir/'%p.log')])+' "$@"\n')
                     wrapper.chmod(0o755)
                 (run/'src/getlimits').symlink_to(helper)
                 if row.get('python3_helper'):
@@ -504,7 +512,7 @@ def main():
                     for path in sorted(memory_dir.glob('*.log')):
                         report = path.read_text(errors='backslashreplace')
                         memory.append({'log': str(path.relative_to(ROOT)),
-                                       **parse_memory_log(report, path.stem, row.get('valgrind_log_fd', False))})
+                                       **parse_memory_log(report, path.stem, row.get('valgrind_log_fd', False) or row.get('upstream_valgrind', False))})
                     outcomes[implementation]['memory'] = memory
                     if row.get('perl_env_helper'):
                         observed = set()
@@ -525,6 +533,11 @@ def main():
             memory = outcomes['rboxc']['memory']
             passed &= bool(memory) and all(m['errors'] == 0 and m['non_inherited_descriptors'] == 0
                                           and m.get('complete_exec_log', True) for m in memory)
+        if instrument and row.get('upstream_valgrind'):
+            # Preserve the original summary leak mode, but do not label
+            # nonzero lost allocations as clean merely because it exits 0.
+            passed &= all(m['heap_bytes'].get(kind, 0) == 0 for m in memory
+                          for kind in ('definitely lost', 'indirectly lost', 'possibly lost'))
         state = 'pass' if passed else 'skip' if outcomes['gnu']['status'] == outcomes['rboxc']['status'] == 77 else 'open'
         results_by_script[row['script']] = {**row, **outcomes, 'pass': passed, 'state': state}
         print(state.upper(), row['script'], {key: value['status'] for key, value in outcomes.items()}, flush=True)

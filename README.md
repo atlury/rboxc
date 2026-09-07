@@ -95,8 +95,8 @@ Recorded checks:
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 `tail` file records on return (including ignored follow mode), and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 635 of 642 scripts/selections.
-The executed inventory contains 582 shell scripts and 5,958 Perl cases.
+failures). The reviewed original GNU runner now passes 636 of 643 scripts/selections.
+The executed inventory contains 583 shell scripts and 5,958 Perl cases.
 Forty-seven Perl scripts run their complete
 runtime case lists; 13 others retain explicit case selections. Case-count
 checks also cover scripts that call GNU's Perl harness more than once.
@@ -203,10 +203,20 @@ binary or runtime-helper changes during execution. Seven profile checks cover
 report isolation, input changes, and separate log directories. The equivalence
 assessment accepts `--observations` for the separately saved behavior report.
 
-The reviewed Valgrind evidence records 580 clean results out of 618 scripts
-or selections: 5,729 Perl cases and 37,081 candidate/descendant process logs.
-The 38 open results comprise 27 with passing original assertions but unresolved
-memory/descriptor evidence, two prerequisite skips, five with assertion
+GNU's original `shuf` reservoir test now passes all 81 input/output-size
+combinations in both builds. The original test already invokes Valgrind, even
+in the runner's default profile. A separate capture profile preserves those
+options and adds descriptor tracking and exec tracing: all 81 rboxc sampling
+processes finish with zero memory errors, owned descriptors, or lost bytes.
+GNU's reference reports descriptor findings and exits 1 with those added
+checks, so this stricter comparison remains open.
+`evidence/shuf-reservoir.json` records every matrix case and log hash; each
+build has 83 captured logs including version and Valgrind prerequisite checks.
+
+The reviewed Valgrind evidence records 580 clean results out of 619 scripts
+or selections: 5,729 Perl cases and 37,164 candidate/descendant process logs.
+The 39 open results comprise 27 with passing original assertions but unresolved
+memory/descriptor evidence, two prerequisite skips, six with assertion
 failures under instrumentation, and four interrupted by watchdog deadlines. The status report records
 these categories separately; they do not change the strict clean-pass count.
 Two env results remain open. The env script encounters shebang/argv differences
@@ -594,9 +604,9 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 624 scripts
+the original test evidence into `evidence/gnu-suite-coverage.json`: 625 scripts
 passed, 13 have selected-case coverage, eight are skipped, 29 are excluded,
-and 59 remain pending. No recorded native failures
+and 58 remain pending. No recorded native failures
 remain in the executed selections. Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
 explicitly excluded with source hashes in inventory/gnu-suite-exclusions.json.
