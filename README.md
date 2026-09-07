@@ -241,6 +241,11 @@ Reapplying the current transformation recipes to the saved C2Rust outputs
 reproduces all three staged entries byte for byte.
 `evidence/write-cleanup-regeneration.json` records the input, recipe, and output
 hashes; this check does not rerun the C2Rust translator.
+The latest candidate also passes the complete baseline: 428 help/version
+comparisons, 107 Valgrind help checks, 11 dispatcher checks, and 318 native
+behavior, Valgrind behavior, and instrumented-equivalence comparisons. These
+reports use the candidate binary hash and its matching stdbuf helper. The
+installed binary remains unchanged until the two older factor runs complete.
 
 The reviewed Valgrind evidence records 584 clean results out of 622 scripts
 or selections: 5,729 Perl cases and 46,237 candidate/descendant process logs.
