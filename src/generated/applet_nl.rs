@@ -1638,6 +1638,16 @@ unsafe extern "C" fn process_file(mut fp: *mut FILE) {
         }
     }
 }
+static mut RBOXC_OWNED_INPUT: *mut FILE = ::core::ptr::null_mut();
+unsafe extern "C" fn rboxc_close_owned_input() {
+    let stream = RBOXC_OWNED_INPUT;
+    RBOXC_OWNED_INPUT = ::core::ptr::null_mut();
+    if !stream.is_null() {
+        let saved_errno = *::libc::__errno_location();
+        fclose(stream);
+        *::libc::__errno_location() = saved_errno;
+    }
+}
 unsafe extern "C" fn nl_file(mut file: *const ::core::ffi::c_char) -> bool {
     let mut stream: *mut FILE = ::core::ptr::null_mut::<FILE>();
     if streq(file, b"-\0".as_ptr() as *const ::core::ffi::c_char) {
@@ -1687,8 +1697,10 @@ unsafe extern "C" fn nl_file(mut file: *const ::core::ffi::c_char) -> bool {
             return r#false != 0;
         }
     }
+    RBOXC_OWNED_INPUT = if stream != stdin { stream } else { ::core::ptr::null_mut() };
     fadvise(stream, fadvice_t::FADVISE_SEQUENTIAL);
     process_file(stream);
+    RBOXC_OWNED_INPUT = ::core::ptr::null_mut();
     let mut err: ::core::ffi::c_int = *__errno_location();
     if ferror_unlocked(stream) == 0 {
         err = 0 as ::core::ffi::c_int;
@@ -1750,6 +1762,7 @@ pub unsafe extern "C" fn single_binary_main_nl(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_close_owned_input));
     loop {
         c = getopt_long(
             argc,

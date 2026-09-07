@@ -160,6 +160,17 @@ CASES = [
     ('stdbuf', ['-o0', 'rboxc-nonexistent-fixture-command']),
     ('stdbuf', ['-i0', '-oL', '-e0', 'rboxc-nonexistent-fixture-command']),
     ('shuf', ['--random-source=zeros', '-o', 'output', 'input']),
+    ('nl', ['-p', '-v9223372036854775807', 'input']),
+    ('nl', ['-p', '-v9223372036854775807']),
+    ('base32', ['--decode', 'input']),
+    ('base64', ['--decode', 'input']),
+    ('basenc', ['--base16', '--decode', 'input']),
+    ('tee', ['/dev/full', 'output']),
+    ('tee', ['--output-error=exit', 'output', 'missing/file']),
+    ('tee', ['--output-error=exit', 'output', '/dev/full']),
+    ('chmod', ['-2000', 'input']),
+    ('chmod', ['-w', '-x', 'input']),
+    ('chmod', ['-w', '--reference=input', 'numbers']),
 ]
 
 

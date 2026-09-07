@@ -3153,7 +3153,18 @@ unsafe extern "C" fn wrap_write(
         }
     };
 }
+static mut RBOXC_OWNED_INPUT: *mut FILE = ::core::ptr::null_mut();
+unsafe extern "C" fn rboxc_close_owned_input() {
+    let stream = RBOXC_OWNED_INPUT;
+    RBOXC_OWNED_INPUT = ::core::ptr::null_mut();
+    if !stream.is_null() {
+        let saved_errno = *::libc::__errno_location();
+        fclose(stream);
+        *::libc::__errno_location() = saved_errno;
+    }
+}
 unsafe extern "C" fn finish_and_exit(mut r#in: *mut FILE, mut infile: *const ::core::ffi::c_char) {
+    RBOXC_OWNED_INPUT = ::core::ptr::null_mut();
     if fclose(r#in) != 0 as ::core::ffi::c_int {
         if streq(infile, b"-\0".as_ptr() as *const ::core::ffi::c_char) {
             if 0 != 0 {
@@ -3677,6 +3688,7 @@ pub unsafe extern "C" fn single_binary_main_basenc(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_close_owned_input));
     loop {
         opt = getopt_long(
             argc,
@@ -4450,6 +4462,7 @@ pub unsafe extern "C" fn single_binary_main_basenc(
             };
         }
     }
+    RBOXC_OWNED_INPUT = if input_fh != stdin { input_fh } else { ::core::ptr::null_mut() };
     fadvise(input_fh, fadvice_t::FADVISE_SEQUENTIAL);
     if decode {
         do_decode(input_fh, infile, stdout, ignore_garbage);

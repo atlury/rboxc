@@ -1016,12 +1016,31 @@ unsafe extern "C" fn get_next_out(
     }
     return -1 as ::core::ffi::c_int;
 }
+static mut RBOXC_OUTPUTS: *mut ::core::ffi::c_int = ::core::ptr::null_mut();
+static mut RBOXC_OUTPUT_COUNT: ::core::ffi::c_int = 0;
+unsafe fn rboxc_close_output(descriptors: *mut ::core::ffi::c_int, index: ::core::ffi::c_int) -> bool {
+    let fd = *descriptors.offset(index as isize);
+    *descriptors.offset(index as isize) = -1;
+    // Slot zero is borrowed stdout and belongs to close_stdout.
+    index == 0 || fd < 0 || close_wait(fd)
+}
+unsafe extern "C" fn rboxc_close_outputs() {
+    let saved_errno = *::libc::__errno_location();
+    if !RBOXC_OUTPUTS.is_null() {
+        for index in 1..=RBOXC_OUTPUT_COUNT {
+            rboxc_close_output(RBOXC_OUTPUTS, index);
+        }
+    }
+    *::libc::__errno_location() = saved_errno;
+}
 unsafe extern "C" fn fail_output(
     mut descriptors: *mut ::core::ffi::c_int,
     mut files: *mut *mut ::core::ffi::c_char,
     mut i: ::core::ffi::c_int,
 ) -> bool {
     let mut w_errno: ::core::ffi::c_int = *__errno_location();
+    rboxc_close_output(descriptors, i);
+    *__errno_location() = w_errno;
     let mut fail: bool = *__errno_location() != EPIPE
         || output_error_0.0 == output_error::output_error_exit.0
         || output_error_0.0 == output_error::output_error_warn.0;
@@ -1100,6 +1119,12 @@ unsafe extern "C" fn tee_files(
         (nfiles + 1 as ::core::ffi::c_int) as size_t,
         ::core::mem::size_of::<::core::ffi::c_int>(),
     ) as *mut ::core::ffi::c_int;
+    for index in 0..=nfiles {
+        *descriptors.offset(index as isize) = -1;
+    }
+    RBOXC_OUTPUTS = descriptors;
+    RBOXC_OUTPUT_COUNT = nfiles;
+    atexit(Some(rboxc_close_outputs));
     if pipe_check {
         out_pollable = xnmalloc(
             (nfiles + 1 as ::core::ffi::c_int) as size_t,
@@ -1299,7 +1324,7 @@ unsafe extern "C" fn tee_files(
     let mut i_1: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
     while i_1 <= nfiles {
         if 0 as ::core::ffi::c_int <= *descriptors.offset(i_1 as isize)
-            && !close_wait(*descriptors.offset(i_1 as isize))
+            && !rboxc_close_output(descriptors, i_1)
         {
             if 0 != 0 {
                 error(
@@ -1339,6 +1364,8 @@ unsafe extern "C" fn tee_files(
         }
         i_1 += 1;
     }
+    RBOXC_OUTPUTS = ::core::ptr::null_mut();
+    RBOXC_OUTPUT_COUNT = 0;
     free(descriptors as *mut ::core::ffi::c_void);
     if pipe_check {
         free(out_pollable as *mut ::core::ffi::c_void);

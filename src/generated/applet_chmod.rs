@@ -2060,6 +2060,14 @@ pub unsafe extern "C" fn _usage_chmod(mut status: ::core::ffi::c_int) {
     }
     exit(status);
 }
+static mut RBOXC_MODE_STORAGE: *mut ::core::ffi::c_char = ::core::ptr::null_mut();
+unsafe extern "C" fn rboxc_free_mode_storage() {
+    let storage = RBOXC_MODE_STORAGE;
+    RBOXC_MODE_STORAGE = ::core::ptr::null_mut();
+    let saved_errno = *::libc::__errno_location();
+    ::libc::free(storage.cast());
+    *::libc::__errno_location() = saved_errno;
+}
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_chmod(
     mut argc: ::core::ffi::c_int,
@@ -2078,6 +2086,7 @@ pub unsafe extern "C" fn single_binary_main_chmod(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_free_mode_storage));
     loop {
         c = getopt_long(
             argc,
@@ -2127,6 +2136,7 @@ pub unsafe extern "C" fn single_binary_main_chmod(
                         1 as idx_t,
                     ) as *mut ::core::ffi::c_char;
                 }
+                RBOXC_MODE_STORAGE = mode;
                 *mode.offset(mode_len as isize) = ',' as ::core::ffi::c_char;
                 memcpy(
                     mode.offset(mode_comma_len as isize) as *mut ::core::ffi::c_void,

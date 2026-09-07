@@ -54,7 +54,7 @@ def main():
     output = 'evidence/gnu-reviewed-valgrind.json' if instrument else 'evidence/gnu-reviewed-original.json'
     if options.report_name:
         assert re.fullmatch(r'[a-z0-9][a-z0-9-]*', options.report_name), 'invalid report name'
-        output = 'evidence/'+options.report_name+'.json'
+        output = 'evidence/raw/'+options.report_name+'.json'
     previous = json.loads((ROOT/output).read_text())['results'] if (selected or selected_scripts) and (ROOT/output).exists() else []
     results_by_script = {row['script']: row for row in previous}
     def checkpoint():
@@ -67,6 +67,11 @@ def main():
         temporary.replace(destination)
         return results
 
+    native_launcher = None
+    if instrument and any(row.get('native_launcher') and included(row) for row in manifest):
+        native_launcher = ROOT/'build/valgrind-launch'
+        subprocess.run(['cc', '-O2', '-Wall', '-Wextra', '-Werror',
+                        ROOT/'tests/gnu/valgrind-launch.c', '-o', native_launcher], check=True)
     binary_hashes = {name: hashlib.sha256(path.read_bytes()).hexdigest() for name, path in
                      [('gnu', BUILD/'src/coreutils'), ('rboxc', ROOT/'target/release/rboxc')]}
     for row in manifest:
@@ -104,14 +109,20 @@ def main():
                     memory_dir = ROOT/'evidence/raw'/('reviewed-vg-'+run.name+'-'+implementation)
                     memory_dir.mkdir()
                 runtime_memory_dir = memory_dir
-                if instrument and credentials:
+                if instrument and (credentials or row.get('native_launcher')):
                     runtime_memory_dir = run/'memory'
                     runtime_memory_dir.mkdir()
-                    os.chown(runtime_memory_dir, 65534, 65534)
+                    if credentials:
+                        os.chown(runtime_memory_dir, 65534, 65534)
+                if instrument and row.get('native_launcher'):
+                    shutil.copy2(native_launcher, run/'src/.valgrind-launch')
                 for command in commands:
                     if instrument:
                         (run/'real'/command).symlink_to(candidate)
                         wrapper = run/'src'/command
+                        if row.get('native_launcher'):
+                            wrapper.symlink_to('.valgrind-launch')
+                            continue
                         vg = ['valgrind', '--leak-check=full', '--show-leak-kinds=all',
                               '--track-fds=yes', *(['--trace-children=yes'] if row.get('trace_children') else []),
                               '--log-file='+str(runtime_memory_dir/'%p.log'), command]
@@ -157,10 +168,12 @@ def main():
                                'local-nss', str(private_config), *command]
                 completed = subprocess.run(['timeout', '--kill-after=5s', str(row.get('timeout_seconds', 60))+'s', *command],
                                            cwd=run, env=environment, capture_output=True, **credentials)
-                log = ROOT/'evidence/raw'/('reviewed-'+('vg-' if instrument else '')+row['script'].replace('/', '-')+'-'+implementation+'.log')
+                log = ROOT/'evidence/raw'/('reviewed-'+('vg-' if instrument else '')+row['script'].replace('/', '-')+'-'+implementation+'-'+run.name+'.log')
                 log.write_bytes(completed.stdout+completed.stderr)
                 outcomes[implementation] = {'status': completed.returncode, 'log': str(log.relative_to(ROOT)),
                                             'binary_sha256': binary_hashes[implementation]}
+                if instrument and row.get('native_launcher'):
+                    outcomes[implementation]['launcher_source_sha256'] = hashlib.sha256((ROOT/'tests/gnu/valgrind-launch.c').read_bytes()).hexdigest()
                 if nss_profile:
                     outcomes[implementation]['nss'] = nss_profile
                     assert Path('/etc/nsswitch.conf').read_text() == original_nss, 'host NSS configuration changed'
@@ -169,13 +182,13 @@ def main():
                     expected_count = row.get('expected_case_count', len(row.get('cases', [])))
                     outcomes[implementation]['case_count'] = sum(int(count) for count in counts)
                     outcomes[implementation]['case_count_pass'] = bool(counts) and outcomes[implementation]['case_count'] == expected_count
-                if instrument and credentials:
+                if instrument and (credentials or row.get('native_launcher')):
                     for path in runtime_memory_dir.glob('*.log'):
                         shutil.copy2(path, memory_dir/path.name)
                 if instrument:
                     memory = []
                     for path in sorted(memory_dir.glob('*.log')):
-                        report = path.read_text()
+                        report = path.read_text(errors='backslashreplace')
                         errors = re.search(r'ERROR SUMMARY: ([\d,]+) errors', report)
                         fds = re.search(r'FILE DESCRIPTORS: (\d+) open \((\d+) (?:inherited|std)\)', report)
                         memory.append({'log': str(path.relative_to(ROOT)),

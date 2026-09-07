@@ -9,6 +9,93 @@ def replace_once(text, before, after):
 
 
 def cleanup(name, text):
+    if name == 'chmod':
+        declaration = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_chmod('
+        helper = '''static mut RBOXC_MODE_STORAGE: *mut ::core::ffi::c_char = ::core::ptr::null_mut();
+unsafe extern "C" fn rboxc_free_mode_storage() {
+    let storage = RBOXC_MODE_STORAGE;
+    RBOXC_MODE_STORAGE = ::core::ptr::null_mut();
+    let saved_errno = *::libc::__errno_location();
+    ::libc::free(storage.cast());
+    *::libc::__errno_location() = saved_errno;
+}
+'''
+        text = replace_once(text, declaration, helper+declaration)
+        anchor = '    atexit(Some(close_stdout as unsafe extern "C" fn() -> ()) );'
+        anchor = anchor.replace(') );', '));')
+        text = replace_once(text, anchor, anchor+'\n    atexit(Some(rboxc_free_mode_storage));')
+        # Only minus-prefixed mode operands use this allocated concatenation.
+        # Ordinary argv modes are borrowed and never enter this branch.
+        anchor = "                *mode.offset(mode_len as isize) = ',' as ::core::ffi::c_char;"
+        text = replace_once(text, anchor, '                RBOXC_MODE_STORAGE = mode;\n'+anchor)
+    if name in ('nl', 'base32', 'base64', 'basenc'):
+        declaration = ('unsafe extern "C" fn nl_file(mut file: *const ::core::ffi::c_char) -> bool {'
+                       if name == 'nl' else
+                       'unsafe extern "C" fn finish_and_exit(mut r#in: *mut FILE, mut infile: *const ::core::ffi::c_char) {')
+        helper = '''static mut RBOXC_OWNED_INPUT: *mut FILE = ::core::ptr::null_mut();
+unsafe extern "C" fn rboxc_close_owned_input() {
+    let stream = RBOXC_OWNED_INPUT;
+    RBOXC_OWNED_INPUT = ::core::ptr::null_mut();
+    if !stream.is_null() {
+        let saved_errno = *::libc::__errno_location();
+        fclose(stream);
+        *::libc::__errno_location() = saved_errno;
+    }
+}
+'''
+        text = replace_once(text, declaration, helper+declaration)
+        anchor = '    atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));'
+        text = replace_once(text, anchor, anchor+'\n    atexit(Some(rboxc_close_owned_input));')
+        stream = 'stream' if name == 'nl' else 'input_fh'
+        anchor = f'    fadvise({stream}, fadvice_t::FADVISE_SEQUENTIAL);'
+        text = replace_once(text, anchor,
+                            f'    RBOXC_OWNED_INPUT = if {stream} != stdin {{ {stream} }} else {{ ::core::ptr::null_mut() }};\n'+anchor)
+        if name == 'nl':
+            # process_file can terminate on numbering or output errors.
+            anchor = '    process_file(stream);'
+            text = replace_once(text, anchor, anchor+'\n    RBOXC_OWNED_INPUT = ::core::ptr::null_mut();')
+        else:
+            # GNU's normal finalizer consumes the FILE even when fclose fails.
+            anchor = '    if fclose(r#in) != 0 as ::core::ffi::c_int {'
+            text = replace_once(text, anchor, '    RBOXC_OWNED_INPUT = ::core::ptr::null_mut();\n'+anchor)
+    if name == 'tee':
+        declaration = 'unsafe extern "C" fn fail_output('
+        helper = '''static mut RBOXC_OUTPUTS: *mut ::core::ffi::c_int = ::core::ptr::null_mut();
+static mut RBOXC_OUTPUT_COUNT: ::core::ffi::c_int = 0;
+unsafe fn rboxc_close_output(descriptors: *mut ::core::ffi::c_int, index: ::core::ffi::c_int) -> bool {
+    let fd = *descriptors.offset(index as isize);
+    *descriptors.offset(index as isize) = -1;
+    // Slot zero is borrowed stdout and belongs to close_stdout.
+    index == 0 || fd < 0 || close_wait(fd)
+}
+unsafe extern "C" fn rboxc_close_outputs() {
+    let saved_errno = *::libc::__errno_location();
+    if !RBOXC_OUTPUTS.is_null() {
+        for index in 1..=RBOXC_OUTPUT_COUNT {
+            rboxc_close_output(RBOXC_OUTPUTS, index);
+        }
+    }
+    *::libc::__errno_location() = saved_errno;
+}
+'''
+        text = replace_once(text, declaration, helper+declaration)
+        anchor = '    let mut w_errno: ::core::ffi::c_int = *__errno_location();'
+        text = replace_once(text, anchor, anchor+'\n    rboxc_close_output(descriptors, i);\n    *__errno_location() = w_errno;')
+        anchor = '''    ) as *mut ::core::ffi::c_int;
+    if pipe_check {'''
+        replacement = '''    ) as *mut ::core::ffi::c_int;
+    for index in 0..=nfiles {
+        *descriptors.offset(index as isize) = -1;
+    }
+    RBOXC_OUTPUTS = descriptors;
+    RBOXC_OUTPUT_COUNT = nfiles;
+    atexit(Some(rboxc_close_outputs));
+    if pipe_check {'''
+        text = replace_once(text, anchor, replacement)
+        text = replace_once(text, '!close_wait(*descriptors.offset(i_1 as isize))',
+                            '!rboxc_close_output(descriptors, i_1)')
+        anchor = '    free(descriptors as *mut ::core::ffi::c_void);'
+        text = replace_once(text, anchor, '    RBOXC_OUTPUTS = ::core::ptr::null_mut();\n    RBOXC_OUTPUT_COUNT = 0;\n'+anchor)
     if name == 'comm':
         declaration = 'unsafe extern "C" fn compare_files(mut infiles: *mut *mut ::core::ffi::c_char) {'
         helper = '''static mut RBOXC_INPUTS: [*mut FILE; 2] = [::core::ptr::null_mut(); 2];
