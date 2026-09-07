@@ -9,6 +9,45 @@ def replace_once(text, before, after):
 
 
 def cleanup(name, text):
+    if name in ('chown', 'mktemp'):
+        declaration = f'#[no_mangle]\npub unsafe extern "C" fn single_binary_main_{name}('
+        helper = '''static mut RBOXC_OWNED_NAMES: [*mut ::core::ffi::c_char; 2] = [::core::ptr::null_mut(); 2];
+unsafe extern "C" fn rboxc_free_owned_names() {
+    let saved_errno = *::libc::__errno_location();
+    for index in 0..2 {
+        let name = RBOXC_OWNED_NAMES[index];
+        RBOXC_OWNED_NAMES[index] = ::core::ptr::null_mut();
+        ::libc::free(name.cast());
+    }
+    *::libc::__errno_location() = saved_errno;
+}
+'''
+        text = replace_once(text, declaration, helper+declaration)
+        finalizer = 'close_stdout' if name == 'chown' else 'maybe_close_stdout'
+        anchor = f'    atexit(Some({finalizer} as unsafe extern "C" fn() -> ()));'
+        text = replace_once(text, anchor, anchor+'\n    atexit(Some(rboxc_free_owned_names));')
+        if name == 'chown':
+            # chown-core owns both option names, including reference lookups
+            # and the empty user name synthesized for group-only diagnostics.
+            for anchor, index, value in (
+                ('            chopt.user_name = uid_to_name(ref_stats.st_uid);', 0, 'chopt.user_name'),
+                ('        chopt.group_name = gid_to_name(ref_stats.st_gid);', 1, 'chopt.group_name'),
+                ('            chopt.user_name = xstrdup(b"\\0".as_ptr() as *const ::core::ffi::c_char);', 0, 'chopt.user_name'),
+            ):
+                text = replace_once(text, anchor, anchor+f'\n        RBOXC_OWNED_NAMES[{index}] = {value};')
+            anchor = '            &raw mut warn_0,\n        );'
+            text = replace_once(text, anchor, anchor+'\n        RBOXC_OWNED_NAMES = [chopt.user_name, chopt.group_name];')
+        else:
+            # Track the template separately from its randomized destination.
+            # Before the final clone, dest_name can alias the template.
+            for anchor, value in (
+                ('        dest_name = xcharalloc(len.wrapping_add(suffix_len).wrapping_add(1 as size_t));', 'dest_name'),
+                ('        template = xstrdup(template);', 'template'),
+                ('        free(template as *mut ::core::ffi::c_void);', 'dest_name'),
+            ):
+                text = replace_once(text, anchor, anchor+f'\n        RBOXC_OWNED_NAMES[0] = {value};')
+            anchor = '    dest_name = xstrdup(template);'
+            text = replace_once(text, anchor, anchor+'\n    RBOXC_OWNED_NAMES[1] = dest_name;')
     if name == 'stat':
         declaration = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_stat('
         helper = '''static mut RBOXC_DEFAULT_FORMATS: [*mut ::core::ffi::c_char; 2] = [::core::ptr::null_mut(); 2];

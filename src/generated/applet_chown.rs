@@ -1106,6 +1106,16 @@ pub unsafe extern "C" fn _usage_chown(mut status: ::core::ffi::c_int) {
     }
     exit(status);
 }
+static mut RBOXC_OWNED_NAMES: [*mut ::core::ffi::c_char; 2] = [::core::ptr::null_mut(); 2];
+unsafe extern "C" fn rboxc_free_owned_names() {
+    let saved_errno = *::libc::__errno_location();
+    for index in 0..2 {
+        let name = RBOXC_OWNED_NAMES[index];
+        RBOXC_OWNED_NAMES[index] = ::core::ptr::null_mut();
+        ::libc::free(name.cast());
+    }
+    *::libc::__errno_location() = saved_errno;
+}
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_chown(
     mut argc: ::core::ffi::c_int,
@@ -1130,6 +1140,7 @@ pub unsafe extern "C" fn single_binary_main_chown(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_free_owned_names));
     chopt_init(&raw mut chopt);
     let mut optc: ::core::ffi::c_int = 0;
     loop {
@@ -1462,9 +1473,11 @@ pub unsafe extern "C" fn single_binary_main_chown(
         if chown_mode.0 == chown_modes::CHOWN_CHOWN.0 {
             uid = ref_stats.st_uid as uid_t;
             chopt.user_name = uid_to_name(ref_stats.st_uid);
+        RBOXC_OWNED_NAMES[0] = chopt.user_name;
         }
         gid = ref_stats.st_gid as gid_t;
         chopt.group_name = gid_to_name(ref_stats.st_gid);
+        RBOXC_OWNED_NAMES[1] = chopt.group_name;
     } else {
         let mut ug: *mut ::core::ffi::c_char = *argv.offset(optind as isize);
         if chown_mode.0 == chown_modes::CHOWN_CHGRP.0 {
@@ -1487,6 +1500,7 @@ pub unsafe extern "C" fn single_binary_main_chown(
             &raw mut chopt.group_name,
             &raw mut warn_0,
         );
+        RBOXC_OWNED_NAMES = [chopt.user_name, chopt.group_name];
         if ug != *argv.offset(optind as isize) {
             free(ug as *mut ::core::ffi::c_void);
         }
@@ -1538,6 +1552,7 @@ pub unsafe extern "C" fn single_binary_main_chown(
             && !chopt.group_name.is_null()
         {
             chopt.user_name = xstrdup(b"\0".as_ptr() as *const ::core::ffi::c_char);
+        RBOXC_OWNED_NAMES[0] = chopt.user_name;
         }
         optind += 1;
     }

@@ -176,6 +176,13 @@ CASES = [
     ('stat', ['-f', '-']),
     ('stat', ['-f', '-t', '-']),
     ('stat', ['missing']),
+    ('chown', ['--reference=input', 'numbers']),
+    ('chown', ['--reference=input', 'missing']),
+    ('chgrp', ['--reference=input', 'numbers']),
+    ('mktemp', ['--suffix=/bad', 'aXXXX']),
+    ('mktemp', ['aXXXX/b']),
+    ('mktemp', ['-d', '--suffix=X', 'aXX']),
+    ('mktemp', ['--tmpdir=.', '/aXXXX']),
 ]
 
 

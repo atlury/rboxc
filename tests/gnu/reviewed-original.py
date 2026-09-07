@@ -72,6 +72,11 @@ def main():
         native_launcher = ROOT/'build/valgrind-launch'
         subprocess.run(['cc', '-O2', '-Wall', '-Wextra', '-Werror',
                         ROOT/'tests/gnu/valgrind-launch.c', '-o', native_launcher], check=True)
+    tmpdir_adapter = None
+    if instrument and any(row.get('valgrind_tmpdir_adapter') and included(row) for row in manifest):
+        tmpdir_adapter = ROOT/'build/valgrind-tmpdir.so'
+        subprocess.run(['cc', '-shared', '-fPIC', '-O2', '-Wall', '-Wextra', '-Werror',
+                        ROOT/'tests/gnu/valgrind-tmpdir.c', '-o', tmpdir_adapter], check=True)
     binary_hashes = {name: hashlib.sha256(path.read_bytes()).hexdigest() for name, path in
                      [('gnu', BUILD/'src/coreutils'), ('rboxc', ROOT/'target/release/rboxc')]}
     for row in manifest:
@@ -116,6 +121,11 @@ def main():
                         os.chown(runtime_memory_dir, 65534, 65534)
                 if instrument and row.get('native_launcher'):
                     shutil.copy2(native_launcher, run/'src/.valgrind-launch')
+                tmpdir_library = None
+                if instrument and row.get('valgrind_tmpdir_adapter'):
+                    assert not row.get('native_launcher'), 'TMPDIR adapter requires the shell launcher'
+                    tmpdir_library = run/'src/.valgrind-tmpdir.so'
+                    shutil.copy2(tmpdir_adapter, tmpdir_library)
                 for command in commands:
                     if instrument:
                         (run/'real'/command).symlink_to(candidate)
@@ -126,8 +136,19 @@ def main():
                         vg = ['valgrind', '--leak-check=full', '--show-leak-kinds=all',
                               '--track-fds=yes', *(['--trace-children=yes'] if row.get('trace_children') else []),
                               '--log-file='+str(runtime_memory_dir/'%p.log'), command]
+                        startup = ''
+                        if tmpdir_library:
+                            # Valgrind needs an existing directory at startup. The
+                            # constructor restores the original TMPDIR in its client.
+                            startup = ('RBOXC_VALGRIND_TMPDIR_PRESENT=0\n'
+                                       'if [ "${TMPDIR+x}" = x ]; then RBOXC_VALGRIND_TMPDIR_PRESENT=1; fi\n'
+                                       'RBOXC_VALGRIND_TMPDIR_VALUE=${TMPDIR-}\n'
+                                       'export RBOXC_VALGRIND_TMPDIR_PRESENT RBOXC_VALGRIND_TMPDIR_VALUE\n'
+                                       'TMPDIR='+shlex.quote(str(run))+'\n'
+                                       'LD_PRELOAD='+shlex.quote(str(tmpdir_library))+':${LD_PRELOAD-}\n'
+                                       'export TMPDIR LD_PRELOAD\n')
                         wrapper.write_text('#!/bin/sh\nPATH='+shlex.quote(str(run/'real'))+':"$PATH"\n'
-                                           'export PATH\nexec '+shlex.join(vg)+' "$@"\n')
+                                           'export PATH\n'+startup+'exec '+shlex.join(vg)+' "$@"\n')
                         wrapper.chmod(0o755)
                     else:
                         (run/'src'/command).symlink_to(candidate)
@@ -174,6 +195,8 @@ def main():
                                             'binary_sha256': binary_hashes[implementation]}
                 if instrument and row.get('native_launcher'):
                     outcomes[implementation]['launcher_source_sha256'] = hashlib.sha256((ROOT/'tests/gnu/valgrind-launch.c').read_bytes()).hexdigest()
+                if tmpdir_library:
+                    outcomes[implementation]['tmpdir_adapter_source_sha256'] = hashlib.sha256((ROOT/'tests/gnu/valgrind-tmpdir.c').read_bytes()).hexdigest()
                 if nss_profile:
                     outcomes[implementation]['nss'] = nss_profile
                     assert Path('/etc/nsswitch.conf').read_text() == original_nss, 'host NSS configuration changed'

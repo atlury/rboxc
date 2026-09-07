@@ -846,6 +846,16 @@ unsafe extern "C" fn maybe_close_stdout() {
         _exit(EXIT_FAILURE);
     }
 }
+static mut RBOXC_OWNED_NAMES: [*mut ::core::ffi::c_char; 2] = [::core::ptr::null_mut(); 2];
+unsafe extern "C" fn rboxc_free_owned_names() {
+    let saved_errno = *::libc::__errno_location();
+    for index in 0..2 {
+        let name = RBOXC_OWNED_NAMES[index];
+        RBOXC_OWNED_NAMES[index] = ::core::ptr::null_mut();
+        ::libc::free(name.cast());
+    }
+    *::libc::__errno_location() = saved_errno;
+}
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_mktemp(
     mut argc: ::core::ffi::c_int,
@@ -870,6 +880,7 @@ pub unsafe extern "C" fn single_binary_main_mktemp(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(maybe_close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_free_owned_names));
     loop {
         c = getopt_long(
             argc,
@@ -1015,6 +1026,7 @@ pub unsafe extern "C" fn single_binary_main_mktemp(
         }
         suffix_len = strlen(suffix);
         dest_name = xcharalloc(len.wrapping_add(suffix_len).wrapping_add(1 as size_t));
+        RBOXC_OWNED_NAMES[0] = dest_name;
         memcpy(
             dest_name as *mut ::core::ffi::c_void,
             template as *const ::core::ffi::c_void,
@@ -1029,6 +1041,7 @@ pub unsafe extern "C" fn single_binary_main_mktemp(
         suffix = dest_name.offset(len as isize);
     } else {
         template = xstrdup(template);
+        RBOXC_OWNED_NAMES[0] = template;
         suffix = strrchr(template, 'X' as ::core::ffi::c_int);
         if suffix.is_null() {
             suffix = strchr(template, '\0' as ::core::ffi::c_int);
@@ -1222,9 +1235,11 @@ pub unsafe extern "C" fn single_binary_main_mktemp(
             ::core::ptr::null_mut::<*mut ::core::ffi::c_char>(),
         );
         free(template as *mut ::core::ffi::c_void);
+        RBOXC_OWNED_NAMES[0] = dest_name;
         template = dest_name;
     }
     dest_name = xstrdup(template);
+    RBOXC_OWNED_NAMES[1] = dest_name;
     if create_directory {
         let mut err: ::core::ffi::c_int = mkdtemp_len(dest_name, suffix_len, x_count, dry_run);
         if err != 0 as ::core::ffi::c_int {
