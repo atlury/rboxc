@@ -95,8 +95,8 @@ Recorded checks:
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 `tail` file records on return (including ignored follow mode), and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 638 of 645 scripts/selections.
-The executed inventory contains 585 shell scripts and 5,958 Perl cases.
+failures). The reviewed original GNU runner now passes 644 of 651 scripts/selections.
+The executed inventory contains 591 shell scripts and 5,958 Perl cases.
 Forty-seven Perl scripts run their complete
 runtime case lists; 13 others retain explicit case selections. Case-count
 checks also cover scripts that call GNU's Perl harness more than once.
@@ -255,8 +255,8 @@ behavior, Valgrind behavior, and instrumented-equivalence comparisons. These
 reports use the candidate binary hash and its matching stdbuf helper. The
 installed binary remains unchanged until the two older factor runs complete.
 
-The reviewed Valgrind evidence records 585 clean results out of 623 scripts
-or selections: 5,729 Perl cases and 46,246 candidate/descendant process logs.
+The reviewed Valgrind evidence records 591 clean results out of 629 scripts
+or selections: 5,729 Perl cases and 46,280 candidate/descendant process logs.
 The 38 open results comprise 28 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, six with assertion
 failures under instrumentation, and two interrupted by watchdog deadlines. The status report records
@@ -397,7 +397,7 @@ rboxc. Execution times are recorded for
 new runs. Named native batches
 can be merged with scripts/merge-reviewed-evidence.py --native after completion.
 
-Forty-four reviewed rm scripts pass natively and under Valgrind, including
+Forty-seven reviewed rm scripts pass natively and under Valgrind, including
 interactive decisions, inaccessible directories, deep trees, and disposable
 read-only and cross-filesystem fixtures. All five stty scripts and tty pass
 natively with a private controlling terminal. The complete stty pair matrix
@@ -420,6 +420,13 @@ Valgrind prerequisite skips account for two more open results above. The eighth
 open result is ls/stat-free-symlinks: both GNU and Rust pass natively, while
 Valgrind adds one stat call to both and violates the script's original syscall
 count assertion. That instrumentation difference is not counted as a pass.
+
+Six further full original scripts now pass natively and under Valgrind as
+UID/GID 65534: repeated removal failures, readlink path resolution, ls symlink
+diagnostics, removal of 250 long filenames, early sort permission errors, and
+rm directory-read failures using the original preload helper. All 34 logs per
+build are memory/descriptor-clean. `evidence/filesystem-diagnostics.json`
+records these comparisons and their source and log hashes.
 
 Additional original ls tests cover color, locale, timestamps, removed working
 directories, d_type, symlinks, and extended attributes. The complete 123-case
@@ -649,9 +656,9 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 627 scripts
+the original test evidence into `evidence/gnu-suite-coverage.json`: 633 scripts
 passed, 13 have selected-case coverage, eight are skipped, 29 are excluded,
-and 56 remain pending. No recorded native failures
+and 50 remain pending. No recorded native failures
 remain in the executed selections. Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
 explicitly excluded with source hashes in inventory/gnu-suite-exclusions.json.
