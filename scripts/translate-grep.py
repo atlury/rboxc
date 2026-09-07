@@ -79,6 +79,10 @@ text = text.replace(anchor, 'rboxc_grep_allocate_buffer(bufalloc)', 1)
 anchor = '            newbuf = xpalloc(nullptr, &raw mut bufalloc, incr_min, alloc_max, 1 as idx_t)\n                as *mut ::core::ffi::c_char;'
 assert text.count(anchor) == 1
 text = text.replace(anchor, anchor+'\n            libc::memset(newbuf.cast(), 0, bufalloc as usize);', 1)
+assert text.count('fp = fopen(') == 1
+text = text.replace('fp = fopen(', 'fp = rboxc_grep_open_patterns(', 1)
+assert text.count('fclose(fp)') == 1
+text = text.replace('fclose(fp)', 'rboxc_grep_close_patterns(fp)', 1)
 text += '\n'+(ROOT/'src/bridges/grep-owned.rs').read_text()+'\n'
 anchor = '    atexit(Some(clean_up_stdout as unsafe extern "C" fn() -> ()));'
 assert text.count(anchor) == 1

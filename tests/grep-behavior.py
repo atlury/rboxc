@@ -67,6 +67,8 @@ case('perl-word', ['-Pw', 'alpha', 'input'])
 case('perl-line', ['-Px', 'alpha', 'input'])
 case('perl-full-output', ['-P', '.', 'input'], output='full')
 case('perl-long-line', ['-Poc', r'\balpha\b', 'long'])
+case('patterns-directory', ['-f', 'tree', 'input'])
+case('several-pattern-files', ['-f', 'patterns', '-f', 'empty', 'input'])
 selected = set(profile.options.commands)
 assert selected <= {r[0] for r in cases}
 results = []

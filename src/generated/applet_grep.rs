@@ -4905,7 +4905,7 @@ pub unsafe extern "C" fn single_binary_main_grep(
                         }
                         fp = stdin;
                     } else {
-                        fp = fopen(
+                        fp = rboxc_grep_open_patterns(
                             optarg,
                             if binary as ::core::ffi::c_int != 0 {
                                 b"rb\0".as_ptr() as *const ::core::ffi::c_char
@@ -5051,7 +5051,7 @@ pub unsafe extern "C" fn single_binary_main_grep(
                         err = 0 as ::core::ffi::c_int;
                         if fp == stdin {
                             clearerr_unlocked(fp);
-                        } else if fclose(fp) != 0 as ::core::ffi::c_int {
+                        } else if rboxc_grep_close_patterns(fp) != 0 as ::core::ffi::c_int {
                             err = *__errno_location();
                         }
                     }
@@ -5976,6 +5976,19 @@ extern "C" {
 static mut RBOXC_GREP_MATCHER_FREE: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void)> = None;
 static mut RBOXC_GREP_COLORS: *mut ::core::ffi::c_char = ::core::ptr::null_mut();
 static mut RBOXC_GREP_INPUT: ::core::ffi::c_int = -1;
+static mut RBOXC_GREP_PATTERN_STREAM: *mut FILE = ::core::ptr::null_mut();
+unsafe fn rboxc_grep_open_patterns(path: *const ::core::ffi::c_char,
+                                  mode: *const ::core::ffi::c_char) -> *mut FILE {
+    let stream = fopen(path, mode);
+    RBOXC_GREP_PATTERN_STREAM = stream;
+    stream
+}
+unsafe fn rboxc_grep_close_patterns(stream: *mut FILE) -> ::core::ffi::c_int {
+    if RBOXC_GREP_PATTERN_STREAM == stream {
+        RBOXC_GREP_PATTERN_STREAM = ::core::ptr::null_mut();
+    }
+    fclose(stream)
+}
 unsafe fn rboxc_grep_close_input(descriptor: ::core::ffi::c_int) -> ::core::ffi::c_int {
     if RBOXC_GREP_INPUT == descriptor {
         RBOXC_GREP_INPUT = -1;
@@ -6000,6 +6013,9 @@ unsafe extern "C" fn rboxc_grep_release_owned() {
     }
     while !RBOXC_GREP_TREES.is_null() {
         rboxc_grep_close_tree((*RBOXC_GREP_TREES).tree);
+    }
+    if !RBOXC_GREP_PATTERN_STREAM.is_null() {
+        rboxc_grep_close_patterns(RBOXC_GREP_PATTERN_STREAM);
     }
     rboxc_grep_release_alias();
     libc::free(buffer.cast());
