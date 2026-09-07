@@ -158,6 +158,11 @@ Valgrind, including valid legacy unpacking, environment options, metadata, and
 an unprivileged write-error check. The original 4 GiB size test is running. The installed release remains the validated
 117-command Grep build.
 
+GNU Sed 4.10 is pinned from its verified signed archive. Its native oracle
+and compiler records are prepared with SELinux explicitly disabled. The
+75 original shell/Perl registrations are inventoried for individual review.
+Entry translation and runtime compatibility remain separate work.
+
 ## Status
 
 The installed executable registers 117 commands: 107 Coreutils entries, GNU Hello,
