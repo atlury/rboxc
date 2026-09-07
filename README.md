@@ -129,12 +129,13 @@ locales. Under Valgrind, both GNU and rboxc misorder the same minimum long-doubl
 values around zero; this remains an assertion failure. The original nohup
 script now also runs with a private terminal: all assertions pass, while
 replacement-input descriptors on failed execution and host-shell descriptor
-findings remain open. Compression assertions pass under Valgrind; the initial
-measurement leaves compressor exec logs incomplete. These are recorded as
-open results, and child tracing is enabled for the next compression run.
+findings remain open. Compression assertions pass with full Valgrind child tracing: all 7,304 logs
+per implementation contain summaries. The result remains open because the
+external compression shells and GNU tr helper retain resources. The earlier
+measurement with incomplete exec logs is preserved in the observation history.
 
 The reviewed Valgrind evidence records 495 clean results out of 525 scripts
-or selections: 3,707 Perl cases and 15,605 candidate/descendant process logs.
+or selections: 3,707 Perl cases and 20,470 candidate/descendant process logs.
 The 30 open results comprise 24 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, and four with assertion
 failures under instrumentation in both GNU and rboxc. The status report records
