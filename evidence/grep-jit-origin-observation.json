@@ -1,0 +1,37 @@
+{
+  "scope": "Origin tracking for an ordinary PCRE whole-word match that reports an uninitialized condition in both builds. No clean-memory claim.",
+  "results": [
+    {
+      "implementation": "gnu",
+      "binary": "/root/rboxc/build/gnu-grep/src/grep",
+      "binary_sha256": "8efd3a7c3f61621a57766bbb72df5d166e5f3baacee4e1deb70bbddbe7e98a91",
+      "arguments": [
+        "-Pw",
+        "alpha",
+        "input"
+      ],
+      "input": "alpha\nBeta 123\nalphabet\n\nomega 456\n",
+      "status": 0,
+      "stdout": "616c7068610a",
+      "stderr": "",
+      "log": "evidence/raw/grep-jit-origins-gnu.log",
+      "log_sha256": "bae9b43037d1031bbbaf8589aa1ebaef5fc047ea45b83277fec9ce0715fc7552"
+    },
+    {
+      "implementation": "rboxc",
+      "binary": "/root/rboxc/target/grep-pcre-cleanup/release/rboxc",
+      "binary_sha256": "854842c6d6b15ac329f5e95c13ed44e4f0b06694ac2699bf654f5bad204255f9",
+      "arguments": [
+        "-Pw",
+        "alpha",
+        "input"
+      ],
+      "input": "alpha\nBeta 123\nalphabet\n\nomega 456\n",
+      "status": 0,
+      "stdout": "616c7068610a",
+      "stderr": "",
+      "log": "evidence/raw/grep-jit-origins-rboxc.log",
+      "log_sha256": "e5d24e641df215a1ffbbd32b8ea26ac6ea258dc552318b6fabac4cf2d54b59f7"
+    }
+  ]
+}

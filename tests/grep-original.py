@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 import importlib.util
 import json
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -22,6 +23,11 @@ manifest = json.loads((ROOT/'inventory/grep-tests.json').read_text())
 assert fingerprint(source/manifest['registration']['path']) == manifest['registration']['sha256']
 oracles = {name: ROOT/f'build/gnu-grep/src/{name}' for name in pin['commands']}
 oracle_hashes = {name: fingerprint(path) for name, path in oracles.items()}
+locale_helper = ROOT/'build/gnu-grep/tests/get-mb-cur-max'
+locale_helper_sha256 = fingerprint(locale_helper)
+build_makefile = (ROOT/'build/gnu-grep/tests/Makefile').read_text()
+locale_environment = {name: re.search(r'^'+name+r' = (.*)$', build_makefile, re.M)[1]
+                      for name in ('LOCALE_FR', 'LOCALE_FR_UTF8')}
 selected = set(profile.options.commands)
 assert selected <= {Path(r['script']).name for r in manifest['scripts'] if r['reviewed']}
 results = []
@@ -32,6 +38,8 @@ for index, row in enumerate(manifest['scripts']):
         continue
     if selected and script.name not in selected:
         continue
+    for support, expected in row.get('support_sources', {}).items():
+        assert fingerprint(source/support) == expected
     outcomes = {}
     for implementation in ('gnu', 'rboxc'):
         for instrument in (False, True):
@@ -40,6 +48,7 @@ for index, row in enumerate(manifest['scripts']):
                 work = Path(directory)
                 for sub in ('src', 'real', 'tests', 'memory'):
                     (work/sub).mkdir()
+                (work/'src/get-mb-cur-max').symlink_to(locale_helper)
                 for name in pin['commands']:
                     binary = oracles[name] if implementation == 'gnu' else profile.binary
                     (work/'real'/name).symlink_to(binary)
@@ -54,8 +63,8 @@ for index, row in enumerate(manifest['scripts']):
                         (work/'src'/name).symlink_to(binary)
                 done = subprocess.run(['/bin/bash', '-c', 'exec 9>&2; exec /bin/bash "$1"',
                                        'grep-test', str(script)], cwd=work/'tests',
-                    stdin=subprocess.DEVNULL, capture_output=True, timeout=180,
-                    env={'PATH': str(work/'src')+':/usr/bin:/bin', 'HOME': directory,
+                    stdin=subprocess.DEVNULL, capture_output=True, timeout=row.get('timeout_seconds', 180),
+                    env={**locale_environment, 'PATH': str(work/'src')+':/usr/bin:/bin', 'HOME': directory,
                          'TMPDIR': directory, 'LC_ALL': 'C', 'LANGUAGE': 'C', 'TZ': 'UTC0',
                          'srcdir': str(source/'tests'), 'top_srcdir': str(source),
                          'abs_top_srcdir': str(source), 'abs_srcdir': str(source/'tests'),
@@ -94,6 +103,8 @@ for index, row in enumerate(manifest['scripts']):
     report = {'scope': 'Individually reviewed original assertions, native and Valgrind; provider children use matching commands from the private PATH. Pending and excluded originals are not executed.',
               **profile.metadata(), 'gnu_binaries': {n: {'path': str(p), 'sha256': oracle_hashes[n]} for n, p in oracles.items()},
               'driver_sha256': fingerprint(Path(__file__)),
+              'locale_environment': locale_environment,
+              'locale_helper': {'path': str(locale_helper), 'sha256': locale_helper_sha256},
               'launch_profile': 'Valgrind locates the named command through a private PATH, preserving its initial argv[0]. Subsequent child execs remain traced.',
               'passed': sum(r['pass'] for r in results), 'native_passed': sum(r['native_pass'] and not r.get('upstream_xfail') for r in results),
               'assertions_passed': sum(r['assertions_pass'] and not r.get('upstream_xfail') for r in results), 'total': len(results),
@@ -104,6 +115,7 @@ for index, row in enumerate(manifest['scripts']):
               'state_counts': {s: sum(r['state'] == s for r in results) for s in sorted({r['state'] for r in results})},
               'registered_original_scripts': len(manifest['scripts']),
               'remaining': [r for r in manifest['scripts'] if not r['reviewed']], 'results': results}
+    assert fingerprint(locale_helper) == locale_helper_sha256
     assert all(fingerprint(p) == oracle_hashes[n] for n, p in oracles.items())
     temporary = profile.report.with_suffix('.tmp.json')
     temporary.write_text(json.dumps(report, indent=2)+'\n')

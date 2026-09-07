@@ -73,6 +73,12 @@ assert text.count(anchor) == 1
 text = text.replace(anchor, '                rboxc_grep_track_tree(fts);\n'+anchor, 1)
 assert text.count('rpl_fts_close(fts)') == 1
 text = text.replace('rpl_fts_close(fts)', 'rboxc_grep_close_tree(fts)', 1)
+anchor = 'ximalloc(bufalloc)'
+assert text.count(anchor) == 1
+text = text.replace(anchor, 'rboxc_grep_allocate_buffer(bufalloc)', 1)
+anchor = '            newbuf = xpalloc(nullptr, &raw mut bufalloc, incr_min, alloc_max, 1 as idx_t)\n                as *mut ::core::ffi::c_char;'
+assert text.count(anchor) == 1
+text = text.replace(anchor, anchor+'\n            libc::memset(newbuf.cast(), 0, bufalloc as usize);', 1)
 text += '\n'+(ROOT/'src/bridges/grep-owned.rs').read_text()+'\n'
 anchor = '    atexit(Some(clean_up_stdout as unsafe extern "C" fn() -> ()));'
 assert text.count(anchor) == 1

@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Release completed matcher objects after their last use. Partial compiler
-// exits and PCRE-owned storage have separate evidence and remain to be handled.
+// Release matcher and entry resources after their last use, including
+// staged compiler objects when a diagnostic exits before compilation returns.
 extern "C" {
+    fn GEAfree_all();
+    fn Pfree_all();
     fn GEAfree(compiled: *mut ::core::ffi::c_void);
     fn Ffree(compiled: *mut ::core::ffi::c_void);
 }
@@ -22,6 +24,9 @@ unsafe extern "C" fn rboxc_grep_release_owned() {
             compiled_pattern = ::core::ptr::null_mut();
         }
     }
+    GEAfree_all();
+    Pfree_all();
+    compiled_pattern = ::core::ptr::null_mut();
     libc::free(RBOXC_GREP_COLORS.cast());
     RBOXC_GREP_COLORS = ::core::ptr::null_mut();
     if RBOXC_GREP_INPUT >= 0 && RBOXC_GREP_INPUT != STDIN_FILENO {
@@ -63,4 +68,12 @@ unsafe fn rboxc_grep_close_tree(tree: *mut FTS) -> ::core::ffi::c_int {
         link = &raw mut (*record).next;
     }
     rpl_fts_close(tree)
+}
+
+// PCRE2 JIT can load spare input-buffer bytes within the allocation. Give
+// those bytes defined values while retaining GNU's logical input bounds.
+unsafe fn rboxc_grep_allocate_buffer(size: idx_t) -> *mut ::core::ffi::c_void {
+    let pointer = ximalloc(size);
+    libc::memset(pointer, 0, size as usize);
+    pointer
 }

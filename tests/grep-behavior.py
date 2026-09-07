@@ -60,6 +60,13 @@ for command in ('egrep', 'fgrep'):
 case('quiet-recursive', ['-rq', 'alpha', 'tree'])
 case('egrep-full-output', ['.', 'input'], 'egrep', output='full')
 case('fgrep-full-output', ['alpha', 'input'], 'fgrep', output='full')
+case('invalid-regex-after-backreference', ['-e', r'\(a\)\1', '-e', '[', 'input'])
+case('perl-invalid-regex', ['-P', '[', 'input'])
+case('perl-several-patterns', ['-P', '-e', 'alpha', '-e', 'omega', 'input'])
+case('perl-word', ['-Pw', 'alpha', 'input'])
+case('perl-line', ['-Px', 'alpha', 'input'])
+case('perl-full-output', ['-P', '.', 'input'], output='full')
+case('perl-long-line', ['-Poc', r'\balpha\b', 'long'])
 selected = set(profile.options.commands)
 assert selected <= {r[0] for r in cases}
 results = []
@@ -78,6 +85,8 @@ for index, (name, command, args, data, locale, output) in enumerate(cases):
                     ('patterns',b'alpha\nomega\n'), ('empty',b''), ('binary',b'alpha\0omega\0'),
                     ('unicode','école\nÉCOLE\n123\n'.encode()), ('tree/keep',fixture_text), ('tree/skip',fixture_text)]:
                     (work/label).write_bytes(contents)
+                if name == 'perl-long-line':
+                    (work/'long').write_bytes(b'x'*(256*1024)+b' alpha\n')
                 env = {'PATH': str(work/'exec')+':/usr/bin:/bin', 'HOME': directory, 'TMPDIR': directory,
                        'LC_ALL': locale, 'LANGUAGE': 'C', 'TZ': 'UTC0'}
                 invocation = [str(work/'exec'/command), *args]

@@ -2453,6 +2453,7 @@ unsafe extern "C" fn fillbuf(mut save: idx_t, mut st: *const stat) -> bool {
             }
             newbuf = xpalloc(nullptr, &raw mut bufalloc, incr_min, alloc_max, 1 as idx_t)
                 as *mut ::core::ffi::c_char;
+            libc::memset(newbuf.cast(), 0, bufalloc as usize);
         }
         readbuf = if (newbuf
             .offset(1 as ::core::ffi::c_int as isize)
@@ -5912,7 +5913,7 @@ pub unsafe extern "C" fn single_binary_main_grep(
     }) as idx_t;
     bufalloc =
         good_readsize + pagesize + C2Rust_Unnamed_13::uword_size.0 as ::core::ffi::c_int as idx_t;
-    buffer = ximalloc(bufalloc) as *mut ::core::ffi::c_char;
+    buffer = rboxc_grep_allocate_buffer(bufalloc) as *mut ::core::ffi::c_char;
     if fts_options & FTS_LOGICAL != 0 && devices.0 == C2Rust_Unnamed_8::READ_COMMAND_LINE_DEVICES.0
     {
         devices = C2Rust_Unnamed_8::READ_DEVICES;
@@ -5960,9 +5961,13 @@ pub const r#true: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
 pub const r#false: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
 
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Release completed matcher objects after their last use. Partial compiler
-// exits and PCRE-owned storage have separate evidence and remain to be handled.
+// Release matcher and entry resources after their last use, including
+// staged compiler objects when a diagnostic exits before compilation returns.
 extern "C" {
+    #[link_name = "rboxc_grep_GEAfree_all"]
+    fn GEAfree_all();
+    #[link_name = "rboxc_grep_Pfree_all"]
+    fn Pfree_all();
     #[link_name = "rboxc_grep_GEAfree"]
     fn GEAfree(compiled: *mut ::core::ffi::c_void);
     #[link_name = "rboxc_grep_Ffree"]
@@ -5985,6 +5990,9 @@ unsafe extern "C" fn rboxc_grep_release_owned() {
             compiled_pattern = ::core::ptr::null_mut();
         }
     }
+    GEAfree_all();
+    Pfree_all();
+    compiled_pattern = ::core::ptr::null_mut();
     libc::free(RBOXC_GREP_COLORS.cast());
     RBOXC_GREP_COLORS = ::core::ptr::null_mut();
     if RBOXC_GREP_INPUT >= 0 && RBOXC_GREP_INPUT != STDIN_FILENO {
@@ -6026,6 +6034,14 @@ unsafe fn rboxc_grep_close_tree(tree: *mut FTS) -> ::core::ffi::c_int {
         link = &raw mut (*record).next;
     }
     rpl_fts_close(tree)
+}
+
+// PCRE2 JIT can load spare input-buffer bytes within the allocation. Give
+// those bytes defined values while retaining GNU's logical input bounds.
+unsafe fn rboxc_grep_allocate_buffer(size: idx_t) -> *mut ::core::ffi::c_void {
+    let pointer = ximalloc(size);
+    libc::memset(pointer, 0, size as usize);
+    pointer
 }
 
 
