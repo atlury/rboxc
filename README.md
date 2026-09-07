@@ -137,7 +137,9 @@ df block headings, chmod modes/options, arch, false/true statuses, printenv,
 echo, and tail input positioning. Generated factor tests t11–t13 also pass
 Valgrind. Twenty-seven further generated factor scripts (t04–t08, t14–t20, and t22–t36)
 now pass their full original checksum comparisons under Valgrind. The remaining
-two generated factor comparisons are running in independently checkpointed jobs.
+two generated factor comparisons reached the 30-minute watchdog limit in both
+builds. Those interrupted results are retained; retries now allow two hours per
+instrumented implementation. Native deadlines are unchanged.
 Extended locale branches run where configured.
 
 The complete floating-point-limit sort script passes natively in C and French
@@ -178,11 +180,11 @@ its source and binary hashes. The installed release remains unchanged while
 older long-running comparisons still depend on its path. The full I/O-error
 report above remains the installed-release observation until that suite is rerun.
 
-The reviewed Valgrind evidence records 578 clean results out of 613 scripts
-or selections: 5,675 Perl cases and 36,991 candidate/descendant process logs.
-The 35 open results comprise 26 with passing original assertions but unresolved
+The reviewed Valgrind evidence records 579 clean results out of 616 scripts
+or selections: 5,729 Perl cases and 37,058 candidate/descendant process logs.
+The 37 open results comprise 26 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, five with assertion
-failures under instrumentation, and two interrupted by watchdog deadlines. The status report records
+failures under instrumentation, and four interrupted by watchdog deadlines. The status report records
 these categories separately; they do not change the strict clean-pass count.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
@@ -213,7 +215,11 @@ output assertions. Earlier path-prefixed diagnostic differences remain saved.
 The full help/normal-output comparison finishes for rboxc, but GNU reaches the
 30-minute watchdog deadline. The source-option inventory comparison reaches
 the same deadline in both builds. These measurements remain incomplete; their
-logs are retained and no timeout is counted as an assertion pass.
+logs are retained and no timeout is counted as an assertion pass. The retries
+allow one hour per Valgrind implementation for the help script and two hours
+for the source-option inventory, without changing native limits.
+The 54 reviewed tac Perl cases now also pass Valgrind, with 55 clean candidate
+process logs. This remains a case selection, not a full Perl-suite pass.
 All 46 registered move scripts now pass natively and under Valgrind.
 The GNU oracle and helper build explicitly enable ACL and extended-attribute
 support. `evidence/gnu-build-profile.json` records configuration and oracle

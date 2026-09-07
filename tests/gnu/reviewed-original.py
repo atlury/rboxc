@@ -396,7 +396,9 @@ def main():
                     command = [sys.executable, str(driver), *command]
                 started = time.monotonic()
                 config_hash = hashlib.sha256(config_header.read_bytes()).hexdigest()
-                completed = subprocess.run([str(watchdog), '--kill-after=5s', str(row.get('timeout_seconds', 60))+'s', *command],
+                deadline = row.get('valgrind_timeout_seconds', row.get('timeout_seconds', 60)) if instrument else row.get('timeout_seconds', 60)
+                assert isinstance(deadline, int) and 0 < deadline <= 14400, 'invalid reviewed watchdog deadline'
+                completed = subprocess.run([str(watchdog), '--kill-after=5s', str(deadline)+'s', *command],
                                            cwd=fixture, env=environment, capture_output=True, **launch_credentials)
                 assert os.getgroups() == parent_groups, 'parent group membership changed'
                 log = ROOT/'evidence/raw'/('reviewed-'+('vg-' if instrument else '')+row['script'].replace('/', '-')+'-'+implementation+'-'+run.name+'.log')
