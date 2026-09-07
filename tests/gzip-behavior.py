@@ -19,6 +19,8 @@ profile=ComparisonProfile('gzip-behavior',oracle=ROOT/'build/gnu-gzip/gzip',sele
 commands=('gzip','gunzip','uncompress','zcat')
 oracles={name:ROOT/'build/gnu-gzip'/name for name in commands}
 hashes={name:fingerprint(path) for name,path in oracles.items()}
+interpreters={name:Path(path.read_text().splitlines()[0][2:]) for name,path in oracles.items() if name!='gzip'}
+assert all(path.is_absolute() and path.is_file() for path in interpreters.values())
 data=b'alpha beta gamma\n'*1000+b'0123456789\n'
 compressed=subprocess.run([str(oracles['gzip']),'-nc'],input=data,capture_output=True,check=True).stdout
 cases=[]
@@ -33,6 +35,9 @@ for command in commands:
         case(command+'-stdout',['-c','input.gz'],command)
         case(command+'-stdin',[],command,compressed)
         case(command+'-full-help',['--help'],command,output='full')
+        case(command+'-full-version',['--version'],command,output='full')
+        case(command+'-help-extra',['--help','absent'],command)
+        case(command+'-delegated-help',['-c','--help'],command)
 for name,args in [
     ('compress',['-nc','input']),('compress-fast',['-1nc','input']),('compress-best',['-9nc','input']),
     ('decompress',['-dc','input.gz']),('test',['-t','input.gz']),('list',['-l','input.gz']),
@@ -65,11 +70,15 @@ for index,(name,command,args,stdin,output) in enumerate(cases):
                     path=work/filename;path.write_bytes(contents);path.chmod(0o640);os.utime(path,(946684800,946684800))
                 invocation=[str(work/'exec'/command),*args]
                 if instrument:
-                    if implementation=='gnu' and command!='gzip':invocation=['/bin/sh',*invocation]
+                    if implementation=='gnu' and command!='gzip':invocation=[str(interpreters[command]),*invocation]
                     invocation=['/usr/bin/valgrind','--leak-check=full','--show-leak-kinds=all','--track-fds=yes','--trace-children=yes','--log-file='+str(work/'memory/%p.log'),*invocation]
                 with open('/dev/full' if output=='full' else os.devnull,'wb') as sink:
                     done=subprocess.run(invocation,cwd=work,input=stdin,env={'PATH':str(work/'exec')+':/usr/bin:/bin','HOME':directory,'LC_ALL':'C','TZ':'UTC0'},stdout=sink if output=='full' else subprocess.PIPE,stderr=subprocess.PIPE,timeout=30)
-                def normalize(value):return value.replace(directory.encode(),b'<fixture>').hex()
+                def normalize(value):
+                    value=value.replace(directory.encode(),b'<fixture>')
+                    if instrument and implementation=='gnu' and command!='gzip':
+                        value=value.replace(b'<fixture>/exec/gzip: ',b'gzip: ')
+                    return value.hex()
                 tree={str(p.relative_to(work)):{'sha256':fingerprint(p),'bytes':p.stat().st_size,'mode':p.stat().st_mode&0o777,'mtime_ns':p.stat().st_mtime_ns} for p in sorted(work.rglob('*')) if p.is_file() and p.relative_to(work).parts[0] not in ('exec','memory')}
                 row={'status':done.returncode,'stdout':normalize(done.stdout or b''),'stderr':normalize(done.stderr),'tree':tree,'raw_stdout':(done.stdout or b'').hex(),'raw_stderr':done.stderr.hex()}
                 if instrument:
@@ -82,7 +91,7 @@ for index,(name,command,args,stdin,output) in enumerate(cases):
     clean=bool(memory) and all(m['complete_exec_log'] and m['errors']==0 and m['non_inherited_descriptors']==0 and not any(m['heap_bytes'].get(k,0) for k in ('definitely lost','indirectly lost','possibly lost')) for m in memory)
     results.append({'name':name,'command':command,'arguments':args,'stdin':stdin.hex(),'output':output,'pass':equivalent and clean,'equivalent':equivalent,'memory_clean':clean,'outcomes':outcomes})
     print('PASS' if results[-1]['pass'] else 'OPEN',name,flush=True)
-    report={'scope':'Ordinary bounded valid compression/decompression, aliases, local metadata, and I/O errors; historical vulnerability reproductions are not executed.',**profile.metadata(),'gnu_binaries':{n:{'path':str(p),'sha256':hashes[n]} for n,p in oracles.items()},'driver_sha256':fingerprint(Path(__file__)),'passed':sum(r['pass'] for r in results),'total':len(results),'results':results}
+    report={'scope':'Ordinary bounded valid compression/decompression, aliases, local metadata, and I/O errors; historical vulnerability reproductions are not executed.',**profile.metadata(),'gnu_binaries':{n:{'path':str(p),'sha256':hashes[n]} for n,p in oracles.items()},'driver_sha256':fingerprint(Path(__file__)), 'alias_interpreters':{n:{'path':str(p),'sha256':fingerprint(p)} for n,p in interpreters.items()}, 'normalization':'Replace private fixture paths; remove traced GNU alias child executable directory from the diagnostic prefix. Raw streams are retained.','passed':sum(r['pass'] for r in results),'total':len(results),'results':results}
     assert all(fingerprint(p)==hashes[n] for n,p in oracles.items())
     profile.report.write_text(json.dumps(report,indent=2)+'\n')
 raise SystemExit(any(not r['pass'] for r in results))

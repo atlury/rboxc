@@ -149,8 +149,13 @@ The 30 original Gzip registrations remain inventoried for individual review.
 A separate 121-command candidate now compiles with the translated C entry,
 three internal shell-alias adaptations, and 170 private helper/state symbols.
 Its three GNU input/output/window buffer alignments are retained and verified
-in the executable. Initial 47-case testing records 15 clean comparisons;
-cached-directory/input cleanup and shell diagnostic profiles remain open.
+in the executable. All 56 focused comparisons now pass, including compression,
+decompression, file metadata, internal aliases, and output errors. Exit cleanup
+releases the directory cache and unfinished input ownership; alias write-error
+messages retain the configured Bash profile and pinned script line numbers.
+Fifteen individually reviewed original tests are now being validated, including
+an unprivileged write-error check. The installed release remains the validated
+117-command Grep build.
 
 ## Status
 

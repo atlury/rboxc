@@ -28,8 +28,23 @@ unsafe fn rboxc_gzip_alias(argc: ::core::ffi::c_int, argv: *mut *mut ::core::ffi
             } else {
                 libc::fprintf(output, b"Usage: %s%s\n\0".as_ptr().cast(), *argv, text.as_ptr())
             };
+            let write_errno = *libc::__errno_location();
             let flushed = libc::fflush(output);
-            return if status < 0 || flushed != 0 { 1 } else { 0 };
+            if status < 0 || flushed != 0 {
+                let error = if flushed != 0 { *libc::__errno_location() } else { write_errno };
+                let line = if zcat {
+                    if version { RBOXC_ZCAT_VERSION_LINE } else { RBOXC_ZCAT_HELP_LINE }
+                } else {
+                    if version { RBOXC_GUNZIP_VERSION_LINE } else { RBOXC_GUNZIP_HELP_LINE }
+                };
+                // GNU configures these aliases with Bash on this recorded
+                // host. Preserve its two printf diagnostics and source line.
+                libc::fprintf(stderr.cast::<libc::FILE>(),
+                    b"%s: line %u: printf: %s\n%s: line %u: printf: write error: %s\n\0".as_ptr().cast(),
+                    *argv, line, libc::strerror(error), *argv, line, libc::strerror(error));
+                return 1;
+            }
+            return 0;
         }
     }
     let Some(count) = argc.checked_add(1) else { return 1; };

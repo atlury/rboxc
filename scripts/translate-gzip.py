@@ -69,6 +69,18 @@ text = text.replace(anchor, helper+anchor, 1)
 anchor = '    program_name = gzip_base_name(*argv.offset(0isize));'
 assert text.count(anchor) == 1
 text = text.replace(anchor, '    rboxc_gzip_set_invocation(*argv);\n'+anchor, 1)
+anchor = '    rboxc_gzip_set_invocation(*argv);'
+assert text.count(anchor) == 1
+text = text.replace(anchor, anchor+'\n    libc::atexit(rboxc_gzip_release_owned);', 1)
+anchor = '    ifd = open_input_file(iname, &raw mut istat);'
+assert text.count(anchor) == 1
+text = text.replace(anchor, anchor+'\n    RBOXC_GZIP_INPUT = ifd;', 1)
+assert text.count('close(ifd)') == 11
+text = text.replace('close(ifd)', 'rboxc_gzip_close_input(ifd)')
+anchor = '    dirp = fdopendir(fd);'
+assert text.count(anchor) == 1
+text = text.replace(anchor, '    RBOXC_GZIP_INPUT = -1;\n'+anchor, 1)
+text += '\n'+(ROOT/'src/bridges/gzip-owned.rs').read_text()+'\n'
 mapping = symbol_map(ROOT)
 imports = []
 def namespace(match):
@@ -102,6 +114,9 @@ notice = re.match(r'\s*(/\*.*?\*/)', source.read_text(), re.S)[1]
 for alias in ('gunzip', 'zcat'):
     script = Path(pin['source'])/(alias+'.in')
     assert fingerprint(script) == pin['alias_source_sha256'][alias]
+    for option in ('help', 'version'):
+        line = next(i for i, value in enumerate(script.read_text().splitlines(), 1) if value.startswith('--'+option+')'))
+        text += '\nconst RBOXC_'+alias.upper()+'_'+option.upper()+'_LINE: u32 = '+str(line)+';\n'
     for variable in ('version', 'usage'):
         value = re.search(r'^'+variable+r'="(.*?)"$', script.read_text(), re.S | re.M)[1]
         value = value.replace('@VERSION@', pin['version'])
@@ -119,8 +134,10 @@ report = {'provider': 'gzip', 'version': pin['version'], 'command': name,
           'source_sha256': expected, 'translated': True,
           'scope': 'C2Rust entry translation with namespaced native helper imports; compilation and suite validation are separate.',
           'rust_file': str(target.relative_to(ROOT)), 'rust_sha256': fingerprint(target),
+          'ownership_adapter_sha256': fingerprint(ROOT/'src/bridges/gzip-owned.rs'),
           'alias_adapter_sha256': fingerprint(ROOT/'src/bridges/gzip-aliases.rs'),
           'buffer_alignment': 4096,
+          'alias_io_profile': 'Configured Bash printf error diagnostics and source line numbers; this Linux profile is verified against the recorded native aliases.',
           'invocation_adapter_sha256': fingerprint(ROOT/'src/bridges/gzip-invocation.rs'),
           'raw_translation_sha256': fingerprint(outputs[0]), 'compile_database_sha256': fingerprint(database),
           'helper_imports': {name: mapping[name] for name in sorted(imports)},

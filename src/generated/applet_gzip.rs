@@ -975,6 +975,7 @@ pub unsafe extern "C" fn single_binary_main_gzip(
     let mut env_argv: *mut *mut ::core::ffi::c_char =
         ::core::ptr::null_mut::<*mut ::core::ffi::c_char>();
     rboxc_gzip_set_invocation(*argv);
+    libc::atexit(rboxc_gzip_release_owned);
     program_name = gzip_base_name(*argv.offset(0isize));
     proglen = strlen(program_name);
     if (4 as size_t) < proglen
@@ -1371,6 +1372,7 @@ unsafe extern "C" fn treat_file(mut iname: *mut ::core::ffi::c_char) {
         return;
     }
     ifd = open_input_file(iname, &raw mut istat);
+    RBOXC_GZIP_INPUT = ifd;
     if ifd < 0 as ::core::ffi::c_int {
         return;
     }
@@ -1379,7 +1381,7 @@ unsafe extern "C" fn treat_file(mut iname: *mut ::core::ffi::c_char) {
             treat_dir(ifd, iname);
             return;
         }
-        close(ifd);
+        rboxc_gzip_close_input(ifd);
         if quiet == 0 {
             fprintf(
                 stderr,
@@ -1407,7 +1409,7 @@ unsafe extern "C" fn treat_file(mut iname: *mut ::core::ffi::c_char) {
             if exit_code == OK {
                 exit_code = WARNING;
             }
-            close(ifd);
+            rboxc_gzip_close_input(ifd);
             return;
         }
         if istat.st_mode & S_ISUID as __mode_t != 0 {
@@ -1423,7 +1425,7 @@ unsafe extern "C" fn treat_file(mut iname: *mut ::core::ffi::c_char) {
             if exit_code == OK {
                 exit_code = WARNING;
             }
-            close(ifd);
+            rboxc_gzip_close_input(ifd);
             return;
         }
         if istat.st_mode & S_ISGID as __mode_t != 0 {
@@ -1439,7 +1441,7 @@ unsafe extern "C" fn treat_file(mut iname: *mut ::core::ffi::c_char) {
             if exit_code == OK {
                 exit_code = WARNING;
             }
-            close(ifd);
+            rboxc_gzip_close_input(ifd);
             return;
         }
         if force == 0 {
@@ -1456,7 +1458,7 @@ unsafe extern "C" fn treat_file(mut iname: *mut ::core::ffi::c_char) {
                 if exit_code == OK {
                     exit_code = WARNING;
                 }
-                close(ifd);
+                rboxc_gzip_close_input(ifd);
                 return;
             }
             if 2 as __nlink_t <= istat.st_nlink {
@@ -1478,7 +1480,7 @@ unsafe extern "C" fn treat_file(mut iname: *mut ::core::ffi::c_char) {
                 if exit_code == OK {
                     exit_code = WARNING;
                 }
-                close(ifd);
+                rboxc_gzip_close_input(ifd);
                 return;
             }
         }
@@ -1490,7 +1492,7 @@ unsafe extern "C" fn treat_file(mut iname: *mut ::core::ffi::c_char) {
             b"stdout\0".as_ptr() as *const ::core::ffi::c_char,
         );
     } else if make_ofname() != OK {
-        close(ifd);
+        rboxc_gzip_close_input(ifd);
         return;
     }
     clear_bufs();
@@ -1498,7 +1500,7 @@ unsafe extern "C" fn treat_file(mut iname: *mut ::core::ffi::c_char) {
     if decompress != 0 {
         method = get_method(ifd);
         if method < 0 as ::core::ffi::c_int {
-            close(ifd);
+            rboxc_gzip_close_input(ifd);
             return;
         }
     }
@@ -1545,7 +1547,7 @@ unsafe extern "C" fn treat_file(mut iname: *mut ::core::ffi::c_char) {
             }
         }
     }
-    if close(ifd) != 0 as ::core::ffi::c_int {
+    if rboxc_gzip_close_input(ifd) != 0 as ::core::ffi::c_int {
         read_error();
     }
     if list != 0 {
@@ -1715,13 +1717,13 @@ unsafe extern "C" fn create_outfile() -> ::core::ffi::c_int {
             }
             EEXIST => {
                 if check_ofname() != OK {
-                    close(ifd);
+                    rboxc_gzip_close_input(ifd);
                     return ERROR;
                 }
             }
             _ => {
                 write_error();
-                close(ifd);
+                rboxc_gzip_close_input(ifd);
                 return ERROR;
             }
         }
@@ -2893,6 +2895,7 @@ unsafe extern "C" fn treat_dir(mut fd: ::core::ffi::c_int, mut dir: *mut ::core:
     let mut entries: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
     let mut entry: *const ::core::ffi::c_char = ::core::ptr::null::<::core::ffi::c_char>();
     let mut entrylen: size_t = 0;
+    RBOXC_GZIP_INPUT = -1;
     dirp = fdopendir(fd);
     if dirp.is_null() {
         progerror(dir);
@@ -3058,9 +3061,37 @@ unsafe extern "C" fn abort_gzip_signal(mut sig: ::core::ffi::c_int) {
 pub const __CHAR_BIT__: ::core::ffi::c_int = 8 as ::core::ffi::c_int;
 pub const HAVE_WORKING_O_NOFOLLOW: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
 
+// SPDX-License-Identifier: GPL-3.0-or-later
+// The directory cache lasts until program exit. Input ownership moves to
+// a DIR stream during traversal and otherwise ends at the original close.
+static mut RBOXC_GZIP_INPUT: ::core::ffi::c_int = -1;
+unsafe fn rboxc_gzip_close_input(descriptor: ::core::ffi::c_int) -> ::core::ffi::c_int {
+    if RBOXC_GZIP_INPUT == descriptor { RBOXC_GZIP_INPUT = -1; }
+    close(descriptor)
+}
+extern "C" fn rboxc_gzip_release_owned() {
+    unsafe {
+        let saved = *libc::__errno_location();
+        if RBOXC_GZIP_INPUT >= 0 && RBOXC_GZIP_INPUT != STDIN_FILENO {
+            rboxc_gzip_close_input(RBOXC_GZIP_INPUT);
+        }
+        if dfd >= 0 { close(dfd); dfd = -1; }
+        *libc::__errno_location() = saved;
+    }
+}
+
+
+const RBOXC_GUNZIP_HELP_LINE: u32 = 52;
+
+const RBOXC_GUNZIP_VERSION_LINE: u32 = 53;
+
 const RBOXC_GUNZIP_VERSION: &[u8] = &[103,117,110,122,105,112,32,40,103,122,105,112,41,32,49,46,49,52,10,67,111,112,121,114,105,103,104,116,32,40,67,41,32,50,48,50,53,32,70,114,101,101,32,83,111,102,116,119,97,114,101,32,70,111,117,110,100,97,116,105,111,110,44,32,73,110,99,46,10,84,104,105,115,32,105,115,32,102,114,101,101,32,115,111,102,116,119,97,114,101,46,32,32,89,111,117,32,109,97,121,32,114,101,100,105,115,116,114,105,98,117,116,101,32,99,111,112,105,101,115,32,111,102,32,105,116,32,117,110,100,101,114,32,116,104,101,32,116,101,114,109,115,32,111,102,10,116,104,101,32,71,78,85,32,71,101,110,101,114,97,108,32,80,117,98,108,105,99,32,76,105,99,101,110,115,101,32,60,104,116,116,112,115,58,47,47,119,119,119,46,103,110,117,46,111,114,103,47,108,105,99,101,110,115,101,115,47,103,112,108,46,104,116,109,108,62,46,10,84,104,101,114,101,32,105,115,32,78,79,32,87,65,82,82,65,78,84,89,44,32,116,111,32,116,104,101,32,101,120,116,101,110,116,32,112,101,114,109,105,116,116,101,100,32,98,121,32,108,97,119,46,10,10,87,114,105,116,116,101,110,32,98,121,32,80,97,117,108,32,69,103,103,101,114,116,46,0];
 
 const RBOXC_GUNZIP_USAGE: &[u8] = &[32,91,79,80,84,73,79,78,93,46,46,46,32,91,70,73,76,69,93,46,46,46,10,85,110,99,111,109,112,114,101,115,115,32,70,73,76,69,115,32,40,98,121,32,100,101,102,97,117,108,116,44,32,105,110,45,112,108,97,99,101,41,46,10,10,77,97,110,100,97,116,111,114,121,32,97,114,103,117,109,101,110,116,115,32,116,111,32,108,111,110,103,32,111,112,116,105,111,110,115,32,97,114,101,32,109,97,110,100,97,116,111,114,121,32,102,111,114,32,115,104,111,114,116,32,111,112,116,105,111,110,115,32,116,111,111,46,10,10,32,32,45,99,44,32,45,45,115,116,100,111,117,116,32,32,32,32,32,32,119,114,105,116,101,32,111,110,32,115,116,97,110,100,97,114,100,32,111,117,116,112,117,116,44,32,107,101,101,112,32,111,114,105,103,105,110,97,108,32,102,105,108,101,115,32,117,110,99,104,97,110,103,101,100,10,32,32,45,102,44,32,45,45,102,111,114,99,101,32,32,32,32,32,32,32,102,111,114,99,101,32,111,118,101,114,119,114,105,116,101,32,111,102,32,111,117,116,112,117,116,32,102,105,108,101,32,97,110,100,32,99,111,109,112,114,101,115,115,32,108,105,110,107,115,10,32,32,45,107,44,32,45,45,107,101,101,112,32,32,32,32,32,32,32,32,107,101,101,112,32,40,100,111,110,39,116,32,100,101,108,101,116,101,41,32,105,110,112,117,116,32,102,105,108,101,115,10,32,32,45,108,44,32,45,45,108,105,115,116,32,32,32,32,32,32,32,32,108,105,115,116,32,99,111,109,112,114,101,115,115,101,100,32,102,105,108,101,32,99,111,110,116,101,110,116,115,10,32,32,45,110,44,32,45,45,110,111,45,110,97,109,101,32,32,32,32,32,100,111,32,110,111,116,32,115,97,118,101,32,111,114,32,114,101,115,116,111,114,101,32,116,104,101,32,111,114,105,103,105,110,97,108,32,110,97,109,101,32,97,110,100,32,116,105,109,101,115,116,97,109,112,10,32,32,45,78,44,32,45,45,110,97,109,101,32,32,32,32,32,32,32,32,115,97,118,101,32,111,114,32,114,101,115,116,111,114,101,32,116,104,101,32,111,114,105,103,105,110,97,108,32,110,97,109,101,32,97,110,100,32,116,105,109,101,115,116,97,109,112,10,32,32,45,113,44,32,45,45,113,117,105,101,116,32,32,32,32,32,32,32,115,117,112,112,114,101,115,115,32,97,108,108,32,119,97,114,110,105,110,103,115,10,32,32,45,114,44,32,45,45,114,101,99,117,114,115,105,118,101,32,32,32,111,112,101,114,97,116,101,32,114,101,99,117,114,115,105,118,101,108,121,32,111,110,32,100,105,114,101,99,116,111,114,105,101,115,10,32,32,45,83,44,32,45,45,115,117,102,102,105,120,61,83,85,70,32,32,117,115,101,32,115,117,102,102,105,120,32,83,85,70,32,111,110,32,99,111,109,112,114,101,115,115,101,100,32,102,105,108,101,115,10,32,32,32,32,32,32,45,45,115,121,110,99,104,114,111,110,111,117,115,32,115,121,110,99,104,114,111,110,111,117,115,32,111,117,116,112,117,116,32,40,115,97,102,101,114,32,105,102,32,115,121,115,116,101,109,32,99,114,97,115,104,101,115,44,32,98,117,116,32,115,108,111,119,101,114,41,10,32,32,45,116,44,32,45,45,116,101,115,116,32,32,32,32,32,32,32,32,116,101,115,116,32,99,111,109,112,114,101,115,115,101,100,32,102,105,108,101,32,105,110,116,101,103,114,105,116,121,10,32,32,45,118,44,32,45,45,118,101,114,98,111,115,101,32,32,32,32,32,118,101,114,98,111,115,101,32,109,111,100,101,10,32,32,32,32,32,32,45,45,104,101,108,112,32,32,32,32,32,32,32,32,100,105,115,112,108,97,121,32,116,104,105,115,32,104,101,108,112,32,97,110,100,32,101,120,105,116,10,32,32,32,32,32,32,45,45,118,101,114,115,105,111,110,32,32,32,32,32,100,105,115,112,108,97,121,32,118,101,114,115,105,111,110,32,105,110,102,111,114,109,97,116,105,111,110,32,97,110,100,32,101,120,105,116,10,10,87,105,116,104,32,110,111,32,70,73,76,69,44,32,111,114,32,119,104,101,110,32,70,73,76,69,32,105,115,32,45,44,32,114,101,97,100,32,115,116,97,110,100,97,114,100,32,105,110,112,117,116,46,10,10,82,101,112,111,114,116,32,98,117,103,115,32,116,111,32,60,98,117,103,45,103,122,105,112,64,103,110,117,46,111,114,103,62,46,0];
+
+const RBOXC_ZCAT_HELP_LINE: u32 = 46;
+
+const RBOXC_ZCAT_VERSION_LINE: u32 = 47;
 
 const RBOXC_ZCAT_VERSION: &[u8] = &[122,99,97,116,32,40,103,122,105,112,41,32,49,46,49,52,10,67,111,112,121,114,105,103,104,116,32,40,67,41,32,50,48,50,53,32,70,114,101,101,32,83,111,102,116,119,97,114,101,32,70,111,117,110,100,97,116,105,111,110,44,32,73,110,99,46,10,84,104,105,115,32,105,115,32,102,114,101,101,32,115,111,102,116,119,97,114,101,46,32,32,89,111,117,32,109,97,121,32,114,101,100,105,115,116,114,105,98,117,116,101,32,99,111,112,105,101,115,32,111,102,32,105,116,32,117,110,100,101,114,32,116,104,101,32,116,101,114,109,115,32,111,102,10,116,104,101,32,71,78,85,32,71,101,110,101,114,97,108,32,80,117,98,108,105,99,32,76,105,99,101,110,115,101,32,60,104,116,116,112,115,58,47,47,119,119,119,46,103,110,117,46,111,114,103,47,108,105,99,101,110,115,101,115,47,103,112,108,46,104,116,109,108,62,46,10,84,104,101,114,101,32,105,115,32,78,79,32,87,65,82,82,65,78,84,89,44,32,116,111,32,116,104,101,32,101,120,116,101,110,116,32,112,101,114,109,105,116,116,101,100,32,98,121,32,108,97,119,46,10,10,87,114,105,116,116,101,110,32,98,121,32,80,97,117,108,32,69,103,103,101,114,116,46,0];
 
@@ -3096,8 +3127,23 @@ unsafe fn rboxc_gzip_alias(argc: ::core::ffi::c_int, argv: *mut *mut ::core::ffi
             } else {
                 libc::fprintf(output, b"Usage: %s%s\n\0".as_ptr().cast(), *argv, text.as_ptr())
             };
+            let write_errno = *libc::__errno_location();
             let flushed = libc::fflush(output);
-            return if status < 0 || flushed != 0 { 1 } else { 0 };
+            if status < 0 || flushed != 0 {
+                let error = if flushed != 0 { *libc::__errno_location() } else { write_errno };
+                let line = if zcat {
+                    if version { RBOXC_ZCAT_VERSION_LINE } else { RBOXC_ZCAT_HELP_LINE }
+                } else {
+                    if version { RBOXC_GUNZIP_VERSION_LINE } else { RBOXC_GUNZIP_HELP_LINE }
+                };
+                // GNU configures these aliases with Bash on this recorded
+                // host. Preserve its two printf diagnostics and source line.
+                libc::fprintf(stderr.cast::<libc::FILE>(),
+                    b"%s: line %u: printf: %s\n%s: line %u: printf: write error: %s\n\0".as_ptr().cast(),
+                    *argv, line, libc::strerror(error), *argv, line, libc::strerror(error));
+                return 1;
+            }
+            return 0;
         }
     }
     let Some(count) = argc.checked_add(1) else { return 1; };
