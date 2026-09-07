@@ -114,12 +114,11 @@ script; `--report-name` gives independent batches distinct evidence files.
 New results record tested binary hashes, and exec-wrapper tests can request
 Valgrind child tracing.
 
-The reviewed Valgrind evidence records 472 clean results out of 500 scripts
-or selections: 3,707 Perl cases and 11,374 candidate/descendant process logs.
-The 28 open results comprise 22 with passing original assertions but unresolved
+The reviewed Valgrind evidence records 473 clean results out of 500 scripts
+or selections: 3,707 Perl cases and 12,910 candidate/descendant process logs.
+The 27 open results comprise 22 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, and three with assertion
-failures under instrumentation in both GNU and rboxc, plus one deliberately
-interrupted run after host NSS findings. The status report records
+failures under instrumentation in both GNU and rboxc. The status report records
 these categories separately; they do not change the strict clean-pass count.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
@@ -308,12 +307,14 @@ all eight selected original regression scripts also pass natively. Native
 launchers now trace the warning-output and line-buffer responsiveness scripts
 through exec; both pass Valgrind. GNU's complete option-alias script also passes
 under Valgrind with 456 clean candidate process logs, including its text-processing
-helpers. The help-option recognition script passes natively, but its first
-instrumented run was stopped after both builds recorded descriptor warnings
-in the host's libnss_sss user-lookup library. That partial run is explicitly
-marked interrupted. Its private local-files NSS rerun is still in progress.
-The harness stages and hashes each build's
-own stdbuf library beside its test executables. The closed-stdout script passes
+helpers. The complete help-option recognition script passes natively and under
+Valgrind with private local-files NSS: all 1,923 candidate process logs finish
+cleanly, and the host configuration is checked unchanged after each run.
+An earlier run recorded descriptor warnings in the host's libnss_sss user-lookup
+library in both builds; that partial run is explicitly marked interrupted and
+retained in observation history.
+The harness stages and hashes each build's own stdbuf library beside its test
+executables. The closed-stdout script passes
 its assertions but stays open under Valgrind: printf, verbose cp, and two mktemp
 invocations report operations on intentionally closed stdout, without lost heap
 or leaked descriptors. Install's strip-program assertions also pass with child
