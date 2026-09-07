@@ -2056,6 +2056,22 @@ unsafe extern "C" fn wc_file(
         }
     };
 }
+static mut RBOXC_FILE_LIST: *mut FILE = ::core::ptr::null_mut();
+static mut RBOXC_FILE_LIST_CLOSED_STDIN: bool = false;
+unsafe extern "C" fn rboxc_close_owned_file_list() {
+    let stream = RBOXC_FILE_LIST;
+    RBOXC_FILE_LIST = ::core::ptr::null_mut();
+    if !stream.is_null() {
+        let saved_errno = *::libc::__errno_location();
+        fclose(stream);
+        *::libc::__errno_location() = saved_errno;
+    }
+}
+unsafe fn rboxc_finish_file_list(stream: *mut FILE) -> ::core::ffi::c_int {
+    if stream == RBOXC_FILE_LIST { RBOXC_FILE_LIST = ::core::ptr::null_mut(); }
+    if stream == stdin { RBOXC_FILE_LIST_CLOSED_STDIN = true; }
+    fclose(stream)
+}
 unsafe extern "C" fn get_input_fstatus(
     mut nfiles: idx_t,
     mut file: *const *mut ::core::ffi::c_char,
@@ -2084,7 +2100,12 @@ unsafe extern "C" fn get_input_fstatus(
                 ) as ::core::ffi::c_int
                     != 0
             {
+                if RBOXC_FILE_LIST_CLOSED_STDIN {
+                    *::libc::__errno_location() = ::libc::EBADF;
+                    -1
+                } else {
                 fstat(STDIN_FILENO, &raw mut (*fstatus.offset(i as isize)).st)
+                }
             } else {
                 stat(
                     *file.offset(i as isize),
@@ -2197,6 +2218,7 @@ pub unsafe extern "C" fn single_binary_main_wc(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_close_owned_file_list));
     page_size = getpagesize() as idx_t;
     setvbuf(
         stdout,
@@ -2369,6 +2391,7 @@ pub unsafe extern "C" fn single_binary_main_wc(
             stream = stdin;
         } else {
             stream = fopen(files_from, b"r\0".as_ptr() as *const ::core::ffi::c_char) as *mut FILE;
+            RBOXC_FILE_LIST = stream;
             if stream.is_null() {
                 if 0 != 0 {
                     error(
@@ -2456,7 +2479,7 @@ pub unsafe extern "C" fn single_binary_main_wc(
         {
             read_tokens = r#true != 0;
             readtokens0_init(&raw mut tok);
-            if !readtokens0(stream, &raw mut tok) || fclose(stream) != 0 as ::core::ffi::c_int {
+            if !readtokens0(stream, &raw mut tok) || rboxc_finish_file_list(stream) != 0 as ::core::ffi::c_int {
                 if 0 != 0 {
                     error(
                         1 as ::core::ffi::c_int,

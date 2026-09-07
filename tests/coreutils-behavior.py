@@ -189,6 +189,11 @@ CASES = [
     ('install', ['input', 'missing', '-t', 'empty']),
     ('install', ['--strip-program=first', '--strip-program=second', '--invalid-option']),
     ('install', ['-C', '-s', '--strip-program=first', '--strip-program=second', 'input', 'output']),
+    ('wc', ['--files0-from=/dev/null']),
+    ('wc', ['--files0-from=empty-utmp']),
+    ('wc', ['--files0-from=missing']),
+    ('wc', ['--files0-from=dir']),
+    ('wc', ['--files0-from=-']),
 ]
 
 

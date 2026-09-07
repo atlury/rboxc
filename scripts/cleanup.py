@@ -9,6 +9,40 @@ def replace_once(text, before, after):
 
 
 def cleanup(name, text):
+    if name == 'wc':
+        declaration = 'unsafe extern "C" fn get_input_fstatus('
+        helper = '''static mut RBOXC_FILE_LIST: *mut FILE = ::core::ptr::null_mut();
+static mut RBOXC_FILE_LIST_CLOSED_STDIN: bool = false;
+unsafe extern "C" fn rboxc_close_owned_file_list() {
+    let stream = RBOXC_FILE_LIST;
+    RBOXC_FILE_LIST = ::core::ptr::null_mut();
+    if !stream.is_null() {
+        let saved_errno = *::libc::__errno_location();
+        fclose(stream);
+        *::libc::__errno_location() = saved_errno;
+    }
+}
+unsafe fn rboxc_finish_file_list(stream: *mut FILE) -> ::core::ffi::c_int {
+    if stream == RBOXC_FILE_LIST { RBOXC_FILE_LIST = ::core::ptr::null_mut(); }
+    if stream == stdin { RBOXC_FILE_LIST_CLOSED_STDIN = true; }
+    fclose(stream)
+}
+'''
+        text = replace_once(text, declaration, helper+declaration)
+        anchor = '    atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));'
+        text = replace_once(text, anchor, anchor+'\n    atexit(Some(rboxc_close_owned_file_list));')
+        anchor = '            stream = fopen(files_from, b"r\\0".as_ptr() as *const ::core::ffi::c_char) as *mut FILE;'
+        text = replace_once(text, anchor, anchor+'\n            RBOXC_FILE_LIST = stream;')
+        anchor = '            if !readtokens0(stream, &raw mut tok) || fclose(stream) != 0 as ::core::ffi::c_int {'
+        text = replace_once(text, anchor, anchor.replace('fclose(stream)', 'rboxc_finish_file_list(stream)'))
+        # A '-' token from a closed stdin list is rejected by the original
+        # operand loop. Preserve the failed metadata result without issuing
+        # fstat on the descriptor that this entry has just closed.
+        anchor = '                fstat(STDIN_FILENO, &raw mut (*fstatus.offset(i as isize)).st)'
+        text = replace_once(text, anchor,
+                            '                if RBOXC_FILE_LIST_CLOSED_STDIN {\n'
+                            '                    *::libc::__errno_location() = ::libc::EBADF;\n'
+                            '                    -1\n                } else {\n'+anchor+'\n                }')
     if name == 'ginstall':
         declaration = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_ginstall('
         helper = '''extern "C" { fn hash_free(table: *mut Hash_table); }
