@@ -95,8 +95,8 @@ Recorded checks:
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 `tail` file records on return (including ignored follow mode), and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 584 of 587 scripts/selections.
-The executed inventory contains 527 shell scripts and 5,958 Perl cases.
+failures). The reviewed original GNU runner now passes 588 of 591 scripts/selections.
+The executed inventory contains 531 shell scripts and 5,958 Perl cases.
 Forty-seven Perl scripts run their complete
 runtime case lists; 13 others retain explicit case selections. Case-count
 checks also cover scripts that call GNU's Perl harness more than once.
@@ -114,10 +114,29 @@ script; `--report-name` gives independent batches distinct evidence files.
 New results record tested binary hashes, and exec-wrapper tests can request
 Valgrind child tracing.
 
-The reviewed Valgrind evidence records 473 clean results out of 500 scripts
-or selections: 3,707 Perl cases and 12,910 candidate/descendant process logs.
-The 27 open results comprise 22 with passing original assertions but unresolved
-memory/descriptor evidence, two prerequisite skips, and three with assertion
+Additional original-script coverage includes random-sort permutations,
+compressed sort output and compressor process handling, and nproc's simulated
+cgroup quotas. All four scripts pass natively; the quota test uses its original
+disposable chroot without changing host cgroups. Its Valgrind runtime staging
+remains pending. Twenty-one small shell scripts and generated factor test t37
+now also pass Valgrind, covering dates, cat line endings, dd case conversion,
+split suffixes, unique sorting, od byte order, printf hexadecimal escapes,
+df block headings, chmod modes/options, arch, false/true statuses, printenv,
+echo, and tail input positioning. Extended locale branches run where configured.
+
+The complete floating-point-limit sort script passes natively in C and French
+locales. Under Valgrind, both GNU and rboxc misorder the same minimum long-double
+values around zero; this remains an assertion failure. The original nohup
+script now also runs with a private terminal: all assertions pass, while
+replacement-input descriptors on failed execution and host-shell descriptor
+findings remain open. Compression assertions pass under Valgrind; the initial
+measurement leaves compressor exec logs incomplete. These are recorded as
+open results, and child tracing is enabled for the next compression run.
+
+The reviewed Valgrind evidence records 495 clean results out of 525 scripts
+or selections: 3,707 Perl cases and 15,605 candidate/descendant process logs.
+The 30 open results comprise 24 with passing original assertions but unresolved
+memory/descriptor evidence, two prerequisite skips, and four with assertion
 failures under instrumentation in both GNU and rboxc. The status report records
 these categories separately; they do not change the strict clean-pass count.
 Two env results remain open. The env script encounters shebang/argv differences
@@ -470,9 +489,9 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 615 scripts
+the original test evidence into `evidence/gnu-suite-coverage.json`: 619 scripts
 passed, three passed with profile skips, 13 have selected-case coverage, four
-skipped, 29 are excluded, and 69 remain pending. No recorded native failures
+skipped, 29 are excluded, and 65 remain pending. No recorded native failures
 remain in the executed selections. Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
 explicitly excluded with source hashes in inventory/gnu-suite-exclusions.json.
