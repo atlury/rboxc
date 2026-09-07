@@ -162,11 +162,11 @@ implementation. Its candidate memory evidence remains open for 263 shell logs
 and five cat/dd/tac logs. These include ordinary fatal-write cleanup still needed
 in cat and tac, as well as resources retained on SIGPIPE termination.
 
-The reviewed Valgrind evidence records 578 clean results out of 611 scripts
-or selections: 5,675 Perl cases and 34,895 candidate/descendant process logs.
-The 33 open results comprise 26 with passing original assertions but unresolved
-memory/descriptor evidence, two prerequisite skips, and five with assertion
-failures under instrumentation in both GNU and rboxc. The status report records
+The reviewed Valgrind evidence records 578 clean results out of 613 scripts
+or selections: 5,675 Perl cases and 36,991 candidate/descendant process logs.
+The 35 open results comprise 26 with passing original assertions but unresolved
+memory/descriptor evidence, two prerequisite skips, five with assertion
+failures under instrumentation, and two interrupted by watchdog deadlines. The status report records
 these categories separately; they do not change the strict clean-pass count.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
@@ -194,8 +194,10 @@ outside instrumentation, preserving short argv[0] in diagnostics. The actual
 `env -/` case remains instrumented. The runner requires a matching Valgrind
 command log for every one of the 106 cases, in addition to GNU's case-count and
 output assertions. Earlier path-prefixed diagnostic differences remain saved.
-The full help/normal-output and source-option inventory comparisons are still
-running.
+The full help/normal-output comparison finishes for rboxc, but GNU reaches the
+30-minute watchdog deadline. The source-option inventory comparison reaches
+the same deadline in both builds. These measurements remain incomplete; their
+logs are retained and no timeout is counted as an assertion pass.
 All 46 registered move scripts now pass natively and under Valgrind.
 The GNU oracle and helper build explicitly enable ACL and extended-attribute
 support. `evidence/gnu-build-profile.json` records configuration and oracle

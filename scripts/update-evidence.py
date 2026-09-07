@@ -37,7 +37,8 @@ for row in reviewed_valgrind['results']:
         assert assertions_pass, 'clean memory evidence requires passing original assertions'
         assert not row.get('execution_interruption'), 'interrupted execution is not a clean pass'
         assessment = 'clean'
-    elif row.get('execution_interruption'):
+    elif row.get('execution_interruption') or 124 in statuses:
+        # The runner's GNU timeout watchdog uses 124 for an expired deadline.
         assessment = 'interrupted'
     elif statuses == [77, 77]:
         assessment = 'prerequisite_skip'
