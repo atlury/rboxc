@@ -1,3 +1,5 @@
+#[path = "generated/applet_sed.rs"]
+mod applet_sed;
 #[path = "generated/applet_gzip.rs"]
 mod applet_gzip;
 #[path = "generated/applet_grep.rs"]
@@ -312,6 +314,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"rm", applet_rm::single_binary_main_rm),
     (b"rmdir", applet_rmdir::single_binary_main_rmdir),
     (b"sdiff", applet_sdiff::single_binary_main_sdiff),
+    (b"sed", applet_sed::single_binary_main_sed),
     (b"seq", applet_seq::single_binary_main_seq),
     (b"sha1sum", applet_sha1sum::single_binary_main_sha1sum),
     (b"sha224sum", applet_sha224sum::single_binary_main_sha224sum),
