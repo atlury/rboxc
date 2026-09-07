@@ -95,8 +95,8 @@ Recorded checks:
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 `tail` file records on return (including ignored follow mode), and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 634 of 641 scripts/selections.
-The executed inventory contains 581 shell scripts and 5,958 Perl cases.
+failures). The reviewed original GNU runner now passes 635 of 642 scripts/selections.
+The executed inventory contains 582 shell scripts and 5,958 Perl cases.
 Forty-seven Perl scripts run their complete
 runtime case lists; 13 others retain explicit case selections. Case-count
 checks also cover scripts that call GNU's Perl harness more than once.
@@ -172,6 +172,12 @@ The complete I/O-error script also passes its assertions, with 1,336 logs per
 implementation. Its candidate memory evidence remains open for 263 shell logs
 and five cat/dd/tac logs. These include ordinary fatal-write cleanup still needed
 in cat and tac, as well as resources retained on SIGPIPE termination.
+The separate original write-error responsiveness script now passes natively in
+both builds: 37 writer configurations across 27 commands complete 74 bounded
+/dev/full and closed-pipe checks per implementation. Its original memory limits
+and per-writer deadlines remain in effect. evidence/write-responsiveness.json
+records the command coverage and hashed logs; this native resource measurement
+is separate from the instrumented I/O-error script.
 
 A separately built cat/tac candidate now closes its named input and releases
 working buffers on normal and fatal exits. Tac also closes its cached temporary
@@ -588,9 +594,9 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 623 scripts
+the original test evidence into `evidence/gnu-suite-coverage.json`: 624 scripts
 passed, 13 have selected-case coverage, eight are skipped, 29 are excluded,
-and 60 remain pending. No recorded native failures
+and 59 remain pending. No recorded native failures
 remain in the executed selections. Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
 explicitly excluded with source hashes in inventory/gnu-suite-exclusions.json.
