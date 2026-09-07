@@ -1,0 +1,59 @@
+{
+  "scope": "Full original native traversal memory measurement, preserving GNU baseline probes and 35000 KiB additional allowance; this is not an instrumented memory claim",
+  "script": "tests/rm/many-dir-entries-vs-OOM.sh",
+  "script_sha256": "ef09dc5b5e789addb50ff3673835982c1984f0858ffddbe154ef3797a210a5e8",
+  "report": "evidence/raw/gnu-reviewed-native-many-directory-entries.json",
+  "report_sha256": "49d4302f11e5d9ad4a8a34881cdbcb6c6ad8bd0633715d50434f0d3a25a80e12",
+  "directory_entries": 200000,
+  "additional_allowance_kib": 35000,
+  "outcomes": {
+    "gnu": {
+      "status": 0,
+      "elapsed_seconds": 3.413,
+      "binary_sha256": "e6315e13777dbe09ecd215dc2baa799db806a57f1cb59742d591273140b6c424",
+      "log": "evidence/raw/reviewed-tests-rm-many-dir-entries-vs-OOM.sh-gnu-rboxc-upstream-k6c2wem5.log",
+      "log_sha256": "b89d9069281c70c1ce4a1dde1d581fe0d44b65d428b588c64c3b83d8260e20ae",
+      "traversals": [
+        {
+          "command": "du -sh d",
+          "baseline_kib": 14004,
+          "limit_kib": 49004
+        },
+        {
+          "command": "chmod -R 700 d",
+          "baseline_kib": 14004,
+          "limit_kib": 49004
+        },
+        {
+          "command": "rm -rf d",
+          "baseline_kib": 14004,
+          "limit_kib": 49004
+        }
+      ]
+    },
+    "rboxc": {
+      "status": 0,
+      "elapsed_seconds": 3.413,
+      "binary_sha256": "44fc2cff5bdb05a1a697faa933304fb8f879fa5a3987fe2367a8d98564d16620",
+      "log": "evidence/raw/reviewed-tests-rm-many-dir-entries-vs-OOM.sh-rboxc-rboxc-upstream-bkhbcq0n.log",
+      "log_sha256": "d93fc853133e16422363663460599e7e0a588de33387061082437ba6f810d3ec",
+      "traversals": [
+        {
+          "command": "du -sh d",
+          "baseline_kib": 15004,
+          "limit_kib": 50004
+        },
+        {
+          "command": "chmod -R 700 d",
+          "baseline_kib": 15004,
+          "limit_kib": 50004
+        },
+        {
+          "command": "rm -rf d",
+          "baseline_kib": 15004,
+          "limit_kib": 50004
+        }
+      ]
+    }
+  }
+}

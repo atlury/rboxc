@@ -1,7 +1,7 @@
 {
   "scope": "reviewed original GNU scripts and selected compatibility cases; unreviewed tests remain open",
-  "passed": 636,
-  "total": 643,
+  "passed": 637,
+  "total": 644,
   "results": [
     {
       "script": "tests/expr/expr.pl",
@@ -21546,6 +21546,49 @@
         },
         "test_shell": "/bin/sh",
         "elapsed_seconds": 51.672
+      },
+      "pass": true,
+      "state": "pass"
+    },
+    {
+      "script": "tests/rm/many-dir-entries-vs-OOM.sh",
+      "command": "rm",
+      "commands": [
+        "rm",
+        "du",
+        "chmod"
+      ],
+      "sha256": "ef09dc5b5e789addb50ff3673835982c1984f0858ffddbe154ef3797a210a5e8",
+      "clean_environment": true,
+      "expensive": true,
+      "timeout_seconds": 600,
+      "valgrind": false,
+      "valgrind_reason": "The original measures native baseline virtual-memory use and imposes an additional 35000 KiB allowance for 200000 directory entries. These original resource limits are retained; instrumented traversal is covered separately.",
+      "gnu": {
+        "status": 0,
+        "log": "evidence/raw/reviewed-tests-rm-many-dir-entries-vs-OOM.sh-gnu-rboxc-upstream-k6c2wem5.log",
+        "binary_sha256": "e6315e13777dbe09ecd215dc2baa799db806a57f1cb59742d591273140b6c424",
+        "runner_source_sha256": "8ff396228c64c108addf5a9fe1ccf39b0e5a845e0d1a7668db4a77f3d5746e84",
+        "config_header_sha256": "3efdc0305e0ca78bcc5853051e28c538da49388988303b6bdbb0063289362b51",
+        "watchdog": {
+          "path": "/usr/lib/cargo/bin/coreutils/timeout",
+          "sha256": "48893b0fb21436b54619db80486e83ef39dfccaf1aefe83dfa00c02d6146e8c0"
+        },
+        "test_shell": "/bin/sh",
+        "elapsed_seconds": 3.413
+      },
+      "rboxc": {
+        "status": 0,
+        "log": "evidence/raw/reviewed-tests-rm-many-dir-entries-vs-OOM.sh-rboxc-rboxc-upstream-bkhbcq0n.log",
+        "binary_sha256": "44fc2cff5bdb05a1a697faa933304fb8f879fa5a3987fe2367a8d98564d16620",
+        "runner_source_sha256": "8ff396228c64c108addf5a9fe1ccf39b0e5a845e0d1a7668db4a77f3d5746e84",
+        "config_header_sha256": "3efdc0305e0ca78bcc5853051e28c538da49388988303b6bdbb0063289362b51",
+        "watchdog": {
+          "path": "/usr/lib/cargo/bin/coreutils/timeout",
+          "sha256": "48893b0fb21436b54619db80486e83ef39dfccaf1aefe83dfa00c02d6146e8c0"
+        },
+        "test_shell": "/bin/sh",
+        "elapsed_seconds": 3.413
       },
       "pass": true,
       "state": "pass"

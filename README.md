@@ -95,8 +95,8 @@ Recorded checks:
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 `tail` file records on return (including ignored follow mode), and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 636 of 643 scripts/selections.
-The executed inventory contains 583 shell scripts and 5,958 Perl cases.
+failures). The reviewed original GNU runner now passes 637 of 644 scripts/selections.
+The executed inventory contains 584 shell scripts and 5,958 Perl cases.
 Forty-seven Perl scripts run their complete
 runtime case lists; 13 others retain explicit case selections. Case-count
 checks also cover scripts that call GNU's Perl harness more than once.
@@ -172,6 +172,13 @@ The complete I/O-error script also passes its assertions, with 1,336 logs per
 implementation. Its candidate memory evidence remains open for 263 shell logs
 and five cat/dd/tac logs. The staged candidate below repairs the two normal
 cat/tac write exits; the other three logs follow SIGPIPE termination.
+The original large-directory memory test now also passes natively for rm,
+du, and chmod over 200,000 entries. Its additional 35,000 KiB allowance remains
+unchanged: GNU measures a 14,004 KiB baseline and uses a 49,004 KiB limit;
+rboxc measures 15,004 KiB and uses 50,004 KiB for each traversal. Both complete
+the script in 3.413 seconds in this run.
+`evidence/directory-traversal-memory.json` records the measured limits and log
+hashes. This native resource measurement is separate from Valgrind coverage.
 The separate original write-error responsiveness script now passes natively in
 both builds: 37 writer configurations across 27 commands complete 74 bounded
 /dev/full and closed-pipe checks per implementation. Its original memory limits
@@ -372,7 +379,7 @@ rboxc. Execution times are recorded for
 new runs. Named native batches
 can be merged with scripts/merge-reviewed-evidence.py --native after completion.
 
-All 44 reviewed rm scripts pass natively and under Valgrind, including
+Forty-four reviewed rm scripts pass natively and under Valgrind, including
 interactive decisions, inaccessible directories, deep trees, and disposable
 read-only and cross-filesystem fixtures. All five stty scripts and tty pass
 natively with a private controlling terminal; the large stty pair matrix still
@@ -623,9 +630,9 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 625 scripts
+the original test evidence into `evidence/gnu-suite-coverage.json`: 626 scripts
 passed, 13 have selected-case coverage, eight are skipped, 29 are excluded,
-and 58 remain pending. No recorded native failures
+and 57 remain pending. No recorded native failures
 remain in the executed selections. Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
 explicitly excluded with source hashes in inventory/gnu-suite-exclusions.json.

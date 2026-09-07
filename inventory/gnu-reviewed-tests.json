@@ -9755,5 +9755,20 @@
     "upstream_valgrind": true,
     "timeout_seconds": 900,
     "profile_note": "Full original 9 by 9 bounded reservoir-sampling matrix. The original invokes Valgrind itself; the instrumented profile captures its logs and traces the launcher exec while preserving the original leak-check and exit-status options."
+  },
+  {
+    "script": "tests/rm/many-dir-entries-vs-OOM.sh",
+    "command": "rm",
+    "commands": [
+      "rm",
+      "du",
+      "chmod"
+    ],
+    "sha256": "ef09dc5b5e789addb50ff3673835982c1984f0858ffddbe154ef3797a210a5e8",
+    "clean_environment": true,
+    "expensive": true,
+    "timeout_seconds": 600,
+    "valgrind": false,
+    "valgrind_reason": "The original measures native baseline virtual-memory use and imposes an additional 35000 KiB allowance for 200000 directory entries. These original resource limits are retained; instrumented traversal is covered separately."
   }
 ]
