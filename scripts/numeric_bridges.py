@@ -44,6 +44,8 @@ def function(text, name):
 
 
 def prepare(root, name, source, stage):
+    if name not in ('sort', 'printf', 'od', 'numfmt', 'seq'):
+        return source, None
     original = source.read_text()
     text = original
     notice = re.match(r'\s*(/\*.*?\*/)', original, re.S)[1]

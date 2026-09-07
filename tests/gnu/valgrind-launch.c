@@ -8,6 +8,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <valgrind/valgrind.h>
+#ifndef RBOXC_VALGRIND_EXECUTABLE
+#define RBOXC_VALGRIND_EXECUTABLE "/usr/bin/valgrind"
+#endif
 
 int main(int argc, char **argv)
 {
@@ -41,7 +44,7 @@ int main(int argc, char **argv)
   char **args = calloc((size_t)argc + 10, sizeof *args);
   if (!args)
     return 125;
-  char *options[] = {"/usr/bin/valgrind", "--leak-check=full",
+  char *options[] = {RBOXC_VALGRIND_EXECUTABLE, "--leak-check=full",
                     "--show-leak-kinds=all", "--track-fds=yes",
                     "--trace-children=yes", log, executable, "--rboxc-dispatch"};
   for (size_t i = 0; i < sizeof options / sizeof *options; i++)

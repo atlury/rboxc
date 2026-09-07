@@ -66,10 +66,18 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The current release executable is 2,400,600 bytes (2.29 MiB), dynamically linked
+The current release executable is 2,405,616 bytes (2.29 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
+
+The current release dynamically links libacl and libattr for GNU metadata
+helpers. A separate static-link trial removes those two runtime dependencies
+and grows the executable by 7,784 bytes to 2,413,400 bytes. All five selected
+original metadata scripts pass natively and under Valgrind on that trial.
+It is separate evidence, not a change to the main release's link profile.
+Building the ACL and Attr libraries from pinned sources and incorporating their
+commands is planned after Coreutils; other shared dependencies remain.
 
 Recorded checks:
 
@@ -77,21 +85,21 @@ Recorded checks:
 | --- | --- | --- |
 | GNU help/version comparisons | 428/428 pass | Both multicall and symlink entry forms |
 | Valgrind help paths | 107/107 pass | Help only |
-| Normal/error behavior fixtures | 287/287 match GNU | All 107 commands; streams, status, contents, modes, owners, link topology |
-| Valgrind normal/error fixtures | 287/287 clean | Bounded fixtures; retained allocations recorded separately |
-| Instrumented GNU comparisons | 287/287 pass | Saved Valgrind observations, assessed separately from native arithmetic |
-| Original GNU cp tests | 89 pass, 13 prerequisite skips, 30 excluded | 66 scripts, root and ordinary-user profiles |
+| Normal/error behavior fixtures | 291/291 match GNU | All 107 commands; streams, status, contents, modes, owners, link topology |
+| Valgrind normal/error fixtures | 291/291 clean | Bounded fixtures; retained allocations recorded separately |
+| Instrumented GNU comparisons | 291/291 pass | Saved Valgrind observations, assessed separately from native arithmetic |
+| Original GNU cp tests | 91 pass, 11 prerequisite skips, 30 excluded | 66 scripts, root and ordinary-user profiles |
 | cp mutation comparisons | 879 pass | Bounded local backup/removal/error fixtures |
 | cp backup comparisons | 75 pass | Backup names and preserved fixture data |
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
-non-following `tail` file records, and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 472 of 476 scripts/selections.
-The executed inventory contains 432 shell scripts and 3,203 Perl cases.
-Thirty-four Perl scripts run their complete
+`tail` file records on return (including ignored follow mode), and `tr` construct lists (including parse
+failures). The reviewed original GNU runner now passes 512 of 515 scripts/selections.
+The executed inventory contains 470 shell scripts and 3,326 Perl cases.
+Thirty-five Perl scripts run their complete
 runtime case lists; 10 others retain explicit case selections. Case-count
 checks also cover scripts that call GNU's Perl harness more than once.
-GNU's three generic scripts pass across all 107 commands. New coverage includes
+GNU's seven generic scripts pass across all 107 commands. New coverage includes
 user lookup, processor counts, working directories, permission-sensitive touch
 and truncate behavior, checksums, encodings, UTF-8 text processing, and tee.
 
@@ -105,8 +113,8 @@ script; `--report-name` gives independent batches distinct evidence files.
 New results record tested binary hashes, and exec-wrapper tests can request
 Valgrind child tracing.
 
-The reviewed Valgrind evidence records 388 clean results out of 396 scripts
-or selections: 1,788 Perl cases and 6,161 candidate/descendant process logs.
+The reviewed Valgrind evidence records 417 clean results out of 425 scripts
+or selections: 2,937 Perl cases and 7,653 candidate/descendant process logs.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
 memory and descriptors retained by host script interpreters. Both pass natively.
@@ -114,15 +122,16 @@ Matching GNU findings are not counted as clean.
 Three more results remain open: dd's intentionally closed-stderr diagnostics,
 install's external strip children whose successful exec leaves incomplete logs,
 and cat's injected pipe-creation failure interfering with Valgrind startup.
-All 46 registered move scripts have results: 45 pass natively and under
-Valgrind; the ACL script skips because the configured GNU profile lacks ACL
-support. That profile was built without libacl/libattr development headers,
-so ACL and extended-attribute support still need a separate validated build.
+All 46 registered move scripts now pass natively and under Valgrind.
+The GNU oracle and helper build explicitly enable ACL and extended-attribute
+support. `evidence/gnu-build-profile.json` records configuration and oracle
+hashes. Original move, mkdir, ls, and xattr metadata scripts pass in both modes;
+previous prerequisite skips remain in the observation history.
 
 Reproducible cp/mv finalizers now release the destination-directory descriptor
 and per-command source/destination record tables on normal and fatal exits.
 Eight additional behavior fixtures cover multiple operands and setup errors.
-The original cp rerun remains at 89 passes and 13 prerequisite skips, with no
+The original cp rerun remains at 91 passes and 11 prerequisite skips, with no
 GNU mismatches. Move coverage includes cross-filesystem hard links, metadata,
 special files, casefolding, overwrite decisions, and permission failures.
 A private controlling-input terminal enables the original interactive test;
@@ -202,7 +211,7 @@ the complete 51-case Perl suite, and the parallel script. A reproducible bound
 ends trial division after the final prime-table block, avoiding a terminal
 lookahead beyond the table when double-limb division leaves an unaligned index.
 This resolves all sixteen previously failing ranges; their earlier results
-remain in the observation history. Generated t38 through t40, the Perl suite,
+remain in the observation history. Generated t21 and t38 through t40, the Perl suite,
 and the parallel script also pass Valgrind. Execution times are recorded for
 new runs. Named native batches
 can be merged with scripts/merge-reviewed-evidence.py --native after completion.
@@ -218,12 +227,25 @@ Every registered df script has a native result: twelve pass and two skip
 because this host lacks the requested user-namespace/proc and rootfs profiles.
 The six newly applicable scripts also pass Valgrind; rootfs remains an explicit
 instrumentation skip. The GNU Hurd-only id script skips on Linux. These two
-Valgrind prerequisite skips account for the other open results above.
+Valgrind prerequisite skips account for two more open results above. The eighth
+open result is ls/stat-free-symlinks: both GNU and Rust pass natively, while
+Valgrind adds one stat call to both and violates the script's original syscall
+count assertion. That instrumentation difference is not counted as a pass.
+
+Additional original ls tests cover color, locale, timestamps, removed working
+directories, d_type, symlinks, and extended attributes. The complete 123-case
+tail Perl script passes natively and under Valgrind. The date debug script now
+passes after owned timezone and adjusted-format storage gained cleanup on
+fatal exits; tail also frees its table when follow mode is ignored for piped
+stdin. Four new behavior fixtures cover these paths. Original option alias,
+usage/getopt consistency, and documentation-reference scripts pass across all
+107 commands. A native Valgrind launcher can bypass its shell wrapper for
+removed-directory tests, and alternative candidate binaries require separately
+named reports to avoid overwriting main-release evidence.
 
 The complete expand, fmt, fold, and uniq Perl suites now pass natively,
 including 1,020 uniq cases and 47 fold cases with UTF-8 coverage. Their expanded
-Valgrind run is still in progress; earlier selections remain recorded until it
-finishes. Test locale aliases explicitly map normalized encoding names to the
+Valgrind runs also pass in full. Test locale aliases explicitly map normalized encoding names to the
 prepared data, preventing silent C-locale fallback. Ordinary-user tests can now
 enter the private local-files NSS namespace before dropping credentials. The
 new chgrp, touch, truncate, mkdir, and id permission scripts pass Valgrind.
@@ -313,9 +335,9 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 505 scripts
-passed, three passed with profile skips, 10 have selected-case coverage, nine
-skipped, 26 are excluded, and 180 remain pending. No recorded native failures
+the original test evidence into `evidence/gnu-suite-coverage.json`: 546 scripts
+passed, three passed with profile skips, 10 have selected-case coverage, seven
+skipped, 26 are excluded, and 141 remain pending. No recorded native failures
 remain in the executed selections. Partial selections and skips
 are not full-suite passes; passing scripts can contain platform-conditional
 branches. No command is certified complete.
@@ -386,7 +408,10 @@ and an overflow rejection check under Valgrind, with zero live heap.
 
 The current host needs GCC, GNU Make, Python 3, binutils, Clang/LLVM 21 development
 libraries, CMake, Rust 1.93.0 with rustfmt, the pinned nightly, and GNU Coreutils
-9.11 source. Test dependencies include Valgrind 3.26, strace, Perl, and ordinary
+9.11 source, plus libacl and libattr development headers and libraries.
+For an existing build without metadata support, run
+`sh scripts/prepare-coreutils.sh --reconfigure` before translation and assembly.
+Test dependencies include Valgrind 3.26, strace, Perl, attr tools, and ordinary
 GNU shell utilities. Optional filesystem/locale prerequisites produce recorded
 skips. `inventory/sources.json` pins the GNU archive hash and C2Rust revision.
 The default GNU source location is `/opt/src/coreutils-9.11`; set

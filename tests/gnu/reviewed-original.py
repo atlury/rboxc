@@ -42,10 +42,14 @@ def main():
     manifest = json.loads((ROOT/'inventory/gnu-reviewed-tests.json').read_text())
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--valgrind', action='store_true')
+    parser.add_argument('--candidate', type=Path, default=ROOT/'target/release/rboxc',
+                        help='Candidate executable for a separately named comparison batch')
     parser.add_argument('--report-name', help='Separate evidence filename stem for independent test batches')
     parser.add_argument('commands', nargs='*')
     parser.add_argument('--script', action='append', default=[])
     options = parser.parse_args()
+    candidate_binary = options.candidate.resolve(strict=True)
+    assert candidate_binary == ROOT/'target/release/rboxc' or options.report_name, 'alternate candidates require a separate report'
     instrument = options.valgrind
     if instrument:
         manifest = [row for row in manifest if row.get('valgrind')]
@@ -71,18 +75,24 @@ def main():
         temporary.replace(destination)
         return results
 
-    native_launcher = None
-    if instrument and any(row.get('native_launcher') and included(row) for row in manifest):
-        native_launcher = ROOT/'build/valgrind-launch'
+    native_launchers = {}
+    for direct in sorted({bool(row.get('direct_valgrind')) for row in manifest
+                          if instrument and row.get('native_launcher') and included(row)}):
+        native_launcher = ROOT/('build/valgrind-launch-direct' if direct else 'build/valgrind-launch')
+        extra = ['-DRBOXC_VALGRIND_EXECUTABLE="/usr/bin/valgrind.bin"'] if direct else []
+        if direct:
+            assert Path('/usr/bin/valgrind.bin').read_bytes()[:4] == b'\x7fELF'
         subprocess.run(['cc', '-O2', '-Wall', '-Wextra', '-Werror',
+                        *extra,
                         ROOT/'tests/gnu/valgrind-launch.c', '-o', native_launcher], check=True)
+        native_launchers[direct] = native_launcher
     tmpdir_adapter = None
     if instrument and any(row.get('valgrind_tmpdir_adapter') and included(row) for row in manifest):
         tmpdir_adapter = ROOT/'build/valgrind-tmpdir.so'
         subprocess.run(['cc', '-shared', '-fPIC', '-O2', '-Wall', '-Wextra', '-Werror',
                         ROOT/'tests/gnu/valgrind-tmpdir.c', '-o', tmpdir_adapter], check=True)
     binary_hashes = {name: hashlib.sha256(path.read_bytes()).hexdigest() for name, path in
-                     [('gnu', BUILD/'src/coreutils'), ('rboxc', ROOT/'target/release/rboxc')]}
+                     [('gnu', BUILD/'src/coreutils'), ('rboxc', candidate_binary)]}
     for row in manifest:
         if not included(row):
             continue
@@ -93,7 +103,7 @@ def main():
             with tempfile.TemporaryDirectory(prefix='rboxc-upstream-') as temporary:
                 run = Path(temporary)
                 (run/'src').mkdir()
-                candidate = BUILD/'src/coreutils' if implementation == 'gnu' else ROOT/'target/release/rboxc'
+                candidate = BUILD/'src/coreutils' if implementation == 'gnu' else candidate_binary
                 credentials = {}
                 helper = BUILD/'src/getlimits'
                 config_header = BUILD/'lib/config.h'
@@ -128,7 +138,7 @@ def main():
                     elif row.get('shared_runtime'):
                         runtime_memory_dir.chmod(0o1777)
                 if instrument and row.get('native_launcher'):
-                    shutil.copy2(native_launcher, run/'src/.valgrind-launch')
+                    shutil.copy2(native_launchers[bool(row.get('direct_valgrind'))], run/'src/.valgrind-launch')
                 tmpdir_library = None
                 if instrument and row.get('valgrind_tmpdir_adapter'):
                     assert not row.get('native_launcher'), 'TMPDIR adapter requires the shell launcher'
@@ -161,6 +171,8 @@ def main():
                     else:
                         (run/'src'/command).symlink_to(candidate)
                 (run/'src/getlimits').symlink_to(helper)
+                if row.get('python3_helper'):
+                    (run/'src/python').symlink_to(sys.executable)
                 environment = {
                     **({'HOME': str(run), 'TMPDIR': str(run)} if row.get('clean_environment') else os.environ), 'PATH': f'{run}/src:/opt/gnu/coreutils-9.11/bin:/usr/bin:/bin',
                     'LC_ALL': 'C', 'LANGUAGE': 'C', 'TZ': 'UTC0', 'built_programs': ' '.join(row.get('built_programs', commands)),
@@ -238,6 +250,7 @@ def main():
                     shutil.copy2(ROOT/'tests/gnu/terminal-profile.py', driver)
                     command = [sys.executable, str(driver), *command]
                 started = time.monotonic()
+                config_hash = hashlib.sha256(config_header.read_bytes()).hexdigest()
                 completed = subprocess.run(['timeout', '--kill-after=5s', str(row.get('timeout_seconds', 60))+'s', *command],
                                            cwd=fixture, env=environment, capture_output=True, **launch_credentials)
                 assert os.getgroups() == parent_groups, 'parent group membership changed'
@@ -245,6 +258,7 @@ def main():
                 log.write_bytes(completed.stdout+completed.stderr)
                 outcomes[implementation] = {'status': completed.returncode, 'log': str(log.relative_to(ROOT)),
                                             'binary_sha256': binary_hashes[implementation],
+                                            'config_header_sha256': config_hash,
                                             'elapsed_seconds': round(time.monotonic()-started, 3)}
                 if row.get('terminal'):
                     profiles = re.findall(rb'^RBOXC_TERMINAL_PROFILE (.+)$', completed.stderr, re.M)

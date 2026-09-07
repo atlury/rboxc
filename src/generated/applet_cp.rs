@@ -3693,42 +3693,6 @@ pub unsafe extern "C" fn single_binary_main_cp(
             });
         };
     }
-    if x.require_preserve_xattr {
-        if 0 != 0 {
-            error(
-                1 as ::core::ffi::c_int,
-                0 as ::core::ffi::c_int,
-                dcgettext(
-                    ::core::ptr::null::<::core::ffi::c_char>(),
-                    b"cannot preserve extended attributes, cp is built without xattr support\0"
-                        .as_ptr() as *const ::core::ffi::c_char,
-                    5 as ::core::ffi::c_int,
-                ),
-            );
-            if 1 as ::core::ffi::c_int != 0 as ::core::ffi::c_int {
-                unreachable!();
-            } else {
-            };
-        } else {
-            ({
-                let __errstatus: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
-                error(
-                    __errstatus,
-                    0 as ::core::ffi::c_int,
-                    dcgettext(
-                        ::core::ptr::null::<::core::ffi::c_char>(),
-                        b"cannot preserve extended attributes, cp is built without xattr support\0"
-                            .as_ptr() as *const ::core::ffi::c_char,
-                        5 as ::core::ffi::c_int,
-                    ),
-                );
-                if __errstatus != 0 as ::core::ffi::c_int {
-                    unreachable!();
-                } else {
-                };
-            });
-        };
-    }
     hash_init();
     let mut ok: bool = do_copy(
         argc - optind,
