@@ -1,0 +1,865 @@
+{
+  "scope": "Focused native/Valgrind comparison through rboxc hello, including owned greeting storage on conversion and output errors.",
+  "runtime_helpers": {
+    "/root/rboxc/target/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174"
+  },
+  "binary": "/root/rboxc/target/release/rboxc",
+  "binary_sha256": "b1febc72cff10f7c970291b672e6a357b55e1d2fd771594e94040192b25540d0",
+  "gnu_binary_sha256": "a708c4dd644497dbe1d0e47486b8a470fe5f01e55cfbabe5f43ea1854dd4a273",
+  "gnu_binary": "/root/rboxc/build/gnu-hello/hello",
+  "driver_sha256": "c1783b44df6560dfd701767f16e697f1c16e0b16ca4def1db55a9be9b4ecc0cc",
+  "passed": 17,
+  "total": 17,
+  "results": [
+    {
+      "name": "default",
+      "arguments_hex": [],
+      "locale": "C",
+      "sink": "pipe",
+      "expected_status": 0,
+      "pass": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "48656c6c6f2c20776f726c64210a",
+          "stderr": ""
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "48656c6c6f2c20776f726c64210a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/00-gnu-valgrind.log",
+          "log_sha256": "b6592b9bdf6ef643650c89795b5616fa0d86c8780187feca3d1f15bd53e406cd"
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "48656c6c6f2c20776f726c64210a",
+          "stderr": ""
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "48656c6c6f2c20776f726c64210a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/00-rboxc-valgrind.log",
+          "log_sha256": "bb4817869fe31f168b0b08a99a429f3fe8dccff30c29452dead0bf0ec411854e"
+        }
+      }
+    },
+    {
+      "name": "traditional",
+      "arguments_hex": [
+        "2d2d747261646974696f6e616c"
+      ],
+      "locale": "C",
+      "sink": "pipe",
+      "expected_status": 0,
+      "pass": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "68656c6c6f2c20776f726c640a",
+          "stderr": ""
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "68656c6c6f2c20776f726c640a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/01-gnu-valgrind.log",
+          "log_sha256": "88055369c295e1945fbc86450f7ce8a1fd657c1041030d985a6f418ed6f22a68"
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "68656c6c6f2c20776f726c640a",
+          "stderr": ""
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "68656c6c6f2c20776f726c640a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/01-rboxc-valgrind.log",
+          "log_sha256": "30217a19c93823e4be8970ba22116a1f7410a4bd5cb6e9d4d361399e90ba38ce"
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "arguments_hex": [
+        "2d2d6772656574696e673d"
+      ],
+      "locale": "C",
+      "sink": "pipe",
+      "expected_status": 0,
+      "pass": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "0a",
+          "stderr": ""
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "0a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/02-gnu-valgrind.log",
+          "log_sha256": "b42c0f1177817cb548fb0da77f4782348f8e68d4f65fd0efa5e9575576983486"
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "0a",
+          "stderr": ""
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "0a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/02-rboxc-valgrind.log",
+          "log_sha256": "bc8dd319735055d02799358aac4cea58b23fc45e65c1c1f084486edc70c63870"
+        }
+      }
+    },
+    {
+      "name": "custom",
+      "arguments_hex": [
+        "2d67",
+        "6f6e652074776f"
+      ],
+      "locale": "C",
+      "sink": "pipe",
+      "expected_status": 0,
+      "pass": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "6f6e652074776f0a",
+          "stderr": ""
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "6f6e652074776f0a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/03-gnu-valgrind.log",
+          "log_sha256": "dce4761001ab406d04271280f282aeb4e2e3e455d1bb0eecf87f6df8d432e1a8"
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "6f6e652074776f0a",
+          "stderr": ""
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "6f6e652074776f0a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/03-rboxc-valgrind.log",
+          "log_sha256": "89565a45463ee23e04141e4dd97efc12d783ce3a98d2951e9ff5fdff021b814e"
+        }
+      }
+    },
+    {
+      "name": "last-option",
+      "arguments_hex": [
+        "2d67",
+        "6669727374",
+        "2d74",
+        "2d67",
+        "6c617374"
+      ],
+      "locale": "C",
+      "sink": "pipe",
+      "expected_status": 0,
+      "pass": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "6c6173740a",
+          "stderr": ""
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "6c6173740a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/04-gnu-valgrind.log",
+          "log_sha256": "bd8c522a0cef94d1e340cbfa949792f9067ce6d03c4f8e57792a5eff41622c95"
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "6c6173740a",
+          "stderr": ""
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "6c6173740a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/04-rboxc-valgrind.log",
+          "log_sha256": "0033673370a9ab454e6bd36ce24a3a3be87812f7dfbe9aa2cc382cb9f8321925"
+        }
+      }
+    },
+    {
+      "name": "unicode",
+      "arguments_hex": [
+        "2d67",
+        "68c3a96c6c6f20e697a5e69cac"
+      ],
+      "locale": "C.utf8",
+      "sink": "pipe",
+      "expected_status": 0,
+      "pass": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "68c3a96c6c6f20e697a5e69cac0a",
+          "stderr": ""
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "68c3a96c6c6f20e697a5e69cac0a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/05-gnu-valgrind.log",
+          "log_sha256": "1e1b27a8975f802fdcd11906c50b8aa2fde9d0f60d0dfb8428cd3eddaa4aa13e"
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "68c3a96c6c6f20e697a5e69cac0a",
+          "stderr": ""
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "68c3a96c6c6f20e697a5e69cac0a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/05-rboxc-valgrind.log",
+          "log_sha256": "e274654ab43eb4861158ca352ff74b7a6116f1081ae16004109ae6882f35e6ec"
+        }
+      }
+    },
+    {
+      "name": "help",
+      "arguments_hex": [
+        "2d2d68656c70"
+      ],
+      "locale": "C",
+      "sink": "pipe",
+      "expected_status": 0,
+      "pass": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "55736167653a2068656c6c6f205b4f5054494f4e5d2e2e2e0a5072696e74206120667269656e646c792c20637573746f6d697a61626c65206772656574696e672e0a0a20202d742c202d2d747261646974696f6e616c2020202020202075736520747261646974696f6e616c206772656574696e670a20202d672c202d2d6772656574696e673d544558542020202020757365205445585420617320746865206772656574696e67206d6573736167650a0a2020202020202d2d68656c702020202020646973706c617920746869732068656c7020616e6420657869740a2020202020202d2d76657273696f6e20206f75747075742076657273696f6e20696e666f726d6174696f6e20616e6420657869740a0a5265706f7274206275677320746f3a206275672d68656c6c6f40676e752e6f72670a474e552048656c6c6f20686f6d6520706167653a203c68747470733a2f2f7777772e676e752e6f72672f736f6674776172652f68656c6c6f2f3e0a47656e6572616c2068656c70207573696e6720474e5520736f6674776172653a203c68747470733a2f2f7777772e676e752e6f72672f67657468656c702f3e0a5265706f727420474e552048656c6c6f207472616e736c6174696f6e206275677320746f203c68747470733a2f2f7472616e736c6174696f6e70726f6a6563742e6f72672f7465616d2f3e0a",
+          "stderr": ""
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "55736167653a2068656c6c6f205b4f5054494f4e5d2e2e2e0a5072696e74206120667269656e646c792c20637573746f6d697a61626c65206772656574696e672e0a0a20202d742c202d2d747261646974696f6e616c2020202020202075736520747261646974696f6e616c206772656574696e670a20202d672c202d2d6772656574696e673d544558542020202020757365205445585420617320746865206772656574696e67206d6573736167650a0a2020202020202d2d68656c702020202020646973706c617920746869732068656c7020616e6420657869740a2020202020202d2d76657273696f6e20206f75747075742076657273696f6e20696e666f726d6174696f6e20616e6420657869740a0a5265706f7274206275677320746f3a206275672d68656c6c6f40676e752e6f72670a474e552048656c6c6f20686f6d6520706167653a203c68747470733a2f2f7777772e676e752e6f72672f736f6674776172652f68656c6c6f2f3e0a47656e6572616c2068656c70207573696e6720474e5520736f6674776172653a203c68747470733a2f2f7777772e676e752e6f72672f67657468656c702f3e0a5265706f727420474e552048656c6c6f207472616e736c6174696f6e206275677320746f203c68747470733a2f2f7472616e736c6174696f6e70726f6a6563742e6f72672f7465616d2f3e0a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/06-gnu-valgrind.log",
+          "log_sha256": "69d642193af5d32c78601f67e9b8394b7f7a4f566032ceef4446b23424fab36d"
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "55736167653a2068656c6c6f205b4f5054494f4e5d2e2e2e0a5072696e74206120667269656e646c792c20637573746f6d697a61626c65206772656574696e672e0a0a20202d742c202d2d747261646974696f6e616c2020202020202075736520747261646974696f6e616c206772656574696e670a20202d672c202d2d6772656574696e673d544558542020202020757365205445585420617320746865206772656574696e67206d6573736167650a0a2020202020202d2d68656c702020202020646973706c617920746869732068656c7020616e6420657869740a2020202020202d2d76657273696f6e20206f75747075742076657273696f6e20696e666f726d6174696f6e20616e6420657869740a0a5265706f7274206275677320746f3a206275672d68656c6c6f40676e752e6f72670a474e552048656c6c6f20686f6d6520706167653a203c68747470733a2f2f7777772e676e752e6f72672f736f6674776172652f68656c6c6f2f3e0a47656e6572616c2068656c70207573696e6720474e5520736f6674776172653a203c68747470733a2f2f7777772e676e752e6f72672f67657468656c702f3e0a5265706f727420474e552048656c6c6f207472616e736c6174696f6e206275677320746f203c68747470733a2f2f7472616e736c6174696f6e70726f6a6563742e6f72672f7465616d2f3e0a",
+          "stderr": ""
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "55736167653a2068656c6c6f205b4f5054494f4e5d2e2e2e0a5072696e74206120667269656e646c792c20637573746f6d697a61626c65206772656574696e672e0a0a20202d742c202d2d747261646974696f6e616c2020202020202075736520747261646974696f6e616c206772656574696e670a20202d672c202d2d6772656574696e673d544558542020202020757365205445585420617320746865206772656574696e67206d6573736167650a0a2020202020202d2d68656c702020202020646973706c617920746869732068656c7020616e6420657869740a2020202020202d2d76657273696f6e20206f75747075742076657273696f6e20696e666f726d6174696f6e20616e6420657869740a0a5265706f7274206275677320746f3a206275672d68656c6c6f40676e752e6f72670a474e552048656c6c6f20686f6d6520706167653a203c68747470733a2f2f7777772e676e752e6f72672f736f6674776172652f68656c6c6f2f3e0a47656e6572616c2068656c70207573696e6720474e5520736f6674776172653a203c68747470733a2f2f7777772e676e752e6f72672f67657468656c702f3e0a5265706f727420474e552048656c6c6f207472616e736c6174696f6e206275677320746f203c68747470733a2f2f7472616e736c6174696f6e70726f6a6563742e6f72672f7465616d2f3e0a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/06-rboxc-valgrind.log",
+          "log_sha256": "70dddee86a9191e53bcc4f2a6bd891cfc3d5bdfdc20323ffe5281fdf472cbd66"
+        }
+      }
+    },
+    {
+      "name": "version",
+      "arguments_hex": [
+        "2d2d76657273696f6e"
+      ],
+      "locale": "C",
+      "sink": "pipe",
+      "expected_status": 0,
+      "pass": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "68656c6c6f2028474e552048656c6c6f2920322e31322e330a436f70797269676874202843292032303236204672656520536f66747761726520466f756e646174696f6e2c20496e632e0a4c6963656e73652047504c76332b3a20474e552047504c2076657273696f6e2033206f72206c61746572203c68747470733a2f2f676e752e6f72672f6c6963656e7365732f67706c2e68746d6c3e2e0a54686973206973206672656520736f6674776172653a20796f7520617265206672656520746f206368616e676520616e64207265646973747269627574652069742e0a5468657265206973204e4f2057415252414e54592c20746f2074686520657874656e74207065726d6974746564206279206c61772e0a0a5772697474656e206279204b61726c2042657272792c2053616d69204b65726f6c612c204a696d204d65796572696e672c0a616e642052657562656e2054686f6d61732e0a",
+          "stderr": ""
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "68656c6c6f2028474e552048656c6c6f2920322e31322e330a436f70797269676874202843292032303236204672656520536f66747761726520466f756e646174696f6e2c20496e632e0a4c6963656e73652047504c76332b3a20474e552047504c2076657273696f6e2033206f72206c61746572203c68747470733a2f2f676e752e6f72672f6c6963656e7365732f67706c2e68746d6c3e2e0a54686973206973206672656520736f6674776172653a20796f7520617265206672656520746f206368616e676520616e64207265646973747269627574652069742e0a5468657265206973204e4f2057415252414e54592c20746f2074686520657874656e74207065726d6974746564206279206c61772e0a0a5772697474656e206279204b61726c2042657272792c2053616d69204b65726f6c612c204a696d204d65796572696e672c0a616e642052657562656e2054686f6d61732e0a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/07-gnu-valgrind.log",
+          "log_sha256": "cbcf46183d314148a1f900eb630521ef0d634b38f88bdd328699caf01268ec1a"
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "68656c6c6f2028474e552048656c6c6f2920322e31322e330a436f70797269676874202843292032303236204672656520536f66747761726520466f756e646174696f6e2c20496e632e0a4c6963656e73652047504c76332b3a20474e552047504c2076657273696f6e2033206f72206c61746572203c68747470733a2f2f676e752e6f72672f6c6963656e7365732f67706c2e68746d6c3e2e0a54686973206973206672656520736f6674776172653a20796f7520617265206672656520746f206368616e676520616e64207265646973747269627574652069742e0a5468657265206973204e4f2057415252414e54592c20746f2074686520657874656e74207065726d6974746564206279206c61772e0a0a5772697474656e206279204b61726c2042657272792c2053616d69204b65726f6c612c204a696d204d65796572696e672c0a616e642052657562656e2054686f6d61732e0a",
+          "stderr": ""
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "68656c6c6f2028474e552048656c6c6f2920322e31322e330a436f70797269676874202843292032303236204672656520536f66747761726520466f756e646174696f6e2c20496e632e0a4c6963656e73652047504c76332b3a20474e552047504c2076657273696f6e2033206f72206c61746572203c68747470733a2f2f676e752e6f72672f6c6963656e7365732f67706c2e68746d6c3e2e0a54686973206973206672656520736f6674776172653a20796f7520617265206672656520746f206368616e676520616e64207265646973747269627574652069742e0a5468657265206973204e4f2057415252414e54592c20746f2074686520657874656e74207065726d6974746564206279206c61772e0a0a5772697474656e206279204b61726c2042657272792c2053616d69204b65726f6c612c204a696d204d65796572696e672c0a616e642052657562656e2054686f6d61732e0a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/07-rboxc-valgrind.log",
+          "log_sha256": "337c575e0070aeb83fa01db6bcf4018f19d488e37af74ad0ff8c8807b276752b"
+        }
+      }
+    },
+    {
+      "name": "extra-operands",
+      "arguments_hex": [
+        "6669727374",
+        "7365636f6e64"
+      ],
+      "locale": "C",
+      "sink": "pipe",
+      "expected_status": 1,
+      "pass": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a206578747261206f706572616e643a2066697273740a547279202768656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a"
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a206578747261206f706572616e643a2066697273740a547279202768656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/08-gnu-valgrind.log",
+          "log_sha256": "bc544ba889b72bee249be69700933aac9483990a34fd829fc146d3a2837718ee"
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a206578747261206f706572616e643a2066697273740a547279202768656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a"
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a206578747261206f706572616e643a2066697273740a547279202768656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/08-rboxc-valgrind.log",
+          "log_sha256": "353646f77b8643eef55f0268e0dab04b7e9a00c0c6fc8dcea0b3c1047ad474b9"
+        }
+      }
+    },
+    {
+      "name": "missing-greeting",
+      "arguments_hex": [
+        "2d2d6772656574696e67"
+      ],
+      "locale": "C",
+      "sink": "pipe",
+      "expected_status": 1,
+      "pass": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a206f7074696f6e20272d2d6772656574696e672720726571756972657320616e20617267756d656e740a547279202768656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a"
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a206f7074696f6e20272d2d6772656574696e672720726571756972657320616e20617267756d656e740a547279202768656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/09-gnu-valgrind.log",
+          "log_sha256": "c86ee95563700b76081f1c9c834f096ddc3b483b34dd04a86d2958667ef3cb0c"
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a206f7074696f6e20272d2d6772656574696e672720726571756972657320616e20617267756d656e740a547279202768656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a"
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a206f7074696f6e20272d2d6772656574696e672720726571756972657320616e20617267756d656e740a547279202768656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/09-rboxc-valgrind.log",
+          "log_sha256": "f4939996392533bffbc765425d714220f13a5b191577b5606b517d156bac5987"
+        }
+      }
+    },
+    {
+      "name": "unknown-option",
+      "arguments_hex": [
+        "2d2d756e6b6e6f776e2d6f7074696f6e"
+      ],
+      "locale": "C",
+      "sink": "pipe",
+      "expected_status": 1,
+      "pass": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a20756e7265636f676e697a6564206f7074696f6e20272d2d756e6b6e6f776e2d6f7074696f6e270a547279202768656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a"
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a20756e7265636f676e697a6564206f7074696f6e20272d2d756e6b6e6f776e2d6f7074696f6e270a547279202768656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/10-gnu-valgrind.log",
+          "log_sha256": "4eba0c5b0e1c1a9308f5e1f27f94d7783dd1100b28719180c49663d47253213d"
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a20756e7265636f676e697a6564206f7074696f6e20272d2d756e6b6e6f776e2d6f7074696f6e270a547279202768656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a"
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a20756e7265636f676e697a6564206f7074696f6e20272d2d756e6b6e6f776e2d6f7074696f6e270a547279202768656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/10-rboxc-valgrind.log",
+          "log_sha256": "202154cdd3a56501b1ce7cd31c557215125c4e4f76f94f34da26a64ae974bf53"
+        }
+      }
+    },
+    {
+      "name": "invalid-utf8",
+      "arguments_hex": [
+        "2d67",
+        "ff"
+      ],
+      "locale": "C.utf8",
+      "sink": "pipe",
+      "expected_status": 1,
+      "pass": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a20636f6e76657273696f6e20746f2061206d756c74696279746520737472696e67206661696c65643a20496e76616c6964206f7220696e636f6d706c657465206d756c746962797465206f722077696465206368617261637465720a"
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a20636f6e76657273696f6e20746f2061206d756c74696279746520737472696e67206661696c65643a20496e76616c6964206f7220696e636f6d706c657465206d756c746962797465206f722077696465206368617261637465720a",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 8
+            }
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/11-gnu-valgrind.log",
+          "log_sha256": "a0afd2ec2e715dc8292efd274d2c70f0e174253b35609041e72e795170cc9960"
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a20636f6e76657273696f6e20746f2061206d756c74696279746520737472696e67206661696c65643a20496e76616c6964206f7220696e636f6d706c657465206d756c746962797465206f722077696465206368617261637465720a"
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a20636f6e76657273696f6e20746f2061206d756c74696279746520737472696e67206661696c65643a20496e76616c6964206f7220696e636f6d706c657465206d756c746962797465206f722077696465206368617261637465720a",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/11-rboxc-valgrind.log",
+          "log_sha256": "dc29354bb6795b223574626917ec0035d4707cb470326a0f923d462f1fdd49fa"
+        }
+      }
+    },
+    {
+      "name": "unicode-C-locale",
+      "arguments_hex": [
+        "2d67",
+        "e697a5e69cac"
+      ],
+      "locale": "C",
+      "sink": "pipe",
+      "expected_status": 0,
+      "pass": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61653f3f61653f3f0a",
+          "stderr": ""
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61653f3f61653f3f0a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/12-gnu-valgrind.log",
+          "log_sha256": "333536e96956bc223b24d83cb3a9da3233388bd171e97433595a8bc07f552f31"
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61653f3f61653f3f0a",
+          "stderr": ""
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61653f3f61653f3f0a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/12-rboxc-valgrind.log",
+          "log_sha256": "e38cdb7bb8aca20479a2a1fb3e0466750c9f22e072f1b30c18ce61a4af0ab2ed"
+        }
+      }
+    },
+    {
+      "name": "relative-path-error",
+      "arguments_hex": [
+        "6669727374"
+      ],
+      "locale": "C",
+      "sink": "pipe",
+      "expected_status": 1,
+      "pass": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "2e2f68656c6c6f3a206578747261206f706572616e643a2066697273740a54727920272e2f68656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a"
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "2e2f68656c6c6f3a206578747261206f706572616e643a2066697273740a54727920272e2f68656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/13-gnu-valgrind.log",
+          "log_sha256": "a16e57a1ecc14c76b17eaea4cd5076bd980bc495c7e1092657aa331616433575"
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "2e2f68656c6c6f3a206578747261206f706572616e643a2066697273740a54727920272e2f68656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a"
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "2e2f68656c6c6f3a206578747261206f706572616e643a2066697273740a54727920272e2f68656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/13-rboxc-valgrind.log",
+          "log_sha256": "e8b4c189f7e3821ba6eef48d3b34364aed8e895e9e5a516ad4af8ee9631a6407"
+        }
+      }
+    },
+    {
+      "name": "absolute-path-error",
+      "arguments_hex": [
+        "6669727374"
+      ],
+      "locale": "C",
+      "sink": "pipe",
+      "expected_status": 1,
+      "pass": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f68656c6c6f3a206578747261206f706572616e643a2066697273740a54727920273c666978747572653e2f68656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d68656c6c6f2d6265686176696f722d773365666c7934742f68656c6c6f3a206578747261206f706572616e643a2066697273740a54727920272f746d702f72626f78632d68656c6c6f2d6265686176696f722d773365666c7934742f68656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a",
+          "fixture": "/tmp/rboxc-hello-behavior-w3efly4t",
+          "normalization": "Replace only the private fixture directory with <fixture>."
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f68656c6c6f3a206578747261206f706572616e643a2066697273740a54727920273c666978747572653e2f68656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d68656c6c6f2d6265686176696f722d726372646f686b6a2f68656c6c6f3a206578747261206f706572616e643a2066697273740a54727920272f746d702f72626f78632d68656c6c6f2d6265686176696f722d726372646f686b6a2f68656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a",
+          "fixture": "/tmp/rboxc-hello-behavior-rcrdohkj",
+          "normalization": "Replace only the private fixture directory with <fixture>.",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/14-gnu-valgrind.log",
+          "log_sha256": "80e9f751d560dc7d0c147f151a24c21c89942fd7c4428e8efebe7b76b0f55df3"
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f68656c6c6f3a206578747261206f706572616e643a2066697273740a54727920273c666978747572653e2f68656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d68656c6c6f2d6265686176696f722d745f6739376437722f68656c6c6f3a206578747261206f706572616e643a2066697273740a54727920272f746d702f72626f78632d68656c6c6f2d6265686176696f722d745f6739376437722f68656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a",
+          "fixture": "/tmp/rboxc-hello-behavior-t_g97d7r",
+          "normalization": "Replace only the private fixture directory with <fixture>."
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f68656c6c6f3a206578747261206f706572616e643a2066697273740a54727920273c666978747572653e2f68656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d68656c6c6f2d6265686176696f722d716a77795f6679642f68656c6c6f3a206578747261206f706572616e643a2066697273740a54727920272f746d702f72626f78632d68656c6c6f2d6265686176696f722d716a77795f6679642f68656c6c6f202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a",
+          "fixture": "/tmp/rboxc-hello-behavior-qjwy_fyd",
+          "normalization": "Replace only the private fixture directory with <fixture>.",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/14-rboxc-valgrind.log",
+          "log_sha256": "04fdf328931dd3f9c55c1c5ffa8559df52ba8ec2592e2c2be67052b89887d859"
+        }
+      }
+    },
+    {
+      "name": "full-output",
+      "arguments_hex": [],
+      "locale": "C",
+      "sink": "full",
+      "expected_status": 1,
+      "pass": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a207772697465206572726f723a204e6f207370616365206c656674206f6e206465766963650a"
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a207772697465206572726f723a204e6f207370616365206c656674206f6e206465766963650a",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/15-gnu-valgrind.log",
+          "log_sha256": "30b39f3f4f0f113488b071c75d265dd63d764b58bb929849a66afd799cb2c959"
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a207772697465206572726f723a204e6f207370616365206c656674206f6e206465766963650a"
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a207772697465206572726f723a204e6f207370616365206c656674206f6e206465766963650a",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/15-rboxc-valgrind.log",
+          "log_sha256": "8fdc8862764d04f71cea9f5483c13b7943f8c3ae7a4e09b2a53c14b0813ef61e"
+        }
+      }
+    },
+    {
+      "name": "full-long-output",
+      "arguments_hex": [
+        "2d67",
+        "7878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878"
+      ],
+      "locale": "C",
+      "sink": "full",
+      "expected_status": 1,
+      "pass": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a207772697465206572726f723a204e6f207370616365206c656674206f6e206465766963650a"
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a207772697465206572726f723a204e6f207370616365206c656674206f6e206465766963650a",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/16-gnu-valgrind.log",
+          "log_sha256": "9c1537c83ec55bfa74803a605b1d9492c7c82ad67a6feebcf59c30eead946c01"
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a207772697465206572726f723a204e6f207370616365206c656674206f6e206465766963650a"
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "68656c6c6f3a207772697465206572726f723a204e6f207370616365206c656674206f6e206465766963650a",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          "log": "evidence/raw/hello-behavior-paths/run-zdg9mwvc/16-rboxc-valgrind.log",
+          "log_sha256": "7c4cf0bf441223e8927a7c3750f64e7c12a00e1a5c03f7e8245abee2ced65709"
+        }
+      }
+    }
+  ],
+  "activation": {
+    "source_report": "evidence/hello-behavior-paths.json",
+    "source_report_sha256": "fb4c2463f54a57b1ddcca561ef47dfd69e6cd3b58458c147edd22d5776732d51",
+    "candidate_binary": "/root/rboxc/target/capability-hello-cleanup/release/rboxc",
+    "same_executable_bytes": true,
+    "rerun": false
+  }
+}

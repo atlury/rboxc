@@ -52,17 +52,23 @@ GNU Hello 2.12.3 is pinned from the [official GNU release archive](https://ftp.g
 Its signature verifies against the GNU-published keyring; archive, signature,
 keyring, signing-key fingerprint, and entry-source hashes are recorded in
 `inventory/sources.json`. `scripts/prepare-hello.sh` builds its native oracle
-and captures compilation commands. Its seven registered original scripts
-produce six passes and one calendar-dependent skip (the upstream long-greeting
-test only runs around a full moon). `evidence/hello-build-profile.json` records
-that native baseline. Hello is not yet a Rust applet. Inventory refresh now
-preserves existing progress and additional provider pins; all 553 existing
-records were checked, and a second refresh produces identical inventory files.
+and captures compilation commands. Hello is now an active Rust applet. All seven
+original scripts pass natively and under Valgrind: the ambient run records the
+long-greeting calendar skip, and a separate declared fixed-calendar input
+exercises that unchanged original script. All 17 focused checks pass, including
+path-based diagnostics, invalid UTF-8, and output errors. Its helpers retain
+177 private symbol names, with eight imports from Rust and no native C main.
+The port releases greeting storage before conversion-error diagnostics and uses
+GNU's public error callback to preserve Hello's pathname prefix. Initial
+observations remain recorded separately. `evidence/hello-original.json` and
+`evidence/hello-behavior.json` establish completion for the recorded Linux
+x86-64/glibc profile, including the calendar fixture; they do not certify other
+platforms. Inventory refresh preserves existing progress and additional pins.
 
 ## Status
 
-The executable registers 107 Coreutils commands, all with active Rust command
-entries. No native C command entry remains, and assembly succeeds without the
+The executable registers 108 commands: 107 Coreutils entries and GNU Hello, all
+with active Rust command entries. No native C command entry remains, and assembly succeeds without the
 C-entry opt-in. `printf`, `sort`, `od`, `numfmt`, and `seq` use native numeric
 helpers: floating values stay inside GNU C functions and cross the boundary
 only as bytes or text. This preserves the host's x87 `long double`
@@ -77,12 +83,12 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The current release executable is 2,411,560 bytes (2.30 MiB), dynamically linked
+The current release executable is 2,459,000 bytes (2.35 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
 
-The current release dynamically links libacl and libattr for GNU metadata
+The current release dynamically links libacl, libattr, and libcap for GNU metadata
 helpers. A separate static-link trial against the previous 2,405,616-byte
 build removes those two runtime dependencies and grows that executable by
 7,784 bytes to 2,413,400 bytes. All five selected
@@ -91,20 +97,18 @@ It is separate evidence, not a change to the main release's link profile.
 Building the ACL and Attr libraries from pinned sources and incorporating their
 commands is planned after Coreutils; other shared dependencies remain.
 
-A separate capability-enabled Coreutils build now passes all three original
-capability metadata scripts: cp preservation, ls coloring, and disabling ls
-capability lookups. All 23 Valgrind logs per build are clean. Six further original color, ACL,
-and xattr-call-count scripts pass natively and under Valgrind with 57 more
-clean logs per build. Comparing all 208 translated ls function bodies shows
-that only `has_capability` changes; the other 207 bodies are identical.
-The candidate also passes 428 help/version comparisons, 107 Valgrind help checks, and 17
-selected cp/ls/dir/vdir behavior comparisons. `evidence/capability-candidate.json`
-records the package, configuration, translated source, binaries, and test logs.
-The translated ls change is preserved on the `capability-profile` branch.
-The main GNU preparation script now requires libcap development headers and
-checks `HAVE_CAP`; existing builds without support need `--reconfigure`.
-Integration waits for the installed cleanup build's ongoing original I/O test.
-This candidate evidence does not change the main configuration's recorded skips.
+Capability support is now integrated in the installed build. All nine original
+capability, color, ACL, and xattr-call-count scripts pass natively and under
+Valgrind, with 80 clean logs per build. Comparing the translated ls function
+bodies found only the intended `has_capability` change; the remaining 207 bodies
+are identical. The GNU preparation script requires libcap development headers
+and checks `HAVE_CAP`; existing builds without support need `--reconfigure`.
+The earlier isolated candidate and branch remain preserved. The combined
+108-command candidate passes the entire Coreutils baseline and Hello checks.
+`evidence/capability-hello-activation.json` records executable/helper identity,
+retained previous binaries and reports, and reuse of the validated observations.
+The previous GNU oracle is preserved under `build/history` with its build
+profile. This integration closes three recorded original-script skips.
 
 Recorded checks:
 
@@ -121,8 +125,8 @@ Recorded checks:
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 `tail` file records on return (including ignored follow mode), and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 647 of 654 scripts/selections.
-The executed inventory contains 594 shell scripts and 5,958 Perl cases.
+failures). The reviewed original GNU runner now passes 650 of 655 scripts/selections.
+The executed inventory contains 595 shell scripts and 5,958 Perl cases.
 Forty-seven Perl scripts run their complete
 runtime case lists; 13 others retain explicit case selections. Case-count
 checks also cover scripts that call GNU's Perl harness more than once.
@@ -711,15 +715,15 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 636 scripts
-passed, 13 have selected-case coverage, eight are skipped, 29 are excluded,
+the original test evidence into `evidence/gnu-suite-coverage.json`: 639 scripts
+passed, 13 have selected-case coverage, five are skipped, 29 are excluded,
 and 47 remain pending. No recorded native failures
 remain in the executed selections. Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
 explicitly excluded with source hashes in inventory/gnu-suite-exclusions.json.
 This scope correction adds no passes. Partial selections and skips
 are not full-suite passes; passing scripts can contain platform-conditional
-branches. No command is certified complete.
+branches. No Coreutils command is certified complete.
 
 `pr` now releases its filename list. `tac` frees the base of its working
 buffer after all operands and closes its cached temporary stream after the
@@ -796,7 +800,7 @@ previous descriptor-probe observation are retained in
 Ownership fixtures now use explicit numeric IDs, and the stdbuf child fixture
 uses the pinned GNU printf. No Valgrind suppressions are used.
 
-No command is certified complete. Full provider suites, missing prerequisites,
+No Coreutils command is certified complete. Full provider suites, missing prerequisites,
 additional memory/descriptor paths, and other GNU providers remain outstanding. Excluded original tests are listed with reasons
 and source hashes in `inventory/gnu-cp-tests.json`; they are not counted as passes.
 Build products and raw test logs stay outside Git; source, scripts, pins, and
@@ -825,7 +829,9 @@ The default GNU source location is `/opt/src/coreutils-9.11`; set
 ```sh
 sh scripts/bootstrap-c2rust.sh
 sh scripts/prepare-coreutils.sh
+sh scripts/prepare-hello.sh
 python3 scripts/translate-coreutils.py
+python3 scripts/translate-hello.py
 python3 scripts/assemble-coreutils.py
 cargo build --locked --release
 target/release/rboxc --list
@@ -842,6 +848,8 @@ python3 tests/gnu/reviewed-original.py
 python3 tests/gnu/reviewed-original.py --valgrind
 python3 tests/gnu/cp-backups.py
 python3 tests/gnu/cp-mutations.py
+python3 tests/hello-original.py
+python3 tests/hello-behavior.py
 python3 scripts/update-evidence.py
 ```
 
