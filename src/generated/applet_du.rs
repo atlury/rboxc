@@ -2280,6 +2280,20 @@ unsafe extern "C" fn du_files(
     }
     return ok;
 }
+// A named --files0-from input is owned after successful freopen.
+static mut RBOXC_REOPENED_INPUT: bool = false;
+unsafe extern "C" fn rboxc_close_owned_file_list() {
+    if RBOXC_REOPENED_INPUT {
+        RBOXC_REOPENED_INPUT = false;
+        let saved_errno = *::libc::__errno_location();
+        fclose(stdin);
+        *::libc::__errno_location() = saved_errno;
+    }
+}
+unsafe fn rboxc_finish_file_list() -> ::core::ffi::c_int {
+    RBOXC_REOPENED_INPUT = false;
+    fclose(stdin)
+}
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_du(
     mut argc: ::core::ffi::c_int,
@@ -2300,6 +2314,7 @@ pub unsafe extern "C" fn single_binary_main_du(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_close_owned_file_list));
     exclude = new_exclude();
     human_options(
         getenv(b"DU_BLOCK_SIZE\0".as_ptr() as *const ::core::ffi::c_char),
@@ -2936,6 +2951,7 @@ pub unsafe extern "C" fn single_binary_main_du(
                 });
             };
         }
+        RBOXC_REOPENED_INPUT = !streq(files_from, b"-\0".as_ptr().cast());
         ai = argv_iter_init_stream(stdin);
         hash_all = r#true != 0;
     } else {
@@ -3197,7 +3213,7 @@ pub unsafe extern "C" fn single_binary_main_du(
         di_set_free(di_mnt);
     }
     if !files_from.is_null()
-        && (ferror_unlocked(stdin) != 0 || fclose(stdin) != 0 as ::core::ffi::c_int)
+        && (ferror_unlocked(stdin) != 0 || rboxc_finish_file_list() != 0 as ::core::ffi::c_int)
         && ok as ::core::ffi::c_int != 0
     {
         if 0 != 0 {

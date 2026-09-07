@@ -200,6 +200,11 @@ CASES = [
     ('split', ['-n', 'r/3', 'input', 'missing/part']),
     ('split', ['-b', '1', '-a', '1', 'input', 'part']),
     ('split', ['-C', '6', 'input', 'missing/part']),
+    ('du', ['--files0-from=/dev/null']),
+    ('du', ['--files0-from=empty-utmp']),
+    ('du', ['--files0-from=missing']),
+    ('du', ['--files0-from=dir']),
+    ('du', ['--files0-from=-']),
 ]
 
 

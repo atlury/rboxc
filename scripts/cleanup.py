@@ -9,6 +9,33 @@ def replace_once(text, before, after):
 
 
 def cleanup(name, text):
+    if name == 'du':
+        declaration = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_du('
+        helper = '''// A named --files0-from input is owned after successful freopen.
+static mut RBOXC_REOPENED_INPUT: bool = false;
+unsafe extern "C" fn rboxc_close_owned_file_list() {
+    if RBOXC_REOPENED_INPUT {
+        RBOXC_REOPENED_INPUT = false;
+        let saved_errno = *::libc::__errno_location();
+        fclose(stdin);
+        *::libc::__errno_location() = saved_errno;
+    }
+}
+unsafe fn rboxc_finish_file_list() -> ::core::ffi::c_int {
+    RBOXC_REOPENED_INPUT = false;
+    fclose(stdin)
+}
+'''
+        text = replace_once(text, declaration, helper+declaration)
+        anchor = '    atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));'
+        text = replace_once(text, anchor, anchor+'\n    atexit(Some(rboxc_close_owned_file_list));')
+        anchor = '        ai = argv_iter_init_stream(stdin);'
+        text = replace_once(text, anchor,
+                            '        RBOXC_REOPENED_INPUT = !streq(files_from, b"-\\0".as_ptr().cast());\n'+anchor)
+        # Keep GNU's read-error short circuit and diagnostics. The finalizer
+        # closes the owned stream when that short circuit bypasses fclose.
+        anchor = '(ferror_unlocked(stdin) != 0 || fclose(stdin) != 0 as ::core::ffi::c_int)'
+        text = replace_once(text, anchor, anchor.replace('fclose(stdin)', 'rboxc_finish_file_list()'))
     if name == 'wc':
         declaration = 'unsafe extern "C" fn get_input_fstatus('
         helper = '''static mut RBOXC_FILE_LIST: *mut FILE = ::core::ptr::null_mut();
