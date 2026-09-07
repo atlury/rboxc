@@ -29,6 +29,17 @@ def normalize(name, text):
     if name == 'du':
         text = text.replace('static mut posix_prefix:', 'static mut GNU_POSIX_PREFIX:')
         text = text.replace('&raw const posix_prefix', '&raw const GNU_POSIX_PREFIX')
+    if name == 'factor':
+        # All remaining table primes have been tried after the last block.
+        # Its lookahead has no next prime to inspect: GNU's seven sentinels
+        # cover the eight divblock calls, but not every i + 8 lookahead when
+        # the preceding double-limb loop leaves an unaligned start index.
+        anchor = '        let mut p_0: int_least32_t = primes_ptab[(i + 8 as idx_t) as usize] as int_least32_t;'
+        replacement = ('        if i + 8 >= C2Rust_Unnamed_3::PRIMES_PTAB_ENTRIES.0 as idx_t {\n'
+                       '            break;\n        }\n'+anchor)
+        if replacement not in text:
+            assert text.count(anchor) == 1, 'GNU factor table lookahead anchor changed'
+            text = text.replace(anchor, replacement, 1)
     if name == 'cp':
         # GNU leaves this directory descriptor for process exit. Release it
         # after the final operand and metadata restoration. Negative values

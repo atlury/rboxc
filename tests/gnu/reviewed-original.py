@@ -195,8 +195,13 @@ def main():
                     command = ['/bin/sh', '-c', 'exec /bin/sh "$1" 9>&2', 'test', str(script)]
                 nss_profile = None
                 if row.get('nss_profile') == 'local-files':
-                    assert not credentials, 'combine ordinary-user and NSS profiles explicitly before use'
                     assert os.geteuid() == 0, 'local-files NSS profile requires private mount privileges'
+                    if credentials:
+                        groups = row.get('supplementary_groups', credentials['extra_groups'])
+                        group_option = '--groups='+','.join(map(str, groups)) if groups else '--clear-groups'
+                        command = ['/usr/bin/setpriv', '--reuid='+str(credentials['user']),
+                                   '--regid='+str(credentials['group']), group_option,
+                                   '--no-new-privs', *command]
                     original_nss = Path('/etc/nsswitch.conf').read_text()
                     private_nss = re.sub(r'^(passwd|group|shadow|gshadow|initgroups):.*$',
                                          r'\1: files', original_nss, flags=re.M)
@@ -208,7 +213,9 @@ def main():
                     command = ['/usr/bin/unshare', '--mount', '--propagation', 'private',
                                '/bin/sh', '-c', '/usr/bin/mount --bind "$1" /etc/nsswitch.conf || exit 77; shift; exec "$@"',
                                'local-nss', str(private_config), *command]
-                launch_credentials = dict(credentials)
+                # Enter the private namespace before dropping credentials.
+                # Ordinary tests without this profile still drop in Popen.
+                launch_credentials = {} if nss_profile and credentials else dict(credentials)
                 if row.get('profile') == 'loopback-device':
                     assert not credentials and not nss_profile
                     command = ['/usr/bin/unshare', '--mount', '--propagation', 'private',

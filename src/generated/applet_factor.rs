@@ -2162,6 +2162,9 @@ unsafe extern "C" fn factor_using_division(
         t0 = divblock(factors, t0, pd, i, 5 as ::core::ffi::c_int);
         t0 = divblock(factors, t0, pd, i, 6 as ::core::ffi::c_int);
         t0 = divblock(factors, t0, pd, i, 7 as ::core::ffi::c_int);
+        if i + 8 >= C2Rust_Unnamed_3::PRIMES_PTAB_ENTRIES.0 as idx_t {
+            break;
+        }
         let mut p_0: int_least32_t = primes_ptab[(i + 8 as idx_t) as usize] as int_least32_t;
         if (p_0 * p_0) as mp_limb_t > t0 {
             break;

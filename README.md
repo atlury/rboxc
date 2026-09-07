@@ -66,7 +66,7 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The current release executable is 2,401,080 bytes (2.29 MiB), dynamically linked
+The current release executable is 2,400,600 bytes (2.29 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
@@ -86,10 +86,10 @@ Recorded checks:
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 non-following `tail` file records, and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 376 of 393 scripts/selections.
-The executed inventory contains 352 shell scripts and 2,122 Perl cases.
-Twenty-seven Perl scripts run their complete
-runtime case lists; 14 others retain explicit case selections. Case-count
+failures). The reviewed original GNU runner now passes 472 of 476 scripts/selections.
+The executed inventory contains 432 shell scripts and 3,203 Perl cases.
+Thirty-four Perl scripts run their complete
+runtime case lists; 10 others retain explicit case selections. Case-count
 checks also cover scripts that call GNU's Perl harness more than once.
 GNU's three generic scripts pass across all 107 commands. New coverage includes
 user lookup, processor counts, working directories, permission-sensitive touch
@@ -105,8 +105,8 @@ script; `--report-name` gives independent batches distinct evidence files.
 New results record tested binary hashes, and exec-wrapper tests can request
 Valgrind child tracing.
 
-The reviewed Valgrind evidence records 309 clean results out of 315 scripts
-or selections: 1,733 Perl cases and 5,460 candidate/descendant process logs.
+The reviewed Valgrind evidence records 388 clean results out of 396 scripts
+or selections: 1,788 Perl cases and 6,161 candidate/descendant process logs.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
 memory and descriptors retained by host script interpreters. Both pass natively.
@@ -131,7 +131,7 @@ launch ordinary-user children use staged binaries and a private shared TMPDIR.
 The one-case Perl move script uses a separate fixture directory so its file
 named src does not collide with the harness's executable directory.
 
-All 22 reviewed du scripts pass natively and under Valgrind. A reproducible
+All 29 reviewed du scripts pass natively and under Valgrind. A reproducible
 cleanup now closes named filename-list streams on read errors while preserving
 GNU's diagnostics and normal close behavior. Five new behavior fixtures cover
 empty, missing, directory and stdin filename lists. The original threshold
@@ -197,11 +197,36 @@ its own small ext2 image also remains within that fixture.
 The runner now materializes all 41 generated factor scripts using GNU's pinned
 create-test.sh and run.sh, recording generator and output hashes without editing
 the original source tree. Expensive execution is explicit in each manifest row.
-All 41 generated scripts have native results: t00 through t20 and t37 through
-t40 pass. The sixteen intervening ranges expose a prime-table terminal
-lookahead that needs an explicit bound in Rust; these remain recorded failures.
-Generated t38 through t40 also pass under Valgrind. Execution times are recorded for new runs. Named native batches
+All 43 registered factor scripts now pass natively: all 41 generated ranges,
+the complete 51-case Perl suite, and the parallel script. A reproducible bound
+ends trial division after the final prime-table block, avoiding a terminal
+lookahead beyond the table when double-limb division leaves an unaligned index.
+This resolves all sixteen previously failing ranges; their earlier results
+remain in the observation history. Generated t38 through t40, the Perl suite,
+and the parallel script also pass Valgrind. Execution times are recorded for
+new runs. Named native batches
 can be merged with scripts/merge-reviewed-evidence.py --native after completion.
+
+All 43 reviewed rm scripts pass natively and under Valgrind, including
+interactive decisions, inaccessible directories, deep trees, and disposable
+read-only and cross-filesystem fixtures. All five stty scripts and tty pass
+natively with a private controlling terminal; the large stty pair matrix still
+awaits instrumentation. Additional du coverage includes sparse and allocated
+large files, filesystem boundaries, and bind-mount cycles.
+
+Every registered df script has a native result: twelve pass and two skip
+because this host lacks the requested user-namespace/proc and rootfs profiles.
+The six newly applicable scripts also pass Valgrind; rootfs remains an explicit
+instrumentation skip. The GNU Hurd-only id script skips on Linux. These two
+Valgrind prerequisite skips account for the other open results above.
+
+The complete expand, fmt, fold, and uniq Perl suites now pass natively,
+including 1,020 uniq cases and 47 fold cases with UTF-8 coverage. Their expanded
+Valgrind run is still in progress; earlier selections remain recorded until it
+finishes. Test locale aliases explicitly map normalized encoding names to the
+prepared data, preventing silent C-locale fallback. Ordinary-user tests can now
+enter the private local-files NSS namespace before dropping credentials. The
+new chgrp, touch, truncate, mkdir, and id permission scripts pass Valgrind.
 
 The runner preserves exit statuses for GNU assertions and then assesses memory
 and descriptors separately. `scripts/merge-reviewed-evidence.py` merges completed
@@ -274,7 +299,7 @@ The od alignment matrix checks all 400 format pairs for each implementation.
 The new complete date Perl suite adds three cases, and od retains a reviewed
 17-case partial selection. The extended locale profile exercises Ethiopian,
 Iranian, and Thai calendars and UTF-8, ISO-8859-1, and KOI8-R text handling.
-`scripts/prepare-test-locales.py` builds six test locales, installs their
+`scripts/prepare-test-locales.py` builds eight test locales, installs their
 separate collection at `/usr/lib/locale/rboxc-tests`, and records file hashes.
 Tests select it through LOCPATH. The system locale archive remains unchanged;
 the standard data location permits Ubuntu's confined locale utility to read it.
@@ -288,9 +313,10 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 405 scripts
-passed, three passed with profile skips, 14 have selected-case coverage, sixteen
-failed, six skipped, 26 are excluded, and 263 remain pending. Partial selections and skips
+the original test evidence into `evidence/gnu-suite-coverage.json`: 505 scripts
+passed, three passed with profile skips, 10 have selected-case coverage, nine
+skipped, 26 are excluded, and 180 remain pending. No recorded native failures
+remain in the executed selections. Partial selections and skips
 are not full-suite passes; passing scripts can contain platform-conditional
 branches. No command is certified complete.
 
