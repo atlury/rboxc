@@ -28,6 +28,9 @@ def main():
     read = lambda name: json.loads((ROOT/name).read_text())
     reviewed = {r['script']: r for r in read('evidence/gnu-reviewed-original.json')['results']}
     instrumented = {r['script']: r for r in read('evidence/gnu-reviewed-valgrind.json')['results']}
+    scope_exclusions = {r['script']: r for r in read('inventory/gnu-suite-exclusions.json')}
+    assert set(scope_exclusions) <= set(scripts)
+    assert not set(scope_exclusions) & (set(reviewed) | set(instrumented))
     cp_manifest = {r['name']: r for r in read('inventory/gnu-cp-tests.json')}
     cp_results = read('evidence/gnu-cp-original.json')['results']
     assert set(reviewed) <= set(scripts)
@@ -45,6 +48,10 @@ def main():
                 ('tests/factor/create-test.sh', 'tests/factor/run.sh')}
         if any(part in script for part in ('selinux', '/chcon/', '/runcon/', 'systemd')):
             row.update(state='excluded', reason='SELinux and systemd excluded by project scope')
+        if script in scope_exclusions:
+            exclusion = scope_exclusions[script]
+            assert row['sha256'] == exclusion['sha256'], 'scope-excluded script changed'
+            row.update(state='excluded', reason=exclusion['reason'])
         if script.startswith('tests/cp/') and source.name in cp_manifest:
             pin = cp_manifest[source.name]
             assert row['sha256'] == pin['sha256'], script

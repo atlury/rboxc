@@ -453,8 +453,11 @@ The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
 the original test evidence into `evidence/gnu-suite-coverage.json`: 614 scripts
 passed, three passed with profile skips, 13 have selected-case coverage, four
-skipped, 26 are excluded, and 73 remain pending. No recorded native failures
-remain in the executed selections. Partial selections and skips
+skipped, 29 are excluded, and 70 remain pending. No recorded native failures
+remain in the executed selections. Three SELinux-only scripts whose names do
+not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
+explicitly excluded with source hashes in inventory/gnu-suite-exclusions.json.
+This scope correction adds no passes. Partial selections and skips
 are not full-suite passes; passing scripts can contain platform-conditional
 branches. No command is certified complete.
 
