@@ -65,6 +65,18 @@ observations remain recorded separately. `evidence/hello-original.json` and
 x86-64/glibc profile, including the calendar fixture; they do not certify other
 platforms. Inventory refresh preserves existing progress and additional pins.
 
+GNU Time 1.10 is pinned from the official signed GNU archive. Its entry is
+translated in a separate 109-command candidate, with 38 namespaced native
+helper symbols and no native C entry. Nine reviewed originals pass natively;
+eight pass their assertions under Valgrind with clean Time-process exits.
+The max-RSS script fails its instrumented delta assertion in both builds because
+children inherit Valgrind's memory footprint. One original historical format
+reproduction remains excluded and unexecuted. All 23 focused comparisons pass.
+The port closes its output stream on normal exit, fatal output errors, and
+failed child exec while preserving GNU's status and diagnostics. Header-only
+fork logs remain explicitly unassessed exec boundaries. These results do not
+certify Time complete or change the installed 108-command release yet.
+
 ## Status
 
 The executable registers 108 commands: 107 Coreutils entries and GNU Hello, all
