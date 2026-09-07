@@ -51,6 +51,7 @@ report = {'provider': 'grep', 'entry': entry['entry'], 'aliases': ['egrep', 'fgr
     'rust_source_sha256': entry['rust_sha256'],
     'original_inputs': {str(p.relative_to(ROOT)): fingerprint(p) for p in native_inputs(ROOT)},
     'helper_inputs': {str(p.relative_to(ROOT)): fingerprint(p) for p in outputs},
+    'native_cleanup_evidence_sha256': fingerprint(ROOT/'evidence/grep-native-cleanup.json'),
     'symbol_map_sha256': fingerprint(definitions), 'namespaced_symbols': len(mapping),
     'original_link_inputs': inputs, 'link_inputs': extra}
 (ROOT/'evidence/grep-link.json').write_text(json.dumps(report, indent=2)+'\n')

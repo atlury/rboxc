@@ -3510,6 +3510,7 @@ unsafe extern "C" fn finalize_input(
     }
 }
 unsafe extern "C" fn grepdesc(mut desc: ::core::ffi::c_int, mut command_line: bool) -> bool {
+    RBOXC_GREP_INPUT = desc;
     let mut count: intmax_t = 0;
     let mut status: bool = r#true != 0;
     let mut ineof: bool = r#false != 0;
@@ -3573,7 +3574,7 @@ unsafe extern "C" fn grepdesc(mut desc: ::core::ffi::c_int, mut command_line: bo
                     };
                 let mut fts_arg: [*mut ::core::ffi::c_char; 2] =
                     [::core::ptr::null_mut::<::core::ffi::c_char>(); 2];
-                if close(desc) != 0 as ::core::ffi::c_int {
+                if rboxc_grep_close_input(desc) != 0 as ::core::ffi::c_int {
                     suppressible_error(*__errno_location());
                 }
                 fts_arg[0usize] = filename as *mut ::core::ffi::c_char;
@@ -3586,6 +3587,7 @@ unsafe extern "C" fn grepdesc(mut desc: ::core::ffi::c_int, mut command_line: bo
                 if fts.is_null() {
                     xalloc_die();
                 }
+                rboxc_grep_track_tree(fts);
                 loop {
                     ent = rpl_fts_read(fts);
                     if ent.is_null() {
@@ -3598,7 +3600,7 @@ unsafe extern "C" fn grepdesc(mut desc: ::core::ffi::c_int, mut command_line: bo
                 if *__errno_location() != 0 {
                     suppressible_error(*__errno_location());
                 }
-                if rpl_fts_close(fts) != 0 as ::core::ffi::c_int {
+                if rboxc_grep_close_tree(fts) != 0 as ::core::ffi::c_int {
                     suppressible_error(*__errno_location());
                 }
                 return status;
@@ -3695,7 +3697,7 @@ unsafe extern "C" fn grepdesc(mut desc: ::core::ffi::c_int, mut command_line: bo
             }
         }
     }
-    if desc != STDIN_FILENO && close(desc) != 0 as ::core::ffi::c_int {
+    if desc != STDIN_FILENO && rboxc_grep_close_input(desc) != 0 as ::core::ffi::c_int {
         suppressible_error(*__errno_location());
     }
     return status;
@@ -4282,6 +4284,7 @@ unsafe extern "C" fn parse_grep_colors() {
         return;
     }
     q = xstrdup(p);
+    RBOXC_GREP_COLORS = q;
     name = q;
     val = ::core::ptr::null_mut::<::core::ffi::c_char>();
     loop {
@@ -4661,6 +4664,7 @@ pub unsafe extern "C" fn single_binary_main_grep(
     textdomain(PACKAGE.as_ptr());
     init_localeinfo(&raw mut localeinfo);
     atexit(Some(clean_up_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_grep_release_owned));
     c_stack_action(None);
     last_recursive = 0 as ::core::ffi::c_int;
     pattern_table = hash_initialize(
@@ -5847,6 +5851,12 @@ pub unsafe extern "C" fn single_binary_main_grep(
         }
     }
     execute = matchers[matcher as usize].execute;
+    let compiler_address = matchers[matcher as usize].compile.map(|function| function as usize);
+    RBOXC_GREP_MATCHER_FREE = if compiler_address == Some(Fcompile as *const () as usize) {
+        Some(Ffree)
+    } else if compiler_address == Some(GEAcompile as *const () as usize) {
+        Some(GEAfree)
+    } else { None };
     compiled_pattern = matchers[matcher as usize]
         .compile
         .expect("non-null function pointer")(
@@ -5948,6 +5958,76 @@ pub const nullptr: *mut ::core::ffi::c_void = ::core::ptr::null_mut::<::core::ff
 pub const __SCHAR_MAX__: ::core::ffi::c_int = 127 as ::core::ffi::c_int;
 pub const r#true: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
 pub const r#false: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Release completed matcher objects after their last use. Partial compiler
+// exits and PCRE-owned storage have separate evidence and remain to be handled.
+extern "C" {
+    #[link_name = "rboxc_grep_GEAfree"]
+    fn GEAfree(compiled: *mut ::core::ffi::c_void);
+    #[link_name = "rboxc_grep_Ffree"]
+    fn Ffree(compiled: *mut ::core::ffi::c_void);
+}
+static mut RBOXC_GREP_MATCHER_FREE: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void)> = None;
+static mut RBOXC_GREP_COLORS: *mut ::core::ffi::c_char = ::core::ptr::null_mut();
+static mut RBOXC_GREP_INPUT: ::core::ffi::c_int = -1;
+unsafe fn rboxc_grep_close_input(descriptor: ::core::ffi::c_int) -> ::core::ffi::c_int {
+    if RBOXC_GREP_INPUT == descriptor {
+        RBOXC_GREP_INPUT = -1;
+    }
+    close(descriptor)
+}
+unsafe extern "C" fn rboxc_grep_release_owned() {
+    let saved_errno = *libc::__errno_location();
+    if let Some(release) = RBOXC_GREP_MATCHER_FREE {
+        if !compiled_pattern.is_null() {
+            release(compiled_pattern);
+            compiled_pattern = ::core::ptr::null_mut();
+        }
+    }
+    libc::free(RBOXC_GREP_COLORS.cast());
+    RBOXC_GREP_COLORS = ::core::ptr::null_mut();
+    if RBOXC_GREP_INPUT >= 0 && RBOXC_GREP_INPUT != STDIN_FILENO {
+        rboxc_grep_close_input(RBOXC_GREP_INPUT);
+    }
+    while !RBOXC_GREP_TREES.is_null() {
+        rboxc_grep_close_tree((*RBOXC_GREP_TREES).tree);
+    }
+    rboxc_grep_release_alias();
+    libc::free(buffer.cast());
+    buffer = ::core::ptr::null_mut();
+    *libc::__errno_location() = saved_errno;
+}
+
+struct RboxcGrepTree {
+    tree: *mut FTS,
+    next: *mut RboxcGrepTree,
+}
+static mut RBOXC_GREP_TREES: *mut RboxcGrepTree = ::core::ptr::null_mut();
+unsafe fn rboxc_grep_track_tree(tree: *mut FTS) {
+    let record = libc::malloc(::core::mem::size_of::<RboxcGrepTree>()).cast::<RboxcGrepTree>();
+    if record.is_null() {
+        rpl_fts_close(tree);
+        xalloc_die();
+        return;
+    }
+    record.write(RboxcGrepTree { tree, next: RBOXC_GREP_TREES });
+    RBOXC_GREP_TREES = record;
+}
+unsafe fn rboxc_grep_close_tree(tree: *mut FTS) -> ::core::ffi::c_int {
+    let mut link = &raw mut RBOXC_GREP_TREES;
+    while !(*link).is_null() {
+        let record = *link;
+        if (*record).tree == tree {
+            *link = (*record).next;
+            libc::free(record.cast());
+            break;
+        }
+        link = &raw mut (*record).next;
+    }
+    rpl_fts_close(tree)
+}
+
 
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Translate the pinned egrep.sh warning and option insertion into internal

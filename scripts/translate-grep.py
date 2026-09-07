@@ -60,6 +60,26 @@ text = text.replace(anchor, helper+anchor, 1)
 anchor = '    let mut keys: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();'
 assert text.count(anchor) == 1
 text = text.replace(anchor, '    rboxc_grep_set_invocation(*argv);\n'+anchor, 1)
+anchor = '    q = xstrdup(p);'
+assert text.count(anchor) == 1
+text = text.replace(anchor, anchor+'\n    RBOXC_GREP_COLORS = q;', 1)
+anchor = 'unsafe extern "C" fn grepdesc(mut desc: ::core::ffi::c_int, mut command_line: bool) -> bool {'
+assert text.count(anchor) == 1
+text = text.replace(anchor, anchor+'\n    RBOXC_GREP_INPUT = desc;', 1)
+assert text.count('close(desc)') == 2
+text = text.replace('close(desc)', 'rboxc_grep_close_input(desc)')
+anchor = '                loop {\n                    ent = rpl_fts_read(fts);'
+assert text.count(anchor) == 1
+text = text.replace(anchor, '                rboxc_grep_track_tree(fts);\n'+anchor, 1)
+assert text.count('rpl_fts_close(fts)') == 1
+text = text.replace('rpl_fts_close(fts)', 'rboxc_grep_close_tree(fts)', 1)
+text += '\n'+(ROOT/'src/bridges/grep-owned.rs').read_text()+'\n'
+anchor = '    atexit(Some(clean_up_stdout as unsafe extern "C" fn() -> ()));'
+assert text.count(anchor) == 1
+text = text.replace(anchor, anchor+'\n    atexit(Some(rboxc_grep_release_owned));', 1)
+anchor = '    compiled_pattern = matchers[matcher as usize]'
+assert text.count(anchor) == 1
+text = text.replace(anchor, '    let compiler_address = matchers[matcher as usize].compile.map(|function| function as usize);\n    RBOXC_GREP_MATCHER_FREE = if compiler_address == Some(Fcompile as *const () as usize) {\n        Some(Ffree)\n    } else if compiler_address == Some(GEAcompile as *const () as usize) {\n        Some(GEAfree)\n    } else { None };\n'+anchor, 1)
 mapping = symbol_map(ROOT)
 imports = []
 def namespace(match):
@@ -98,6 +118,7 @@ report = {'provider': 'grep', 'version': pin['version'], 'command': name,
           'source_sha256': expected, 'translated': True,
           'scope': 'C2Rust entry translation with namespaced native helper imports; compilation and suite validation are separate.',
           'rust_file': str(target.relative_to(ROOT)), 'rust_sha256': fingerprint(target),
+          'ownership_adapter_sha256': fingerprint(ROOT/'src/bridges/grep-owned.rs'),
           'alias_adapter_sha256': fingerprint(ROOT/'src/bridges/grep-aliases.rs'),
           'invocation_adapter_sha256': fingerprint(ROOT/'src/bridges/grep-invocation.rs'),
           'alias_script_sha256': pin['alias_script_sha256'],

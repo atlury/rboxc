@@ -117,11 +117,18 @@ is built with PCRE2 10.46 support. The original registration contains 128 tests,
 recorded for individual review before execution. Grep has one C command entry;
 `egrep` and `fgrep` are shell aliases in the GNU source. Their warnings and option
 insertion now dispatch internally to the translated grep entry in a separate
-117-command candidate. The matcher helpers and Rust-owned state use 332 private
-symbols. Nine original scripts have been reviewed; the native baseline has
-eight passes and one timeout-prerequisite skip. Candidate assertions pass so far,
-while Valgrind identifies retained matcher allocations that still need cleanup.
-The installed release remains the validated 114-command build.
+117-command candidate. The matcher helpers and Rust-owned state use 335 private
+symbols. All 59 focused native/Valgrind comparisons pass, including basic,
+extended, fixed, and PCRE matching; both aliases; quiet recursive searches; and
+output errors. Cleanup now releases completed basic/extended/fixed matchers,
+case-folding tables, color storage, input buffers, and directory traversals.
+It runs before GNU's final stdout check, which can exit without invoking later
+callbacks. Native matcher destructors retain the original matching logic and
+track the pattern allocation base separately from its interior pointer.
+Nine originals have been reviewed; the native baseline has eight passes and
+one timeout-prerequisite skip. Original-suite validation is expanding; partial
+compiler and PCRE storage remain separate ownership work. The installed release
+remains the validated 114-command build.
 
 ## Status
 

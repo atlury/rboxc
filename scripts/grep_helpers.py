@@ -29,16 +29,22 @@ def symbol_map(root):
     for name in COMMANDS:
         symbols |= defined_symbols([root/f'build/gnu-grep/src/{name}.o']) - {'main'}
     assert not any(s.startswith('single_binary_main_') for s in symbols)
+    symbols |= {'GEAfree', 'Ffree', 'kwsfree_owned'}
     return {s: 'rboxc_grep_'+s for s in sorted(symbols)}
 
 
 def prepare_archives(root, mapping):
+    from grep_cleanup import prepare
+    replacements = prepare(root)
     stage = root/'build/translation/grep'
     stage.mkdir(parents=True, exist_ok=True)
     definitions = stage/'helper-symbol-map'
     definitions.write_text(''.join(f'{old} {new}\n' for old, new in mapping.items()))
     outputs = []
+    prepared = []
     for original in native_inputs(root):
+        original = replacements.get(original.stem, original)
+        prepared.append(original)
         target = root/'build/helpers'/('grep-'+original.name)
         temporary = target.with_name(target.name+'.tmp')
         subprocess.run(['objcopy', '--redefine-syms='+str(definitions), original, temporary], check=True)
@@ -46,5 +52,5 @@ def prepare_archives(root, mapping):
             subprocess.run(['ranlib', temporary], check=True)
         temporary.replace(target)
         outputs.append(target)
-    assert defined_symbols(outputs) == {mapping[s] for s in defined_symbols(native_inputs(root))}
+    assert defined_symbols(outputs) == {mapping[s] for s in defined_symbols(prepared)}
     return outputs, definitions
