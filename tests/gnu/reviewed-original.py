@@ -166,6 +166,10 @@ def main():
                 }
                 for key in ('POSIXLY_CORRECT', 'VERSION_CONTROL', 'SIMPLE_BACKUP_SUFFIX'):
                     environment.pop(key, None)
+                if row.get('locale_profile') == 'extended':
+                    locale_path = Path(json.loads((ROOT/'evidence/test-locales.json').read_text())['runtime_path'])
+                    assert locale_path.is_dir(), 'run scripts/prepare-test-locales.py first'
+                    environment['LOCPATH'] = str(locale_path)
                 if script.suffix == '.pl':
                     assert row.get('cases') or (row.get('full_suite') and row.get('expected_case_count')), 'Perl suites require a reviewed selection or full case count'
                     command = ['perl', '-I'+str(SOURCE/'tests'), '-MCuSkip', '-MCoreutils',
@@ -197,6 +201,8 @@ def main():
                     outcomes[implementation]['launcher_source_sha256'] = hashlib.sha256((ROOT/'tests/gnu/valgrind-launch.c').read_bytes()).hexdigest()
                 if tmpdir_library:
                     outcomes[implementation]['tmpdir_adapter_source_sha256'] = hashlib.sha256((ROOT/'tests/gnu/valgrind-tmpdir.c').read_bytes()).hexdigest()
+                if row.get('locale_profile') == 'extended':
+                    outcomes[implementation]['locale_evidence_sha256'] = hashlib.sha256((ROOT/'evidence/test-locales.json').read_bytes()).hexdigest()
                 if nss_profile:
                     outcomes[implementation]['nss'] = nss_profile
                     assert Path('/etc/nsswitch.conf').read_text() == original_nss, 'host NSS configuration changed'

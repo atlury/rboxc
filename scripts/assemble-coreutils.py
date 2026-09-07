@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import sys
 from native_cleanup import sort_cleanup
+from stream_cleanup import prepare as prepare_stream_cleanup
 
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT/'build/gnu-coreutils'
@@ -115,6 +116,8 @@ fd_object = target/'freopen-safer.o'
 subprocess.run(['gcc', '-O2', '-I'+str(BUILD/'lib'), '-I'+str(SOURCE/'lib'),
                 '-c', fd_source, '-o', fd_object], check=True)
 link.insert(0, str(fd_object))
+stream_objects, stream_records = prepare_stream_cleanup(ROOT, SOURCE, BUILD, target)
+link[0:0] = stream_objects
 (ROOT/'build/rust-link-inputs.txt').write_text('\n'.join(link)+'\n')
 # GNU stdbuf locates its preload helper beside the executable. Keep the
 # matching GNU build product there for the release profile used by this port.
@@ -126,6 +129,7 @@ shutil.copy2(BUILD/'src/libstdbuf.so', runtime_helper)
     'C_entry_objects_removed_for_all_active_Rust_commands':True, 'helper_archives':list(prepared),
     'aligned_allocation_adapter': 'round backing size to alignment multiple; GNU oracle unchanged',
     'native_entry_cleanups': native_changes,
+    'standard_stream_adapters': stream_records,
     'descriptor_probe_adapter': {
         'source': 'lib/freopen-safer.c',
         'original_sha256': hashlib.sha256(original_fd_helper.encode()).hexdigest(),

@@ -1960,6 +1960,16 @@ unsafe extern "C" fn head(
         return head_bytes(filename, fd, n_units);
     };
 }
+static mut RBOXC_INPUT_FD: ::core::ffi::c_int = -1;
+unsafe extern "C" fn rboxc_close_owned_input() {
+    let fd = RBOXC_INPUT_FD;
+    RBOXC_INPUT_FD = -1;
+    if fd >= 0 {
+        let saved_errno = *::libc::__errno_location();
+        ::libc::close(fd);
+        *::libc::__errno_location() = saved_errno;
+    }
+}
 unsafe extern "C" fn head_file(
     mut filename: *const ::core::ffi::c_char,
     mut n_units: uintmax_t,
@@ -2018,7 +2028,9 @@ unsafe extern "C" fn head_file(
             return r#false != 0;
         }
     }
+    RBOXC_INPUT_FD = if is_stdin { -1 } else { fd };
     ok = head(filename, fd, n_units, count_lines, elide_from_end);
+    RBOXC_INPUT_FD = -1;
     if !is_stdin && close(fd) != 0 as ::core::ffi::c_int {
         if 0 != 0 {
             error(
@@ -2107,6 +2119,7 @@ pub unsafe extern "C" fn single_binary_main_head(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_close_owned_input));
     if (1 as ::core::ffi::c_int) < argc
         && *(*argv.offset(1isize)).offset(0isize) as ::core::ffi::c_int == '-' as ::core::ffi::c_int
         && c_isdigit(*(*argv.offset(1isize)).offset(1isize) as ::core::ffi::c_int)

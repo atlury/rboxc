@@ -9,6 +9,25 @@ def replace_once(text, before, after):
 
 
 def cleanup(name, text):
+    if name == 'head':
+        declaration = 'unsafe extern "C" fn head_file('
+        helper = '''static mut RBOXC_INPUT_FD: ::core::ffi::c_int = -1;
+unsafe extern "C" fn rboxc_close_owned_input() {
+    let fd = RBOXC_INPUT_FD;
+    RBOXC_INPUT_FD = -1;
+    if fd >= 0 {
+        let saved_errno = *::libc::__errno_location();
+        ::libc::close(fd);
+        *::libc::__errno_location() = saved_errno;
+    }
+}
+'''
+        text = replace_once(text, declaration, helper+declaration)
+        anchor = '    atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));'
+        text = replace_once(text, anchor, anchor+'\n    atexit(Some(rboxc_close_owned_input));')
+        anchor = '    ok = head(filename, fd, n_units, count_lines, elide_from_end);'
+        text = replace_once(text, anchor, '    RBOXC_INPUT_FD = if is_stdin { -1 } else { fd };\n'
+                            +anchor+'\n    RBOXC_INPUT_FD = -1;')
     if name in ('chown', 'mktemp'):
         declaration = f'#[no_mangle]\npub unsafe extern "C" fn single_binary_main_{name}('
         helper = '''static mut RBOXC_OWNED_NAMES: [*mut ::core::ffi::c_char; 2] = [::core::ptr::null_mut(); 2];
