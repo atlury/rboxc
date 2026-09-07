@@ -170,8 +170,8 @@ processes are clean; the result remains open for external compression-shell,
 GNU tr, and GNU expr findings (8,094 candidate descendant logs).
 The complete I/O-error script also passes its assertions, with 1,336 logs per
 implementation. Its candidate memory evidence remains open for 263 shell logs
-and five cat/dd/tac logs. These include ordinary fatal-write cleanup still needed
-in cat and tac, as well as resources retained on SIGPIPE termination.
+and five cat/dd/tac logs. The staged candidate below repairs the two normal
+cat/tac write exits; the other three logs follow SIGPIPE termination.
 The separate original write-error responsiveness script now passes natively in
 both builds: 37 writer configurations across 27 commands complete 74 bounded
 /dev/full and closed-pipe checks per implementation. Its original memory limits
@@ -192,8 +192,13 @@ operands. Seven selected native original scripts and six Valgrind originals
 also pass, with 60 clean candidate process logs. The candidate is staged at
 `target/write-cleanup/release/rboxc`; evidence/write-cleanup-candidate.json records
 its source and binary hashes. The installed release remains unchanged while
-older long-running comparisons still depend on its path. The full I/O-error
-report above remains the installed-release observation until that suite is rerun.
+older long-running comparisons still depend on its path. The full original
+I/O-error rerun now also passes all assertions for the candidate: GNU takes
+967.858 seconds and rboxc 913.393 seconds, with 1,336 logs each. Both repaired
+normal cat/tac write exits are memory-clean. The strict comparison remains
+open for 263 external-shell logs and three SIGPIPE exits in cat, dd, and tac.
+The separate candidate report preserves these findings without replacing the
+installed-release observation above.
 The staged candidate also passes 428 help/version comparisons, 107 Valgrind
 help checks, 11 dispatcher checks, and all 318 native behavior, Valgrind behavior,
 and instrumented-equivalence comparisons. These baseline drivers accept
