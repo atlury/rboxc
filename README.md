@@ -95,8 +95,8 @@ Recorded checks:
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 `tail` file records on return (including ignored follow mode), and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 644 of 651 scripts/selections.
-The executed inventory contains 591 shell scripts and 5,958 Perl cases.
+failures). The reviewed original GNU runner now passes 646 of 653 scripts/selections.
+The executed inventory contains 593 shell scripts and 5,958 Perl cases.
 Forty-seven Perl scripts run their complete
 runtime case lists; 13 others retain explicit case selections. Case-count
 checks also cover scripts that call GNU's Perl harness more than once.
@@ -255,9 +255,16 @@ behavior, Valgrind behavior, and instrumented-equivalence comparisons. These
 reports use the candidate binary hash and its matching stdbuf helper. The
 installed binary remains unchanged until the two older factor runs complete.
 
-The reviewed Valgrind evidence records 591 clean results out of 629 scripts
-or selections: 5,729 Perl cases and 46,280 candidate/descendant process logs.
-The 38 open results comprise 28 with passing original assertions but unresolved
+The full original `truncate` size-limit validation now passes natively and
+under Valgrind, with five clean logs per build. The original two-rotation
+`tail` watch-release check also passes its assertions in both modes. Its
+SIGTERM cleanup leaves one inotify descriptor and 4,574 reachable bytes in
+both builds, so its strict memory result remains open. Report and log hashes
+are recorded in `evidence/tail-truncate-originals.json`.
+
+The reviewed Valgrind evidence records 592 clean results out of 631 scripts
+or selections: 5,729 Perl cases and 46,555 candidate/descendant process logs.
+The 39 open results comprise 29 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, six with assertion
 failures under instrumentation, and two interrupted by watchdog deadlines. The status report records
 these categories separately; they do not change the strict clean-pass count.
@@ -656,9 +663,9 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 633 scripts
+the original test evidence into `evidence/gnu-suite-coverage.json`: 635 scripts
 passed, 13 have selected-case coverage, eight are skipped, 29 are excluded,
-and 50 remain pending. No recorded native failures
+and 48 remain pending. No recorded native failures
 remain in the executed selections. Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
 explicitly excluded with source hashes in inventory/gnu-suite-exclusions.json.
