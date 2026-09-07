@@ -9,6 +9,9 @@ def replace_once(text, before, after):
 
 
 def cleanup(name, text):
+    if name in ('cp', 'mv'):
+        from copy_cleanup import cleanup_copy
+        text = cleanup_copy(name, text, replace_once)
     if name == 'du':
         declaration = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_du('
         helper = '''// A named --files0-from input is owned after successful freopen.

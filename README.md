@@ -66,7 +66,7 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The current release executable is 2,400,352 bytes (2.29 MiB), dynamically linked
+The current release executable is 2,401,080 bytes (2.29 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
@@ -77,18 +77,18 @@ Recorded checks:
 | --- | --- | --- |
 | GNU help/version comparisons | 428/428 pass | Both multicall and symlink entry forms |
 | Valgrind help paths | 107/107 pass | Help only |
-| Normal/error behavior fixtures | 279/279 match GNU | All 107 commands; streams, status, contents, modes, owners, link topology |
-| Valgrind normal/error fixtures | 279/279 clean | Bounded fixtures; retained allocations recorded separately |
-| Instrumented GNU comparisons | 279/279 pass | Saved Valgrind observations, assessed separately from native arithmetic |
+| Normal/error behavior fixtures | 287/287 match GNU | All 107 commands; streams, status, contents, modes, owners, link topology |
+| Valgrind normal/error fixtures | 287/287 clean | Bounded fixtures; retained allocations recorded separately |
+| Instrumented GNU comparisons | 287/287 pass | Saved Valgrind observations, assessed separately from native arithmetic |
 | Original GNU cp tests | 89 pass, 13 prerequisite skips, 30 excluded | 66 scripts, root and ordinary-user profiles |
 | cp mutation comparisons | 879 pass | Bounded local backup/removal/error fixtures |
 | cp backup comparisons | 75 pass | Backup names and preserved fixture data |
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 non-following `tail` file records, and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 347 of 363 scripts/selections.
-The executed inventory contains 323 shell scripts and 2,121 Perl cases.
-Twenty-six Perl scripts run their complete
+failures). The reviewed original GNU runner now passes 376 of 393 scripts/selections.
+The executed inventory contains 352 shell scripts and 2,122 Perl cases.
+Twenty-seven Perl scripts run their complete
 runtime case lists; 14 others retain explicit case selections. Case-count
 checks also cover scripts that call GNU's Perl harness more than once.
 GNU's three generic scripts pass across all 107 commands. New coverage includes
@@ -105,8 +105,8 @@ script; `--report-name` gives independent batches distinct evidence files.
 New results record tested binary hashes, and exec-wrapper tests can request
 Valgrind child tracing.
 
-The reviewed Valgrind evidence records 271 clean results out of 285 scripts
-or selections: 1,732 Perl cases and 5,293 candidate/descendant process logs.
+The reviewed Valgrind evidence records 309 clean results out of 315 scripts
+or selections: 1,733 Perl cases and 5,460 candidate/descendant process logs.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
 memory and descriptors retained by host script interpreters. Both pass natively.
@@ -114,9 +114,22 @@ Matching GNU findings are not counted as clean.
 Three more results remain open: dd's intentionally closed-stderr diagnostics,
 install's external strip children whose successful exec leaves incomplete logs,
 and cat's injected pipe-creation failure interfering with Valgrind startup.
-Nine initial move-script results remain open under instrumentation, including
-cp's multi-file bookkeeping tables and mv's destination-directory descriptors.
-All sixteen reviewed move scripts pass natively.
+All 46 registered move scripts have results: 45 pass natively and under
+Valgrind; the ACL script skips because the configured GNU profile lacks ACL
+support. That profile was built without libacl/libattr development headers,
+so ACL and extended-attribute support still need a separate validated build.
+
+Reproducible cp/mv finalizers now release the destination-directory descriptor
+and per-command source/destination record tables on normal and fatal exits.
+Eight additional behavior fixtures cover multiple operands and setup errors.
+The original cp rerun remains at 89 passes and 13 prerequisite skips, with no
+GNU mismatches. Move coverage includes cross-filesystem hard links, metadata,
+special files, casefolding, overwrite decisions, and permission failures.
+A private controlling-input terminal enables the original interactive test;
+its driver forwards termination to its child process group. Root tests that
+launch ordinary-user children use staged binaries and a private shared TMPDIR.
+The one-case Perl move script uses a separate fixture directory so its file
+named src does not collide with the harness's executable directory.
 
 All 22 reviewed du scripts pass natively and under Valgrind. A reproducible
 cleanup now closes named filename-list streams on read errors while preserving
@@ -275,9 +288,9 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 376 scripts
+the original test evidence into `evidence/gnu-suite-coverage.json`: 405 scripts
 passed, three passed with profile skips, 14 have selected-case coverage, sixteen
-failed, five skipped, 26 are excluded, and 293 remain pending. Partial selections and skips
+failed, six skipped, 26 are excluded, and 263 remain pending. Partial selections and skips
 are not full-suite passes; passing scripts can contain platform-conditional
 branches. No command is certified complete.
 
@@ -293,7 +306,7 @@ now runs the pinned GNU `printenv`; its earlier host-child findings remain in
 the previous committed evidence. Baseline equivalence does not count as Valgrind
 cleanliness. A follow-up cleanup closes the directory descriptor owned by
 `cp` after copying and restoring parent metadata, preserving GNU status and
-errno. All 10 current `cp` behavior/Valgrind fixtures pass; the GNU baseline
+errno. All 14 current `cp` behavior/Valgrind fixtures pass; the GNU baseline
 still retains that descriptor. This does not certify every `cp` exit path.
 Retained allocations and lost allocations are recorded separately. The test
 runner returns failure when a selected fixture has an unresolved finding.

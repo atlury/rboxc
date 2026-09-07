@@ -99,8 +99,10 @@ def main():
                 config_header = BUILD/'lib/config.h'
                 if row.get('profile') == 'ordinary-user' and os.geteuid() == 0:
                     credentials = {'user': 65534, 'group': 65534, 'extra_groups': []}
+                if credentials or row.get('shared_runtime'):
                     run.chmod(0o755)
-                    os.chown(run, 65534, 65534)
+                    if credentials:
+                        os.chown(run, 65534, 65534)
                     runtime = run/'runtime'
                     runtime.mkdir()
                     copied = runtime/candidate.name
@@ -118,11 +120,13 @@ def main():
                     memory_dir = ROOT/'evidence/raw'/('reviewed-vg-'+run.name+'-'+implementation)
                     memory_dir.mkdir()
                 runtime_memory_dir = memory_dir
-                if instrument and (credentials or row.get('native_launcher')):
+                if instrument and (credentials or row.get('native_launcher') or row.get('shared_runtime')):
                     runtime_memory_dir = run/'memory'
                     runtime_memory_dir.mkdir()
                     if credentials:
                         os.chown(runtime_memory_dir, 65534, 65534)
+                    elif row.get('shared_runtime'):
+                        runtime_memory_dir.chmod(0o1777)
                 if instrument and row.get('native_launcher'):
                     shutil.copy2(native_launcher, run/'src/.valgrind-launch')
                 tmpdir_library = None
@@ -170,6 +174,11 @@ def main():
                 }
                 for key in ('POSIXLY_CORRECT', 'VERSION_CONTROL', 'SIMPLE_BACKUP_SUFFIX'):
                     environment.pop(key, None)
+                if row.get('shared_runtime'):
+                    shared_tmp = run/'tmp'
+                    shared_tmp.mkdir(mode=0o1777)
+                    shared_tmp.chmod(0o1777)
+                    environment['TMPDIR'] = str(shared_tmp)
                 if row.get('very_expensive'):
                     environment['RUN_VERY_EXPENSIVE_TESTS'] = 'yes'
                 if row.get('expensive'):
@@ -210,15 +219,30 @@ def main():
                     assert os.geteuid() == 0 and isinstance(groups, list)
                     assert all(type(group) is int and 0 <= group < 2**32-1 for group in groups)
                     launch_credentials['extra_groups'] = groups
+                fixture = run
+                if row.get('separate_fixture'):
+                    assert script.suffix == '.pl', 'separate fixture is a Perl harness profile'
+                    fixture = run/'fixture'
+                    fixture.mkdir()
+                    if credentials:
+                        os.chown(fixture, 65534, 65534)
+                if row.get('terminal'):
+                    driver = run/'terminal-profile.py'
+                    shutil.copy2(ROOT/'tests/gnu/terminal-profile.py', driver)
+                    command = [sys.executable, str(driver), *command]
                 started = time.monotonic()
                 completed = subprocess.run(['timeout', '--kill-after=5s', str(row.get('timeout_seconds', 60))+'s', *command],
-                                           cwd=run, env=environment, capture_output=True, **launch_credentials)
+                                           cwd=fixture, env=environment, capture_output=True, **launch_credentials)
                 assert os.getgroups() == parent_groups, 'parent group membership changed'
                 log = ROOT/'evidence/raw'/('reviewed-'+('vg-' if instrument else '')+row['script'].replace('/', '-')+'-'+implementation+'-'+run.name+'.log')
                 log.write_bytes(completed.stdout+completed.stderr)
                 outcomes[implementation] = {'status': completed.returncode, 'log': str(log.relative_to(ROOT)),
                                             'binary_sha256': binary_hashes[implementation],
                                             'elapsed_seconds': round(time.monotonic()-started, 3)}
+                if row.get('terminal'):
+                    profiles = re.findall(rb'^RBOXC_TERMINAL_PROFILE (.+)$', completed.stderr, re.M)
+                    outcomes[implementation]['terminal_profile'] = json.loads(profiles[0]) if profiles else None
+                    outcomes[implementation]['terminal_runner_sha256'] = hashlib.sha256((ROOT/'tests/gnu/terminal-profile.py').read_bytes()).hexdigest()
                 if row.get('profile') == 'loopback-device':
                     profiles = re.findall(rb'^RBOXC_LOOPBACK_PROFILE (.+)$', completed.stderr, re.M)
                     outcomes[implementation]['loopback_profile'] = json.loads(profiles[0]) if profiles else None
@@ -237,7 +261,7 @@ def main():
                     expected_count = row.get('expected_case_count', len(row.get('cases', [])))
                     outcomes[implementation]['case_count'] = sum(int(count) for count in counts)
                     outcomes[implementation]['case_count_pass'] = bool(counts) and outcomes[implementation]['case_count'] == expected_count
-                if instrument and (credentials or row.get('native_launcher')):
+                if instrument and (credentials or row.get('native_launcher') or row.get('shared_runtime')):
                     for path in runtime_memory_dir.glob('*.log'):
                         shutil.copy2(path, memory_dir/path.name)
                 if instrument:

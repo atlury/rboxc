@@ -2525,6 +2525,7 @@ unsafe extern "C" fn do_copy(
         }
     } else if !target_directory.is_null() {
         target_dirfd = target_directory_operand(target_directory, &raw mut sb);
+        RBOXC_COPY_DIR_FD = target_dirfd;
         if !target_dirfd_valid(target_dirfd) {
             if 0 != 0 {
                 error(
@@ -2573,6 +2574,7 @@ unsafe extern "C" fn do_copy(
         let mut fd: ::core::ffi::c_int = target_directory_operand(lastfile, &raw mut sb);
         if target_dirfd_valid(fd) {
             target_dirfd = fd;
+            RBOXC_COPY_DIR_FD = fd;
             target_directory = lastfile;
             n_files -= 1;
         } else {
@@ -2629,7 +2631,9 @@ unsafe extern "C" fn do_copy(
     if !target_directory.is_null() {
         if 2 as ::core::ffi::c_int <= n_files {
             dest_info_init(x);
+            RBOXC_COPY_TABLES[0] = (*x).dest_info;
             src_info_init(x);
+            RBOXC_COPY_TABLES[1] = (*x).src_info;
         }
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while i < n_files {
@@ -2855,6 +2859,7 @@ unsafe extern "C" fn do_copy(
             ::core::ptr::null_mut::<bool>(),
         );
     }
+    RBOXC_COPY_DIR_FD = -1;
     if target_dirfd >= 0 {
         let saved_errno = *::libc::__errno_location();
         ::libc::close(target_dirfd);
@@ -3000,6 +3005,21 @@ unsafe extern "C" fn decode_preserve_arg(
     }
     free(arg_writable as *mut ::core::ffi::c_void);
 }
+extern "C" { fn hash_free(table: *mut Hash_table); }
+static mut RBOXC_COPY_DIR_FD: ::core::ffi::c_int = -1;
+static mut RBOXC_COPY_TABLES: [*mut Hash_table; 2] = [::core::ptr::null_mut(); 2];
+unsafe extern "C" fn rboxc_free_copy_resources() {
+    let saved_errno = *::libc::__errno_location();
+    let fd = RBOXC_COPY_DIR_FD;
+    RBOXC_COPY_DIR_FD = -1;
+    if fd >= 0 { ::libc::close(fd); }
+    for index in 0..2 {
+        let table = RBOXC_COPY_TABLES[index];
+        RBOXC_COPY_TABLES[index] = ::core::ptr::null_mut();
+        if !table.is_null() { hash_free(table); }
+    }
+    *::libc::__errno_location() = saved_errno;
+}
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_cp(
     mut argc: ::core::ffi::c_int,
@@ -3064,6 +3084,7 @@ pub unsafe extern "C" fn single_binary_main_cp(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(close_stdin as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_free_copy_resources));
     selinux_enabled = (0 as ::core::ffi::c_int) < 0 as ::core::ffi::c_int;
     cp_option_init(&raw mut x);
     let mut c: ::core::ffi::c_int = 0;

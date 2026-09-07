@@ -205,6 +205,14 @@ CASES = [
     ('du', ['--files0-from=missing']),
     ('du', ['--files0-from=dir']),
     ('du', ['--files0-from=-']),
+    ('cp', ['input', 'left', '-t', 'empty']),
+    ('cp', ['input', 'input', 'empty']),
+    ('cp', ['missing', 'input', 'empty']),
+    ('cp', ['--backup=invalid', '-t', 'empty', 'input']),
+    ('mv', ['input', 'left', '-t', 'empty']),
+    ('mv', ['missing', 'input', 'empty']),
+    ('mv', ['--backup=invalid', '-t', 'empty', 'input']),
+    ('mv', ['-bn', '-t', 'empty', 'input']),
 ]
 
 
