@@ -128,9 +128,18 @@ Valgrind child tracing.
 
 Additional original-script coverage includes random-sort permutations,
 compressed sort output and compressor process handling, and nproc's simulated
-cgroup quotas. All four scripts pass natively; the quota test uses its original
-disposable chroot without changing host cgroups. Its Valgrind runtime staging
-remains pending. Twenty-one small shell scripts and generated factor test t37
+cgroup quotas. All four scripts pass natively. The quota test now also passes
+all original assertions under Valgrind: each implementation completes 16 chroot
+invocations and produces 20 memory logs. The reviewed x86_64 profile stages the
+real nproc ELF, matching Valgrind runtime, and loader/libc debug symbols inside
+the original disposable chroot. Private PID and mount namespaces supply real
+procfs for Valgrind while binding only PID 1's scheduler/cgroup inputs to the
+original fixture files. Host cgroups are unchanged. Every original NPROC call
+must have a matching instrumented invocation; binary/runtime hashes, quota
+values, scheduler policies, and thread overrides are recorded. The result
+remains memory-open: the original preload fixture leaves /proc/self/sched open
+with a 472-byte FILE allocation in 15 logs per implementation. Earlier runtime
+staging failures remain in the observation history. Twenty-one small shell scripts and generated factor test t37
 now also pass Valgrind, covering dates, cat line endings, dd case conversion,
 split suffixes, unique sorting, od byte order, printf hexadecimal escapes,
 df block headings, chmod modes/options, arch, false/true statuses, printenv,
@@ -188,9 +197,9 @@ binary or runtime-helper changes during execution. Seven profile checks cover
 report isolation, input changes, and separate log directories. The equivalence
 assessment accepts `--observations` for the separately saved behavior report.
 
-The reviewed Valgrind evidence records 579 clean results out of 616 scripts
-or selections: 5,729 Perl cases and 37,058 candidate/descendant process logs.
-The 37 open results comprise 26 with passing original assertions but unresolved
+The reviewed Valgrind evidence records 579 clean results out of 617 scripts
+or selections: 5,729 Perl cases and 37,078 candidate/descendant process logs.
+The 38 open results comprise 27 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, five with assertion
 failures under instrumentation, and four interrupted by watchdog deadlines. The status report records
 these categories separately; they do not change the strict clean-pass count.

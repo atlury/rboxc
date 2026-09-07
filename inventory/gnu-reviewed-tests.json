@@ -8966,8 +8966,12 @@
     "sha256": "ea4544cedcecdfd93ee5f1dd4fb6c520a81746a2a0bbcb6db37bec1054cba4d6",
     "clean_environment": true,
     "timeout_seconds": 1800,
-    "valgrind": false,
-    "valgrind_reason": "The original copies an ELF command and its libraries into a disposable chroot; the Valgrind runtime needs a separately reviewed staging profile."
+    "valgrind": true,
+    "valgrind_reason": "Stage the real nproc ELF and Valgrind runtime in the original disposable chroot; private mount and PID namespaces provide procfs with only the test process quota inputs replaced.",
+    "elf_input_commands": [
+      "nproc"
+    ],
+    "nproc_quota_chroot": true
   },
   {
     "script": "tests/sort/sort-compress-proc.sh",

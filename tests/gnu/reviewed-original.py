@@ -179,7 +179,8 @@ def main():
             assert not row.get('native_launcher') and 'env' in row['commands']
         if row.get('elf_input_commands'):
             expected_inputs = {'tests/install/basic-1.sh': ['dd'],
-                               'tests/install/trap.sh': ['ginstall']}
+                               'tests/install/trap.sh': ['ginstall'],
+                               'tests/nproc/nproc-quota.sh': ['nproc']}
             assert row.get('elf_input_commands') == expected_inputs.get(row['script']), 'unreviewed ELF input profile'
             assert not row.get('native_launcher'), 'ELF input staging uses the normal command launcher'
         assert row.get('perl_driver') in (None, 'tty-eof'), 'unknown Perl driver'
@@ -194,6 +195,21 @@ def main():
         if 'stdbuf' in row.get('commands', [row['command']]):
             context['stdbuf_libraries'] = [fingerprint(BUILD/'src/libstdbuf.so'),
                                           fingerprint(candidate_binary.parent/'libstdbuf.so')]
+        if row.get('nproc_quota_chroot'):
+            assert row['script'] == 'tests/nproc/nproc-quota.sh' and row['elf_input_commands'] == ['nproc']
+            context['quota_driver'] = fingerprint(ROOT/'tests/gnu/nproc-quota-profile.py')
+            if instrument:
+                assert os.uname().machine == 'x86_64', 'quota Valgrind runtime is reviewed for x86_64'
+                context['quota_runtime'] = {str(path): fingerprint(path) for path in [
+                    Path('/usr/bin/valgrind.bin'), Path('/usr/libexec/valgrind/memcheck-amd64-linux'),
+                    Path('/usr/libexec/valgrind/vgpreload_core-amd64-linux.so'),
+                    Path('/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so'),
+                    Path('/usr/libexec/valgrind/default.supp')]}
+                for binary in ('/lib64/ld-linux-x86-64.so.2', '/usr/lib/x86_64-linux-gnu/libc.so.6'):
+                    build_id = re.search(r'Build ID: ([a-f0-9]+)', subprocess.check_output(['readelf', '-n', binary], text=True))[1]
+                    debug = Path('/usr/lib/debug/.build-id')/build_id[:2]/(build_id[2:]+'.debug')
+                    context['quota_runtime'][str(debug)] = fingerprint(debug)
+
         if row.get('locale_profile') == 'extended':
             context['locales'] = fingerprint(ROOT/'evidence/test-locales.json')
         if row.get('nss_profile'):
@@ -307,6 +323,17 @@ def main():
                         wrapper.chmod(0o755)
                     else:
                         (run/'src'/command).symlink_to(candidate)
+                if instrument and row.get('nproc_quota_chroot'):
+                    assert os.geteuid() == 0 and not credentials, 'quota chroot needs private namespace privileges'
+                    quota_config = run/'quota-profile.json'
+                    quota_config.write_text(json.dumps({'run': str(run), 'memory': str(runtime_memory_dir),
+                        'gnu': str(BUILD/'src/coreutils'), 'runtime': context['quota_runtime'],
+                        'mount_namespace': os.readlink('/proc/self/ns/mnt'),
+                        'pid_namespace': os.readlink('/proc/self/ns/pid')}))
+                    wrapper = run/'src/chroot'
+                    wrapper.write_text('#!/bin/sh\nexec '+shlex.join([sys.executable,
+                        str(ROOT/'tests/gnu/nproc-quota-profile.py'), str(quota_config)])+' "$@"\n')
+                    wrapper.chmod(0o755)
                 (run/'src/getlimits').symlink_to(helper)
                 if row.get('python3_helper'):
                     (run/'src/python').symlink_to(sys.executable)
@@ -455,6 +482,15 @@ def main():
                     expected_count = row.get('expected_case_count', len(row.get('cases', [])))
                     outcomes[implementation]['case_count'] = sum(int(count) for count in counts)
                     outcomes[implementation]['case_count_pass'] = bool(counts) and outcomes[implementation]['case_count'] == expected_count
+                if instrument and row.get('nproc_quota_chroot'):
+                    profiles = [json.loads(path.read_text()) for path in sorted(runtime_memory_dir.glob('quota-*.profile.json'))]
+                    outcomes[implementation]['quota_chroots'] = profiles
+                    outcomes[implementation]['quota_profile_sha256'] = context['quota_driver']
+                    expected_calls = len(re.findall(rb'^\+ (?:(?:OMP_NUM_THREADS|OMP_THREAD_LIMIT)=[0-9]+ )?NPROC(?: [^\n]*)?$', completed.stderr, re.M))
+                    outcomes[implementation]['quota_invocations'] = expected_calls
+                    outcomes[implementation]['case_count_pass'] = len(profiles) == expected_calls and expected_calls >= 6 and all(
+                        profile['private_pid'] == 1 and profile['nproc_sha256'] == binary_hashes[implementation]
+                        and (runtime_memory_dir/profile['log']).is_file() for profile in profiles)
                 if instrument and (credentials or row.get('native_launcher') or row.get('shared_runtime')):
                     for path in runtime_memory_dir.glob('*.log'):
                         shutil.copy2(path, memory_dir/path.name)
