@@ -9,6 +9,14 @@ def replace_once(text, before, after):
 
 
 def cleanup(name, text):
+    if name == 'yes':
+        # GNU may borrow argv storage for large patterns. Only the separately
+        # allocated repetition buffer belongs to this entry. Signal exits
+        # retain GNU's behavior; this release follows its write diagnostic.
+        anchor = '    return 1 as ::core::ffi::c_int;\n}\npub const MANUAL_URL'
+        text = replace_once(text, anchor,
+                            '    if !reuse_operand_strings {\n'
+                            '        free(buf.cast());\n    }\n' + anchor)
     if name == 'nohup':
         from nohup_cleanup import cleanup_nohup
         text = cleanup_nohup(text, replace_once)

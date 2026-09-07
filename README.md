@@ -213,9 +213,22 @@ checks, so this stricter comparison remains open.
 `evidence/shuf-reservoir.json` records every matrix case and log hash; each
 build has 83 captured logs including version and Valgrind prerequisite checks.
 
-The reviewed Valgrind evidence records 581 clean results out of 619 scripts
-or selections: 5,729 Perl cases and 37,164 candidate/descendant process logs.
-The 38 open results comprise 27 with passing original assertions but unresolved
+The original sleep-parameter script now also passes Valgrind, with 28 clean
+logs per build and its short timeout assertions unchanged. The initial
+instrumented yes script passes its assertions but exposes an 8 KiB owned
+buffer leak on a normal output-error exit. The Rust entry now frees that
+buffer after its diagnostic, while preserving borrowed argument storage.
+A separate candidate passes the full native original with syscall fallback
+checks enabled, plus 11 memory-clean output-error fixtures and two SIGPIPE
+equivalence fixtures. The instrumented original remains open: its injected
+pipe failures prevent Valgrind semaphore initialization in both builds.
+The earlier sandbox run skipped those conditional strace branches.
+`evidence/yes-cleanup-candidate.json` records both profiles and the focused
+checks; this candidate also contains the prior cat/tac cleanup changes.
+
+The reviewed Valgrind evidence records 582 clean results out of 621 scripts
+or selections: 5,729 Perl cases and 37,207 candidate/descendant process logs.
+The 39 open results comprise 28 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, six with assertion
 failures under instrumentation, and three interrupted by watchdog deadlines. The status report records
 these categories separately; they do not change the strict clean-pass count.

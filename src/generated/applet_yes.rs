@@ -952,6 +952,9 @@ pub unsafe extern "C" fn single_binary_main_yes(
             };
         });
     };
+    if !reuse_operand_strings {
+        free(buf.cast());
+    }
     return 1 as ::core::ffi::c_int;
 }
 pub const MANUAL_URL: [::core::ffi::c_char; 61] = unsafe {
