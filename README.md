@@ -111,8 +111,18 @@ The explicit UTF-8 profile uses the installed fr_FR.utf8 locale. Conditional
 branches still depend on the script's own platform prerequisites.
 Original-script totals aggregate saved runs across incremental builds; each
 result records the binary hash it tested.
-Results checkpoint atomically after each script. `--script` selects an exact
-script; `--report-name` gives independent batches distinct evidence files.
+Named batches checkpoint each completed implementation atomically, so a
+completed GNU run survives a disconnect during its rboxc comparison. `--resume`
+reuses a side only when the test definition, binaries, drivers, runtime profile,
+and saved output/Valgrind log hashes match. Failed results remain failures.
+Eight checkpoint tests cover invalidation, missing/changed logs, interrupted
+writes, and exclusive batch locks. An original dispatcher test verifies resume
+with both completed sides and with only GNU completed.
+`--script` selects an exact script; `--report-name` gives independent batches
+distinct evidence files. `scripts/run-reviewed-batch.py` accepts an explicit list
+of reviewed scripts, `--report-prefix`, and `--jobs` (1–8); it resumes each script
+independently. Launcher and preload-adapter builds use private per-run directories.
+Two concurrent original launcher tests pass and reuse their saved runs.
 New results record tested binary hashes, and exec-wrapper tests can request
 Valgrind child tracing.
 
@@ -124,7 +134,8 @@ remains pending. Twenty-one small shell scripts and generated factor test t37
 now also pass Valgrind, covering dates, cat line endings, dd case conversion,
 split suffixes, unique sorting, od byte order, printf hexadecimal escapes,
 df block headings, chmod modes/options, arch, false/true statuses, printenv,
-echo, and tail input positioning. Extended locale branches run where configured.
+echo, and tail input positioning. Generated factor tests t11–t13 also pass
+Valgrind. Extended locale branches run where configured.
 
 The complete floating-point-limit sort script passes natively in C and French
 locales. Under Valgrind, both GNU and rboxc misorder the same minimum long-double
@@ -140,16 +151,21 @@ per implementation contain summaries. The result remains open because the
 external compression shells and GNU tr helper retain resources. The earlier
 measurement with incomplete exec logs is preserved in the observation history.
 
-The reviewed Valgrind evidence records 495 clean results out of 525 scripts
-or selections: 3,707 Perl cases and 20,469 candidate/descendant process logs.
-The 30 open results comprise 24 with passing original assertions but unresolved
-memory/descriptor evidence, two prerequisite skips, and four with assertion
+The reviewed Valgrind evidence records 499 clean results out of 531 scripts
+or selections: 3,707 Perl cases and 20,571 candidate/descendant process logs.
+The 32 open results comprise 25 with passing original assertions but unresolved
+memory/descriptor evidence, two prerequisite skips, and five with assertion
 failures under instrumentation in both GNU and rboxc. The status report records
 these categories separately; they do not change the strict clean-pass count.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
 memory and descriptors retained by host script interpreters. Both pass natively.
-Matching GNU findings are not counted as clean.
+The separate env signal-handler script also passes natively; its Valgrind run
+has timing/signal assertion differences and incomplete logs in both builds.
+The original unknown-command dispatcher test now passes natively and under
+Valgrind. The buffering script passes its assertions but still records two
+allocations retained by the GNU preload helper. Matching GNU findings are not
+counted as clean.
 Three more results remain open: dd's intentionally closed-stderr diagnostics,
 install's external strip children with host-shell descriptors and host-tool heap findings,
 and cat's injected pipe-creation failure interfering with Valgrind startup.

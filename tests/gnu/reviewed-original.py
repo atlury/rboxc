@@ -13,6 +13,7 @@ import subprocess
 import tempfile
 import sys
 import time
+from reviewed_checkpoint import RunCheckpoint
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = Path(os.environ.get('GNU_COREUTILS_SOURCE', '/opt/src/coreutils-9.11'))
@@ -82,9 +83,12 @@ def main():
     parser.add_argument('--candidate', type=Path, default=ROOT/'target/release/rboxc',
                         help='Candidate executable for a separately named comparison batch')
     parser.add_argument('--report-name', help='Separate evidence filename stem for independent test batches')
+    parser.add_argument('--resume', action='store_true',
+                        help='Reuse matching completed implementations in a named batch')
     parser.add_argument('commands', nargs='*')
     parser.add_argument('--script', action='append', default=[])
     options = parser.parse_args()
+    assert not options.resume or options.report_name, '--resume requires --report-name'
     watchdog = Path('/usr/bin/timeout').resolve(strict=True)
     watchdog_hash = hashlib.sha256(watchdog.read_bytes()).hexdigest()
     candidate_binary = options.candidate.resolve(strict=True)
@@ -102,6 +106,8 @@ def main():
     if options.report_name:
         assert re.fullmatch(r'[a-z0-9][a-z0-9-]*', options.report_name), 'invalid report name'
         output = 'evidence/raw/'+options.report_name+'.json'
+    run_checkpoint = (RunCheckpoint((ROOT/output).with_suffix('.progress.json'), ROOT)
+                      if options.report_name else None)
     previous = json.loads((ROOT/output).read_text())['results'] if (selected or selected_scripts) and (ROOT/output).exists() else []
     results_by_script = {row['script']: row for row in previous}
     def checkpoint():
@@ -115,9 +121,10 @@ def main():
         return results
 
     native_launchers = {}
+    launcher_workspace = tempfile.TemporaryDirectory(prefix='reviewed-launchers-', dir=ROOT/'build')
     for direct, log_fd in sorted({(bool(row.get('direct_valgrind')), bool(row.get('valgrind_log_fd'))) for row in manifest
                           if instrument and row.get('native_launcher') and included(row)}):
-        native_launcher = ROOT/('build/valgrind-launch'+('-direct' if direct else '')+('-log-fd' if log_fd else ''))
+        native_launcher = Path(launcher_workspace.name)/('valgrind-launch'+('-direct' if direct else '')+('-log-fd' if log_fd else ''))
         extra = ['-DRBOXC_VALGRIND_EXECUTABLE="/usr/bin/valgrind.bin"'] if direct else []
         if log_fd:
             extra.append('-DRBOXC_VALGRIND_LOG_FD=1')
@@ -129,11 +136,27 @@ def main():
         native_launchers[direct, log_fd] = native_launcher
     tmpdir_adapter = None
     if instrument and any(row.get('valgrind_tmpdir_adapter') and included(row) for row in manifest):
-        tmpdir_adapter = ROOT/'build/valgrind-tmpdir.so'
+        tmpdir_adapter = Path(launcher_workspace.name)/'valgrind-tmpdir.so'
         subprocess.run(['cc', '-shared', '-fPIC', '-O2', '-Wall', '-Wextra', '-Werror',
                         ROOT/'tests/gnu/valgrind-tmpdir.c', '-o', tmpdir_adapter], check=True)
     binary_hashes = {name: hashlib.sha256(path.read_bytes()).hexdigest() for name, path in
                      [('gnu', BUILD/'src/coreutils'), ('rboxc', candidate_binary)]}
+    fingerprint = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
+    execution_context = {
+        'binaries': binary_hashes, 'valgrind': instrument,
+        'valgrind_version': subprocess.check_output(['valgrind', '--version'], text=True).strip() if instrument else None,
+        'config_header': fingerprint(BUILD/'lib/config.h'),
+        'getlimits': fingerprint(BUILD/'src/getlimits'),
+        'watchdog': watchdog_hash, 'source': str(SOURCE),
+        'kernel': list(os.uname()), 'uid': os.geteuid(), 'gid': os.getegid(), 'groups': os.getgroups(),
+        'drivers': {str(path.relative_to(ROOT)): fingerprint(path) for path in [
+            Path(__file__), ROOT/'tests/gnu/reviewed_checkpoint.py',
+            ROOT/'tests/gnu/valgrind-launch.c', ROOT/'tests/gnu/valgrind-tmpdir.c',
+            ROOT/'tests/gnu/terminal-profile.py', ROOT/'tests/gnu/loopback-profile.py',
+            ROOT/'scripts/generated_tests.py']},
+        'gnu_harness': {name: fingerprint(SOURCE/name) for name in
+                        ['tests/init.sh', 'tests/Coreutils.pm', 'tests/CuSkip.pm']},
+    }
     for row in manifest:
         if not included(row):
             continue
@@ -146,14 +169,33 @@ def main():
         if row.get('valgrind_multicall'):
             assert not row.get('native_launcher') and row.get('trace_children')
             assert row['script'] == 'tests/chroot/chroot-fail.sh', 'multicall tracing requires a reviewed profile'
+        if row.get('extra_real_aliases'):
+            assert row['script'] == 'tests/misc/coreutils.sh' and row.get('native_launcher')
+            assert row['extra_real_aliases'] == ['blah'], 'only the original unknown-command alias is reviewed'
         assert row.get('perl_driver') in (None, 'tty-eof'), 'unknown Perl driver'
         if row.get('perl_driver') == 'tty-eof':
             assert row['script'] == 'tests/misc/tty-eof.pl' and row.get('full_suite')
             assert set(command.split()[0] for command in row['tty_commands']) == set(row['commands'])
         test_shell = row.get('test_shell', '/bin/sh')
         assert test_shell in ('/bin/sh', '/bin/bash'), 'unsupported test shell'
+        context = {**execution_context, 'definition': row, 'shell': fingerprint(Path(test_shell))}
+        if not row.get('clean_environment'):
+            context['environment'] = hashlib.sha256(json.dumps(dict(os.environ), sort_keys=True).encode()).hexdigest()
+        if 'stdbuf' in row.get('commands', [row['command']]):
+            context['stdbuf_libraries'] = [fingerprint(BUILD/'src/libstdbuf.so'),
+                                          fingerprint(candidate_binary.parent/'libstdbuf.so')]
+        if row.get('locale_profile') == 'extended':
+            context['locales'] = fingerprint(ROOT/'evidence/test-locales.json')
+        if row.get('nss_profile'):
+            context['nss'] = fingerprint(Path('/etc/nsswitch.conf'))
         outcomes = {}
         for implementation in ('gnu', 'rboxc'):
+            if options.resume:
+                saved = run_checkpoint.get(row['script'], context, implementation)
+                if saved is not None:
+                    outcomes[implementation] = saved
+                    print('RESUME', row['script'], implementation, saved['status'], flush=True)
+                    continue
             with tempfile.TemporaryDirectory(prefix='rboxc-upstream-') as temporary:
                 run = Path(temporary)
                 (run/'src').mkdir()
@@ -186,6 +228,8 @@ def main():
                 memory_dir = None
                 if instrument:
                     (run/'real').mkdir()
+                    for alias in row.get('extra_real_aliases', []):
+                        (run/'real'/alias).symlink_to(candidate)
                     if row.get('valgrind_multicall'):
                         assert 'coreutils' not in commands
                         (run/'real/coreutils').symlink_to(candidate)
@@ -334,6 +378,7 @@ def main():
                 log.write_bytes(completed.stdout+completed.stderr)
                 outcomes[implementation] = {'status': completed.returncode, 'log': str(log.relative_to(ROOT)),
                                             'binary_sha256': binary_hashes[implementation],
+                                            'runner_source_sha256': execution_context['drivers'][str(Path(__file__).relative_to(ROOT))],
                                             'config_header_sha256': config_hash,
                                             'watchdog': {'path': str(watchdog), 'sha256': watchdog_hash},
                                             'test_shell': test_shell,
@@ -390,6 +435,8 @@ def main():
                         memory.append({'log': str(path.relative_to(ROOT)),
                                        **parse_memory_log(report, path.stem, row.get('valgrind_log_fd', False))})
                     outcomes[implementation]['memory'] = memory
+                if run_checkpoint:
+                    run_checkpoint.save(row['script'], context, implementation, outcomes[implementation])
         passed = outcomes['gnu']['status'] == outcomes['rboxc']['status'] == 0
         passed &= all(result.get('case_count_pass', True) for result in outcomes.values())
         if instrument:
@@ -401,6 +448,9 @@ def main():
         print(state.upper(), row['script'], {key: value['status'] for key, value in outcomes.items()}, flush=True)
         checkpoint()
     results = checkpoint()
+    if run_checkpoint:
+        run_checkpoint.close()
+    launcher_workspace.cleanup()
     return any(not row['pass'] and not row['gnu']['status'] == row['rboxc']['status'] == 77 for row in results if included(row))
 
 

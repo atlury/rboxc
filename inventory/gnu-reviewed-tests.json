@@ -433,8 +433,13 @@
     "sha256": "0bc7b4c4b28490b9790b29d14b6f458c0c9ce29f0fb1ea3a1dff3248f26f3af0",
     "commands": [
       "stdbuf",
-      "env"
-    ]
+      "env",
+      "uniq"
+    ],
+    "clean_environment": true,
+    "valgrind": true,
+    "native_launcher": true,
+    "timeout_seconds": 600
   },
   {
     "script": "tests/paste/paste.pl",
@@ -645,7 +650,13 @@
       "coreutils"
     ],
     "sha256": "83c5517cd51a8f1afe842e540c6394ab5876442852cc8b3c4dd488292f70f88b",
-    "clean_environment": true
+    "clean_environment": true,
+    "valgrind": true,
+    "native_launcher": true,
+    "extra_real_aliases": [
+      "blah"
+    ],
+    "timeout_seconds": 300
   },
   {
     "script": "tests/misc/echo.sh",
@@ -7978,7 +7989,8 @@
       "whoami",
       "yes"
     ],
-    "nss_profile": "local-files"
+    "nss_profile": "local-files",
+    "trace_children": true
   },
   {
     "script": "tests/misc/responsive.sh",
@@ -8593,7 +8605,8 @@
       "timeout",
       "printf"
     ],
-    "test_shell": "/bin/bash"
+    "test_shell": "/bin/bash",
+    "native_launcher": true
   },
   {
     "script": "tests/tail/inotify-rotate.sh",
