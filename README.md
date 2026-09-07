@@ -66,14 +66,15 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The current release executable is 2,405,616 bytes (2.29 MiB), dynamically linked
+The current release executable is 2,407,536 bytes (2.30 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
 
 The current release dynamically links libacl and libattr for GNU metadata
-helpers. A separate static-link trial removes those two runtime dependencies
-and grows the executable by 7,784 bytes to 2,413,400 bytes. All five selected
+helpers. A separate static-link trial against the previous 2,405,616-byte
+build removes those two runtime dependencies and grows that executable by
+7,784 bytes to 2,413,400 bytes. All five selected
 original metadata scripts pass natively and under Valgrind on that trial.
 It is separate evidence, not a change to the main release's link profile.
 Building the ACL and Attr libraries from pinned sources and incorporating their
@@ -85,18 +86,18 @@ Recorded checks:
 | --- | --- | --- |
 | GNU help/version comparisons | 428/428 pass | Both multicall and symlink entry forms |
 | Valgrind help paths | 107/107 pass | Help only |
-| Normal/error behavior fixtures | 291/291 match GNU | All 107 commands; streams, status, contents, modes, owners, link topology |
-| Valgrind normal/error fixtures | 291/291 clean | Bounded fixtures; retained allocations recorded separately |
-| Instrumented GNU comparisons | 291/291 pass | Saved Valgrind observations, assessed separately from native arithmetic |
+| Normal/error behavior fixtures | 305/305 match GNU | All 107 commands; streams, status, contents, modes, owners, link topology |
+| Valgrind normal/error fixtures | 305/305 clean | Bounded fixtures; retained allocations recorded separately |
+| Instrumented GNU comparisons | 305/305 pass | Saved Valgrind observations, assessed separately from native arithmetic |
 | Original GNU cp tests | 91 pass, 11 prerequisite skips, 30 excluded | 66 scripts, root and ordinary-user profiles |
 | cp mutation comparisons | 879 pass | Bounded local backup/removal/error fixtures |
 | cp backup comparisons | 75 pass | Backup names and preserved fixture data |
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 `tail` file records on return (including ignored follow mode), and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 512 of 515 scripts/selections.
-The executed inventory contains 470 shell scripts and 3,326 Perl cases.
-Thirty-five Perl scripts run their complete
+failures). The reviewed original GNU runner now passes 558 of 561 scripts/selections.
+The executed inventory contains 510 shell scripts and 5,281 Perl cases.
+Forty-one Perl scripts run their complete
 runtime case lists; 10 others retain explicit case selections. Case-count
 checks also cover scripts that call GNU's Perl harness more than once.
 GNU's seven generic scripts pass across all 107 commands. New coverage includes
@@ -113,8 +114,8 @@ script; `--report-name` gives independent batches distinct evidence files.
 New results record tested binary hashes, and exec-wrapper tests can request
 Valgrind child tracing.
 
-The reviewed Valgrind evidence records 417 clean results out of 425 scripts
-or selections: 2,937 Perl cases and 7,653 candidate/descendant process logs.
+The reviewed Valgrind evidence records 443 clean results out of 462 scripts
+or selections: 3,030 Perl cases and 8,563 candidate/descendant process logs.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
 memory and descriptors retained by host script interpreters. Both pass natively.
@@ -243,6 +244,50 @@ usage/getopt consistency, and documentation-reference scripts pass across all
 removed-directory tests, and alternative candidate binaries require separately
 named reports to avoid overwriting main-release evidence.
 
+The original sort merge and filename-list suites now pass natively and under
+Valgrind. Reproducible ownership cleanup releases argv pointer arrays,
+merge-file arrays, named filename-list streams, and the token obstacks whose
+strings those arrays borrow. A failed temporary-file node is freed before
+GNU's fatal diagnostic while preserving errno. Tail now finalizes named file
+descriptors, inotify state, event buffers, its file table, and its PID list on
+normal or fatal exit. Its original FIFO/PID test and complete Perl suite pass
+Valgrind. Fourteen added behavior fixtures cover these sort and tail paths.
+Signal termination still retains GNU's signal semantics; these finalizers do
+not claim cleanup on SIGTERM or SIGKILL.
+
+All nine additional sort option/locale scripts pass natively, including
+Swedish grouping and French/Japanese months. Three more private locales and
+the GB18030 locale extend the test collection to twelve. The non-UTF-8 cut,
+numfmt, and tac scripts and all 57 multibyte expr cases pass in both modes.
+The complete 1,862-case head tail-elision matrix passes natively; its expanded
+Valgrind run is pending. Original streaming memory-limit scripts pass for cut,
+expand, unexpand, and pr, with instrumentation intentionally excluded from
+those native memory-budget measurements.
+
+The outer test watchdog now uses the absolute host timeout path, preventing
+a tested timeout applet from instrumenting the entire shell harness. Results
+record the watchdog hash and selected shell. The original timeout group test
+uses Bash for its required signal syntax. Timeout parameter, init-parent, and
+blocked-alarm tests pass in both modes. Its basic and group tests pass
+natively, but intentional SIGKILL and external child execution leave incomplete
+Valgrind reports. The FIFO/mode test disables Valgrind's optional debugger
+socket because its restrictive umask prevents that socket from opening; the
+original script and its mode assertions remain unchanged and pass both modes.
+
+The two chroot scripts pass natively. The credentials test gives only its child
+supplementary group 0, matching the original test's assumption; the parent's
+groups remain unchanged. Instrumented chroot still has incomplete exec reports
+and log-file permission failures after credential changes. Generic read-error,
+warning-output, write-error, closed-stdout, and line-buffer responsiveness
+scripts pass natively across their registered applicable command sets.
+Valgrind exposes further generic read-error cleanup findings and an env exec
+report without a final summary in the warning test. Three following-tail scripts
+also retain descriptors when the original test terminates them with signals;
+two additional tail scripts need their instrumented prerequisites rerun.
+Together with the eight earlier results described above, these account for
+nineteen open reviewed Valgrind results. The observation files retain all
+superseded failures and prerequisite skips; none are converted into passes.
+
 The complete expand, fmt, fold, and uniq Perl suites now pass natively,
 including 1,020 uniq cases and 47 fold cases with UTF-8 coverage. Their expanded
 Valgrind runs also pass in full. Test locale aliases explicitly map normalized encoding names to the
@@ -335,9 +380,9 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 546 scripts
+the original test evidence into `evidence/gnu-suite-coverage.json`: 592 scripts
 passed, three passed with profile skips, 10 have selected-case coverage, seven
-skipped, 26 are excluded, and 141 remain pending. No recorded native failures
+skipped, 26 are excluded, and 95 remain pending. No recorded native failures
 remain in the executed selections. Partial selections and skips
 are not full-suite passes; passing scripts can contain platform-conditional
 branches. No command is certified complete.

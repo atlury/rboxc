@@ -48,6 +48,8 @@ def main():
     parser.add_argument('commands', nargs='*')
     parser.add_argument('--script', action='append', default=[])
     options = parser.parse_args()
+    watchdog = Path('/usr/bin/timeout').resolve(strict=True)
+    watchdog_hash = hashlib.sha256(watchdog.read_bytes()).hexdigest()
     candidate_binary = options.candidate.resolve(strict=True)
     assert candidate_binary == ROOT/'target/release/rboxc' or options.report_name, 'alternate candidates require a separate report'
     instrument = options.valgrind
@@ -98,6 +100,8 @@ def main():
             continue
         script = materialize(ROOT, SOURCE, row) if row.get('generator_inputs') else SOURCE/row['script']
         assert hashlib.sha256(script.read_bytes()).hexdigest() == row['sha256'], row['script']
+        test_shell = row.get('test_shell', '/bin/sh')
+        assert test_shell in ('/bin/sh', '/bin/bash'), 'unsupported test shell'
         outcomes = {}
         for implementation in ('gnu', 'rboxc'):
             with tempfile.TemporaryDirectory(prefix='rboxc-upstream-') as temporary:
@@ -152,7 +156,7 @@ def main():
                             wrapper.symlink_to('.valgrind-launch')
                             continue
                         vg = ['valgrind', '--leak-check=full', '--show-leak-kinds=all',
-                              '--track-fds=yes', *(['--trace-children=yes'] if row.get('trace_children') else []),
+                              '--track-fds=yes', *(['--vgdb=no'] if row.get('valgrind_vgdb') is False else []), *(['--trace-children=yes'] if row.get('trace_children') else []),
                               '--log-file='+str(runtime_memory_dir/'%p.log'), command]
                         startup = ''
                         if tmpdir_library:
@@ -178,9 +182,9 @@ def main():
                     'LC_ALL': 'C', 'LANGUAGE': 'C', 'TZ': 'UTC0', 'built_programs': ' '.join(row.get('built_programs', commands)),
                     'srcdir': str(SOURCE), 'top_srcdir': str(SOURCE), 'abs_srcdir': str(SOURCE),
                     'abs_top_srcdir': str(SOURCE), 'abs_top_builddir': str(run),
-                    'CONFIG_HEADER': str(config_header), 'LOCALE_FR': '',
+                    'CONFIG_HEADER': str(config_header), 'LOCALE_FR': row.get('locale_fr', ''),
                     'LOCALE_FR_UTF8': row.get('locale_fr_utf8', 'none'), 'VERSION': '9.11', 'PACKAGE_VERSION': '9.11',
-                    'EXEEXT': '', 'host_os': 'linux-gnu', 'CC': 'cc', 'EGREP': 'grep -E', 'MAKE': 'make', 'PERL': 'perl', 'AWK': 'awk', 'SHELL': '/bin/sh',
+                    'EXEEXT': '', 'host_os': 'linux-gnu', 'CC': 'cc', 'EGREP': 'grep -E', 'MAKE': 'make', 'PERL': 'perl', 'AWK': 'awk', 'SHELL': test_shell,
                     'RBOXC_FULL_SUITE': '1' if row.get('full_suite') else '',
                     'VERBOSE': 'yes', 'RBOXC_APPROVED_CASES': ','.join(row.get('cases', [])),
                 }
@@ -204,7 +208,7 @@ def main():
                     command = ['perl', '-I'+str(SOURCE/'tests'), '-MCuSkip', '-MCoreutils',
                                '-e', PERL_SELECTION, str(script)]
                 else:
-                    command = ['/bin/sh', '-c', 'exec /bin/sh "$1" 9>&2', 'test', str(script)]
+                    command = [test_shell, '-c', 'exec "$1" "$2" 9>&2', 'test', test_shell, str(script)]
                 nss_profile = None
                 if row.get('nss_profile') == 'local-files':
                     assert os.geteuid() == 0, 'local-files NSS profile requires private mount privileges'
@@ -251,7 +255,7 @@ def main():
                     command = [sys.executable, str(driver), *command]
                 started = time.monotonic()
                 config_hash = hashlib.sha256(config_header.read_bytes()).hexdigest()
-                completed = subprocess.run(['timeout', '--kill-after=5s', str(row.get('timeout_seconds', 60))+'s', *command],
+                completed = subprocess.run([str(watchdog), '--kill-after=5s', str(row.get('timeout_seconds', 60))+'s', *command],
                                            cwd=fixture, env=environment, capture_output=True, **launch_credentials)
                 assert os.getgroups() == parent_groups, 'parent group membership changed'
                 log = ROOT/'evidence/raw'/('reviewed-'+('vg-' if instrument else '')+row['script'].replace('/', '-')+'-'+implementation+'-'+run.name+'.log')
@@ -259,6 +263,8 @@ def main():
                 outcomes[implementation] = {'status': completed.returncode, 'log': str(log.relative_to(ROOT)),
                                             'binary_sha256': binary_hashes[implementation],
                                             'config_header_sha256': config_hash,
+                                            'watchdog': {'path': str(watchdog), 'sha256': watchdog_hash},
+                                            'test_shell': test_shell,
                                             'elapsed_seconds': round(time.monotonic()-started, 3)}
                 if row.get('terminal'):
                     profiles = re.findall(rb'^RBOXC_TERMINAL_PROFILE (.+)$', completed.stderr, re.M)

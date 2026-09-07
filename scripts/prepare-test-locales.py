@@ -15,7 +15,9 @@ rows = []
 for language, encoding in [('am_ET', 'UTF-8'), ('fa_IR', 'UTF-8'),
                            ('th_TH', 'UTF-8'), ('ru_RU', 'KOI8-R'),
                            ('en_US', 'UTF-8'), ('en_US', 'ISO-8859-1'),
-                           ('fr_FR', 'UTF-8'), ('ko_KR', 'UTF-8')]:
+                           ('fr_FR', 'UTF-8'), ('ko_KR', 'UTF-8'),
+                           ('fr_FR', 'ISO-8859-1'), ('sv_SE', 'ISO-8859-1'),
+                           ('ja_JP', 'UTF-8'), ('zh_CN', 'GB18030')]:
     name = language+'.'+encoding
     target = destination/name
     subprocess.run(['localedef', '--no-archive', '-i', language, '-f', encoding, target], check=True)
@@ -48,6 +50,14 @@ for row in rows:
         else:
             assert not path.exists(), 'locale alias would replace existing data'
             path.symlink_to(row['name'])
+for collection in (destination, runtime):
+    path = collection/'sv_SE'
+    if path.is_symlink():
+        assert path.readlink() == Path('sv_SE.ISO-8859-1')
+    else:
+        assert not path.exists(), 'locale alias would replace existing data'
+        path.symlink_to('sv_SE.ISO-8859-1')
+aliases['sv_SE'] = 'sv_SE.ISO-8859-1'
 report = {'scope': 'Separate test LOCPATH; system locale archive unchanged',
           'localedef': subprocess.check_output(['localedef', '--version'], text=True).splitlines()[0],
           'path': str(destination.relative_to(ROOT)), 'runtime_path': str(runtime),
