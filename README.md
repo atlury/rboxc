@@ -82,8 +82,11 @@ commands is planned after Coreutils; other shared dependencies remain.
 
 A separate capability-enabled Coreutils build now passes all three original
 capability metadata scripts: cp preservation, ls coloring, and disabling ls
-capability lookups. All 23 Valgrind logs per build are clean. The candidate
-also passes 428 help/version comparisons, 107 Valgrind help checks, and 17
+capability lookups. All 23 Valgrind logs per build are clean. Six further original color, ACL,
+and xattr-call-count scripts pass natively and under Valgrind with 57 more
+clean logs per build. Comparing all 208 translated ls function bodies shows
+that only `has_capability` changes; the other 207 bodies are identical.
+The candidate also passes 428 help/version comparisons, 107 Valgrind help checks, and 17
 selected cp/ls/dir/vdir behavior comparisons. `evidence/capability-candidate.json`
 records the package, configuration, translated source, binaries, and test logs.
 The translated ls change is preserved on the `capability-profile` branch.
