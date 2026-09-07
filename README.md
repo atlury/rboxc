@@ -80,18 +80,21 @@ checks and the Hello original/focused comparisons. `evidence/time-activation.jso
 records activation with previous artifacts retained.
 
 GNU Which 2.25 is source-pinned with its verified GNU release signature. The
-separate 110-command candidate translates its command entry and keeps 23
+installed 110-command release translates its command entry and keeps 23
 provider symbol names private, including five Rust definitions referenced by
 its helpers. The port frees alias/function records and the final explicit-path
-buffer after lookup. All 42 initial native/Valgrind fixtures match GNU, with
+buffer after lookup. All 46 native/Valgrind fixtures match GNU, with
 zero live candidate heap in those fixtures; GNU's retained allocations remain
 in the report. The distribution registers no runtime test suite, so this is
-focused compatibility evidence rather than a full original-suite pass.
+focused compatibility evidence rather than a full original-suite pass. The
+combined Coreutils, Hello, and Time regressions pass with Time's existing
+instrumentation gap retained. Activation and prior artifact backups are recorded
+in `evidence/which-activation.json`.
 
 ## Status
 
-The executable registers 109 commands: 107 Coreutils entries, GNU Hello, and
-GNU Time, all with active Rust command entries. No native C command entry remains, and assembly succeeds without the
+The executable registers 110 commands: 107 Coreutils entries, GNU Hello,
+GNU Time, and GNU Which, all with active Rust command entries. No native C command entry remains, and assembly succeeds without the
 C-entry opt-in. `printf`, `sort`, `od`, `numfmt`, and `seq` use native numeric
 helpers: floating values stay inside GNU C functions and cross the boundary
 only as bytes or text. This preserves the host's x87 `long double`
@@ -106,7 +109,7 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The current release executable is 2,474,368 bytes (2.36 MiB), dynamically linked
+The current release executable is 2,493,552 bytes (2.38 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
@@ -854,9 +857,11 @@ sh scripts/bootstrap-c2rust.sh
 sh scripts/prepare-coreutils.sh
 sh scripts/prepare-hello.sh
 sh scripts/prepare-time.sh
+sh scripts/prepare-which.sh
 python3 scripts/translate-coreutils.py
 python3 scripts/translate-hello.py
 python3 scripts/translate-time.py
+python3 scripts/translate-which.py
 python3 scripts/assemble-coreutils.py
 cargo build --locked --release
 target/release/rboxc --list
@@ -877,6 +882,7 @@ python3 tests/hello-original.py
 python3 tests/hello-behavior.py
 python3 tests/time-original.py
 python3 tests/time-behavior.py
+python3 tests/which-behavior.py
 python3 scripts/update-evidence.py
 ```
 

@@ -91,6 +91,33 @@ if all(path.exists() for path in time_reports):
         'original_scripts_executed': original['total'], 'original_scripts': len(expected),
         'behavior_passed': focused['passed'], 'behavior_total': focused['total'],
         'complete': False, 'completion_scope': row['completion_scope']}
+which_report = ROOT/'evidence/which-behavior.json'
+if which_report.exists():
+    focused = json.loads(which_report.read_text())
+    entry = read('evidence/which-translation.json')
+    linked = read('evidence/which-link.json')
+    manifest = read('inventory/which-tests.json')
+    assert not manifest['scripts'], 'original test registration requires a new assessment'
+    source_current = (entry['rust_sha256'] == linked['rust_source_sha256'] ==
+                      hashlib.sha256((ROOT/entry['rust_file']).read_bytes()).hexdigest())
+    listed = subprocess.check_output([binary, '--list'], text=True).splitlines()
+    active = (focused['binary_sha256'] == binary_sha256 and source_current and entry['translated']
+              and 'which' in listed and not linked['native_command_entries'])
+    behavior_pass = active and focused['passed'] == focused['total'] and bool(focused['results'])
+    help_checks = [r for r in focused['results'] if r['name'] in ('help', 'version')]
+    assert {r['name'] for r in help_checks} == {'help', 'version'}
+    row = next(r for r in inventory if r['name'] == 'which')
+    row.update(translated=entry['translated'], compiles=active, active_rust=active,
+               state='compiled-rust-entry' if active else 'queued',
+               help_version_pass=active and all(r['pass'] for r in help_checks),
+               valgrind_help_pass=active and all(r['memory_clean'] for r in help_checks),
+               behavior_fixture_count=focused['total'], behavior_fixture_pass=behavior_pass,
+               valgrind_fixture_pass=behavior_pass and all(r['memory_clean'] for r in focused['results']),
+               gnu_tests_pass=False, valgrind_pass=False, complete=False,
+               completion_scope='Focused compatibility coverage; the source distribution registers no runtime test suite. No full-suite completion claim.')
+    extra_providers['which'] = {'active_rust_entries': int(active), 'original_scripts': 0,
+        'behavior_passed': focused['passed'], 'behavior_total': focused['total'],
+        'complete': False, 'completion_scope': row['completion_scope']}
 (ROOT/'inventory/applets.json').write_text(json.dumps(inventory, indent=2)+'\n')
 reviewed_valgrind = read('evidence/gnu-reviewed-valgrind.json')
 assessments = {'clean': 0, 'assertions_passed_memory_open': 0,
