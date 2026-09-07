@@ -91,6 +91,15 @@ combined Coreutils, Hello, and Time regressions pass with Time's existing
 instrumentation gap retained. Activation and prior artifact backups are recorded
 in `evidence/which-activation.json`.
 
+GNU Diffutils 3.12 is pinned from its verified signed archive. All four command
+entries (`cmp`, `diff`, `diff3`, and `sdiff`) translate and link in a separate
+114-command candidate. Its native helpers and Rust-owned diff state share 369
+private symbols. The translation retains C23 null-pointer semantics through a
+GNU17 parser adaptation and preserves provider pathname diagnostics. All 33
+registered original scripts are inventoried; 16 individually reviewed scripts
+pass against the native GNU oracle. Candidate original-suite validation is in
+progress. The installed release remains the validated 110-command build.
+
 ## Status
 
 The executable registers 110 commands: 107 Coreutils entries, GNU Hello,
