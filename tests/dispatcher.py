@@ -10,7 +10,9 @@ import subprocess
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
-BINARY = ROOT/'target/release/rboxc'
+from comparison_profile import ComparisonProfile
+PROFILE = ComparisonProfile('dispatcher')
+BINARY = PROFILE.binary
 GNU = ROOT/'build/gnu-coreutils/src/coreutils'
 CASES = [
     ('coreutils', ['--version']),
@@ -40,7 +42,7 @@ def main():
             args = [str(run/alias), *arguments]
             expected = execute(args, GNU)
             actual = execute(args)
-            log = ROOT/'evidence/raw'/f'dispatch-valgrind-{index}.log'
+            log = PROFILE.logs/f'dispatch-valgrind-{index}.log'
             instrumented = execute(['valgrind', '--leak-check=full', '--show-leak-kinds=all',
                 '--track-fds=yes', '--log-file='+str(log), *args])
             report = log.read_text()
@@ -59,9 +61,9 @@ def main():
                 and bytes.fromhex(listed['stdout']).decode().splitlines() == names
                 and unknown == {'status': 127, 'stdout': '', 'stderr': b'rboxc: unknown program\n'.hex()})
             results.append({'alias': alias, 'scope': 'rbox command selection', 'pass': passed})
-    report = {'binary_sha256': hashlib.sha256(BINARY.read_bytes()).hexdigest(),
+    report = {**PROFILE.metadata(),
               'passed': sum(r['pass'] for r in results), 'total': len(results), 'results': results}
-    (ROOT/'evidence/dispatcher.json').write_text(json.dumps(report, indent=2)+'\n')
+    PROFILE.report.write_text(json.dumps(report, indent=2)+'\n')
     print(f"Dispatcher: {report['passed']}/{report['total']} pass")
     for row in results:
         if not row['pass']:

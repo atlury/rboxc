@@ -179,6 +179,14 @@ also pass, with 60 clean candidate process logs. The candidate is staged at
 its source and binary hashes. The installed release remains unchanged while
 older long-running comparisons still depend on its path. The full I/O-error
 report above remains the installed-release observation until that suite is rerun.
+The staged candidate also passes 428 help/version comparisons, 107 Valgrind
+help checks, 11 dispatcher checks, and all 318 native behavior, Valgrind behavior,
+and instrumented-equivalence comparisons. These baseline drivers accept
+`--candidate` with a required separate `--report-name`; named runs have separate
+log directories and cannot overwrite installed-release reports. Reports reject
+binary or runtime-helper changes during execution. Seven profile checks cover
+report isolation, input changes, and separate log directories. The equivalence
+assessment accepts `--observations` for the separately saved behavior report.
 
 The reviewed Valgrind evidence records 579 clean results out of 616 scripts
 or selections: 5,729 Perl cases and 37,058 candidate/descendant process logs.

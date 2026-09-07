@@ -8,7 +8,9 @@ import subprocess
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
-BINARY = ROOT/'target/release/rboxc'
+from comparison_profile import ComparisonProfile
+PROFILE = ComparisonProfile('smoke')
+BINARY = PROFILE.binary
 GNU = ROOT/'build/gnu-coreutils/src/coreutils'
 environment = {**os.environ, 'LC_ALL':'C', 'LANGUAGE':'C'}
 environment.pop('POSIXLY_CORRECT', None)
@@ -37,9 +39,9 @@ with tempfile.TemporaryDirectory(prefix='rboxc-smoke-') as work:
              for option in ['--help','--version'] for form in ['multicall','symlink']]
     with ThreadPoolExecutor(max_workers=4) as pool:
         results = list(pool.map(run_case, cases))
-report = {'scope':'help/version smoke only; not full applet certification',
+report = {**PROFILE.metadata(), 'scope':'help/version smoke only; not full applet certification',
           'passed':sum(row['pass'] for row in results), 'total':len(results), 'results':results}
-(ROOT/'evidence/smoke.json').write_text(json.dumps(report,indent=2)+'\n')
+PROFILE.report.write_text(json.dumps(report,indent=2)+'\n')
 print(f'GNU multicall help/version: {report["passed"]}/{report["total"]} pass')
 for row in results:
     if not row['pass']: print('FAIL', row['name'], row['option'], row['entry_form'])

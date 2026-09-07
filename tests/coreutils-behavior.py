@@ -17,7 +17,9 @@ import time
 
 ROOT = Path(__file__).resolve().parents[1]
 GNU = ROOT/'build/gnu-coreutils/src'
-BINARY = ROOT/'target/release/rboxc'
+from comparison_profile import ComparisonProfile
+PROFILE = ComparisonProfile('behavior', selections=True)
+BINARY = PROFILE.binary
 CASES = [
     ('basename', ['dir/input.txt', '.txt']), ('dirname', ['dir/input.txt']),
     ('cat', ['-n', 'input']), ('comm', ['left', 'right']),
@@ -301,7 +303,7 @@ def run(index, name, args, implementation, instrument=True):
     with tempfile.TemporaryDirectory(prefix='rboxc-behavior-') as temporary:
         root = Path(temporary)
         fixture(root)
-        log = ROOT/'evidence/raw'/f'behavior-{index:03d}-{name}-{implementation}.log'
+        log = PROFILE.logs/f'behavior-{index:03d}-{name}-{implementation}.log'
         # Resolve the GNU symlink through PATH so both entries receive the
         # same argv[0]; GNU's try-help message preserves that argument.
         command = [name] if implementation == 'gnu' else [BINARY, name]
@@ -365,10 +367,15 @@ def run(index, name, args, implementation, instrument=True):
 
 
 def main():
-    selected = set(sys.argv[1:])
+    selected = set(PROFILE.options.commands)
     assert selected <= {name for name, _ in CASES}, 'unknown command selection'
-    previous_path = ROOT/'evidence/behavior.json'
+    previous_path = PROFILE.report
     previous = json.loads(previous_path.read_text())['results'] if selected and previous_path.exists() else []
+    if previous and PROFILE.options.report_name:
+        saved = json.loads(previous_path.read_text())
+        current = PROFILE.metadata()
+        assert all(saved.get(key) == current[key] for key in
+                   ('binary_sha256', 'gnu_binary_sha256', 'runtime_helpers')), 'comparison inputs changed since saved selections'
     results_by_case = {(row['name'], tuple(row['arguments'])): row for row in previous}
     oracle_links = ROOT/'build/behavior-oracle'
     oracle_links.mkdir(exist_ok=True)
@@ -393,12 +400,12 @@ def main():
         print('PASS' if ok else 'OPEN', name, arguments, differences, actual_memory['errors'], flush=True)
     results = [results_by_case[name, tuple(args)] for name, args in CASES
                if (name, tuple(args)) in results_by_case]
-    report = {'scope': 'bounded local fixtures; status, streams, contents, modes, link topology; Valgrind both implementations',
+    report = {**PROFILE.metadata(), 'scope': 'bounded local fixtures; status, streams, contents, modes, link topology; Valgrind both implementations',
               'passed': sum(row['pass'] for row in results),
               'behavior_passed': sum(row['behavior_pass'] for row in results),
               'valgrind_passed': sum(row['valgrind_pass'] for row in results),
               'total': len(results), 'results': results}
-    (ROOT/'evidence/behavior.json').write_text(json.dumps(report, indent=2)+'\n')
+    PROFILE.report.write_text(json.dumps(report, indent=2)+'\n')
     print(report['passed'], '/', report['total'])
     return any(not row['pass'] for row in results if not selected or row['name'] in selected)
 
