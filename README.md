@@ -131,7 +131,7 @@ in the GNU oracle. All 11 reviewed PCRE originals pass on this candidate with
 clean Valgrind results. Additional matching, locale, and file original tests
 are being validated. The pattern-file error-path original now passes with
 clean Valgrind results; the initial timeout-prerequisite skip remains open.
-A bounded 8.25 MB cached-input observation found after/before median runtime
+A bounded 8.7 MB cached-input observation found after/before median runtime
 ratios of 0.83–1.01 across four matchers; concurrent tests and process startup
 limit precision, so this is not a performance certification. The installed release
 remains the validated 114-command build.
