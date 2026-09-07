@@ -135,9 +135,9 @@ now also pass Valgrind, covering dates, cat line endings, dd case conversion,
 split suffixes, unique sorting, od byte order, printf hexadecimal escapes,
 df block headings, chmod modes/options, arch, false/true statuses, printenv,
 echo, and tail input positioning. Generated factor tests t11–t13 also pass
-Valgrind. Twenty-two further generated factor scripts (t14–t20 and t22–t36)
+Valgrind. Twenty-seven further generated factor scripts (t04–t08, t14–t20, and t22–t36)
 now pass their full original checksum comparisons under Valgrind. The remaining
-seven generated factor comparisons are running in independently checkpointed jobs.
+two generated factor comparisons are running in independently checkpointed jobs.
 Extended locale branches run where configured.
 
 The complete floating-point-limit sort script passes natively in C and French
@@ -162,8 +162,8 @@ implementation. Its candidate memory evidence remains open for 263 shell logs
 and five cat/dd/tac logs. These include ordinary fatal-write cleanup still needed
 in cat and tac, as well as resources retained on SIGPIPE termination.
 
-The reviewed Valgrind evidence records 573 clean results out of 606 scripts
-or selections: 5,675 Perl cases and 34,865 candidate/descendant process logs.
+The reviewed Valgrind evidence records 578 clean results out of 611 scripts
+or selections: 5,675 Perl cases and 34,895 candidate/descendant process logs.
 The 33 open results comprise 26 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, and five with assertion
 failures under instrumentation in both GNU and rboxc. The status report records
