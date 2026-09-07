@@ -67,7 +67,7 @@ def main():
             assert row['sha256'] == result['sha256'], script
             partial = bool(result.get('cases')) and not result.get('full_suite')
             row['execution_coverage'] = 'selected-cases' if partial else 'full-script'
-            row['selected_case_count'] = len(result.get('cases', []))
+            row['selected_case_count'] = result.get('expected_case_count', len(result.get('cases', [])))
             if result['pass']:
                 row['state'] = 'partial' if partial else 'passed'
             elif result['gnu']['status'] == result['rboxc']['status'] == 77:

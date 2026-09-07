@@ -86,11 +86,23 @@ Recorded checks:
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 non-following `tail` file records, and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 52 shell scripts and
-637 Perl cases. Four complete Perl scripts cover `basename` (31), `dirname`
-(15), `comm` (39), and `tsort` (10); the other 542 cases are selections from
-14 scripts. Full Perl coverage requires the selected case count to equal the
-upstream script's entire runtime case list.
+failures). The reviewed original GNU runner now passes 140 scripts/selections:
+110 shell scripts and 1,803 Perl cases. Sixteen Perl scripts run their complete
+runtime case lists; 14 others retain explicit case selections. Case-count
+checks also cover scripts that call GNU's Perl harness more than once.
+GNU's three generic scripts pass across all 107 commands. New coverage includes
+user lookup, processor counts, working directories, permission-sensitive touch
+and truncate behavior, checksums, encodings, UTF-8 text processing, and tee.
+
+Permission-sensitive scripts run as UID/GID 65534 with private staged binaries.
+The user-lookup profile binds a local-files NSS configuration inside a private
+mount namespace; the host configuration is checked unchanged after each run.
+The explicit UTF-8 profile uses the installed fr_FR.utf8 locale. Conditional
+branches still depend on the script's own platform prerequisites.
+Results checkpoint atomically after each script. `--script` selects an exact
+script; `--report-name` gives independent batches distinct evidence files.
+New results record tested binary hashes, and exec-wrapper tests can request
+Valgrind child tracing.
 
 Valgrind checks pass for 26 shell scripts, the four complete Perl scripts,
 and eight Perl selections: 354 Perl cases and 694 candidate processes.
@@ -119,9 +131,9 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 99 scripts
+the original test evidence into `evidence/gnu-suite-coverage.json`: 169 scripts
 passed, three passed with profile skips, 14 have selected-case coverage, five
-skipped, 26 are excluded, and 586 remain pending. Partial selections and skips
+skipped, 26 are excluded, and 516 remain pending. Partial selections and skips
 are not full-suite passes; passing scripts can contain platform-conditional
 branches. No command is certified complete.
 
