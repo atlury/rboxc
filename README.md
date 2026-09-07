@@ -114,8 +114,8 @@ script; `--report-name` gives independent batches distinct evidence files.
 New results record tested binary hashes, and exec-wrapper tests can request
 Valgrind child tracing.
 
-The reviewed Valgrind evidence records 469 clean results out of 496 scripts
-or selections: 3,707 Perl cases and 10,973 candidate/descendant process logs.
+The reviewed Valgrind evidence records 470 clean results out of 497 scripts
+or selections: 3,707 Perl cases and 10,979 candidate/descendant process logs.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
 memory and descriptors retained by host script interpreters. Both pass natively.
@@ -213,9 +213,11 @@ ends trial division after the final prime-table block, avoiding a terminal
 lookahead beyond the table when double-limb division leaves an unaligned index.
 This resolves all sixteen previously failing ranges; their earlier results
 remain in the observation history. Generated t21 and t38 through t40, the Perl suite,
-and the parallel script also pass Valgrind. The first two generated ranges
-(0 through 20 million, with their shared endpoint) now also pass Valgrind and
-match GNU's expected complete-output checksums. Execution times are recorded for
+and the parallel script also pass Valgrind. The first three generated ranges
+(0 through 30 million, with their shared endpoints) now also pass Valgrind and
+match GNU's expected complete-output checksums. The 20–30 million range finishes
+with six clean candidate process logs: GNU takes 396.216 seconds and rboxc
+403.839 seconds on the recorded host. Execution times are recorded for
 new runs. Named native batches
 can be merged with scripts/merge-reviewed-evidence.py --native after completion.
 
