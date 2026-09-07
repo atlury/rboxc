@@ -135,7 +135,10 @@ now also pass Valgrind, covering dates, cat line endings, dd case conversion,
 split suffixes, unique sorting, od byte order, printf hexadecimal escapes,
 df block headings, chmod modes/options, arch, false/true statuses, printenv,
 echo, and tail input positioning. Generated factor tests t11–t13 also pass
-Valgrind. Extended locale branches run where configured.
+Valgrind. Sixteen further generated factor scripts (t14–t20 and t22–t30)
+now pass their full original checksum comparisons under Valgrind. The remaining
+13 generated factor comparisons are running in independently checkpointed jobs.
+Extended locale branches run where configured.
 
 The complete floating-point-limit sort script passes natively in C and French
 locales. Under Valgrind, both GNU and rboxc misorder the same minimum long-double
@@ -151,8 +154,8 @@ per implementation contain summaries. The result remains open because the
 external compression shells and GNU tr helper retain resources. The earlier
 measurement with incomplete exec logs is preserved in the observation history.
 
-The reviewed Valgrind evidence records 547 clean results out of 578 scripts
-or selections: 3,707 Perl cases and 21,058 candidate/descendant process logs.
+The reviewed Valgrind evidence records 563 clean results out of 594 scripts
+or selections: 3,707 Perl cases and 21,154 candidate/descendant process logs.
 The 31 open results comprise 24 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, and five with assertion
 failures under instrumentation in both GNU and rboxc. The status report records
