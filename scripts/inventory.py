@@ -8,6 +8,10 @@ import subprocess
 from collections import Counter
 
 ROOT = Path(__file__).resolve().parents[1]
+sources_path = ROOT/'inventory/sources.json'
+previous_sources = json.loads(sources_path.read_text()) if sources_path.exists() else {}
+inventory_path = ROOT/'inventory/applets.json'
+previous_rows = {row['name']: row for row in json.loads(inventory_path.read_text())} if inventory_path.exists() else {}
 ORIGINAL = Path('/root/rbox')
 listing = subprocess.check_output([ORIGINAL/'target/release/rbox', '--list'], text=True)
 names = sorted(line for line in listing.splitlines() if line and not line.startswith('Currently defined'))
@@ -46,12 +50,19 @@ for name in names:
     state = 'queued' if provider else 'deferred-provider-review'
     if name in selinux:
         state = 'excluded-selinux'
-    rows.append({'name': name, 'gnu_provider': provider,
-                 'provider_confirmed': provider == 'coreutils', 'state': state,
-                 'translated': False, 'compiles': False, 'gnu_tests_pass': False,
-                 'valgrind_pass': False, 'complete': False})
+    row = {'name': name, 'gnu_provider': provider, 'provider_confirmed': False, 'state': state,
+           'translated': False, 'compiles': False, 'gnu_tests_pass': False,
+           'valgrind_pass': False, 'complete': False}
+    if name in previous_rows:
+        previous = previous_rows[name]
+        assert previous['gnu_provider'] == provider, f'provider assignment changed: {name}'
+        row.update(previous)
+    row['provider_confirmed'] = (provider == 'coreutils'
+        or name in previous_sources.get(provider, {}).get('commands', []))
+    rows.append(row)
 (ROOT/'inventory/applets.json').write_text(json.dumps(rows, indent=2) + '\n')
 pins = {
+    **previous_sources,
     'inventory_source': {
         'path': str(ORIGINAL/'target/release/rbox'),
         'git_head': subprocess.check_output(['git', '-C', str(ORIGINAL), 'rev-parse', 'HEAD'], text=True).strip(),

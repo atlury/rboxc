@@ -45,8 +45,19 @@ An external GNU executable used as an oracle is never counted as a port.
 GNU providers, and their current state. Rbox's `APPLET_COUNT` constant says 554,
 but its actual dispatcher and full binary list agree on 553 distinct commands;
 the one-name discrepancy remains recorded in `inventory/sources.json`.
-Provider assignments outside the pinned
+GNU Hello is now also source-pinned; other provider assignments outside the
 Coreutils set still require source/version confirmation before implementation.
+
+GNU Hello 2.12.3 is pinned from the [official GNU release archive](https://ftp.gnu.org/gnu/hello/).
+Its signature verifies against the GNU-published keyring; archive, signature,
+keyring, signing-key fingerprint, and entry-source hashes are recorded in
+`inventory/sources.json`. `scripts/prepare-hello.sh` builds its native oracle
+and captures compilation commands. Its seven registered original scripts
+produce six passes and one calendar-dependent skip (the upstream long-greeting
+test only runs around a full moon). `evidence/hello-build-profile.json` records
+that native baseline. Hello is not yet a Rust applet. Inventory refresh now
+preserves existing progress and additional provider pins; all 553 existing
+records were checked, and a second refresh produces identical inventory files.
 
 ## Status
 
