@@ -9,6 +9,29 @@ def replace_once(text, before, after):
 
 
 def cleanup(name, text):
+    if name == 'dd':
+        declaration = 'unsafe extern "C" fn iclose(mut fd: ::core::ffi::c_int) -> ::core::ffi::c_int {'
+        helper = '''// Only named inputs/outputs reopened by dd belong to this finalizer.
+static mut RBOXC_REOPENED_FDS: [bool; 2] = [false; 2];
+unsafe extern "C" fn rboxc_close_reopened_fds() {
+    let saved_errno = *::libc::__errno_location();
+    for fd in 0..2 {
+        if RBOXC_REOPENED_FDS[fd] {
+            RBOXC_REOPENED_FDS[fd] = false;
+            ::libc::close(fd as ::core::ffi::c_int);
+        }
+    }
+    *::libc::__errno_location() = saved_errno;
+}
+'''
+        text = replace_once(text, declaration, helper+declaration)
+        text = replace_once(text, declaration, declaration+'\n    if fd >= 0 && fd < 2 { RBOXC_REOPENED_FDS[fd as usize] = false; }')
+        anchor = '    atexit(Some(maybe_close_stdout as unsafe extern "C" fn() -> ()));'
+        text = replace_once(text, anchor, anchor+'\n    atexit(Some(rboxc_close_reopened_fds));')
+        anchor = '    return ret;\n}\nunsafe extern "C" fn ifstat('
+        text = replace_once(text, anchor,
+                            '    if ret >= 0 && desired_fd >= 0 && desired_fd < 2 {\n'
+                            '        RBOXC_REOPENED_FDS[desired_fd as usize] = true;\n    }\n'+anchor)
     if name == 'head':
         declaration = 'unsafe extern "C" fn head_file('
         helper = '''static mut RBOXC_INPUT_FD: ::core::ffi::c_int = -1;

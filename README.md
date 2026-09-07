@@ -66,7 +66,7 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The current release executable is 2,397,048 bytes (2.29 MiB), dynamically linked
+The current release executable is 2,397,496 bytes (2.29 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
@@ -86,8 +86,8 @@ Recorded checks:
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 non-following `tail` file records, and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 206 scripts/selections:
-172 shell scripts and 1,871 Perl cases. Nineteen Perl scripts run their complete
+failures). The reviewed original GNU runner now passes 239 scripts/selections:
+203 shell scripts and 1,885 Perl cases. Twenty-one Perl scripts run their complete
 runtime case lists; 15 others retain explicit case selections. Case-count
 checks also cover scripts that call GNU's Perl harness more than once.
 GNU's three generic scripts pass across all 107 commands. New coverage includes
@@ -104,14 +104,34 @@ script; `--report-name` gives independent batches distinct evidence files.
 New results record tested binary hashes, and exec-wrapper tests can request
 Valgrind child tracing.
 
-The reviewed Valgrind evidence records 169 clean results out of 171 scripts
-or selections: 1,482 Perl cases and 4,065 candidate/descendant process logs.
+The reviewed Valgrind evidence records 195 clean results out of 200 scripts
+or selections: 1,496 Perl cases and 4,312 candidate/descendant process logs.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
 memory and descriptors retained by host script interpreters. Both pass natively.
 Matching GNU findings are not counted as clean.
+Three more results remain open: dd's intentionally closed-stderr diagnostics,
+install's destination-directory/table ownership, and install's external strip
+children whose successful exec leaves incomplete instrumentation logs.
 A test-only C launcher uses Valgrind's client request to avoid nested Valgrind
 when env clears PATH or launches another instrumented command; env-null passes.
+
+All 22 registered dd scripts pass natively. Nineteen of the 20 instrumented
+scripts pass; the closed-stderr script still records invalid-descriptor warnings.
+The two native-only scripts respectively constrain virtual memory below
+Valgrind's startup needs and preload an upstream test helper that leaves its
+own FILE open. These limits are explicit in the manifest. dd now closes named
+input/output descriptors on fatal setup errors, transferring ownership away
+before its normal close path. The original ftruncate/fstat error test passes
+under Valgrind with this fix. Device-offset coverage runs on a new 32 MiB ext4
+image in a private mount namespace and verifies the loop device's exact backing
+image before launching either implementation.
+
+Five additional chgrp scripts pass natively and under Valgrind with child-only
+supplementary groups 0 and 2; the parent group list remains unchanged. All seven
+install scripts pass natively, including ordinary-user permissions and strip
+inputs. The two originals that strip staged executables run natively because
+instrumentation replaces those paths with shell launchers.
 
 The runner preserves exit statuses for GNU assertions and then assesses memory
 and descriptors separately. `scripts/merge-reviewed-evidence.py` merges completed
@@ -198,9 +218,9 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 234 scripts
+the original test evidence into `evidence/gnu-suite-coverage.json`: 267 scripts
 passed, three passed with profile skips, 15 have selected-case coverage, five
-skipped, 26 are excluded, and 450 remain pending. Partial selections and skips
+skipped, 26 are excluded, and 417 remain pending. Partial selections and skips
 are not full-suite passes; passing scripts can contain platform-conditional
 branches. No command is certified complete.
 

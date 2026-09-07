@@ -2828,7 +2828,20 @@ unsafe extern "C" fn install_signal_handlers() {
         sigaction(SIGINT, &raw mut act, ::core::ptr::null_mut::<sigaction>());
     }
 }
+// Only named inputs/outputs reopened by dd belong to this finalizer.
+static mut RBOXC_REOPENED_FDS: [bool; 2] = [false; 2];
+unsafe extern "C" fn rboxc_close_reopened_fds() {
+    let saved_errno = *::libc::__errno_location();
+    for fd in 0..2 {
+        if RBOXC_REOPENED_FDS[fd] {
+            RBOXC_REOPENED_FDS[fd] = false;
+            ::libc::close(fd as ::core::ffi::c_int);
+        }
+    }
+    *::libc::__errno_location() = saved_errno;
+}
 unsafe extern "C" fn iclose(mut fd: ::core::ffi::c_int) -> ::core::ffi::c_int {
+    if fd >= 0 && fd < 2 { RBOXC_REOPENED_FDS[fd as usize] = false; }
     if close(fd) != 0 as ::core::ffi::c_int {
         loop {
             if *__errno_location() != EINTR {
@@ -3233,6 +3246,9 @@ unsafe extern "C" fn ifd_reopen(
         if !(ret < 0 as ::core::ffi::c_int && *__errno_location() == EINTR) {
             break;
         }
+    }
+    if ret >= 0 && desired_fd >= 0 && desired_fd < 2 {
+        RBOXC_REOPENED_FDS[desired_fd as usize] = true;
     }
     return ret;
 }
@@ -5007,6 +5023,7 @@ pub unsafe extern "C" fn single_binary_main_dd(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(maybe_close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_close_reopened_fds));
     page_size = getpagesize() as idx_t;
     parse_gnu_standard_options_only(
         argc,

@@ -11,6 +11,7 @@ import argparse
 from pathlib import Path
 import subprocess
 import tempfile
+import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = Path(os.environ.get('GNU_COREUTILS_SOURCE', '/opt/src/coreutils-9.11'))
@@ -191,12 +192,28 @@ def main():
                     command = ['/usr/bin/unshare', '--mount', '--propagation', 'private',
                                '/bin/sh', '-c', '/usr/bin/mount --bind "$1" /etc/nsswitch.conf || exit 77; shift; exec "$@"',
                                'local-nss', str(private_config), *command]
+                launch_credentials = dict(credentials)
+                if row.get('profile') == 'loopback-device':
+                    assert not credentials and not nss_profile
+                    command = ['/usr/bin/unshare', '--mount', '--propagation', 'private',
+                               sys.executable, str(ROOT/'tests/gnu/loopback-profile.py'), *command]
+                parent_groups = os.getgroups()
+                if 'supplementary_groups' in row:
+                    groups = row['supplementary_groups']
+                    assert os.geteuid() == 0 and isinstance(groups, list)
+                    assert all(type(group) is int and 0 <= group < 2**32-1 for group in groups)
+                    launch_credentials['extra_groups'] = groups
                 completed = subprocess.run(['timeout', '--kill-after=5s', str(row.get('timeout_seconds', 60))+'s', *command],
-                                           cwd=run, env=environment, capture_output=True, **credentials)
+                                           cwd=run, env=environment, capture_output=True, **launch_credentials)
+                assert os.getgroups() == parent_groups, 'parent group membership changed'
                 log = ROOT/'evidence/raw'/('reviewed-'+('vg-' if instrument else '')+row['script'].replace('/', '-')+'-'+implementation+'-'+run.name+'.log')
                 log.write_bytes(completed.stdout+completed.stderr)
                 outcomes[implementation] = {'status': completed.returncode, 'log': str(log.relative_to(ROOT)),
                                             'binary_sha256': binary_hashes[implementation]}
+                if row.get('profile') == 'loopback-device':
+                    profiles = re.findall(rb'^RBOXC_LOOPBACK_PROFILE (.+)$', completed.stderr, re.M)
+                    outcomes[implementation]['loopback_profile'] = json.loads(profiles[0]) if profiles else None
+                    outcomes[implementation]['loopback_runner_sha256'] = hashlib.sha256((ROOT/'tests/gnu/loopback-profile.py').read_bytes()).hexdigest()
                 if instrument and row.get('native_launcher'):
                     outcomes[implementation]['launcher_source_sha256'] = hashlib.sha256((ROOT/'tests/gnu/valgrind-launch.c').read_bytes()).hexdigest()
                 if tmpdir_library:
