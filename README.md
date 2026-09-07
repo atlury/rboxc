@@ -115,8 +115,13 @@ and candidate binaries are retained; full-provider completion remains open.
 GNU Grep 3.12 is pinned from its signed official archive, and its native oracle
 is built with PCRE2 10.46 support. The original registration contains 128 tests,
 recorded for individual review before execution. Grep has one C command entry;
-`egrep` and `fgrep` are shell aliases in the GNU source. Translation and alias
-integration are underway separately from the installed Diffutils release.
+`egrep` and `fgrep` are shell aliases in the GNU source. Their warnings and option
+insertion now dispatch internally to the translated grep entry in a separate
+117-command candidate. The matcher helpers and Rust-owned state use 332 private
+symbols. Nine original scripts have been reviewed; the native baseline has
+eight passes and one timeout-prerequisite skip. Candidate assertions pass so far,
+while Valgrind identifies retained matcher allocations that still need cleanup.
+The installed release remains the validated 114-command build.
 
 ## Status
 

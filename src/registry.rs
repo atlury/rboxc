@@ -1,3 +1,5 @@
+#[path = "generated/applet_grep.rs"]
+mod applet_grep;
 #[path = "generated/applet_sdiff.rs"]
 mod applet_sdiff;
 #[path = "generated/applet_diff3.rs"]
@@ -258,13 +260,16 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"dirname", applet_dirname::single_binary_main_dirname),
     (b"du", applet_du::single_binary_main_du),
     (b"echo", applet_echo::single_binary_main_echo),
+    (b"egrep", applet_grep::single_binary_main_egrep),
     (b"env", applet_env::single_binary_main_env),
     (b"expand", applet_expand::single_binary_main_expand),
     (b"expr", applet_expr::single_binary_main_expr),
     (b"factor", applet_factor::single_binary_main_factor),
     (b"false", applet_false::single_binary_main_false),
+    (b"fgrep", applet_grep::single_binary_main_fgrep),
     (b"fmt", applet_fmt::single_binary_main_fmt),
     (b"fold", applet_fold::single_binary_main_fold),
+    (b"grep", applet_grep::single_binary_main_grep),
     (b"groups", applet_groups::single_binary_main_groups),
     (b"head", applet_head::single_binary_main_head),
     (b"hello", applet_hello::single_binary_main_hello),
