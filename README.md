@@ -93,7 +93,7 @@ in `evidence/which-activation.json`.
 
 GNU Diffutils 3.12 is pinned from its verified signed archive. All four command
 entries (`cmp`, `diff`, `diff3`, and `sdiff`) are active in the installed
-114-command executable. Its native helpers and Rust-owned diff state share 369
+117-command executable. Its native helpers and Rust-owned diff state share 369
 private symbols. The translation retains C23 null-pointer semantics through a
 GNU17 parser adaptation and preserves provider pathname diagnostics. All 33
 registered original scripts are inventoried. Of 30 reviewed originals, the
@@ -116,8 +116,8 @@ GNU Grep 3.12 is pinned from its signed official archive, and its native oracle
 is built with PCRE2 10.46 support. The original registration contains 128 tests,
 recorded for individual review before execution. Grep has one C command entry;
 `egrep` and `fgrep` are shell aliases in the GNU source. Their warnings and option
-insertion now dispatch internally to the translated grep entry in a separate
-117-command candidate. The matcher helpers and Rust-owned state use 338 private
+insertion now dispatch internally to the translated grep entry in the installed
+117-command executable. The matcher helpers and Rust-owned state use 338 private
 symbols. All 68 focused native/Valgrind comparisons pass, including basic,
 extended, fixed, and PCRE matching; both aliases; quiet recursive searches;
 compiler errors; long lines; and output errors. Cleanup releases completed
@@ -127,18 +127,19 @@ check, which can exit without invoking later callbacks. Native matcher
 destructors retain the original matching logic and track allocation bases
 separately from interior pointers. Input buffers are initialized without
 changing logical bounds; this closes a PCRE JIT Valgrind finding also observed
-in the GNU oracle. All 11 reviewed PCRE originals pass on this candidate with
-clean Valgrind results. Additional matching, locale, and file original tests
-are being validated. The pattern-file error-path original now passes with
-clean Valgrind results. All 11 prerequisite/diagnostic selections now pass,
-including the previously skipped timeout and locale originals. The driver
-uses pinned GNU timeout/sleep, nine private locales, and explicit PCRE
-configuration. One selection retains 11 of 12 original Perl diagnostics;
-its stress case remains excluded. The 100,000-entry traversal also passes.
+in the GNU oracle. All 94 reviewed original selections pass natively and under
+Valgrind: 93 complete scripts and 11 selected diagnostics from one Perl script.
+The strict audit verifies 3,823 complete, clean candidate process logs. This
+includes the byte/locale matrices, PCRE originals, and 100,000-entry traversal.
+The driver uses pinned GNU timeout/sleep, nine private locales, and explicit
+PCRE configuration. Earlier prerequisite skips and failing candidates are
+preserved. Twenty-two originals remain excluded, twelve remain pending, and
+the Perl stress case is unexecuted, so full-provider completion is still open.
 A bounded 8.7 MB cached-input observation found after/before median runtime
 ratios of 0.83–1.01 across four matchers; concurrent tests and process startup
-limit precision, so this is not a performance certification. The installed release
-remains the validated 114-command build.
+limit precision, so this is not a performance certification. Activation,
+prior artifact backups, and installed-path checks are recorded in
+`evidence/grep-activation.json`.
 
 GNU Gzip 1.14 is also pinned from its verified signed archive. Its native
 oracle and compiler records are prepared for the `gzip`, `gunzip`, `uncompress`,
@@ -153,8 +154,9 @@ cached-directory/input cleanup and shell diagnostic profiles remain open.
 
 ## Status
 
-The executable registers 114 commands: 107 Coreutils entries, GNU Hello,
-GNU Time, GNU Which, and four GNU Diffutils commands, all with active Rust command entries. No native C command entry remains, and assembly succeeds without the
+The installed executable registers 117 commands: 107 Coreutils entries, GNU Hello,
+GNU Time, GNU Which, four GNU Diffutils commands, and three GNU Grep commands,
+all with active Rust command entries. No native C command entry remains, and assembly succeeds without the
 C-entry opt-in. `printf`, `sort`, `od`, `numfmt`, and `seq` use native numeric
 helpers: floating values stay inside GNU C functions and cross the boundary
 only as bytes or text. This preserves the host's x87 `long double`
@@ -169,13 +171,13 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The current release executable is 2,702,936 bytes (2.58 MiB), dynamically linked
+The current release executable is 2,895,248 bytes (2.76 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
 
 The current release dynamically links libacl, libattr, and libcap for GNU metadata
-helpers. A separate static-link trial against the previous 2,405,616-byte
+helpers, and libpcre2-8 for Grep PCRE matching. A separate static-link trial against the previous 2,405,616-byte
 build removes those two runtime dependencies and grows that executable by
 7,784 bytes to 2,413,400 bytes. All five selected
 original metadata scripts pass natively and under Valgrind on that trial.
