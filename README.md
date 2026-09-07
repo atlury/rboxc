@@ -114,8 +114,8 @@ script; `--report-name` gives independent batches distinct evidence files.
 New results record tested binary hashes, and exec-wrapper tests can request
 Valgrind child tracing.
 
-The reviewed Valgrind evidence records 458 clean results out of 482 scripts
-or selections: 3,442 Perl cases and 9,146 candidate/descendant process logs.
+The reviewed Valgrind evidence records 462 clean results out of 486 scripts
+or selections: 3,707 Perl cases and 10,326 candidate/descendant process logs.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
 memory and descriptors retained by host script interpreters. Both pass natively.
@@ -213,7 +213,9 @@ ends trial division after the final prime-table block, avoiding a terminal
 lookahead beyond the table when double-limb division leaves an unaligned index.
 This resolves all sixteen previously failing ranges; their earlier results
 remain in the observation history. Generated t21 and t38 through t40, the Perl suite,
-and the parallel script also pass Valgrind. Execution times are recorded for
+and the parallel script also pass Valgrind. The first two generated ranges
+(0 through 20 million, with their shared endpoint) now also pass Valgrind and
+match GNU's expected complete-output checksums. Execution times are recorded for
 new runs. Named native batches
 can be merged with scripts/merge-reviewed-evidence.py --native after completion.
 
@@ -305,8 +307,9 @@ under Valgrind; these selections are explicitly partial. The original mktemp
 randomness/fallback script also passes in both modes. Corrected cp prerequisite
 lists enable the non-UTF-8 filename and sparse-2 originals, which pass natively
 and under Valgrind as an ordinary user. The complete cp/mv permission matrix
-passes natively with its expensive-test switch enabled; its Valgrind run remains
-pending. These three cp results supplement the earlier two-profile cp report
+passes natively and under Valgrind with its expensive-test switch enabled.
+All 902 candidate processes are clean across permission, umask, overwrite,
+and preservation combinations. These three cp results supplement the earlier two-profile cp report
 and close three prerequisite skips in the overall script inventory.
 
 GNU's terminal EOF original now passes all 70 cases across 34 commands, both
@@ -319,8 +322,7 @@ seven-descriptor merge test passes natively under Bash; the recorded /bin/sh
 prerequisite skip came from shell redirection before sort ran. The original
 limit explicitly excludes Valgrind. A reviewed 265-case date selection adds
 calendar parsing, formatting, timezone conversion, and debug-mode checks; it
-passes natively, with its Valgrind run pending. The full date Perl suite remains
-partial.
+passes natively and under Valgrind. The full date Perl suite remains partial.
 
 The full join suite passes all 147 cases with C and French UTF-8 coverage in
 both modes. The ls miscellaneous suite passes both complete 50-case runs, with
