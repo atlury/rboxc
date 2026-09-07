@@ -114,11 +114,12 @@ script; `--report-name` gives independent batches distinct evidence files.
 New results record tested binary hashes, and exec-wrapper tests can request
 Valgrind child tracing.
 
-The reviewed Valgrind evidence records 471 clean results out of 498 scripts
-or selections: 3,707 Perl cases and 10,981 candidate/descendant process logs.
-The 27 open results comprise 22 with passing original assertions but unresolved
+The reviewed Valgrind evidence records 472 clean results out of 500 scripts
+or selections: 3,707 Perl cases and 11,374 candidate/descendant process logs.
+The 28 open results comprise 22 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, and three with assertion
-failures under instrumentation in both GNU and rboxc. The status report records
+failures under instrumentation in both GNU and rboxc, plus one deliberately
+interrupted run after host NSS findings. The status report records
 these categories separately; they do not change the strict clean-pass count.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
@@ -217,11 +218,13 @@ ends trial division after the final prime-table block, avoiding a terminal
 lookahead beyond the table when double-limb division leaves an unaligned index.
 This resolves all sixteen previously failing ranges; their earlier results
 remain in the observation history. Generated t21 and t38 through t40, the Perl suite,
-and the parallel script also pass Valgrind. The first three generated ranges
-(0 through 30 million, with their shared endpoints) now also pass Valgrind and
+and the parallel script also pass Valgrind. The first four generated ranges
+(0 through 40 million, with their shared endpoints) now also pass Valgrind and
 match GNU's expected complete-output checksums. The 20–30 million range finishes
 with six clean candidate process logs: GNU takes 396.216 seconds and rboxc
-403.839 seconds on the recorded host. Execution times are recorded for
+403.839 seconds on the recorded host. The 30–40 million range also has six clean
+candidate process logs, taking 740.765 seconds for GNU and 749.676 seconds for
+rboxc. Execution times are recorded for
 new runs. Named native batches
 can be merged with scripts/merge-reviewed-evidence.py --native after completion.
 
@@ -305,7 +308,11 @@ all eight selected original regression scripts also pass natively. Native
 launchers now trace the warning-output and line-buffer responsiveness scripts
 through exec; both pass Valgrind. GNU's complete option-alias script also passes
 under Valgrind with 456 clean candidate process logs, including its text-processing
-helpers. The harness stages and hashes each build's
+helpers. The help-option recognition script passes natively, but its first
+instrumented run was stopped after both builds recorded descriptor warnings
+in the host's libnss_sss user-lookup library. That partial run is explicitly
+marked interrupted. Its private local-files NSS rerun is still in progress.
+The harness stages and hashes each build's
 own stdbuf library beside its test executables. The closed-stdout script passes
 its assertions but stays open under Valgrind: printf, verbose cp, and two mktemp
 invocations report operations on intentionally closed stdout, without lost heap

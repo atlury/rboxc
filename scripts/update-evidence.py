@@ -28,14 +28,17 @@ for row in inventory:
 (ROOT/'inventory/applets.json').write_text(json.dumps(inventory, indent=2)+'\n')
 reviewed_valgrind = read('evidence/gnu-reviewed-valgrind.json')
 assessments = {'clean': 0, 'assertions_passed_memory_open': 0,
-               'prerequisite_skip': 0, 'assertions_open': 0}
+               'prerequisite_skip': 0, 'assertions_open': 0, 'interrupted': 0}
 for row in reviewed_valgrind['results']:
     statuses = [row[implementation]['status'] for implementation in ('gnu', 'rboxc')]
     assertions_pass = statuses == [0, 0] and all(
         row[implementation].get('case_count_pass', True) for implementation in ('gnu', 'rboxc'))
     if row['pass']:
         assert assertions_pass, 'clean memory evidence requires passing original assertions'
+        assert not row.get('execution_interruption'), 'interrupted execution is not a clean pass'
         assessment = 'clean'
+    elif row.get('execution_interruption'):
+        assessment = 'interrupted'
     elif statuses == [77, 77]:
         assessment = 'prerequisite_skip'
     elif assertions_pass:
