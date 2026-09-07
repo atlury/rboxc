@@ -194,6 +194,12 @@ CASES = [
     ('wc', ['--files0-from=missing']),
     ('wc', ['--files0-from=dir']),
     ('wc', ['--files0-from=-']),
+    ('split', ['-n', 'r/3', 'input', 'part']),
+    ('split', ['-e', '-n', 'r/10', 'empty-utmp', 'part']),
+    ('split', ['-n', 'r/1/3', 'input']),
+    ('split', ['-n', 'r/3', 'input', 'missing/part']),
+    ('split', ['-b', '1', '-a', '1', 'input', 'part']),
+    ('split', ['-C', '6', 'input', 'missing/part']),
 ]
 
 

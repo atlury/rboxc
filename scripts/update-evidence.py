@@ -44,9 +44,9 @@ summary = {
     'reviewed_original': {
         'passed_selections': read('evidence/gnu-reviewed-original.json')['passed'],
         'total_selections': read('evidence/gnu-reviewed-original.json')['total'],
-        'selected_perl_cases': sum(row.get('expected_case_count', len(row.get('cases', []))) for row in read('inventory/gnu-reviewed-tests.json')),
-        'full_perl_scripts': sum(bool(row.get('full_suite')) for row in read('inventory/gnu-reviewed-tests.json')),
-        'shell_scripts': sum(row['script'].endswith('.sh') for row in read('inventory/gnu-reviewed-tests.json')),
+        'selected_perl_cases': sum(row.get('expected_case_count', len(row.get('cases', []))) for row in read('evidence/gnu-reviewed-original.json')['results']),
+        'full_perl_scripts': sum(bool(row.get('full_suite')) for row in read('evidence/gnu-reviewed-original.json')['results']),
+        'shell_scripts': sum(row['script'].endswith('.sh') for row in read('evidence/gnu-reviewed-original.json')['results']),
     },
     'reviewed_original_valgrind': {
         'passed_selections': read('evidence/gnu-reviewed-valgrind.json')['passed'],

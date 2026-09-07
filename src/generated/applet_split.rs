@@ -1644,6 +1644,7 @@ unsafe extern "C" fn copy_to_tmpfile(
     ) {
         return -1 as off_t;
     }
+    RBOXC_SPLIT_TEMP = tmp;
     let mut copied: off_t = 0 as off_t;
     let mut r: off_t = 0;
     loop {
@@ -1700,9 +1701,11 @@ unsafe extern "C" fn copy_to_tmpfile(
         return r;
     }
     r = dup2(fileno_unlocked(tmp), fd) as off_t;
+    if r >= 0 && fd == STDIN_FILENO { RBOXC_SPLIT_INPUT = true; }
     if r < 0 as off_t {
         return r;
     }
+    RBOXC_SPLIT_TEMP = ::core::ptr::null_mut();
     if fclose(tmp) < 0 as ::core::ffi::c_int {
         return -1 as off_t;
     }
@@ -1943,6 +1946,58 @@ unsafe extern "C" fn next_file_name() {
         }
     };
 }
+static mut RBOXC_SPLIT_INPUT: bool = false;
+static mut RBOXC_SPLIT_PENDING_FD: ::core::ffi::c_int = -1;
+static mut RBOXC_SPLIT_FILES: *mut of_t = ::core::ptr::null_mut();
+static mut RBOXC_SPLIT_FILE_COUNT: usize = 0;
+static mut RBOXC_SPLIT_BUFFER: *mut ::core::ffi::c_char = ::core::ptr::null_mut();
+static mut RBOXC_SPLIT_TEMP: *mut FILE = ::core::ptr::null_mut();
+unsafe extern "C" fn rboxc_free_split_resources() {
+    let saved_errno = *::libc::__errno_location();
+    let pending = RBOXC_SPLIT_PENDING_FD;
+    RBOXC_SPLIT_PENDING_FD = -1;
+    if pending >= 0 { ::libc::close(pending); }
+    let output = output_desc;
+    output_desc = -1;
+    if output >= 0 { ::libc::close(output); }
+    let files = RBOXC_SPLIT_FILES;
+    let count = RBOXC_SPLIT_FILE_COUNT;
+    RBOXC_SPLIT_FILES = ::core::ptr::null_mut();
+    RBOXC_SPLIT_FILE_COUNT = 0;
+    for index in 0..count {
+        let entry = &mut *files.add(index);
+        if entry.ofd >= 0 {
+            if entry.ofile.is_null() { ::libc::close(entry.ofd); }
+            else { fclose(entry.ofile); }
+        }
+        ::libc::free(entry.of_name.cast());
+    }
+    ::libc::free(files.cast());
+    let temporary = RBOXC_SPLIT_TEMP;
+    RBOXC_SPLIT_TEMP = ::core::ptr::null_mut();
+    if !temporary.is_null() { fclose(temporary); }
+    if RBOXC_SPLIT_INPUT {
+        RBOXC_SPLIT_INPUT = false;
+        ::libc::close(STDIN_FILENO);
+    }
+    let buffer = RBOXC_SPLIT_BUFFER;
+    RBOXC_SPLIT_BUFFER = ::core::ptr::null_mut();
+    ::libc::free(buffer.cast());
+    *::libc::__errno_location() = saved_errno;
+}
+unsafe fn rboxc_close_rr_stream(entry: *mut of_t) -> ::core::ffi::c_int {
+    let stream = (*entry).ofile;
+    (*entry).ofile = ::core::ptr::null_mut();
+    (*entry).ofd = C2Rust_Unnamed_5::OFD_APPEND.0;
+    fclose(stream)
+}
+unsafe fn rboxc_finish_rr_output(entry: *mut of_t) {
+    let stream = (*entry).ofile;
+    let fd = (*entry).ofd;
+    (*entry).ofile = ::core::ptr::null_mut();
+    (*entry).ofd = C2Rust_Unnamed_5::OFD_APPEND.0;
+    closeout(stream, fd, (*entry).opid, (*entry).of_name);
+}
 unsafe extern "C" fn create(mut name: *const ::core::ffi::c_char) -> ::core::ffi::c_int {
     if filter_command.is_null() {
         if verbose {
@@ -1958,10 +2013,12 @@ unsafe extern "C" fn create(mut name: *const ::core::ffi::c_char) -> ::core::ffi
         }
         let mut oflags: ::core::ffi::c_int = O_WRONLY | O_CREAT | O_BINARY;
         let mut fd: ::core::ffi::c_int = open_safer(name, oflags | O_EXCL, MODE_RW_UGO);
+        RBOXC_SPLIT_PENDING_FD = fd;
         if 0 as ::core::ffi::c_int <= fd || *__errno_location() != EEXIST {
             return fd;
         }
         fd = open_safer(name, oflags, MODE_RW_UGO);
+        RBOXC_SPLIT_PENDING_FD = fd;
         if fd < 0 as ::core::ffi::c_int {
             return fd;
         }
@@ -2462,6 +2519,7 @@ unsafe extern "C" fn closeout(
     mut pid: pid_t,
     mut name: *const ::core::ffi::c_char,
 ) {
+    if fd >= 0 && fd == output_desc { output_desc = -1; }
     if !fp.is_null() && fclose(fp) != 0 as ::core::ffi::c_int && !ignorable(*__errno_location()) {
         if 0 != 0 {
             error(
@@ -2757,6 +2815,7 @@ unsafe extern "C" fn cwrite(
         );
         next_file_name();
         output_desc = create(outfile);
+        RBOXC_SPLIT_PENDING_FD = -1;
         if output_desc < 0 as ::core::ffi::c_int {
             if 0 != 0 {
                 error(
@@ -3688,7 +3747,7 @@ unsafe extern "C" fn ofile_open(
                     };
                 }
             }
-            if fclose((*files.offset(i_reopen as isize)).ofile) != 0 as ::core::ffi::c_int {
+            if rboxc_close_rr_stream(files.offset(i_reopen as isize)) != 0 as ::core::ffi::c_int {
                 if 0 != 0 {
                     error(
                         1 as ::core::ffi::c_int,
@@ -3728,6 +3787,7 @@ unsafe extern "C" fn ofile_open(
             (*files.offset(i_reopen as isize)).ofd = C2Rust_Unnamed_5::OFD_APPEND.0;
         }
         (*files.offset(i_check as isize)).ofd = fd;
+        RBOXC_SPLIT_PENDING_FD = -1;
         let mut ofile: *mut FILE = fdopen(fd, b"a\0".as_ptr() as *const ::core::ffi::c_char);
         if ofile.is_null() {
             if 0 != 0 {
@@ -3792,6 +3852,7 @@ unsafe extern "C" fn lines_rr(
         }
         *filesp = xinmalloc(n as idx_t, ::core::mem::size_of::<of_t>() as idx_t) as *mut of_t;
         files = *filesp;
+        RBOXC_SPLIT_FILES = files;
         i_file = 0 as idx_t;
         while i_file < n as idx_t {
             next_file_name();
@@ -3799,6 +3860,7 @@ unsafe extern "C" fn lines_rr(
             (*files.offset(i_file as isize)).ofd = C2Rust_Unnamed_5::OFD_NEW.0;
             (*files.offset(i_file as isize)).ofile = ::core::ptr::null_mut::<FILE>();
             (*files.offset(i_file as isize)).opid = 0 as ::core::ffi::c_int as pid_t;
+            RBOXC_SPLIT_FILE_COUNT = i_file as usize + 1;
             i_file += 1;
         }
         i_file = 0 as idx_t;
@@ -4051,7 +4113,7 @@ unsafe extern "C" fn lines_rr(
                     wrote = r#true != 0;
                 }
                 if file_limit {
-                    if fclose((*files.offset(i_file as isize)).ofile) != 0 as ::core::ffi::c_int {
+                    if rboxc_close_rr_stream(files.offset(i_file as isize)) != 0 as ::core::ffi::c_int {
                         if 0 != 0 {
                             error(
                                 1 as ::core::ffi::c_int,
@@ -4119,12 +4181,7 @@ unsafe extern "C" fn lines_rr(
                     != 0;
             }
             if (*files.offset(i_file as isize)).ofd >= 0 as ::core::ffi::c_int {
-                closeout(
-                    (*files.offset(i_file as isize)).ofile,
-                    (*files.offset(i_file as isize)).ofd,
-                    (*files.offset(i_file as isize)).opid,
-                    (*files.offset(i_file as isize)).of_name,
-                );
+                rboxc_finish_rr_output(files.offset(i_file as isize));
             }
             (*files.offset(i_file as isize)).ofd = C2Rust_Unnamed_5::OFD_APPEND.0;
             i_file += 1;
@@ -4289,6 +4346,7 @@ pub unsafe extern "C" fn single_binary_main_split(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_free_split_resources));
     loop {
         let mut this_optind: ::core::ffi::c_int = if optind != 0 {
             optind
@@ -5105,6 +5163,7 @@ pub unsafe extern "C" fn single_binary_main_split(
             });
         };
     }
+    RBOXC_SPLIT_INPUT = !streq(infile, b"-\0".as_ptr().cast());
     xset_binary_mode(STDIN_FILENO, O_BINARY);
     fdadvise(
         STDIN_FILENO,
@@ -5156,6 +5215,7 @@ pub unsafe extern "C" fn single_binary_main_split(
     }
     let mut buf: *mut ::core::ffi::c_char =
         xalignalloc(page_size, in_blk_size + 1 as idx_t) as *mut ::core::ffi::c_char;
+    RBOXC_SPLIT_BUFFER = buf;
     let mut initial_read: ssize_t = -1 as ssize_t;
     if split_type.0 == Split_type::type_chunk_bytes.0
         || split_type.0 == Split_type::type_chunk_lines.0
@@ -5271,6 +5331,7 @@ pub unsafe extern "C" fn single_binary_main_split(
             };
         }
     }
+    RBOXC_SPLIT_INPUT = false;
     if close(STDIN_FILENO) != 0 as ::core::ffi::c_int {
         if 0 != 0 {
             error(
@@ -5313,6 +5374,7 @@ pub unsafe extern "C" fn single_binary_main_split(
         filter_pid,
         outfile,
     );
+    RBOXC_SPLIT_BUFFER = ::core::ptr::null_mut();
     ::libc::free(buf.cast());
     return 0 as ::core::ffi::c_int;
 }

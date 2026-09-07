@@ -12,10 +12,13 @@ from pathlib import Path
 import subprocess
 import tempfile
 import sys
+import time
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = Path(os.environ.get('GNU_COREUTILS_SOURCE', '/opt/src/coreutils-9.11'))
 BUILD = ROOT/'build/gnu-coreutils'
+sys.path.insert(0, str(ROOT/'scripts'))
+from generated_tests import materialize
 PERL_SELECTION = r'''
 no warnings 'redefine';
 *main::run_tests = sub ($$$$$) {
@@ -83,7 +86,7 @@ def main():
     for row in manifest:
         if not included(row):
             continue
-        script = SOURCE/row['script']
+        script = materialize(ROOT, SOURCE, row) if row.get('generator_inputs') else SOURCE/row['script']
         assert hashlib.sha256(script.read_bytes()).hexdigest() == row['sha256'], row['script']
         outcomes = {}
         for implementation in ('gnu', 'rboxc'):
@@ -167,6 +170,10 @@ def main():
                 }
                 for key in ('POSIXLY_CORRECT', 'VERSION_CONTROL', 'SIMPLE_BACKUP_SUFFIX'):
                     environment.pop(key, None)
+                if row.get('very_expensive'):
+                    environment['RUN_VERY_EXPENSIVE_TESTS'] = 'yes'
+                if row.get('expensive'):
+                    environment['RUN_EXPENSIVE_TESTS'] = 'yes'
                 if row.get('locale_profile') == 'extended':
                     locale_path = Path(json.loads((ROOT/'evidence/test-locales.json').read_text())['runtime_path'])
                     assert locale_path.is_dir(), 'run scripts/prepare-test-locales.py first'
@@ -203,13 +210,15 @@ def main():
                     assert os.geteuid() == 0 and isinstance(groups, list)
                     assert all(type(group) is int and 0 <= group < 2**32-1 for group in groups)
                     launch_credentials['extra_groups'] = groups
+                started = time.monotonic()
                 completed = subprocess.run(['timeout', '--kill-after=5s', str(row.get('timeout_seconds', 60))+'s', *command],
                                            cwd=run, env=environment, capture_output=True, **launch_credentials)
                 assert os.getgroups() == parent_groups, 'parent group membership changed'
                 log = ROOT/'evidence/raw'/('reviewed-'+('vg-' if instrument else '')+row['script'].replace('/', '-')+'-'+implementation+'-'+run.name+'.log')
                 log.write_bytes(completed.stdout+completed.stderr)
                 outcomes[implementation] = {'status': completed.returncode, 'log': str(log.relative_to(ROOT)),
-                                            'binary_sha256': binary_hashes[implementation]}
+                                            'binary_sha256': binary_hashes[implementation],
+                                            'elapsed_seconds': round(time.monotonic()-started, 3)}
                 if row.get('profile') == 'loopback-device':
                     profiles = re.findall(rb'^RBOXC_LOOPBACK_PROFILE (.+)$', completed.stderr, re.M)
                     outcomes[implementation]['loopback_profile'] = json.loads(profiles[0]) if profiles else None

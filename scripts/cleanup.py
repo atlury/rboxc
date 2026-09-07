@@ -443,8 +443,8 @@ unsafe fn rboxc_free_environment() {
         text = replace_once(text, anchor,
                             '    ::libc::free(outbuf.cast());\n    ::libc::free(inbuf.cast());\n' + anchor)
     if name == 'split':
-        anchor = '    closeout(\n        ::core::ptr::null_mut::<FILE>(),\n        output_desc,\n        filter_pid,\n        outfile,\n    );'
-        text = replace_once(text, anchor, anchor + '\n    ::libc::free(buf.cast());')
+        from split_cleanup import cleanup_split
+        text = cleanup_split(text, replace_once)
     if name == 'expr':
         text = replace_once(text, '    printv(v);\n    return null(v) as ::core::ffi::c_int;',
                             '    printv(v);\n    let status = null(v) as ::core::ffi::c_int;\n'

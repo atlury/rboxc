@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import re
+from generated_tests import materialize
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = Path(os.environ.get('GNU_COREUTILS_SOURCE', '/opt/src/coreutils-9.11'))
@@ -64,6 +65,9 @@ def main():
                 row['execution_coverage'] = 'full-script-with-recorded-profiles'
         if script in reviewed:
             result = reviewed[script]
+            if script in generated:
+                assert result['generator_inputs'] == row['generator_inputs']
+                row['sha256'] = digest(materialize(ROOT, SOURCE, result))
             assert row['sha256'] == result['sha256'], script
             partial = bool(result.get('cases')) and not result.get('full_suite')
             row['execution_coverage'] = 'selected-cases' if partial else 'full-script'
@@ -80,6 +84,9 @@ def main():
             row['valgrind_state'] = 'excluded'
         if script in instrumented:
             result = instrumented[script]
+            if script in generated:
+                assert result['generator_inputs'] == row['generator_inputs']
+                row['sha256'] = digest(materialize(ROOT, SOURCE, result))
             assert row['sha256'] == result['sha256'], script
             full = not result.get('cases') or result.get('full_suite')
             row['valgrind_state'] = ('passed-script' if full else 'passed-selection') if result['pass'] else 'open'
