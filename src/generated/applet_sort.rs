@@ -7958,6 +7958,7 @@ unsafe extern "C" fn sort(
             ::core::ptr::null::<::core::ffi::c_char>();
         let mut file: *const ::core::ffi::c_char = *files;
         let mut fp: *mut FILE = xfopen(file, b"r\0".as_ptr() as *const ::core::ffi::c_char);
+        if fp != stdin { RBOXC_SORT_READ_INPUT = fp; }
         let mut tfp: *mut FILE = ::core::ptr::null_mut::<FILE>();
         let mut bytes_per_line: size_t = 0;
         if nthreads > 1 as size_t {
@@ -7999,7 +8000,8 @@ unsafe extern "C" fn sort(
                 line = buffer_linelim(&raw mut buf);
                 if buf.eof as ::core::ffi::c_int != 0 && nfiles == 0 && ntemps == 0 && buf.left == 0
                 {
-                    xfclose(fp, file);
+                    RBOXC_SORT_READ_INPUT = ::core::ptr::null_mut();
+        xfclose(fp, file);
                     tfp = xfopen(output_file, b"w\0".as_ptr() as *const ::core::ffi::c_char);
                     temp_output = output_file;
                     output_file_created = r#true != 0;
@@ -8088,6 +8090,7 @@ unsafe extern "C" fn sort(
                 }
             }
         }
+        RBOXC_SORT_READ_INPUT = ::core::ptr::null_mut();
         xfclose(fp, file);
     }
     free(buf.buf as *mut ::core::ffi::c_void);
@@ -8403,6 +8406,17 @@ unsafe extern "C" fn rboxc_free_sort_resources() {
     }
     *::libc::__errno_location() = saved_errno;
 }
+// Rbox read-error ownership tracking.
+static mut RBOXC_SORT_READ_INPUT: *mut FILE = ::core::ptr::null_mut();
+unsafe extern "C" fn rboxc_close_read_inputs() {
+    let stream = RBOXC_SORT_READ_INPUT;
+    RBOXC_SORT_READ_INPUT = ::core::ptr::null_mut();
+    if !stream.is_null() {
+        let saved_errno = *::libc::__errno_location();
+        fclose(stream);
+        *::libc::__errno_location() = saved_errno;
+    }
+}
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_sort(
     mut argc: ::core::ffi::c_int,
@@ -8528,6 +8542,7 @@ pub unsafe extern "C" fn single_binary_main_sort(
     }
     signal(SIGCHLD, SIG_DFL);
     atexit(Some(exit_cleanup as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_close_read_inputs));
     atexit(Some(rboxc_free_sort_resources));
     key_init(&raw mut gkey);
     gkey.sword = SIZE_MAX as size_t;

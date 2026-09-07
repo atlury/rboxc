@@ -1441,7 +1441,7 @@ unsafe extern "C" fn check_file(
     let mut thisline: *mut linebuffer = ::core::ptr::null_mut::<linebuffer>();
     let mut prevline: *mut linebuffer = ::core::ptr::null_mut::<linebuffer>();
     if !(streq(infile, b"-\0".as_ptr() as *const ::core::ffi::c_char) as ::core::ffi::c_int != 0
-        || !freopen_safer(infile, b"r\0".as_ptr() as *const ::core::ffi::c_char, stdin).is_null())
+        || !rboxc_reopen_input(infile, b"r\0".as_ptr() as *const ::core::ffi::c_char, stdin).is_null())
     {
         if 0 != 0 {
             error(
@@ -1479,7 +1479,7 @@ unsafe extern "C" fn check_file(
         };
     }
     if !(streq(outfile, b"-\0".as_ptr() as *const ::core::ffi::c_char) as ::core::ffi::c_int != 0
-        || !freopen_safer(
+        || !rboxc_reopen_input(
             outfile,
             b"w\0".as_ptr() as *const ::core::ffi::c_char,
             stdout,
@@ -1698,7 +1698,7 @@ unsafe extern "C" fn check_file(
             writeline(prevline, r#false != 0, match_count);
         }
     }
-    if ferror_unlocked(stdin) != 0 || fclose(stdin) != 0 as ::core::ffi::c_int {
+    if ferror_unlocked(stdin) != 0 || rboxc_finish_read_input() != 0 as ::core::ffi::c_int {
         if 0 != 0 {
             error(
                 1 as ::core::ffi::c_int,
@@ -1737,6 +1737,24 @@ unsafe extern "C" fn check_file(
     free(lb1.buffer as *mut ::core::ffi::c_void);
     free(lb2.buffer as *mut ::core::ffi::c_void);
 }
+// Rbox read-error ownership tracking.
+static mut RBOXC_READ_INPUT_OWNED: bool = false;
+unsafe fn rboxc_reopen_input(path: *const ::core::ffi::c_char, mode: *const ::core::ffi::c_char, stream: *mut FILE) -> *mut FILE {
+    let result = freopen_safer(path, mode, stream);
+    if stream == stdin { RBOXC_READ_INPUT_OWNED = !result.is_null(); }
+    result
+}
+unsafe fn rboxc_finish_read_input() -> ::core::ffi::c_int {
+    RBOXC_READ_INPUT_OWNED = false;
+    fclose(stdin)
+}
+unsafe extern "C" fn rboxc_close_read_inputs() {
+    if RBOXC_READ_INPUT_OWNED {
+        let saved_errno = *::libc::__errno_location();
+        rboxc_finish_read_input();
+        *::libc::__errno_location() = saved_errno;
+    }
+}
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_uniq(
     mut argc: ::core::ffi::c_int,
@@ -1757,6 +1775,7 @@ pub unsafe extern "C" fn single_binary_main_uniq(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_close_read_inputs));
     loop {
         if optc == -1 as ::core::ffi::c_int
             || posixly_correct as ::core::ffi::c_int != 0 && nfiles != 0 as ::core::ffi::c_int

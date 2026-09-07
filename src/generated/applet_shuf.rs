@@ -1545,6 +1545,24 @@ unsafe extern "C" fn write_random_lines(
     }
     return 0 as ::core::ffi::c_int;
 }
+// Rbox read-error ownership tracking.
+static mut RBOXC_READ_INPUT_OWNED: bool = false;
+unsafe fn rboxc_reopen_input(path: *const ::core::ffi::c_char, mode: *const ::core::ffi::c_char, stream: *mut FILE) -> *mut FILE {
+    let result = freopen_safer(path, mode, stream);
+    if stream == stdin { RBOXC_READ_INPUT_OWNED = !result.is_null(); }
+    result
+}
+unsafe fn rboxc_finish_read_input() -> ::core::ffi::c_int {
+    RBOXC_READ_INPUT_OWNED = false;
+    fclose(stdin)
+}
+unsafe extern "C" fn rboxc_close_read_inputs() {
+    if RBOXC_READ_INPUT_OWNED {
+        let saved_errno = *::libc::__errno_location();
+        rboxc_finish_read_input();
+        *::libc::__errno_location() = saved_errno;
+    }
+}
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_shuf(
     mut argc: ::core::ffi::c_int,
@@ -1586,6 +1604,7 @@ pub unsafe extern "C" fn single_binary_main_shuf(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_close_read_inputs));
     loop {
         optc = getopt_long(
             argc,
@@ -1977,7 +1996,7 @@ pub unsafe extern "C" fn single_binary_main_shuf(
                 b"-\0".as_ptr() as *const ::core::ffi::c_char,
             ) as ::core::ffi::c_int
                 != 0
-                || !freopen_safer(
+                || !rboxc_reopen_input(
                     *operand.offset(0isize),
                     b"r\0".as_ptr() as *const ::core::ffi::c_char,
                     stdin,
@@ -2110,7 +2129,7 @@ pub unsafe extern "C" fn single_binary_main_shuf(
     if !(head_lines == 0 as idx_t
         || echo as ::core::ffi::c_int != 0
         || input_range as ::core::ffi::c_int != 0
-        || fclose(stdin) == 0 as ::core::ffi::c_int)
+        || rboxc_finish_read_input() == 0 as ::core::ffi::c_int)
     {
         if 0 != 0 {
             error(
@@ -2149,7 +2168,7 @@ pub unsafe extern "C" fn single_binary_main_shuf(
         permutation = randperm_new(randint_source, ahead_lines as size_t, n_lines);
     }
     if !outfile.is_null()
-        && freopen_safer(
+        && rboxc_reopen_input(
             outfile,
             b"w\0".as_ptr() as *const ::core::ffi::c_char,
             stdout,

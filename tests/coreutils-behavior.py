@@ -231,6 +231,19 @@ CASES = [
     ('tail', ['-f', '--pid=2147483647', 'missing']),
     ('tail', ['-f', '--pid=2147483647', '-']),
     ('tail', ['-f', '--pid=1', '--pid=invalid', 'input']),
+    ('cat', ['dir']),
+    ('cat', ['dir', 'input']),
+    ('csplit', ['dir', '1']),
+    ('date', ['-f', 'dir']),
+    ('join', ['dir', 'dir']),
+    ('join', ['left', 'missing']),
+    ('shuf', ['-n1', 'dir']),
+    ('shuf', ['-r', 'dir']),
+    ('sort', ['dir']),
+    ('tail', ['-c+1', 'dir']),
+    ('tail', ['-n+1', 'dir']),
+    ('uniq', ['dir']),
+    ('uniq', ['-c', 'dir']),
 ]
 
 

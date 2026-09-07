@@ -1608,14 +1608,13 @@ unsafe extern "C" fn splice_cat() -> ::core::ffi::c_int {
     let mut some_copied: bool = r#false != 0;
     let mut in_ok: bool = r#true != 0;
     let mut out_ok: bool = r#true != 0;
-    static mut pipefd: [::core::ffi::c_int; 2] =
-        [-1 as ::core::ffi::c_int, -1 as ::core::ffi::c_int];
+
     static mut pipefd_pipe_size: idx_t = 0 as idx_t;
-    if pipefd[0usize] < 0 as ::core::ffi::c_int {
-        if pipe_safer(&raw mut pipefd as *mut ::core::ffi::c_int) < 0 as ::core::ffi::c_int {
+    if RBOXC_CAT_PIPE[0usize] < 0 as ::core::ffi::c_int {
+        if pipe_safer(&raw mut RBOXC_CAT_PIPE as *mut ::core::ffi::c_int) < 0 as ::core::ffi::c_int {
             return r#false;
         }
-        pipefd_pipe_size = increase_pipe_size(pipefd[1usize]);
+        pipefd_pipe_size = increase_pipe_size(RBOXC_CAT_PIPE[1usize]);
     }
     static mut stdout_is_pipe: ::core::ffi::c_int = -1 as ::core::ffi::c_int;
     static mut stdout_pipe_size: idx_t = 0 as idx_t;
@@ -1634,7 +1633,7 @@ unsafe extern "C" fn splice_cat() -> ::core::ffi::c_int {
         let mut bytes_read: ssize_t = splice(
             input_desc,
             ::core::ptr::null_mut::<__off64_t>(),
-            pipefd[1usize],
+            RBOXC_CAT_PIPE[1usize],
             ::core::ptr::null_mut::<__off64_t>(),
             pipe_size as size_t,
             0 as ::core::ffi::c_uint,
@@ -1648,7 +1647,7 @@ unsafe extern "C" fn splice_cat() -> ::core::ffi::c_int {
         }
         while (0 as ssize_t) < bytes_read {
             let mut bytes_written: ssize_t = splice(
-                pipefd[0usize],
+                RBOXC_CAT_PIPE[0usize],
                 ::core::ptr::null_mut::<__off64_t>(),
                 STDOUT_FILENO,
                 ::core::ptr::null_mut::<__off64_t>(),
@@ -1673,7 +1672,7 @@ unsafe extern "C" fn splice_cat() -> ::core::ffi::c_int {
                                 ::core::mem::size_of::<[::core::ffi::c_char; 8192]>()
                             }) as ssize_t;
                             let mut n_read: ssize_t = read(
-                                pipefd[0usize],
+                                RBOXC_CAT_PIPE[0usize],
                                 &raw mut buf as *mut ::core::ffi::c_char
                                     as *mut ::core::ffi::c_void,
                                 count as size_t,
@@ -1706,11 +1705,11 @@ unsafe extern "C" fn splice_cat() -> ::core::ffi::c_int {
     }
     if !in_ok && !out_ok {
         let mut saved_errno: ::core::ffi::c_int = *__errno_location();
-        close(pipefd[0usize]);
-        close(pipefd[1usize]);
+        close(RBOXC_CAT_PIPE[0usize]);
+        close(RBOXC_CAT_PIPE[1usize]);
         *__errno_location() = saved_errno;
-        pipefd[1usize] = -1 as ::core::ffi::c_int;
-        pipefd[0usize] = pipefd[1usize];
+        RBOXC_CAT_PIPE[1usize] = -1 as ::core::ffi::c_int;
+        RBOXC_CAT_PIPE[0usize] = RBOXC_CAT_PIPE[1usize];
         pipefd_pipe_size = 0 as idx_t;
         if 0 != 0 {
             error(
@@ -1813,6 +1812,17 @@ unsafe extern "C" fn ensure_buf_size(
         *buf_alloc = size;
     }
     return buf;
+}
+// Rbox read-error ownership tracking.
+static mut RBOXC_CAT_PIPE: [::core::ffi::c_int; 2] = [-1, -1];
+unsafe extern "C" fn rboxc_close_read_inputs() {
+    let saved_errno = *::libc::__errno_location();
+    for i in 0..2 {
+        let fd = RBOXC_CAT_PIPE[i];
+        RBOXC_CAT_PIPE[i] = -1;
+        if fd >= 0 { close(fd); }
+    }
+    *::libc::__errno_location() = saved_errno;
 }
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_cat(
@@ -1921,6 +1931,7 @@ pub unsafe extern "C" fn single_binary_main_cat(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_close_read_inputs));
     let mut c: ::core::ffi::c_int = 0;
     loop {
         c = getopt_long(

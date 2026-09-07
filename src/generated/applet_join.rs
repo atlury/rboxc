@@ -2438,6 +2438,22 @@ unsafe extern "C" fn add_file_name(
         *optc_status = operand_status::MIGHT_BE_O_ARG.0 as ::core::ffi::c_int;
     }
 }
+// Rbox read-error ownership tracking.
+static mut RBOXC_READ_INPUTS: [*mut FILE; 2] = [::core::ptr::null_mut(); 2];
+unsafe fn rboxc_finish_join_input(stream: *mut FILE) -> ::core::ffi::c_int {
+    for i in 0..2 {
+        if RBOXC_READ_INPUTS[i] == stream { RBOXC_READ_INPUTS[i] = ::core::ptr::null_mut(); }
+    }
+    fclose(stream)
+}
+unsafe extern "C" fn rboxc_close_read_inputs() {
+    let saved_errno = *::libc::__errno_location();
+    for i in 0..2 {
+        let stream = RBOXC_READ_INPUTS[i];
+        if !stream.is_null() { rboxc_finish_join_input(stream); }
+    }
+    *::libc::__errno_location() = saved_errno;
+}
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_join(
     mut argc: ::core::ffi::c_int,
@@ -2459,6 +2475,7 @@ pub unsafe extern "C" fn single_binary_main_join(
     textdomain(PACKAGE.as_ptr());
     hard_LC_COLLATE = hard_locale(LC_COLLATE);
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_close_read_inputs));
     atexit(Some(free_spareline as unsafe extern "C" fn() -> ()));
     loop {
         optc = getopt_long(
@@ -2869,6 +2886,7 @@ pub unsafe extern "C" fn single_binary_main_join(
             b"r\0".as_ptr() as *const ::core::ffi::c_char,
         )
     };
+    if fp1 != stdin { RBOXC_READ_INPUTS[0] = fp1; }
     if fp1.is_null() {
         if 0 != 0 {
             error(
@@ -2918,6 +2936,7 @@ pub unsafe extern "C" fn single_binary_main_join(
             b"r\0".as_ptr() as *const ::core::ffi::c_char,
         )
     };
+    if fp2 != stdin { RBOXC_READ_INPUTS[1] = fp2; }
     if fp2.is_null() {
         if 0 != 0 {
             error(
@@ -2990,7 +3009,7 @@ pub unsafe extern "C" fn single_binary_main_join(
         };
     }
     system_join(fp1, fp2);
-    if fclose(fp1) != 0 as ::core::ffi::c_int {
+    if rboxc_finish_join_input(fp1) != 0 as ::core::ffi::c_int {
         if 0 != 0 {
             error(
                 1 as ::core::ffi::c_int,
@@ -3026,7 +3045,7 @@ pub unsafe extern "C" fn single_binary_main_join(
             });
         };
     }
-    if fclose(fp2) != 0 as ::core::ffi::c_int {
+    if rboxc_finish_join_input(fp2) != 0 as ::core::ffi::c_int {
         if 0 != 0 {
             error(
                 1 as ::core::ffi::c_int,

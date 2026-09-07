@@ -536,4 +536,5 @@ unsafe fn rboxc_free_spec(spec: *mut Spec_list) {
                             '            rboxc_free_spec(s1);\n            rboxc_free_spec(s2);\n            return'))
         anchor = '    return 0 as ::core::ffi::c_int;\n}\npub const __INT_MAX__'
         text = replace_once(text, anchor, '    rboxc_free_spec(s1);\n    rboxc_free_spec(s2);\n' + anchor)
-    return text
+    from read_cleanup import cleanup_reads
+    return cleanup_reads(name, text, replace_once)

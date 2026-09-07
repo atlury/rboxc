@@ -1811,12 +1811,14 @@ unsafe extern "C" fn batch_convert(
             };
         }
     }
+    if in_stream != stdin { RBOXC_DATE_INPUT = in_stream; }
     let mut line: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
     let mut buflen: size_t = 0 as size_t;
     let mut ok: bool = r#true != 0;
     loop {
         let mut line_length: ssize_t =
             getline(&raw mut line, &raw mut buflen, in_stream) as ssize_t;
+        RBOXC_DATE_LINE = line;
         if line_length < 0 as ssize_t {
             if ferror_unlocked(in_stream) != 0 {
                 if 0 != 0 {
@@ -1926,6 +1928,7 @@ unsafe extern "C" fn batch_convert(
             }
         }
     }
+    RBOXC_DATE_INPUT = ::core::ptr::null_mut();
     if fclose(in_stream) == EOF {
         if 0 != 0 {
             error(
@@ -1962,6 +1965,7 @@ unsafe extern "C" fn batch_convert(
             });
         };
     }
+    RBOXC_DATE_LINE = ::core::ptr::null_mut();
     free(line as *mut ::core::ffi::c_void);
     return ok;
 }
@@ -1975,6 +1979,19 @@ unsafe extern "C" fn rboxc_free_date_resources() {
     let timezone = RBOXC_DATE_TIMEZONE;
     RBOXC_DATE_TIMEZONE = ::core::ptr::null_mut();
     if !timezone.is_null() { tzfree(timezone); }
+    *::libc::__errno_location() = saved_errno;
+}
+// Rbox read-error ownership tracking.
+static mut RBOXC_DATE_INPUT: *mut FILE = ::core::ptr::null_mut();
+static mut RBOXC_DATE_LINE: *mut ::core::ffi::c_char = ::core::ptr::null_mut();
+unsafe extern "C" fn rboxc_close_read_inputs() {
+    let saved_errno = *::libc::__errno_location();
+    let stream = RBOXC_DATE_INPUT;
+    RBOXC_DATE_INPUT = ::core::ptr::null_mut();
+    if !stream.is_null() { fclose(stream); }
+    let line = RBOXC_DATE_LINE;
+    RBOXC_DATE_LINE = ::core::ptr::null_mut();
+    free(line.cast());
     *::libc::__errno_location() = saved_errno;
 }
 #[no_mangle]
@@ -1998,6 +2015,7 @@ pub unsafe extern "C" fn single_binary_main_date(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_close_read_inputs));
     atexit(Some(rboxc_free_date_resources));
     let mut optc: ::core::ffi::c_int = 0;
     loop {

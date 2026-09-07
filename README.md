@@ -66,7 +66,7 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The current release executable is 2,407,536 bytes (2.30 MiB), dynamically linked
+The current release executable is 2,410,128 bytes (2.30 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
@@ -86,9 +86,9 @@ Recorded checks:
 | --- | --- | --- |
 | GNU help/version comparisons | 428/428 pass | Both multicall and symlink entry forms |
 | Valgrind help paths | 107/107 pass | Help only |
-| Normal/error behavior fixtures | 305/305 match GNU | All 107 commands; streams, status, contents, modes, owners, link topology |
-| Valgrind normal/error fixtures | 305/305 clean | Bounded fixtures; retained allocations recorded separately |
-| Instrumented GNU comparisons | 305/305 pass | Saved Valgrind observations, assessed separately from native arithmetic |
+| Normal/error behavior fixtures | 318/318 match GNU | All 107 commands; streams, status, contents, modes, owners, link topology |
+| Valgrind normal/error fixtures | 318/318 clean | Bounded fixtures; retained allocations recorded separately |
+| Instrumented GNU comparisons | 318/318 pass | Saved Valgrind observations, assessed separately from native arithmetic |
 | Original GNU cp tests | 91 pass, 11 prerequisite skips, 30 excluded | 66 scripts, root and ordinary-user profiles |
 | cp mutation comparisons | 879 pass | Bounded local backup/removal/error fixtures |
 | cp backup comparisons | 75 pass | Backup names and preserved fixture data |
@@ -114,7 +114,7 @@ script; `--report-name` gives independent batches distinct evidence files.
 New results record tested binary hashes, and exec-wrapper tests can request
 Valgrind child tracing.
 
-The reviewed Valgrind evidence records 443 clean results out of 462 scripts
+The reviewed Valgrind evidence records 444 clean results out of 462 scripts
 or selections: 3,030 Perl cases and 8,563 candidate/descendant process logs.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
@@ -280,12 +280,16 @@ groups remain unchanged. Instrumented chroot still has incomplete exec reports
 and log-file permission failures after credential changes. Generic read-error,
 warning-output, write-error, closed-stdout, and line-buffer responsiveness
 scripts pass natively across their registered applicable command sets.
-Valgrind exposes further generic read-error cleanup findings and an env exec
-report without a final summary in the warning test. Three following-tail scripts
+The generic read-error script now passes Valgrind after owned-input cleanup
+for cat, csplit, date, join, shuf, sort, tail, and uniq. The cleanup also closes
+cat's splice pipe and frees date's batch line buffer on fatal read errors.
+Thirteen additional behavior fixtures pass native GNU comparisons and Valgrind;
+all eight selected original regression scripts also pass natively. The warning
+test still has an env exec report without a final summary. Three following-tail scripts
 also retain descriptors when the original test terminates them with signals;
 two additional tail scripts need their instrumented prerequisites rerun.
 Together with the eight earlier results described above, these account for
-nineteen open reviewed Valgrind results. The observation files retain all
+eighteen open reviewed Valgrind results. The observation files retain all
 superseded failures and prerequisite skips; none are converted into passes.
 
 The complete expand, fmt, fold, and uniq Perl suites now pass natively,

@@ -25,6 +25,7 @@ pub struct _IO_codecvt { _opaque: [u8; 0] }
 pub struct _IO_marker { _opaque: [u8; 0] }
 #[repr(C)]
 pub struct hash_table { _opaque: [u8; 0] }
+// Rbox read-error ownership tracking.
 use ::c2rust_bitfields;
 extern "C" {
     fn __assert_fail(
@@ -4978,6 +4979,7 @@ unsafe extern "C" fn tail_file(
                 },
         );
     }
+    if !is_stdin { (*f).fd = fd; }
     (*f).tailable = r#false != 0;
     if fd < 0 as ::core::ffi::c_int {
         if forever {
@@ -5204,7 +5206,7 @@ unsafe extern "C" fn tail_file(
                 );
                 (*f).remote = fremote(fd, f);
             }
-        } else if !is_stdin && close(fd) < 0 as ::core::ffi::c_int {
+        } else if !is_stdin && { (*f).fd = -1; close(fd) } < 0 as ::core::ffi::c_int {
             if 0 != 0 {
                 error(
                     0 as ::core::ffi::c_int,

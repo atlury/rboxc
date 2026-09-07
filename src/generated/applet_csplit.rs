@@ -1466,7 +1466,7 @@ unsafe extern "C" fn no_more_lines() -> bool {
 }
 unsafe extern "C" fn set_input_file(mut name: *const ::core::ffi::c_char) {
     if !streq(name, b"-\0".as_ptr() as *const ::core::ffi::c_char)
-        && fd_reopen(STDIN_FILENO, name, O_RDONLY, 0 as mode_t) < 0 as ::core::ffi::c_int
+        && rboxc_reopen_input(STDIN_FILENO, name, O_RDONLY, 0 as mode_t) < 0 as ::core::ffi::c_int
     {
         if 0 != 0 {
             error(
@@ -3102,6 +3102,24 @@ unsafe extern "C" fn max_out(mut format: *mut ::core::ffi::c_char) -> idx_t {
     }
     return maxlen as idx_t;
 }
+// Rbox read-error ownership tracking.
+static mut RBOXC_READ_INPUT_OWNED: bool = false;
+unsafe fn rboxc_reopen_input(fd: ::core::ffi::c_int, path: *const ::core::ffi::c_char, flags: ::core::ffi::c_int, mode: mode_t) -> ::core::ffi::c_int {
+    let result = fd_reopen(fd, path, flags, mode);
+    if fd == STDIN_FILENO { RBOXC_READ_INPUT_OWNED = result >= 0; }
+    result
+}
+unsafe fn rboxc_finish_read_input() -> ::core::ffi::c_int {
+    RBOXC_READ_INPUT_OWNED = false;
+    close(STDIN_FILENO)
+}
+unsafe extern "C" fn rboxc_close_read_inputs() {
+    if RBOXC_READ_INPUT_OWNED {
+        let saved_errno = *::libc::__errno_location();
+        rboxc_finish_read_input();
+        *::libc::__errno_location() = saved_errno;
+    }
+}
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_csplit(
     mut argc: ::core::ffi::c_int,
@@ -3113,6 +3131,7 @@ pub unsafe extern "C" fn single_binary_main_csplit(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_close_read_inputs));
     global_argv = argv;
     loop {
         optc = getopt_long(
@@ -3358,7 +3377,7 @@ pub unsafe extern "C" fn single_binary_main_csplit(
         i_0 += 1;
     }
     split_file();
-    if close(STDIN_FILENO) != 0 as ::core::ffi::c_int {
+    if rboxc_finish_read_input() != 0 as ::core::ffi::c_int {
         if 0 != 0 {
             error(
                 0 as ::core::ffi::c_int,
