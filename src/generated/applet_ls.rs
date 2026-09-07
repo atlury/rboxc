@@ -1772,9 +1772,9 @@ pub const ELOOP: ::core::ffi::c_int = 40 as ::core::ffi::c_int;
 pub const ENODATA: ::core::ffi::c_int = 61 as ::core::ffi::c_int;
 pub const EOVERFLOW: ::core::ffi::c_int = 75 as ::core::ffi::c_int;
 pub const EOPNOTSUPP: ::core::ffi::c_int = 95 as ::core::ffi::c_int;
-pub const LOCALEDIR: [::core::ffi::c_char; 64] = unsafe {
-    ::core::mem::transmute::<[u8; 64], [::core::ffi::c_char; 64]>(
-        *b"/root/rboxc/build/capability-worktree/build/oracle/share/locale\0",
+pub const LOCALEDIR: [::core::ffi::c_char; 38] = unsafe {
+    ::core::mem::transmute::<[u8; 38], [::core::ffi::c_char; 38]>(
+        *b"/root/rboxc/build/oracle/share/locale\0",
     )
 };
 #[inline]
