@@ -18,7 +18,7 @@ def prepare(root):
     records = [json.loads(p.read_text()) for p in (root/'build/sed-cc-records').glob('*.json')]
     outputs = {}
     evidence = {}
-    for name in ('regexp', 'utils'):
+    for name in ('regexp', 'utils', 'compile'):
         original = Path(pin['source'])/f'sed/{name}.c'
         assert fingerprint(original) == pin['helper_source_sha256'][name]
         text = original.read_text()
@@ -53,7 +53,7 @@ release_owned_regexes (void)
     }
 }
 ''')
-        else:
+        elif name == 'utils':
             text = replace_once(text, '  p = xmalloc (sizeof *p);', '  p = xzalloc (sizeof *p);')
             text = replace_once(text, '  p->name = xstrdup (name);\n  p->fp = fp;',
                                 '  p->fp = fp;\n  p->name = xstrdup (name);')
@@ -76,6 +76,36 @@ release_owned_streams (void)
   errno = saved_errno;
 }
 '''
+        else:
+            text = replace_once(text, 'static void\nsetup_replacement (', '''struct owned_replacement
+{
+  char *value;
+  struct owned_replacement *next;
+};
+static struct owned_replacement *owned_replacements;
+
+static void
+setup_replacement (''')
+            text = replace_once(text, '  base = MEMDUP (text, length, char);', '''  struct owned_replacement *owner = xzalloc (sizeof *owner);
+  owner->next = owned_replacements;
+  owned_replacements = owner;
+  base = MEMDUP (text, length, char);
+  owner->value = base;''')
+            text += '''
+/* Replacement nodes borrow slices.  Retain each allocation base, including
+   malloc(0) results for empty replacements, until command execution ends. */
+void
+release_owned_replacements (void)
+{
+  while (owned_replacements)
+    {
+      struct owned_replacement *owner = owned_replacements;
+      owned_replacements = owner->next;
+      free (owner->value);
+      free (owner);
+    }
+}
+'''
         adapted = stage/(name+'.c')
         adapted.write_text(text)
         selected = [r for r in records if Path(r['file']) == original]
@@ -94,6 +124,6 @@ release_owned_streams (void)
                           'object_sha256': fingerprint(output), 'compiler_arguments': arguments,
                           'log': str(log.relative_to(root)), 'log_sha256': fingerprint(log)}
     (root/'evidence/sed-native-cleanup.json').write_text(json.dumps({
-        'scope': 'Track regex allocation bases through compilation/recompilation and invoke GNU destructors at exit; close remaining owned streams after diagnostics.',
+        'scope': 'Track regex and replacement allocation bases through compilation/execution and invoke GNU regex destructors at exit; close remaining owned streams after diagnostics.',
         'driver_sha256': fingerprint(Path(__file__)), 'helpers': evidence}, indent=2)+'\n')
     return outputs

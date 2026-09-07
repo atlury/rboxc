@@ -1,6 +1,6 @@
 {
-  "scope": "Track regex allocation bases through compilation/recompilation and invoke GNU destructors at exit; close remaining owned streams after diagnostics.",
-  "driver_sha256": "a34158b7685ec9ce501ede14190993f9816b610fafe7e0fa553af08c4c2bbc9f",
+  "scope": "Track regex and replacement allocation bases through compilation/execution and invoke GNU regex destructors at exit; close remaining owned streams after diagnostics.",
+  "driver_sha256": "1f37ada0aab24b35a038c4b730b248329a8a6cbbc98a3fc12d433a6ad5eec74e",
   "helpers": {
     "regexp": {
       "original_sha256": "b47b0e72d2ce75408bcb61f1dc75aff824ab4f0de8485bad0f86f3a252d37903",
@@ -62,6 +62,37 @@
         "-I/opt/src/sed-4.10/sed"
       ],
       "log": "evidence/raw/sed-utils-cleanup-build.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "compile": {
+      "original_sha256": "0a5d189db7ee6d3b47b1e8a5fd26c4f7ac2d26ac32f4767d4dff586bbfff45c1",
+      "adapted_source_sha256": "cb2b1c1dab579415ab078f7514a1d9a65154b18df44ef5aca894548761e39397",
+      "object_sha256": "ca92302dcba1582f1feeb7bda36fe2adf24d60079ec0049f25ca958d0d5489d9",
+      "compiler_arguments": [
+        "gcc",
+        "-DHAVE_CONFIG_H",
+        "-I.",
+        "-I/opt/src/sed-4.10",
+        "-I/opt/src/sed-4.10",
+        "-I/opt/src/sed-4.10/lib",
+        "-I./lib",
+        "-I./sed",
+        "-DLOCALEDIR=\"/root/rboxc/build/oracle/sed/share/locale\"",
+        "-g",
+        "-O2",
+        "-MT",
+        "sed/sed-compile.o",
+        "-MD",
+        "-MP",
+        "-MF",
+        "sed/.deps/sed-compile.Tpo",
+        "-c",
+        "-o",
+        "/root/rboxc/build/sed-cleanup/sed-compile.o",
+        "/root/rboxc/build/sed-cleanup/compile.c",
+        "-I/opt/src/sed-4.10/sed"
+      ],
+      "log": "evidence/raw/sed-compile-cleanup-build.log",
       "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
   }

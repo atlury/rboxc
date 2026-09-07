@@ -29,7 +29,7 @@ def symbol_map(root):
     for name in COMMANDS:
         symbols |= defined_symbols([root/f'build/gnu-sed/sed/sed-{name}.o']) - {'main'}
     assert not any(s.startswith('single_binary_main_') for s in symbols)
-    symbols |= {'release_regex', 'release_owned_regexes', 'release_owned_streams'}
+    symbols |= {'release_regex', 'release_owned_regexes', 'release_owned_streams', 'release_owned_replacements'}
     return {s: 'rboxc_sed_'+s for s in sorted(symbols)}
 
 

@@ -28,6 +28,7 @@ pub struct dfa { _opaque: [u8; 0] }
 unsafe extern "C" {
     fn rboxc_sed_release_owned_streams();
     fn rboxc_sed_release_owned_regexes();
+    fn rboxc_sed_release_owned_replacements();
 }
 use ::c2rust_bitfields;
 extern "C" {
@@ -426,6 +427,7 @@ unsafe extern "C" fn cleanup() {
     let saved_errno = *libc::__errno_location();
     rboxc_sed_release_owned_streams();
     rboxc_sed_release_owned_regexes();
+    rboxc_sed_release_owned_replacements();
     *libc::__errno_location() = saved_errno;
     remove_cleanup_file();
 }
