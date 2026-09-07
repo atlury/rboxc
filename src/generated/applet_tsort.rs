@@ -942,6 +942,7 @@ unsafe extern "C" fn detect_loop(mut k: *mut item) -> bool {
                                 let mut s: *mut successor = *p;
                                 (*(*s).suc).count = (*(*s).suc).count.wrapping_sub(1);
                                 *p = (*s).next;
+                                ::libc::free(s.cast());
                                 break;
                             } else {
                                 (*r#loop).qlink = ::core::ptr::null_mut::<item>();
@@ -1002,6 +1003,15 @@ unsafe extern "C" fn walk_tree(
         recurse_tree((*root).right, action);
     }
 }
+static mut RBOXC_REOPENED_INPUT: bool = false;
+unsafe extern "C" fn rboxc_close_reopened_input() {
+    if RBOXC_REOPENED_INPUT {
+        RBOXC_REOPENED_INPUT = false;
+        let saved_errno = *::libc::__errno_location();
+        fclose(stdin);
+        *::libc::__errno_location() = saved_errno;
+    }
+}
 unsafe extern "C" fn tsort(mut file: *const ::core::ffi::c_char) {
     let mut ok: bool = r#true != 0;
     let mut j: *mut item = ::core::ptr::null_mut::<item>();
@@ -1049,6 +1059,10 @@ unsafe extern "C" fn tsort(mut file: *const ::core::ffi::c_char) {
                 };
             });
         };
+    }
+    if !is_stdin {
+        RBOXC_REOPENED_INPUT = true;
+        atexit(Some(rboxc_close_reopened_input));
     }
     fadvise(stdin, fadvice_t::FADVISE_SEQUENTIAL);
     init_tokenbuffer(&raw mut tokenbuffer);
@@ -1251,6 +1265,7 @@ unsafe extern "C" fn tsort(mut file: *const ::core::ffi::c_char) {
             }
         }
     }
+    RBOXC_REOPENED_INPUT = false;
     if fclose(stdin) != 0 as ::core::ffi::c_int {
         if 0 != 0 {
             error(

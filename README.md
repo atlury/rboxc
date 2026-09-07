@@ -66,7 +66,7 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The initial release executable is 2,392,224 bytes (2.28 MiB), dynamically linked
+The current release executable is 2,393,352 bytes (2.28 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
@@ -77,26 +77,38 @@ Recorded checks:
 | --- | --- | --- |
 | GNU help/version comparisons | 428/428 pass | Both multicall and symlink entry forms |
 | Valgrind help paths | 107/107 pass | Help only |
-| Normal/error behavior fixtures | 231/231 match GNU | All 107 commands; streams, status, contents, modes, owners, link topology |
-| Valgrind normal/error fixtures | 231/231 clean | Bounded fixtures; retained allocations recorded separately |
-| Instrumented GNU comparisons | 231/231 pass | Saved Valgrind observations, assessed separately from native arithmetic |
+| Normal/error behavior fixtures | 234/234 match GNU | All 107 commands; streams, status, contents, modes, owners, link topology |
+| Valgrind normal/error fixtures | 234/234 clean | Bounded fixtures; retained allocations recorded separately |
+| Instrumented GNU comparisons | 234/234 pass | Saved Valgrind observations, assessed separately from native arithmetic |
 | Original GNU cp tests | 89 pass, 13 prerequisite skips, 30 excluded | 66 scripts, root and ordinary-user profiles |
 | cp mutation comparisons | 879 pass | Bounded local backup/removal/error fixtures |
 | cp backup comparisons | 75 pass | Backup names and preserved fixture data |
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 non-following `tail` file records, and `tr` construct lists (including parse
-failures). Selected original GNU tests pass: 22 `expr`, 56 `tr`, 54 `tac`, and 33 `pr`
-cases, plus 51 `numfmt` and 67 `seq` cases and 26 original shell scripts
-covering text, process, environment, and chmod behavior. Selected cases also pass for `paste` (26), `expand` (25),
-`unexpand` (53), `fold` (19), `head` (60), `wc` (16), `fmt` (9), and
-`uniq` (51), bringing the total to 542 Perl cases. These eight selections
-also pass under Valgrind against both executables (267 candidate processes).
+failures). The reviewed original GNU runner now passes 52 shell scripts and
+637 Perl cases. Four complete Perl scripts cover `basename` (31), `dirname`
+(15), `comm` (39), and `tsort` (10); the other 542 cases are selections from
+14 scripts. Full Perl coverage requires the selected case count to equal the
+upstream script's entire runtime case list.
+
+Valgrind checks pass for 26 shell scripts, the four complete Perl scripts,
+and eight Perl selections: 354 Perl cases and 694 candidate processes.
 The runner preserves each command's exit status for GNU's assertions, then
 separately requires clean candidate memory and descriptor results. Per-process
-observations are retained in `evidence/gnu-reviewed-valgrind.json`.
-These selections are pinned in
-`inventory/gnu-reviewed-tests.json`; they do not certify the whole suites.
+observations remain in `evidence/gnu-reviewed-valgrind.json`. Sources and case
+selections are pinned in `inventory/gnu-reviewed-tests.json`; these results do
+not certify the entire provider suite.
+
+The directory/link tests exposed an owned `ln` directory descriptor retained
+at exit. Its cleanup now also covers fatal backup-option errors. The full
+`comm` tests exposed input files retained on fatal ordering errors; successfully
+opened inputs are tracked and closed, with borrowed stdin excluded. `tsort`
+now frees edges removed while reporting a cycle and closes a reopened input
+on early errors. All changes are reproducible postprocessing steps; GNU's
+original sources and oracle are unchanged. The three additional `ln` behavior
+fixtures cover successful linking, an existing destination, and invalid backup
+options. These fixtures and the full reviewed scripts pass under Valgrind.
 
 GNU's original multicall test exposed different unknown-symlink diagnostics.
 Alternate executable names now reach the translated GNU dispatcher, including
@@ -107,12 +119,11 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 69 scripts
+the original test evidence into `evidence/gnu-suite-coverage.json`: 99 scripts
 passed, three passed with profile skips, 14 have selected-case coverage, five
-skipped, 26 are excluded, and 616 remain pending. Partial selections and skips
+skipped, 26 are excluded, and 586 remain pending. Partial selections and skips
 are not full-suite passes; passing scripts can contain platform-conditional
 branches. No command is certified complete.
-
 
 `pr` now releases its filename list. `tac` frees the base of its working
 buffer after all operands and closes its cached temporary stream after the

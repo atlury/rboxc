@@ -9,6 +9,83 @@ def replace_once(text, before, after):
 
 
 def cleanup(name, text):
+    if name == 'comm':
+        declaration = 'unsafe extern "C" fn compare_files(mut infiles: *mut *mut ::core::ffi::c_char) {'
+        helper = '''static mut RBOXC_INPUTS: [*mut FILE; 2] = [::core::ptr::null_mut(); 2];
+unsafe extern "C" fn rboxc_close_inputs() {
+    let saved_errno = *::libc::__errno_location();
+    for index in 0..2 {
+        let stream = RBOXC_INPUTS[index];
+        RBOXC_INPUTS[index] = ::core::ptr::null_mut();
+        if !stream.is_null() {
+            fclose(stream);
+        }
+    }
+    *::libc::__errno_location() = saved_errno;
+}
+'''
+        text = replace_once(text, declaration,
+                            helper+declaration+'\n    atexit(Some(rboxc_close_inputs));')
+        # Track only successfully opened files. Stdin remains borrowed.
+        anchor = '        if streams[i as usize].is_null() {'
+        track = ('        RBOXC_INPUTS[i as usize] = if streams[i as usize] != stdin {\n'
+                 '            streams[i as usize]\n'
+                 '        } else { ::core::ptr::null_mut() };\n')
+        text = replace_once(text, anchor, track+anchor)
+        # fclose consumes the FILE even on error; remove ownership first.
+        anchor = '        if fclose(streams[i_1 as usize]) != 0 as ::core::ffi::c_int {'
+        text = replace_once(text, anchor,
+                            '        RBOXC_INPUTS[i_1 as usize] = ::core::ptr::null_mut();\n'+anchor)
+    if name == 'tsort':
+        # GNU's IF_LINT free is omitted by the normal build. Once this edge
+        # has been unlinked, no traversal retains it.
+        anchor = '                                *p = (*s).next;'
+        text = replace_once(text, anchor, anchor+'\n                                ::libc::free(s.cast());')
+        declaration = 'unsafe extern "C" fn tsort(mut file: *const ::core::ffi::c_char) {'
+        helper = '''static mut RBOXC_REOPENED_INPUT: bool = false;
+unsafe extern "C" fn rboxc_close_reopened_input() {
+    if RBOXC_REOPENED_INPUT {
+        RBOXC_REOPENED_INPUT = false;
+        let saved_errno = *::libc::__errno_location();
+        fclose(stdin);
+        *::libc::__errno_location() = saved_errno;
+    }
+}
+'''
+        text = replace_once(text, declaration, helper+declaration)
+        # Reaching fadvise means freopen succeeded. On early errors this
+        # callback closes the owned input, without closing borrowed stdin.
+        anchor = '    fadvise(stdin, fadvice_t::FADVISE_SEQUENTIAL);'
+        register = ('    if !is_stdin {\n'
+                    '        RBOXC_REOPENED_INPUT = true;\n'
+                    '        atexit(Some(rboxc_close_reopened_input));\n'
+                    '    }\n')
+        text = replace_once(text, anchor, register+anchor)
+        anchor = '    if fclose(stdin) != 0 as ::core::ffi::c_int {'
+        text = replace_once(text, anchor, '    RBOXC_REOPENED_INPUT = false;\n'+anchor)
+    if name == 'ln':
+        # GNU keeps the opened target directory until process exit. Register
+        # ownership immediately: backup-option errors can exit before the
+        # final link loop returns. AT_FDCWD and failed opens are not owned.
+        declaration = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_ln('
+        helper = '''static mut RBOXC_DESTDIR_FD: ::core::ffi::c_int = -1;
+unsafe extern "C" fn rboxc_close_destdir() {
+    let fd = RBOXC_DESTDIR_FD;
+    RBOXC_DESTDIR_FD = -1;
+    if fd >= 0 {
+        let saved_errno = *::libc::__errno_location();
+        ::libc::close(fd);
+        *::libc::__errno_location() = saved_errno;
+    }
+}
+'''
+        text = replace_once(text, declaration, helper+declaration)
+        anchor = '            destdir_fd = openat_safer(AT_FDCWD, d, flags);'
+        register = (anchor+'\n            if destdir_fd >= 0 {\n'
+                    '                RBOXC_DESTDIR_FD = destdir_fd;\n'
+                    '                atexit(Some(rboxc_close_destdir));\n'
+                    '            }')
+        text = replace_once(text, anchor, register)
     if name == 'stdbuf':
         declaration = 'unsafe extern "C" fn set_LD_PRELOAD() {'
         helper = '''// putenv borrows these four possible strings until exec. If exec

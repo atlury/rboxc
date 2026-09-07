@@ -45,6 +45,8 @@ summary = {
         'passed_selections': read('evidence/gnu-reviewed-original.json')['passed'],
         'total_selections': read('evidence/gnu-reviewed-original.json')['total'],
         'selected_perl_cases': sum(len(row.get('cases', [])) for row in read('inventory/gnu-reviewed-tests.json')),
+        'full_perl_scripts': sum(bool(row.get('full_suite')) for row in read('inventory/gnu-reviewed-tests.json')),
+        'shell_scripts': sum(row['script'].endswith('.sh') for row in read('inventory/gnu-reviewed-tests.json')),
     },
     'reviewed_original_valgrind': {
         'passed_selections': read('evidence/gnu-reviewed-valgrind.json')['passed'],
@@ -58,7 +60,7 @@ summary = {
     'runtime_helpers': read('evidence/link.json').get('runtime_helpers', []),
     'external_dependency_observations': len(read('evidence/host-dependency-findings.json')['results']),
     'dispatcher': {key: read('evidence/dispatcher.json')[key] for key in ('passed', 'total')},
-    'gnu_suite': {key: read('evidence/gnu-suite-coverage.json')[key] for key in ('total', 'counts')},
+    'gnu_suite': {key: read('evidence/gnu-suite-coverage.json')[key] for key in ('total', 'counts', 'valgrind_counts')},
     'complete_commands': 0,
 }
 (ROOT/'evidence/status.json').write_text(json.dumps(summary, indent=2)+'\n')

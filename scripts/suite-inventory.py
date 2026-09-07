@@ -65,7 +65,7 @@ def main():
         if script in reviewed:
             result = reviewed[script]
             assert row['sha256'] == result['sha256'], script
-            partial = bool(result.get('cases'))
+            partial = bool(result.get('cases')) and not result.get('full_suite')
             row['execution_coverage'] = 'selected-cases' if partial else 'full-script'
             row['selected_case_count'] = len(result.get('cases', []))
             if result['pass']:
@@ -76,10 +76,13 @@ def main():
                 row['state'] = 'failed'
             row['evidence'] = 'evidence/gnu-reviewed-original.json'
             row['outcomes'] = {key: result[key] for key in ('gnu', 'rboxc')}
+        if row['state'] == 'excluded':
+            row['valgrind_state'] = 'excluded'
         if script in instrumented:
             result = instrumented[script]
             assert row['sha256'] == result['sha256'], script
-            row['valgrind_state'] = 'passed-selection' if result['pass'] else 'open'
+            full = not result.get('cases') or result.get('full_suite')
+            row['valgrind_state'] = ('passed-script' if full else 'passed-selection') if result['pass'] else 'open'
             row['valgrind_evidence'] = 'evidence/gnu-reviewed-valgrind.json'
         rows.append(row)
     report = {'provider': 'GNU Coreutils 9.11',
@@ -88,6 +91,7 @@ def main():
               'total': len(rows), 'registered_root_tests': len(roots),
               'generated_factor_tests': len(generated),
               'counts': dict(sorted(Counter(r['state'] for r in rows).items())),
+              'valgrind_counts': dict(sorted(Counter(r['valgrind_state'] for r in rows).items())),
               'results': rows}
     (ROOT/'evidence/gnu-suite-coverage.json').write_text(json.dumps(report, indent=2)+'\n')
     print(json.dumps({k: v for k, v in report.items() if k != 'results'}, indent=2))

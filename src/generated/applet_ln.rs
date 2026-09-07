@@ -2051,6 +2051,16 @@ pub unsafe extern "C" fn _usage_ln(mut status: ::core::ffi::c_int) {
     }
     exit(status);
 }
+static mut RBOXC_DESTDIR_FD: ::core::ffi::c_int = -1;
+unsafe extern "C" fn rboxc_close_destdir() {
+    let fd = RBOXC_DESTDIR_FD;
+    RBOXC_DESTDIR_FD = -1;
+    if fd >= 0 {
+        let saved_errno = *::libc::__errno_location();
+        ::libc::close(fd);
+        *::libc::__errno_location() = saved_errno;
+    }
+}
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_ln(
     mut argc: ::core::ffi::c_int,
@@ -2537,6 +2547,10 @@ pub unsafe extern "C" fn single_binary_main_ln(
                     O_NOFOLLOW
                 };
             destdir_fd = openat_safer(AT_FDCWD, d, flags);
+            if destdir_fd >= 0 {
+                RBOXC_DESTDIR_FD = destdir_fd;
+                atexit(Some(rboxc_close_destdir));
+            }
             if 0 as ::core::ffi::c_int <= destdir_fd {
                 n_files -= target_directory.is_null() as ::core::ffi::c_int;
                 target_directory = d;

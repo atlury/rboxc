@@ -1183,7 +1183,20 @@ unsafe extern "C" fn check_order(
         }
     }
 }
+static mut RBOXC_INPUTS: [*mut FILE; 2] = [::core::ptr::null_mut(); 2];
+unsafe extern "C" fn rboxc_close_inputs() {
+    let saved_errno = *::libc::__errno_location();
+    for index in 0..2 {
+        let stream = RBOXC_INPUTS[index];
+        RBOXC_INPUTS[index] = ::core::ptr::null_mut();
+        if !stream.is_null() {
+            fclose(stream);
+        }
+    }
+    *::libc::__errno_location() = saved_errno;
+}
 unsafe extern "C" fn compare_files(mut infiles: *mut *mut ::core::ffi::c_char) {
+    atexit(Some(rboxc_close_inputs));
     let mut lba: [[linebuffer; 4]; 2] = [[linebuffer {
         size: 0,
         length: 0,
@@ -1225,6 +1238,9 @@ unsafe extern "C" fn compare_files(mut infiles: *mut *mut ::core::ffi::c_char) {
                 b"r\0".as_ptr() as *const ::core::ffi::c_char,
             )
         };
+        RBOXC_INPUTS[i as usize] = if streams[i as usize] != stdin {
+            streams[i as usize]
+        } else { ::core::ptr::null_mut() };
         if streams[i as usize].is_null() {
             if 0 != 0 {
                 error(
@@ -1427,6 +1443,7 @@ unsafe extern "C" fn compare_files(mut infiles: *mut *mut ::core::ffi::c_char) {
     }
     let mut i_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     while i_1 < 2 as ::core::ffi::c_int {
+        RBOXC_INPUTS[i_1 as usize] = ::core::ptr::null_mut();
         if fclose(streams[i_1 as usize]) != 0 as ::core::ffi::c_int {
             if 0 != 0 {
                 error(

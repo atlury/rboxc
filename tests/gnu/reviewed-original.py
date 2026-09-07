@@ -22,6 +22,8 @@ no warnings 'redefine';
     my @selected = grep { exists $approved{$_->[0]} } @$original;
     die "upstream case inventory changed" unless @selected == keys %approved;
     print "RBOXC_SELECTION ", scalar(@selected), " of ", scalar(@$original), "\n";
+    die "full-suite selection omitted upstream cases"
+        if $ENV{RBOXC_FULL_SUITE} && @selected != @$original;
     $_[2] = \@selected;
     return &Coreutils::run_tests(@_);
 };
@@ -81,6 +83,7 @@ def main():
                     'abs_top_srcdir': str(SOURCE), 'abs_top_builddir': str(run),
                     'CONFIG_HEADER': str(BUILD/'lib/config.h'), 'LOCALE_FR': '',
                     'LOCALE_FR_UTF8': 'none', 'PERL': 'perl', 'AWK': 'awk', 'SHELL': '/bin/sh',
+                    'RBOXC_FULL_SUITE': '1' if row.get('full_suite') else '',
                     'VERBOSE': 'yes', 'RBOXC_APPROVED_CASES': ','.join(row.get('cases', [])),
                 }
                 for key in ('POSIXLY_CORRECT', 'VERSION_CONTROL', 'SIMPLE_BACKUP_SUFFIX'):
@@ -116,7 +119,7 @@ def main():
         results_by_script[row['script']] = {**row, **outcomes, 'pass': passed}
         print('PASS' if passed else 'OPEN', row['script'], {key: value['status'] for key, value in outcomes.items()}, flush=True)
     results = [results_by_script[row['script']] for row in manifest if row['script'] in results_by_script]
-    report = {'scope': 'selected original GNU compatibility cases; unselected tests remain open',
+    report = {'scope': 'reviewed original GNU scripts and selected compatibility cases; unreviewed tests remain open',
               'passed': sum(row['pass'] for row in results), 'total': len(results), 'results': results}
     output = 'evidence/gnu-reviewed-valgrind.json' if instrument else 'evidence/gnu-reviewed-original.json'
     (ROOT/output).write_text(json.dumps(report, indent=2)+'\n')
