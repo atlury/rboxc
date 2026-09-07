@@ -66,7 +66,7 @@ x86-64/glibc profile, including the calendar fixture; they do not certify other
 platforms. Inventory refresh preserves existing progress and additional pins.
 
 GNU Time 1.10 is pinned from the official signed GNU archive. Its entry is
-translated in a separate 109-command candidate, with 38 namespaced native
+translated in the installed 109-command release, with 38 namespaced native
 helper symbols and no native C entry. Nine reviewed originals pass natively;
 eight pass their assertions under Valgrind with clean Time-process exits.
 The max-RSS script fails its instrumented delta assertion in both builds because
@@ -75,12 +75,14 @@ reproduction remains excluded and unexecuted. All 23 focused comparisons pass.
 The port closes its output stream on normal exit, fatal output errors, and
 failed child exec while preserving GNU's status and diagnostics. Header-only
 fork logs remain explicitly unassessed exec boundaries. These results do not
-certify Time complete or change the installed 108-command release yet.
+certify Time complete. The exact candidate also passes all Coreutils baseline
+checks and the Hello original/focused comparisons. `evidence/time-activation.json`
+records activation with previous artifacts retained.
 
 ## Status
 
-The executable registers 108 commands: 107 Coreutils entries and GNU Hello, all
-with active Rust command entries. No native C command entry remains, and assembly succeeds without the
+The executable registers 109 commands: 107 Coreutils entries, GNU Hello, and
+GNU Time, all with active Rust command entries. No native C command entry remains, and assembly succeeds without the
 C-entry opt-in. `printf`, `sort`, `od`, `numfmt`, and `seq` use native numeric
 helpers: floating values stay inside GNU C functions and cross the boundary
 only as bytes or text. This preserves the host's x87 `long double`
@@ -95,7 +97,7 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The current release executable is 2,459,000 bytes (2.35 MiB), dynamically linked
+The current release executable is 2,474,368 bytes (2.36 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
@@ -842,8 +844,10 @@ The default GNU source location is `/opt/src/coreutils-9.11`; set
 sh scripts/bootstrap-c2rust.sh
 sh scripts/prepare-coreutils.sh
 sh scripts/prepare-hello.sh
+sh scripts/prepare-time.sh
 python3 scripts/translate-coreutils.py
 python3 scripts/translate-hello.py
+python3 scripts/translate-time.py
 python3 scripts/assemble-coreutils.py
 cargo build --locked --release
 target/release/rboxc --list
@@ -862,6 +866,8 @@ python3 tests/gnu/cp-backups.py
 python3 tests/gnu/cp-mutations.py
 python3 tests/hello-original.py
 python3 tests/hello-behavior.py
+python3 tests/time-original.py
+python3 tests/time-behavior.py
 python3 scripts/update-evidence.py
 ```
 

@@ -60,6 +60,37 @@ if all(path.exists() for path in hello_reports):
         len({r['script'] for r in original['results'] if r['pass']}), 'original_scripts': len(expected),
         'ambient_calendar_skips': original['skipped'], 'behavior_passed': focused['passed'],
         'behavior_total': focused['total'], 'complete': complete, 'completion_scope': row['completion_scope']}
+time_reports = [ROOT/'evidence/time-original.json', ROOT/'evidence/time-behavior.json']
+if all(path.exists() for path in time_reports):
+    original, focused = [json.loads(path.read_text()) for path in time_reports]
+    entry = read('evidence/time-translation.json')
+    linked = read('evidence/time-link.json')
+    manifest = read('inventory/time-tests.json')
+    expected = {r['script']: r['source_sha256'] for r in manifest['scripts']}
+    assert all(expected.get(r['script']) == r['source_sha256'] for r in original['results'])
+    current = all(report['binary_sha256'] == binary_sha256 for report in (original, focused))
+    source_current = (entry['rust_sha256'] == linked['rust_source_sha256'] ==
+                      hashlib.sha256((ROOT/entry['rust_file']).read_bytes()).hexdigest())
+    listed = subprocess.check_output([binary, '--list'], text=True).splitlines()
+    active = current and source_current and entry['translated'] and 'time' in listed and not linked['native_command_entries']
+    scripts_pass = active and {r['script'] for r in original['results'] if r['pass']} == set(expected)
+    behavior_pass = active and focused['passed'] == focused['total'] and bool(focused['results'])
+    help_checks = [r for r in focused['results'] if r['name'] in ('help', 'version')]
+    assert {r['name'] for r in help_checks} == {'help', 'version'}
+    row = next(r for r in inventory if r['name'] == 'time')
+    row.update(translated=entry['translated'], compiles=active, active_rust=active,
+               state='compiled-rust-entry' if active else 'queued',
+               help_version_pass=active and all(r['pass'] for r in help_checks),
+               valgrind_help_pass=active and all(r['memory_clean'] for r in help_checks),
+               behavior_fixture_count=focused['total'], behavior_fixture_pass=behavior_pass,
+               valgrind_fixture_pass=behavior_pass and all(r['memory_clean'] for r in focused['results']),
+               gnu_tests_pass=scripts_pass, valgrind_pass=False, complete=False,
+               completion_scope='Open: excluded original format test and instrumented max-RSS assertion. Memory evidence assesses Time exits; successful child exec boundaries remain separate.')
+    extra_providers['time'] = {'active_rust_entries': int(active),
+        'original_native_passed': original['native_passed'], 'original_scripts_passed': original['passed'],
+        'original_scripts_executed': original['total'], 'original_scripts': len(expected),
+        'behavior_passed': focused['passed'], 'behavior_total': focused['total'],
+        'complete': False, 'completion_scope': row['completion_scope']}
 (ROOT/'inventory/applets.json').write_text(json.dumps(inventory, indent=2)+'\n')
 reviewed_valgrind = read('evidence/gnu-reviewed-valgrind.json')
 assessments = {'clean': 0, 'assertions_passed_memory_open': 0,
