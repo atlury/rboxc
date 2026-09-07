@@ -66,7 +66,7 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The current release executable is 2,410,128 bytes (2.30 MiB), dynamically linked
+The current release executable is 2,410,504 bytes (2.30 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
@@ -109,6 +109,8 @@ The user-lookup profile binds a local-files NSS configuration inside a private
 mount namespace; the host configuration is checked unchanged after each run.
 The explicit UTF-8 profile uses the installed fr_FR.utf8 locale. Conditional
 branches still depend on the script's own platform prerequisites.
+Original-script totals aggregate saved runs across incremental builds; each
+result records the binary hash it tested.
 Results checkpoint atomically after each script. `--script` selects an exact
 script; `--report-name` gives independent batches distinct evidence files.
 New results record tested binary hashes, and exec-wrapper tests can request
@@ -128,14 +130,18 @@ The complete floating-point-limit sort script passes natively in C and French
 locales. Under Valgrind, both GNU and rboxc misorder the same minimum long-double
 values around zero; this remains an assertion failure. The original nohup
 script now also runs with a private terminal: all assertions pass, while
-replacement-input descriptors on failed execution and host-shell descriptor
-findings remain open. Compression assertions pass with full Valgrind child tracing: all 7,304 logs
+the two host-shell descriptor findings remain open. The nohup entry closes
+its replacement /dev/null input on exit after setup or exec failure, preserving
+errno and GNU diagnostics/statuses. Successful exec transfers the descriptor
+to the command. All three original failure-path descriptor findings are now
+clean for rboxc; GNU retains them. The source-hashed C2Rust translation applies
+this ownership change through scripts/nohup_cleanup.py. Compression assertions pass with full Valgrind child tracing: all 7,304 logs
 per implementation contain summaries. The result remains open because the
 external compression shells and GNU tr helper retain resources. The earlier
 measurement with incomplete exec logs is preserved in the observation history.
 
 The reviewed Valgrind evidence records 495 clean results out of 525 scripts
-or selections: 3,707 Perl cases and 20,470 candidate/descendant process logs.
+or selections: 3,707 Perl cases and 20,469 candidate/descendant process logs.
 The 30 open results comprise 24 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, and four with assertion
 failures under instrumentation in both GNU and rboxc. The status report records
@@ -518,8 +524,8 @@ Retained allocations and lost allocations are recorded separately. The test
 runner returns failure when a selected fixture has an unresolved finding.
 
 `numfmt` now frees its stdin line buffer after reading; `seq` frees the
-allocated custom format after printing. The complete current set of 245
-behavior fixtures was rerun after the latest ownership and descriptor changes. Numeric tests cover all five
+allocated custom format after printing. The complete current set of 318
+behavior fixtures is checked after ownership and descriptor changes. Numeric tests cover all five
 `od` float formats and byte swapping, `printf` precision and errors, general
 numeric sorting, `numfmt` rounding/units/fields, and finite `seq` paths.
 Some long-double outputs differ between native execution and Valgrind in both

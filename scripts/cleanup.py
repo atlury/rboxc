@@ -9,6 +9,9 @@ def replace_once(text, before, after):
 
 
 def cleanup(name, text):
+    if name == 'nohup':
+        from nohup_cleanup import cleanup_nohup
+        text = cleanup_nohup(text, replace_once)
     if name == 'sort':
         from sort_cleanup import cleanup_sort
         text = cleanup_sort(text, replace_once)

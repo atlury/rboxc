@@ -732,6 +732,17 @@ pub unsafe extern "C" fn _usage_nohup(mut status: ::core::ffi::c_int) {
     }
     exit(status);
 }
+// A successful exec transfers the redirected input to the command.
+// If nohup exits instead, it still owns the /dev/null descriptor.
+static mut RBOXC_NOHUP_INPUT_OWNED: bool = false;
+unsafe extern "C" fn rboxc_close_nohup_input() {
+    if RBOXC_NOHUP_INPUT_OWNED {
+        RBOXC_NOHUP_INPUT_OWNED = false;
+        let saved_errno = *::libc::__errno_location();
+        ::libc::close(STDIN_FILENO);
+        *::libc::__errno_location() = saved_errno;
+    }
+}
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_nohup(
     mut argc: ::core::ffi::c_int,
@@ -749,6 +760,7 @@ pub unsafe extern "C" fn single_binary_main_nohup(
         };
     initialize_exit_failure(exit_internal_failure);
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_close_nohup_input));
     parse_gnu_standard_options_only(
         argc,
         argv,
@@ -845,6 +857,7 @@ pub unsafe extern "C" fn single_binary_main_nohup(
                 });
             };
         }
+        RBOXC_NOHUP_INPUT_OWNED = true;
         if !redirecting_stdout && !redirecting_stderr {
             if 0 != 0 {
                 error(
