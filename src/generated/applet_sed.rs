@@ -25,6 +25,10 @@ pub struct _IO_marker { _opaque: [u8; 0] }
 pub struct re_dfa_t { _opaque: [u8; 0] }
 #[repr(C)]
 pub struct dfa { _opaque: [u8; 0] }
+unsafe extern "C" {
+    fn rboxc_sed_release_owned_streams();
+    fn rboxc_sed_release_owned_regexes();
+}
 use ::c2rust_bitfields;
 extern "C" {
     fn strcpy(
@@ -419,6 +423,10 @@ pub static mut localeinfo: localeinfo = localeinfo {
     sbctowc: [0; 256],
 };
 unsafe extern "C" fn cleanup() {
+    let saved_errno = *libc::__errno_location();
+    rboxc_sed_release_owned_streams();
+    rboxc_sed_release_owned_regexes();
+    *libc::__errno_location() = saved_errno;
     remove_cleanup_file();
 }
 unsafe extern "C" fn contact(mut errmsg: ::core::ffi::c_int) {

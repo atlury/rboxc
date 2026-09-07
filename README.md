@@ -167,11 +167,13 @@ artifacts. Auxiliary shell programs and the remaining originals stay open.
 GNU Sed 4.10 is pinned from its verified signed archive. Its native oracle
 and compiler records are prepared with SELinux explicitly disabled. The
 75 original shell/Perl registrations are inventoried for individual review.
-The translated entry compiles in a separate 122-command candidate with 297
-private helper/state symbols and no native command entry. All 51 focused
-behavior comparisons match GNU. Twenty-nine are also clean under Valgrind;
-the remaining 22 require regex or input-stream ownership cleanup. Initial
-candidates and raw observations are retained while that work continues.
+The translated entry compiles in a separate 122-command candidate with 300
+private helper/state symbols and no native command entry. All 56 focused
+comparisons match GNU and have clean Valgrind results, including regex reuse,
+partial compilation, directory input errors, and in-place edits. Ownership
+tracking invokes GNU's regex destructor and closes remaining registered streams
+through the existing exit callback. The initial 29/51 memory-clean result and
+candidate are retained. Seventeen reviewed originals are running separately.
 
 ## Status
 

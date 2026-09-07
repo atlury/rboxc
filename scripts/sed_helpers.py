@@ -1,4 +1,4 @@
-"""Namespace Sed helper definitions and Rust-owned matcher state together."""
+"""Namespace Sed helper definitions and Rust-owned entry state together."""
 # SPDX-License-Identifier: GPL-3.0-or-later
 import hashlib
 import re
@@ -29,10 +29,13 @@ def symbol_map(root):
     for name in COMMANDS:
         symbols |= defined_symbols([root/f'build/gnu-sed/sed/sed-{name}.o']) - {'main'}
     assert not any(s.startswith('single_binary_main_') for s in symbols)
+    symbols |= {'release_regex', 'release_owned_regexes', 'release_owned_streams'}
     return {s: 'rboxc_sed_'+s for s in sorted(symbols)}
 
 
 def prepare_archives(root, mapping):
+    from sed_cleanup import prepare
+    replacements = prepare(root)
     stage = root/'build/translation/sed'
     stage.mkdir(parents=True, exist_ok=True)
     definitions = stage/'helper-symbol-map'
@@ -40,6 +43,7 @@ def prepare_archives(root, mapping):
     outputs = []
     prepared = []
     for original in native_inputs(root):
+        original = replacements.get(original.stem, original)
         prepared.append(original)
         target = root/'build/helpers'/('sed-'+original.name)
         temporary = target.with_name(target.name+'.tmp')

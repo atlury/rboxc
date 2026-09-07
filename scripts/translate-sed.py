@@ -80,6 +80,18 @@ def renamed_export(match):
     return '#[export_name = "'+mapping[symbol]+'"]'
 text = re.sub(r'#\[export_name = "(?P<name>\w+)"\]', renamed_export, text)
 assert set(exports) == defined_symbols([ROOT/f'build/gnu-sed/sed/sed-{name}.o']) - {'main'}
+anchor = 'unsafe extern "C" fn cleanup() {\n'
+assert text.count(anchor) == 1
+text = text.replace(anchor, anchor+'''    let saved_errno = *libc::__errno_location();
+    rboxc_sed_release_owned_streams();
+    rboxc_sed_release_owned_regexes();
+    *libc::__errno_location() = saved_errno;
+''')
+declarations += '''unsafe extern "C" {
+    fn rboxc_sed_release_owned_streams();
+    fn rboxc_sed_release_owned_regexes();
+}
+'''
 notice = re.match(r'\s*(/\*.*?\*/)', source.read_text(), re.S)[1]
 target = ROOT/f'src/generated/applet_{name}.rs'
 target.write_text('// Generated from pinned GNU Sed '+pin['version']+' by scripts/translate-sed.py.\n'
@@ -94,7 +106,8 @@ report = {'provider': 'sed', 'version': pin['version'], 'command': name,
           'rust_exports': {symbol: mapping[symbol] for symbol in sorted(exports)},
           'adaptations': ['GNU17 parser adaptation maps C23 nullptr to a null pointer constant.',
                           'Use pinned-nightly VaList and exposed-provenance API spellings.',
-                          'Namespace native helpers and Rust-owned state together.'],
+                          'Namespace native helpers and Rust-owned state together.',
+                          'Release registered regex objects and remaining owned streams in the existing exit callback.'],
           'opaque_pointer_types': opaque, 'log': str(log.relative_to(ROOT)), 'log_sha256': fingerprint(log)}
 (ROOT/'evidence/sed-translation.json').write_text(json.dumps(report, indent=2)+'\n')
 print('Translated GNU Sed', name, 'with', len(imports), 'helper imports and', len(exports), 'Rust exports')

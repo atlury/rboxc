@@ -50,6 +50,11 @@ for name,args in [
 case('stdin',['s/alpha/A/'],stdin=data)
 case('script-stdin',['-f','-','input'],stdin=b's/alpha/A/\n')
 case('unicode',['s/é/É/g','unicode'],locale='C.UTF-8')
+case('reuse-regex',[r'/\(alpha\)/s//\1!/', 'input'])
+case('regex-error',['s/(/x/', '-E', 'input'])
+case('replacement-error',[r's/alpha/\2/', 'input'])
+case('case-insensitive',['s/ALPHA/A/Ig', 'input'])
+case('multiple-address-regex',['/alpha/,/last/s/[ae]/X/g', 'input'])
 selected=set(profile.options.commands);assert selected<={r[0] for r in cases}
 driver_sha256=fingerprint(Path(__file__));results=[]
 for index,(name,args,stdin,output,locale) in enumerate(cases):
