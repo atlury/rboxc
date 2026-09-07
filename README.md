@@ -242,8 +242,8 @@ reproduces all three staged entries byte for byte.
 `evidence/write-cleanup-regeneration.json` records the input, recipe, and output
 hashes; this check does not rerun the C2Rust translator.
 
-The reviewed Valgrind evidence records 583 clean results out of 621 scripts
-or selections: 5,729 Perl cases and 37,207 candidate/descendant process logs.
+The reviewed Valgrind evidence records 584 clean results out of 622 scripts
+or selections: 5,729 Perl cases and 46,237 candidate/descendant process logs.
 The 38 open results comprise 28 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, six with assertion
 failures under instrumentation, and two interrupted by watchdog deadlines. The status report records
@@ -387,8 +387,9 @@ can be merged with scripts/merge-reviewed-evidence.py --native after completion.
 Forty-four reviewed rm scripts pass natively and under Valgrind, including
 interactive decisions, inaccessible directories, deep trees, and disposable
 read-only and cross-filesystem fixtures. All five stty scripts and tty pass
-natively with a private controlling terminal; the large stty pair matrix still
-awaits instrumentation. Additional du coverage includes sparse and allocated
+natively with a private controlling terminal. The complete stty pair matrix
+now also passes Valgrind with 9,030 clean logs in each build; GNU takes
+5,706.347 seconds and rboxc 5,137.156 seconds with the original matrix intact. Additional du coverage includes sparse and allocated
 large files, filesystem boundaries, and bind-mount cycles.
 The full original 400,000-file deletion benchmark now passes on a verified
 512 MiB ext4 image with 524,288 inodes. GNU and rboxc each remove the directory
