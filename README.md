@@ -145,6 +145,11 @@ oracle and compiler records are prepared for the `gzip`, `gunzip`, `uncompress`,
 and `zcat` inventory entries. The latter entries use upstream shell adapters
 and an installed alias; their compatibility work is separate from Grep.
 The 30 original Gzip registrations remain inventoried for individual review.
+A separate 121-command candidate now compiles with the translated C entry,
+three internal shell-alias adaptations, and 170 private helper/state symbols.
+Its three GNU input/output/window buffer alignments are retained and verified
+in the executable. Initial 47-case testing records 15 clean comparisons;
+cached-directory/input cleanup and shell diagnostic profiles remain open.
 
 ## Status
 

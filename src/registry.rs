@@ -1,3 +1,5 @@
+#[path = "generated/applet_gzip.rs"]
+mod applet_gzip;
 #[path = "generated/applet_grep.rs"]
 mod applet_grep;
 #[path = "generated/applet_sdiff.rs"]
@@ -271,6 +273,8 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"fold", applet_fold::single_binary_main_fold),
     (b"grep", applet_grep::single_binary_main_grep),
     (b"groups", applet_groups::single_binary_main_groups),
+    (b"gunzip", applet_gzip::single_binary_main_gunzip),
+    (b"gzip", applet_gzip::single_binary_main_gzip),
     (b"head", applet_head::single_binary_main_head),
     (b"hello", applet_hello::single_binary_main_hello),
     (b"hostid", applet_hostid::single_binary_main_hostid),
@@ -337,6 +341,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"tsort", applet_tsort::single_binary_main_tsort),
     (b"tty", applet_tty::single_binary_main_tty),
     (b"uname", applet_uname::single_binary_main_uname),
+    (b"uncompress", applet_gzip::single_binary_main_uncompress),
     (b"unexpand", applet_unexpand::single_binary_main_unexpand),
     (b"uniq", applet_uniq::single_binary_main_uniq),
     (b"unlink", applet_unlink::single_binary_main_unlink),
@@ -348,4 +353,5 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"who", applet_who::single_binary_main_who),
     (b"whoami", applet_whoami::single_binary_main_whoami),
     (b"yes", applet_yes::single_binary_main_yes),
+    (b"zcat", applet_gzip::single_binary_main_zcat),
 ];
