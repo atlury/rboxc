@@ -174,6 +174,9 @@ def main():
         if row.get('extra_real_aliases'):
             assert row['script'] == 'tests/misc/coreutils.sh' and row.get('native_launcher')
             assert row['extra_real_aliases'] == ['blah'], 'only the original unknown-command alias is reviewed'
+        if row.get('perl_env_helper'):
+            assert row['script'] == 'tests/misc/invalid-opt.pl' and row.get('full_suite')
+            assert not row.get('native_launcher') and 'env' in row['commands']
         if row.get('elf_input_commands'):
             expected_inputs = {'tests/install/basic-1.sh': ['dd'],
                                'tests/install/trap.sh': ['ginstall']}
@@ -291,7 +294,15 @@ def main():
                                        'TMPDIR='+shlex.quote(str(run))+'\n'
                                        'LD_PRELOAD='+shlex.quote(str(tmpdir_library))+':${LD_PRELOAD-}\n'
                                        'export TMPDIR LD_PRELOAD\n')
-                        wrapper.write_text('#!/bin/sh\nPATH='+shlex.quote(str(run/'real'))+':"$PATH"\n'
+                        framework_env = ''
+                        if row.get('perl_env_helper') and command == 'env':
+                            # Coreutils.pm uses env only to bypass shell builtins here.
+                            # Start the tested command's launcher outside Valgrind so
+                            # its original short argv[0] survives the exec boundary.
+                            framework_env = ('if [ "$#" -eq 3 ] && [ "$1" = -- ] && [ "$3" = -/ ]; then\n'
+                                             '  exec '+shlex.quote(str(BUILD/'src/coreutils'))+
+                                             ' --coreutils-prog=env "$@"\nfi\n')
+                        wrapper.write_text('#!/bin/sh\n'+framework_env+'PATH='+shlex.quote(str(run/'real'))+':"$PATH"\n'
                                            'export PATH\n'+startup+'exec '+shlex.join(vg)+' "$@"\n')
                         wrapper.chmod(0o755)
                     else:
@@ -452,6 +463,17 @@ def main():
                         memory.append({'log': str(path.relative_to(ROOT)),
                                        **parse_memory_log(report, path.stem, row.get('valgrind_log_fd', False))})
                     outcomes[implementation]['memory'] = memory
+                    if row.get('perl_env_helper'):
+                        observed = set()
+                        for item in memory:
+                            report = (ROOT/item['log']).read_text(errors='backslashreplace')
+                            observed.update(Path(name).name for name in re.findall(
+                                r'^==[0-9]+== Command: (\S+) -/\s*$', report, re.M))
+                        expected = set(row['built_programs']) - {'['}
+                        outcomes[implementation]['invalid_option_commands'] = sorted(observed)
+                        outcomes[implementation]['framework_env_binary_sha256'] = binary_hashes['gnu']
+                        outcomes[implementation]['case_count_pass'] &= observed == expected
+
                 if run_checkpoint:
                     run_checkpoint.save(row['script'], context, implementation, outcomes[implementation])
         passed = outcomes['gnu']['status'] == outcomes['rboxc']['status'] == 0

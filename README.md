@@ -135,9 +135,9 @@ now also pass Valgrind, covering dates, cat line endings, dd case conversion,
 split suffixes, unique sorting, od byte order, printf hexadecimal escapes,
 df block headings, chmod modes/options, arch, false/true statuses, printenv,
 echo, and tail input positioning. Generated factor tests t11–t13 also pass
-Valgrind. Sixteen further generated factor scripts (t14–t20 and t22–t30)
+Valgrind. Twenty-two further generated factor scripts (t14–t20 and t22–t36)
 now pass their full original checksum comparisons under Valgrind. The remaining
-13 generated factor comparisons are running in independently checkpointed jobs.
+seven generated factor comparisons are running in independently checkpointed jobs.
 Extended locale branches run where configured.
 
 The complete floating-point-limit sort script passes natively in C and French
@@ -153,10 +153,18 @@ this ownership change through scripts/nohup_cleanup.py. Compression assertions p
 per implementation contain summaries. The result remains open because the
 external compression shells and GNU tr helper retain resources. The earlier
 measurement with incomplete exec logs is preserved in the observation history.
+The separate compressor-process script now also passes every original assertion
+under Valgrind, with 9,868 complete logs per implementation. Candidate sort
+processes are clean; the result remains open for external compression-shell,
+GNU tr, and GNU expr findings (8,094 candidate descendant logs).
+The complete I/O-error script also passes its assertions, with 1,336 logs per
+implementation. Its candidate memory evidence remains open for 263 shell logs
+and five cat/dd/tac logs. These include ordinary fatal-write cleanup still needed
+in cat and tac, as well as resources retained on SIGPIPE termination.
 
-The reviewed Valgrind evidence records 563 clean results out of 594 scripts
-or selections: 3,707 Perl cases and 21,154 candidate/descendant process logs.
-The 31 open results comprise 24 with passing original assertions but unresolved
+The reviewed Valgrind evidence records 573 clean results out of 606 scripts
+or selections: 5,675 Perl cases and 34,865 candidate/descendant process logs.
+The 33 open results comprise 26 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, and five with assertion
 failures under instrumentation in both GNU and rboxc. The status report records
 these categories separately; they do not change the strict clean-pass count.
@@ -178,7 +186,16 @@ real ELF files under a separate build-input directory; executable launchers
 remain on the test PATH. This preserves both strip coverage and GNU's verbose
 program-name diagnostics. Each result hashes the ELF inputs. Earlier launcher
 and diagnostic findings are retained. The five additional generic option/help
-profiles pass natively; their full Valgrind comparisons are running separately.
+profiles pass natively. The help/version ordering and option-documentation
+reference scripts now also pass Valgrind. The complete 106-case invalid-option
+suite passes in both modes. Its Perl framework uses GNU env to bypass shell
+builtins; that framework invocation now starts each command's Valgrind launcher
+outside instrumentation, preserving short argv[0] in diagnostics. The actual
+`env -/` case remains instrumented. The runner requires a matching Valgrind
+command log for every one of the 106 cases, in addition to GNU's case-count and
+output assertions. Earlier path-prefixed diagnostic differences remain saved.
+The full help/normal-output and source-option inventory comparisons are still
+running.
 All 46 registered move scripts now pass natively and under Valgrind.
 The GNU oracle and helper build explicitly enable ACL and extended-attribute
 support. `evidence/gnu-build-profile.json` records configuration and oracle
@@ -321,8 +338,9 @@ All nine additional sort option/locale scripts pass natively, including
 Swedish grouping and French/Japanese months. Three more private locales and
 the GB18030 locale extend the test collection to twelve. The non-UTF-8 cut,
 numfmt, and tac scripts and all 57 multibyte expr cases pass in both modes.
-The complete 1,862-case head tail-elision matrix passes natively; its expanded
-Valgrind run is pending. Original streaming memory-limit scripts pass for cut,
+The complete 1,862-case head tail-elision matrix passes natively and under
+Valgrind: both implementations finish all cases, with 1,863 complete candidate
+process logs and clean memory/descriptor evidence. Original streaming memory-limit scripts pass for cut,
 expand, unexpand, and pr, with instrumentation intentionally excluded from
 those native memory-budget measurements.
 
