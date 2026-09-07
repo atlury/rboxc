@@ -15,21 +15,22 @@ sys.path.insert(0, str(ROOT/'tests/gnu'))
 spec = importlib.util.spec_from_file_location('reviewed_original', ROOT/'tests/gnu/reviewed-original.py')
 runner = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runner)
-profile = ComparisonProfile('diffutils-original', oracle=ROOT/'build/gnu-diffutils/src/diff')
+profile = ComparisonProfile('diffutils-original', oracle=ROOT/'build/gnu-diffutils/src/diff', selections=True)
 pin = json.loads((ROOT/'inventory/sources.json').read_text())['diffutils']
 source = Path(pin['source'])
 manifest = json.loads((ROOT/'inventory/diffutils-tests.json').read_text())
 assert fingerprint(source/manifest['registration']['path']) == manifest['registration']['sha256']
 oracles = {name: ROOT/f'build/gnu-diffutils/src/{name}' for name in pin['commands']}
 oracle_hashes = {name: fingerprint(path) for name, path in oracles.items()}
-launcher_source = ROOT/'tests/gnu/valgrind-launch.c'
-launcher = profile.logs/'diffutils-valgrind-launch'
-subprocess.run(['gcc', '-O2', '-Wall', '-Wextra', '-Werror', launcher_source, '-o', launcher], check=True)
+selected = set(profile.options.commands)
+assert selected <= {Path(r['script']).name for r in manifest['scripts'] if r['reviewed']}
 results = []
 for index, row in enumerate(manifest['scripts']):
     script = source/row['script']
     assert fingerprint(script) == row['source_sha256']
     if not row['reviewed']:
+        continue
+    if selected and script.name not in selected:
         continue
     outcomes = {}
     for implementation in ('gnu', 'rboxc'):
@@ -39,12 +40,18 @@ for index, row in enumerate(manifest['scripts']):
                 work = Path(directory)
                 for sub in ('src', 'real', 'tests', 'memory'):
                     (work/sub).mkdir()
-                if instrument:
-                    shutil.copy2(launcher, work/'src/.valgrind-launch')
                 for name in pin['commands']:
                     binary = oracles[name] if implementation == 'gnu' else profile.binary
                     (work/'real'/name).symlink_to(binary)
-                    (work/'src'/name).symlink_to('.valgrind-launch' if instrument else binary)
+                    if instrument:
+                        wrapper = work/'src'/name
+                        wrapper.write_text('#!/bin/sh\nPATH='+str(work/'real')+':$PATH\nexport PATH\n'
+                            'exec /usr/bin/valgrind --leak-check=full --show-leak-kinds=all '
+                            '--track-fds=yes --trace-children=yes --log-file='+str(work/'memory/%p.log')+
+                            ' '+name+' "$@"\n')
+                        wrapper.chmod(0o755)
+                    else:
+                        (work/'src'/name).symlink_to(binary)
                 done = subprocess.run(['/bin/bash', '-c', 'exec 9>&2; exec /bin/bash "$1"',
                                        'diffutils-test', str(script)], cwd=work/'tests',
                     stdin=subprocess.DEVNULL, capture_output=True, timeout=180,
@@ -53,6 +60,7 @@ for index, row in enumerate(manifest['scripts']):
                          'srcdir': str(source/'tests'), 'top_srcdir': str(source),
                          'abs_top_srcdir': str(source), 'abs_srcdir': str(source/'tests'),
                          'abs_top_builddir': directory, 'VERSION': pin['version'],
+                         'PACKAGE_BUGREPORT': 'bug-diffutils@gnu.org',
                          'built_programs': ' '.join(pin['commands']), 'PERL': '/usr/bin/perl'})
                 log = profile.logs/f'{index:02}-{key}.log'
                 log.write_bytes(done.stdout+done.stderr)
@@ -65,8 +73,9 @@ for index, row in enumerate(manifest['scripts']):
                     outcome['memory'] = [{**runner.parse_memory_log(p.read_text(), p.stem),
                         'log': str(p.relative_to(ROOT)), 'sha256': fingerprint(p)} for p in sorted(saved.glob('*.log'))]
                 outcomes[key] = outcome
-    native_pass = outcomes['gnu']['status'] == outcomes['rboxc']['status'] == 0
-    assertions_pass = native_pass and all(r['status'] == 0 for r in outcomes.values())
+    expected_status = row.get('expected_status', 0)
+    native_pass = outcomes['gnu']['status'] == outcomes['rboxc']['status'] == expected_status
+    assertions_pass = native_pass and all(r['status'] == expected_status for r in outcomes.values())
     logs = outcomes['rboxc-valgrind']['memory']
     clean = bool(logs) and all(m['errors'] == 0 and m['non_inherited_descriptors'] == 0
         and not any(m['heap_bytes'].get(k, 0) for k in ('definitely lost', 'indirectly lost', 'possibly lost')) for m in logs)
@@ -77,10 +86,12 @@ for index, row in enumerate(manifest['scripts']):
     # Preserve each completed selection before starting the next one.
     report = {'scope': 'Individually reviewed original assertions, native and Valgrind; provider children use matching commands from the private PATH. Pending and excluded originals are not executed.',
               **profile.metadata(), 'gnu_binaries': {n: {'path': str(p), 'sha256': oracle_hashes[n]} for n, p in oracles.items()},
-              'driver_sha256': fingerprint(Path(__file__)), 'launcher_source_sha256': fingerprint(launcher_source),
+              'driver_sha256': fingerprint(Path(__file__)),
+              'launch_profile': 'Valgrind locates the named command through a private PATH, preserving its initial argv[0]. Subsequent child execs remain traced.',
               'passed': sum(r['pass'] for r in results), 'native_passed': sum(r['native_pass'] for r in results),
               'assertions_passed': sum(r['assertions_pass'] for r in results), 'total': len(results),
               'reviewed_scripts': sum(r['reviewed'] for r in manifest['scripts']),
+              'selected_scripts': sorted(selected),
               'registered_original_scripts': len(manifest['scripts']),
               'remaining': [r for r in manifest['scripts'] if not r['reviewed']], 'results': results}
     assert all(fingerprint(p) == oracle_hashes[n] for n, p in oracles.items())

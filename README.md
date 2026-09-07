@@ -96,9 +96,15 @@ entries (`cmp`, `diff`, `diff3`, and `sdiff`) translate and link in a separate
 114-command candidate. Its native helpers and Rust-owned diff state share 369
 private symbols. The translation retains C23 null-pointer semantics through a
 GNU17 parser adaptation and preserves provider pathname diagnostics. All 33
-registered original scripts are inventoried; 16 individually reviewed scripts
-pass against the native GNU oracle. Candidate original-suite validation is in
-progress. The installed release remains the validated 110-command build.
+registered original scripts are inventoried. Of 30 reviewed originals, the
+native GNU and candidate runs each have 28 passes, one prerequisite skip, and
+one upstream expected failure. Three originals remain excluded from this profile.
+All 56 ordinary native/Valgrind formatting, comparison, merge, allocation-growth,
+and I/O-error fixtures pass after ownership cleanup. Cleanup releases cmp inputs,
+replaced diff regex programs and directory descriptors, and diff3 allocations,
+merge input, and child pipes. The original-suite Valgrind run and combined
+regressions are still in progress; the installed release remains the validated
+110-command build. Raw earlier failures and candidate binaries are retained.
 
 ## Status
 

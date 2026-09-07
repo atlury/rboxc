@@ -546,6 +546,98 @@ extern "C" {
 unsafe extern "C" fn rboxc_diffutils_error_prefix() {
     libc::fprintf(rboxc_diffutils_stderr, b"%s: \0".as_ptr().cast(), program_name);
 }
+// SPDX-License-Identifier: GPL-3.0-or-later
+// GNU diff3 rewires its block lists and keeps their storage until process exit.
+// Keep allocation ownership separate from those algorithmic links.
+struct RboxcDiff3Allocation {
+    pointer: *mut ::core::ffi::c_void,
+    next: *mut RboxcDiff3Allocation,
+}
+static mut RBOXC_DIFF3_ALLOCATIONS: *mut RboxcDiff3Allocation = ::core::ptr::null_mut();
+static mut RBOXC_DIFF3_PIPE: [::core::ffi::c_int; 2] = [-1; 2];
+static mut RBOXC_DIFF3_MERGE_INPUT: *mut FILE = ::core::ptr::null_mut();
+extern "C" {
+    fn atexit(callback: unsafe extern "C" fn()) -> ::core::ffi::c_int;
+    #[link_name = "rboxc_diffutils_xalloc_die"]
+    fn xalloc_die() -> !;
+}
+unsafe fn rboxc_diff3_track(pointer: *mut ::core::ffi::c_void) -> *mut ::core::ffi::c_void {
+    let record = libc::malloc(::core::mem::size_of::<RboxcDiff3Allocation>())
+        .cast::<RboxcDiff3Allocation>();
+    if record.is_null() {
+        libc::free(pointer);
+        xalloc_die();
+    }
+    record.write(RboxcDiff3Allocation { pointer, next: RBOXC_DIFF3_ALLOCATIONS });
+    RBOXC_DIFF3_ALLOCATIONS = record;
+    pointer
+}
+unsafe fn rboxc_diff3_xmalloc(size: size_t) -> *mut ::core::ffi::c_void {
+    rboxc_diff3_track(xmalloc(size))
+}
+unsafe fn rboxc_diff3_ximalloc(size: idx_t) -> *mut ::core::ffi::c_void {
+    rboxc_diff3_track(ximalloc(size))
+}
+unsafe fn rboxc_diff3_xinmalloc(count: idx_t, size: idx_t) -> *mut ::core::ffi::c_void {
+    rboxc_diff3_track(xinmalloc(count, size))
+}
+unsafe fn rboxc_diff3_xicalloc(count: idx_t, size: idx_t) -> *mut ::core::ffi::c_void {
+    rboxc_diff3_track(xicalloc(count, size))
+}
+unsafe fn rboxc_diff3_xpalloc(pointer: *mut ::core::ffi::c_void, count: *mut idx_t,
+    minimum: idx_t, maximum: ptrdiff_t, size: idx_t) -> *mut ::core::ffi::c_void {
+    let mut record = RBOXC_DIFF3_ALLOCATIONS;
+    while !record.is_null() && (*record).pointer != pointer {
+        record = (*record).next;
+    }
+    let replacement = xpalloc(pointer, count, minimum, maximum, size);
+    if record.is_null() {
+        rboxc_diff3_track(replacement)
+    } else {
+        (*record).pointer = replacement;
+        replacement
+    }
+}
+unsafe fn rboxc_diff3_xfreopen(filename: *const ::core::ffi::c_char,
+    mode: *const ::core::ffi::c_char, stream: *mut FILE) {
+    xfreopen(filename, mode, stream);
+    RBOXC_DIFF3_MERGE_INPUT = stream;
+}
+unsafe fn rboxc_diff3_exec_failed() {
+    let saved_errno = *__errno_location();
+    close(STDOUT_FILENO);
+    rboxc_diff3_release_owned();
+    *__errno_location() = saved_errno;
+}
+unsafe fn rboxc_diff3_close(descriptor: ::core::ffi::c_int) -> ::core::ffi::c_int {
+    for index in 0..2 {
+        if RBOXC_DIFF3_PIPE[index] == descriptor {
+            RBOXC_DIFF3_PIPE[index] = -1;
+        }
+    }
+    close(descriptor)
+}
+unsafe extern "C" fn rboxc_diff3_release_owned() {
+    let saved_errno = *__errno_location();
+    if !RBOXC_DIFF3_MERGE_INPUT.is_null() {
+        let stream = RBOXC_DIFF3_MERGE_INPUT;
+        RBOXC_DIFF3_MERGE_INPUT = ::core::ptr::null_mut();
+        fclose(stream);
+    }
+    while !RBOXC_DIFF3_ALLOCATIONS.is_null() {
+        let record = RBOXC_DIFF3_ALLOCATIONS;
+        RBOXC_DIFF3_ALLOCATIONS = (*record).next;
+        libc::free((*record).pointer);
+        libc::free(record.cast());
+    }
+    for index in 0..2 {
+        if RBOXC_DIFF3_PIPE[index] > 2 {
+            rboxc_diff3_close(RBOXC_DIFF3_PIPE[index]);
+        }
+    }
+    *__errno_location() = saved_errno;
+}
+
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_diff3(
     mut argc: ::core::ffi::c_int,
@@ -556,6 +648,7 @@ pub unsafe extern "C" fn single_binary_main_diff3(
         C2Rust_Unnamed::EXIT_TROUBLE.0 as ::core::ffi::c_int,
     );
     set_program_name(*argv.offset(0isize));
+    atexit(rboxc_diff3_release_owned);
     let prior_error_prefix = error_print_progname;
     if prior_error_prefix.is_none() {
         error_print_progname = Some(rboxc_diffutils_error_prefix);
@@ -782,7 +875,7 @@ pub unsafe extern "C" fn single_binary_main_diff3(
             tag_strings[2usize],
         );
     } else if merge {
-        xfreopen(
+        rboxc_diff3_xfreopen(
             *file.offset(
                 rev_mapping[C2Rust_Unnamed_0::FILE0.0 as ::core::ffi::c_int as usize] as isize,
             ),
@@ -1268,7 +1361,7 @@ unsafe extern "C" fn create_diff3_block(
     mut high2: lin,
 ) -> *mut diff3_block {
     let mut result: *mut diff3_block =
-        xmalloc(::core::mem::size_of::<diff3_block>()) as *mut diff3_block;
+        rboxc_diff3_xmalloc(::core::mem::size_of::<diff3_block>()) as *mut diff3_block;
     (*result).correspond = diff_type::DIFF_ERROR;
     (*result).next = ::core::ptr::null_mut::<diff3_block>();
     (*result).ranges[C2Rust_Unnamed_0::FILE0.0 as ::core::ffi::c_int as usize]
@@ -1290,13 +1383,13 @@ unsafe extern "C" fn create_diff3_block(
             [C2Rust_Unnamed_3::RANGE_START.0 as ::core::ffi::c_int as usize]
         + 1 as lin;
     if numlines != 0 {
-        (*result).lines[C2Rust_Unnamed_0::FILE0.0 as ::core::ffi::c_int as usize] = xicalloc(
+        (*result).lines[C2Rust_Unnamed_0::FILE0.0 as ::core::ffi::c_int as usize] = rboxc_diff3_xicalloc(
             numlines,
             ::core::mem::size_of::<*mut ::core::ffi::c_char>() as idx_t,
         )
             as *mut *mut ::core::ffi::c_char;
         (*result).lengths[C2Rust_Unnamed_0::FILE0.0 as ::core::ffi::c_int as usize] =
-            xicalloc(numlines, ::core::mem::size_of::<idx_t>() as idx_t) as *mut idx_t;
+            rboxc_diff3_xicalloc(numlines, ::core::mem::size_of::<idx_t>() as idx_t) as *mut idx_t;
     } else {
         (*result).lines[C2Rust_Unnamed_0::FILE0.0 as ::core::ffi::c_int as usize] =
             ::core::ptr::null_mut::<*mut ::core::ffi::c_char>();
@@ -1309,13 +1402,13 @@ unsafe extern "C" fn create_diff3_block(
             [C2Rust_Unnamed_3::RANGE_START.0 as ::core::ffi::c_int as usize]
         + 1 as lin;
     if numlines != 0 {
-        (*result).lines[C2Rust_Unnamed_0::FILE1.0 as ::core::ffi::c_int as usize] = xicalloc(
+        (*result).lines[C2Rust_Unnamed_0::FILE1.0 as ::core::ffi::c_int as usize] = rboxc_diff3_xicalloc(
             numlines,
             ::core::mem::size_of::<*mut ::core::ffi::c_char>() as idx_t,
         )
             as *mut *mut ::core::ffi::c_char;
         (*result).lengths[C2Rust_Unnamed_0::FILE1.0 as ::core::ffi::c_int as usize] =
-            xicalloc(numlines, ::core::mem::size_of::<idx_t>() as idx_t) as *mut idx_t;
+            rboxc_diff3_xicalloc(numlines, ::core::mem::size_of::<idx_t>() as idx_t) as *mut idx_t;
     } else {
         (*result).lines[C2Rust_Unnamed_0::FILE1.0 as ::core::ffi::c_int as usize] =
             ::core::ptr::null_mut::<*mut ::core::ffi::c_char>();
@@ -1328,13 +1421,13 @@ unsafe extern "C" fn create_diff3_block(
             [C2Rust_Unnamed_3::RANGE_START.0 as ::core::ffi::c_int as usize]
         + 1 as lin;
     if numlines != 0 {
-        (*result).lines[C2Rust_Unnamed_0::FILE2.0 as ::core::ffi::c_int as usize] = xicalloc(
+        (*result).lines[C2Rust_Unnamed_0::FILE2.0 as ::core::ffi::c_int as usize] = rboxc_diff3_xicalloc(
             numlines,
             ::core::mem::size_of::<*mut ::core::ffi::c_char>() as idx_t,
         )
             as *mut *mut ::core::ffi::c_char;
         (*result).lengths[C2Rust_Unnamed_0::FILE2.0 as ::core::ffi::c_int as usize] =
-            xicalloc(numlines, ::core::mem::size_of::<idx_t>() as idx_t) as *mut idx_t;
+            rboxc_diff3_xicalloc(numlines, ::core::mem::size_of::<idx_t>() as idx_t) as *mut idx_t;
     } else {
         (*result).lines[C2Rust_Unnamed_0::FILE2.0 as ::core::ffi::c_int as usize] =
             ::core::ptr::null_mut::<*mut ::core::ffi::c_char>();
@@ -1396,7 +1489,7 @@ unsafe extern "C" fn process_diff(
     let mut diff_limit: *mut ::core::ffi::c_char = read_diff(filea, fileb, &raw mut scan_diff);
     while scan_diff < diff_limit {
         let mut bptr: *mut diff_block =
-            xmalloc(::core::mem::size_of::<diff_block>()) as *mut diff_block;
+            rboxc_diff3_xmalloc(::core::mem::size_of::<diff_block>()) as *mut diff_block;
         (*bptr).lines[1usize] = ::core::ptr::null_mut::<*mut ::core::ffi::c_char>();
         (*bptr).lines[0usize] = (*bptr).lines[1usize];
         (*bptr).lengths[1usize] = ::core::ptr::null_mut::<idx_t>();
@@ -1446,12 +1539,12 @@ unsafe extern "C" fn process_diff(
                 - (*bptr).ranges[0usize]
                     [C2Rust_Unnamed_3::RANGE_START.0 as ::core::ffi::c_int as usize]
                 + 1 as lin;
-            (*bptr).lines[0usize] = xinmalloc(
+            (*bptr).lines[0usize] = rboxc_diff3_xinmalloc(
                 numlines,
                 ::core::mem::size_of::<*mut ::core::ffi::c_char>() as idx_t,
             ) as *mut *mut ::core::ffi::c_char;
             (*bptr).lengths[0usize] =
-                xinmalloc(numlines, ::core::mem::size_of::<idx_t>() as idx_t) as *mut idx_t;
+                rboxc_diff3_xinmalloc(numlines, ::core::mem::size_of::<idx_t>() as idx_t) as *mut idx_t;
             let mut i: lin = 0 as lin;
             while i < numlines {
                 scan_diff = scan_diff_line(
@@ -1482,12 +1575,12 @@ unsafe extern "C" fn process_diff(
                 - (*bptr).ranges[1usize]
                     [C2Rust_Unnamed_3::RANGE_START.0 as ::core::ffi::c_int as usize]
                 + 1 as lin;
-            (*bptr).lines[1usize] = xinmalloc(
+            (*bptr).lines[1usize] = rboxc_diff3_xinmalloc(
                 numlines_0,
                 ::core::mem::size_of::<*mut ::core::ffi::c_char>() as idx_t,
             ) as *mut *mut ::core::ffi::c_char;
             (*bptr).lengths[1usize] =
-                xinmalloc(numlines_0, ::core::mem::size_of::<idx_t>() as idx_t) as *mut idx_t;
+                rboxc_diff3_xinmalloc(numlines_0, ::core::mem::size_of::<idx_t>() as idx_t) as *mut idx_t;
             let mut i_0: lin = 0 as lin;
             while i_0 < numlines_0 {
                 scan_diff = scan_diff_line(
@@ -1643,18 +1736,20 @@ unsafe extern "C" fn read_diff(
     if pipe(&raw mut fds as *mut ::core::ffi::c_int) != 0 as ::core::ffi::c_int {
         perror_with_exit(b"pipe\0".as_ptr() as *const ::core::ffi::c_char);
     }
+    RBOXC_DIFF3_PIPE = fds;
     let mut pid: pid_t = fork();
     if pid == 0 as ::core::ffi::c_int {
-        close(fds[0usize]);
+        rboxc_diff3_close(fds[0usize]);
         if fds[1usize] != STDOUT_FILENO {
             dup2(fds[1usize], STDOUT_FILENO);
-            close(fds[1usize]);
+            rboxc_diff3_close(fds[1usize]);
         }
         execvp(
             diff_program,
             &raw mut argv as *mut *const ::core::ffi::c_char as *mut *mut ::core::ffi::c_char
                 as *const *mut ::core::ffi::c_char,
         );
+        rboxc_diff3_exec_failed();
         _exit(if *__errno_location() == ENOENT {
             127 as ::core::ffi::c_int
         } else {
@@ -1664,7 +1759,7 @@ unsafe extern "C" fn read_diff(
     if pid == -1 as ::core::ffi::c_int {
         perror_with_exit(b"fork\0".as_ptr() as *const ::core::ffi::c_char);
     }
-    close(fds[1usize]);
+    rboxc_diff3_close(fds[1usize]);
     let mut fd: ::core::ffi::c_int = fds[0usize];
     let mut pipestat: stat = stat {
         st_dev: 0,
@@ -1724,7 +1819,7 @@ unsafe extern "C" fn read_diff(
         current_chunk_size = (8 as ::core::ffi::c_int * 1024 as ::core::ffi::c_int) as idx_t;
     }
     let mut diff_result: *mut ::core::ffi::c_char =
-        ximalloc(current_chunk_size) as *mut ::core::ffi::c_char;
+        rboxc_diff3_ximalloc(current_chunk_size) as *mut ::core::ffi::c_char;
     let mut total: idx_t = 0 as idx_t;
     loop {
         let mut bytes_to_read: idx_t = current_chunk_size - total;
@@ -1741,7 +1836,7 @@ unsafe extern "C" fn read_diff(
             }
             break;
         } else {
-            diff_result = xpalloc(
+            diff_result = rboxc_diff3_xpalloc(
                 diff_result as *mut ::core::ffi::c_void,
                 &raw mut current_chunk_size,
                 1 as idx_t,
@@ -1759,7 +1854,7 @@ unsafe extern "C" fn read_diff(
     *output_placement = diff_result;
     let mut werrno: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     let mut wstatus: ::core::ffi::c_int = 0;
-    if close(fd) != 0 as ::core::ffi::c_int {
+    if rboxc_diff3_close(fd) != 0 as ::core::ffi::c_int {
         perror_with_exit(b"close\0".as_ptr() as *const ::core::ffi::c_char);
     }
     if waitpid(pid, &raw mut wstatus, 0 as ::core::ffi::c_int) < 0 as ::core::ffi::c_int {

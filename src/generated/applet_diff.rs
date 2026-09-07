@@ -1210,6 +1210,79 @@ extern "C" {
 unsafe extern "C" fn rboxc_diffutils_error_prefix() {
     libc::fprintf(rboxc_diffutils_stderr, b"%s: \0".as_ptr().cast(), program_name);
 }
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Ownership cleanup inserted into the translated GNU diff module.
+extern "C" {
+    fn atexit(callback: unsafe extern "C" fn()) -> ::core::ffi::c_int;
+    fn regfree(buffer: *mut re_pattern_buffer);
+    #[link_name = "rboxc_diffutils_free_exclude"]
+    fn rboxc_diff_free_exclude(value: *mut exclude);
+}
+
+unsafe extern "C" fn rboxc_diff_reset_regex(value: *mut re_pattern_buffer) {
+    // The disjunction path creates its fastmap before recompiling. Keep that
+    // allocation while releasing the previous compiled expression.
+    let fastmap = (*value).fastmap;
+    (*value).fastmap = ::core::ptr::null_mut();
+    if !(*value).buffer.is_null() {
+        regfree(value);
+    }
+    ::core::ptr::write_bytes(value, 0, 1);
+    (*value).fastmap = fastmap;
+}
+
+unsafe extern "C" fn rboxc_diff_compile_regex(
+    pattern: *const ::core::ffi::c_char,
+    length: size_t,
+    value: *mut re_pattern_buffer,
+) -> *const ::core::ffi::c_char {
+    rboxc_diff_reset_regex(value);
+    re_compile_pattern(pattern, length, value)
+}
+
+unsafe extern "C" fn rboxc_diff_release_owned() {
+    let saved_errno = *__errno_location();
+    for value in [&raw mut function_regexp, &raw mut ignore_regexp] {
+        if !(*value).buffer.is_null() {
+            regfree(value);
+        } else {
+            libc::free((*value).fastmap.cast());
+        }
+        ::core::ptr::write_bytes(value, 0, 1);
+    }
+    libc::free(function_regexp_list.regexps.cast());
+    function_regexp_list.regexps = ::core::ptr::null_mut();
+    libc::free(ignore_regexp_list.regexps.cast());
+    ignore_regexp_list.regexps = ::core::ptr::null_mut();
+    libc::free(switch_string.cast());
+    switch_string = ::core::ptr::null_mut();
+    if !excluded.is_null() {
+        rboxc_diff_free_exclude(excluded);
+        excluded = ::core::ptr::null_mut();
+    }
+    *__errno_location() = saved_errno;
+}
+
+unsafe extern "C" fn rboxc_diff_close_input(value: *mut file_data) -> ::core::ffi::c_int {
+    let stream = (*value).dirstream;
+    let descriptor = (*value).desc;
+    if stream.is_null() {
+        return if descriptor >= 0 { close(descriptor) } else { 0 };
+    }
+    // A directory/file comparison can retain the directory stream while
+    // replacing desc with the selected file. Both resources then need closing.
+    let mut close_error = 0;
+    if descriptor >= 0 && descriptor != libc::dirfd(stream.cast()) && close(descriptor) < 0 {
+        close_error = *__errno_location();
+    }
+    let result = closedir(stream);
+    if close_error != 0 {
+        *__errno_location() = close_error;
+        return -1;
+    }
+    result
+}
+
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_diff(
     mut argc: ::core::ffi::c_int,
@@ -1220,6 +1293,7 @@ pub unsafe extern "C" fn single_binary_main_diff(
         C2Rust_Unnamed_3::EXIT_TROUBLE.0 as ::core::ffi::c_int,
     );
     set_program_name(*argv.offset(0isize));
+    atexit(rboxc_diff_release_owned);
     let prior_error_prefix = error_print_progname;
     if prior_error_prefix.is_none() {
         error_print_progname = Some(rboxc_diffutils_error_prefix);
@@ -1916,7 +1990,7 @@ unsafe extern "C" fn add_regexp(
 ) {
     let mut patlen: idx_t = strlen(pattern) as idx_t;
     let mut m: *const ::core::ffi::c_char =
-        re_compile_pattern(pattern, patlen as size_t, (*reglist).buf);
+        rboxc_diff_compile_regex(pattern, patlen as size_t, (*reglist).buf);
     if !m.is_null() {
         if 0 != 0 {
             error(
@@ -1988,7 +2062,7 @@ unsafe extern "C" fn summarize_regexp_list(mut reglist: *mut regexp_list) {
             xmalloc(((1 as ::core::ffi::c_int) << CHAR_BIT) as size_t) as *mut ::core::ffi::c_char;
         if (*reglist).multiple_regexps {
             let mut m: *const ::core::ffi::c_char =
-                re_compile_pattern((*reglist).regexps, (*reglist).len as size_t, (*reglist).buf);
+                rboxc_diff_compile_regex((*reglist).regexps, (*reglist).len as size_t, (*reglist).buf);
             if !m.is_null() {
                 if 0 != 0 {
                     error(
@@ -2822,6 +2896,7 @@ pub unsafe extern "C" fn compare_files(
     if name1.is_null() {
         name1 = name0;
     }
+    let mut rboxc_directory_descriptor: ::core::ffi::c_int = -1;
     let mut free0: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
     let mut free1: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
     let mut toplevel: bool = parent == &raw mut noparent as *const comparison;
@@ -3024,6 +3099,9 @@ pub unsafe extern "C" fn compare_files(
             } else {
                 last_component(filename) as *const ::core::ffi::c_char
             };
+            if cmp.file[dir_arg as usize].dirstream.is_null() {
+                rboxc_directory_descriptor = dirfd;
+            }
             cmp.file[dir_arg as usize].desc = C2Rust_Unnamed_1::UNOPENED.0;
             noparent.file[dir_arg as usize].desc = dirfd;
             cmp.file[dir_arg as usize].desc = if dir_detype.0 == detype::DE_LNK.0
@@ -3143,19 +3221,16 @@ pub unsafe extern "C" fn compare_files(
     let mut f_3: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     while f_3 < 2 as ::core::ffi::c_int {
         if (f_3 == 0 as ::core::ffi::c_int || cmp.file[f_3 as usize].desc != cmp.file[0usize].desc)
-            && if !cmp.file[f_3 as usize].dirstream.is_null() {
-                (closedir(cmp.file[f_3 as usize].dirstream) < 0 as ::core::ffi::c_int)
-                    as ::core::ffi::c_int
-            } else {
-                (0 as ::core::ffi::c_int <= cmp.file[f_3 as usize].desc
-                    && close(cmp.file[f_3 as usize].desc) < 0 as ::core::ffi::c_int)
-                    as ::core::ffi::c_int
-            } != 0
+            && rboxc_diff_close_input(&raw mut cmp.file[f_3 as usize]) < 0
         {
             perror_with_name(cmp.file[f_3 as usize].name);
             status = C2Rust_Unnamed_3::EXIT_TROUBLE.0 as ::core::ffi::c_int;
         }
         f_3 += 1;
+    }
+    if rboxc_directory_descriptor >= 0 && close(rboxc_directory_descriptor) < 0 {
+        perror_with_name(free0);
+        status = C2Rust_Unnamed_3::EXIT_TROUBLE.0 as ::core::ffi::c_int;
     }
     if status == EXIT_SUCCESS {
         if report_identical_files as ::core::ffi::c_int != 0

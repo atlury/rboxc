@@ -60,6 +60,10 @@ def main():
                 entry = json.loads(extra.read_text())
                 if entry['translated']:
                     names = sorted([*names, entry['command']])
+        for command in ('cmp', 'diff', 'diff3', 'sdiff'):
+            extra = ROOT/f'evidence/diffutils-{command}-translation.json'
+            if extra.exists() and json.loads(extra.read_text())['translated']:
+                names = sorted([*names, command])
         for alias in ('rboxc', 'rbox'):
             listed = execute([str(run/alias), '--list'])
             unknown = execute([str(run/alias), 'unknown-command'])

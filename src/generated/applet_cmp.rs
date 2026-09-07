@@ -342,7 +342,7 @@ unsafe extern "C" fn hard_locale_LC_MESSAGES() -> bool {
     return hard_locale(LC_MESSAGES);
 }
 static mut file: [*const ::core::ffi::c_char; 2] = [::core::ptr::null::<::core::ffi::c_char>(); 2];
-static mut file_desc: [::core::ffi::c_int; 2] = [0; 2];
+static mut file_desc: [::core::ffi::c_int; 2] = [-1; 2];
 static mut stat_buf: [stat; 2] = [stat {
     st_dev: 0,
     st_ino: 0,
@@ -648,6 +648,26 @@ extern "C" {
 unsafe extern "C" fn rboxc_diffutils_error_prefix() {
     libc::fprintf(rboxc_diffutils_stderr, b"%s: \0".as_ptr().cast(), program_name);
 }
+extern "C" {
+    fn atexit(callback: unsafe extern "C" fn()) -> ::core::ffi::c_int;
+}
+unsafe extern "C" fn rboxc_cmp_close_input(index: usize) -> ::core::ffi::c_int {
+    let descriptor = file_desc[index];
+    file_desc[index] = -1;
+    close(descriptor)
+}
+unsafe extern "C" fn rboxc_cmp_release_owned() {
+    let saved_errno = *__errno_location();
+    for index in 0..2 {
+        if file_desc[index] > 2 {
+            rboxc_cmp_close_input(index);
+        }
+    }
+    libc::free(buffer[0].cast());
+    buffer[0] = ::core::ptr::null_mut();
+    buffer[1] = ::core::ptr::null_mut();
+    *__errno_location() = saved_errno;
+}
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_cmp(
     mut argc: ::core::ffi::c_int,
@@ -658,6 +678,7 @@ pub unsafe extern "C" fn single_binary_main_cmp(
         C2Rust_Unnamed::EXIT_TROUBLE.0 as ::core::ffi::c_int,
     );
     set_program_name(*argv.offset(0isize));
+    atexit(rboxc_cmp_release_owned);
     let prior_error_prefix = error_print_progname;
     if prior_error_prefix.is_none() {
         error_print_progname = Some(rboxc_diffutils_error_prefix);
@@ -1017,7 +1038,7 @@ pub unsafe extern "C" fn single_binary_main_cmp(
     let mut exit_status: ::core::ffi::c_int = cmp();
     let mut f_2: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     while f_2 < 2 as ::core::ffi::c_int {
-        if close(file_desc[f_2 as usize]) != 0 as ::core::ffi::c_int {
+        if rboxc_cmp_close_input(f_2 as usize) != 0 as ::core::ffi::c_int {
             if 0 != 0 {
                 error(
                     C2Rust_Unnamed::EXIT_TROUBLE.0 as ::core::ffi::c_int,

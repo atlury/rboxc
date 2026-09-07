@@ -54,6 +54,60 @@ text = text.replace(anchor, helper+anchor, 1)
 anchor = '    set_program_name(*argv.offset(0isize));'
 assert text.count(anchor) == 1
 text = text.replace(anchor, anchor+'\n    let prior_error_prefix = error_print_progname;\n    if prior_error_prefix.is_none() {\n        error_print_progname = Some(rboxc_diffutils_error_prefix);\n    }', 1)
+if name == 'cmp':
+    # Same-file shortcuts and fatal diagnostics bypass GNU's final close loop.
+    # Track unopened/detached descriptors and release the single buffer base.
+    anchor = 'static mut file_desc: [::core::ffi::c_int; 2] = [0; 2];'
+    assert text.count(anchor) == 1
+    text = text.replace(anchor, anchor.replace('[0; 2]', '[-1; 2]'), 1)
+    anchor = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_cmp('
+    assert text.count(anchor) == 1
+    text = text.replace(anchor, 'extern "C" {\n    fn atexit(callback: unsafe extern "C" fn()) -> ::core::ffi::c_int;\n}\nunsafe extern "C" fn rboxc_cmp_close_input(index: usize) -> ::core::ffi::c_int {\n    let descriptor = file_desc[index];\n    file_desc[index] = -1;\n    close(descriptor)\n}\nunsafe extern "C" fn rboxc_cmp_release_owned() {\n    let saved_errno = *__errno_location();\n    for index in 0..2 {\n        if file_desc[index] > 2 {\n            rboxc_cmp_close_input(index);\n        }\n    }\n    libc::free(buffer[0].cast());\n    buffer[0] = ::core::ptr::null_mut();\n    buffer[1] = ::core::ptr::null_mut();\n    *__errno_location() = saved_errno;\n}\n'+anchor, 1)
+    anchor = '    set_program_name(*argv.offset(0isize));'
+    text = text.replace(anchor, anchor+'\n    atexit(rboxc_cmp_release_owned);', 1)
+    anchor = 'close(file_desc[f_2 as usize])'
+    assert text.count(anchor) == 1
+    text = text.replace(anchor, 'rboxc_cmp_close_input(f_2 as usize)', 1)
+if name == 'diff':
+    # Replace calls only, leaving the original libc declaration in scope.
+    assert text.count('        re_compile_pattern(') == 2
+    text = text.replace('        re_compile_pattern(', '        rboxc_diff_compile_regex(')
+    before = 'if !cmp.file[f_3 as usize].dirstream.is_null() {\n                (closedir(cmp.file[f_3 as usize].dirstream) < 0 as ::core::ffi::c_int)\n                    as ::core::ffi::c_int\n            } else {\n                (0 as ::core::ffi::c_int <= cmp.file[f_3 as usize].desc\n                    && close(cmp.file[f_3 as usize].desc) < 0 as ::core::ffi::c_int)\n                    as ::core::ffi::c_int\n            } != 0'
+    assert text.count(before) == 1
+    text = text.replace(before, 'rboxc_diff_close_input(&raw mut cmp.file[f_3 as usize]) < 0', 1)
+    anchor = '    let mut free0: *mut ::core::ffi::c_char'
+    assert text.count(anchor) == 1
+    text = text.replace(anchor, '    let mut rboxc_directory_descriptor: ::core::ffi::c_int = -1;\n'+anchor, 1)
+    anchor = '            cmp.file[dir_arg as usize].desc = C2Rust_Unnamed_1::UNOPENED.0;'
+    assert text.count(anchor) == 1
+    text = text.replace(anchor, '            if cmp.file[dir_arg as usize].dirstream.is_null() {\n                rboxc_directory_descriptor = dirfd;\n            }\n'+anchor, 1)
+    anchor = '        f_3 += 1;\n    }\n    if status == EXIT_SUCCESS {'
+    assert text.count(anchor) == 1
+    text = text.replace(anchor, '        f_3 += 1;\n    }\n    if rboxc_directory_descriptor >= 0 && close(rboxc_directory_descriptor) < 0 {\n        perror_with_name(free0);\n        status = C2Rust_Unnamed_3::EXIT_TROUBLE.0 as ::core::ffi::c_int;\n    }\n    if status == EXIT_SUCCESS {', 1)
+    anchor = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_diff('
+    assert text.count(anchor) == 1
+    text = text.replace(anchor, (ROOT/'src/bridges/diff-owned.rs').read_text()+'\n'+anchor, 1)
+    anchor = '    set_program_name(*argv.offset(0isize));'
+    text = text.replace(anchor, anchor+'\n    atexit(rboxc_diff_release_owned);', 1)
+if name == 'diff3':
+    for function in ('xmalloc', 'ximalloc', 'xinmalloc', 'xicalloc', 'xpalloc', 'close', 'xfreopen'):
+        # Restrict substitution to calls in the translated body, never declarations.
+        body_start = text.index('pub type ')
+        head, body = text[:body_start], text[body_start:]
+        body, count = re.subn(r'\b'+function+r'\(', 'rboxc_diff3_'+function+'(', body)
+        assert count > 0, function
+        text = head + body
+    anchor = '    let mut pid: pid_t = fork();'
+    assert text.count(anchor) == 1
+    text = text.replace(anchor, '    RBOXC_DIFF3_PIPE = fds;\n'+anchor, 1)
+    anchor = '        _exit(if *__errno_location() == ENOENT {'
+    assert text.count(anchor) == 1
+    text = text.replace(anchor, '        rboxc_diff3_exec_failed();\n'+anchor, 1)
+    anchor = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_diff3('
+    assert text.count(anchor) == 1
+    text = text.replace(anchor, (ROOT/'src/bridges/diff3-owned.rs').read_text()+'\n'+anchor, 1)
+    anchor = '    set_program_name(*argv.offset(0isize));'
+    text = text.replace(anchor, anchor+'\n    atexit(rboxc_diff3_release_owned);', 1)
 mapping = symbol_map(ROOT)
 imports = []
 def namespace(match):
@@ -96,7 +150,11 @@ report = {'provider': 'diffutils', 'version': pin['version'], 'command': name,
           'rust_exports': {symbol: mapping[symbol] for symbol in sorted(exports)},
           'adaptations': ['GNU17 parser adaptation maps C23 nullptr to the equivalent null pointer constant.',
                           'Preserve provider error prefixes through the public error callback.',
-                          'Namespace native helpers and Rust-owned state together.'],
+                          'Namespace native helpers and Rust-owned state together.'] +
+                         (['Release cmp input descriptors and its single buffer allocation on normal and fatal exit.'] if name == 'cmp' else []) +
+                         (['Release replaced regex programs, option storage, and both directory/file descriptors.'] if name == 'diff' else []) +
+                         (['Track diff3 entry allocations independently of rewired block links; release allocations and pipe descriptors on exit.'] if name == 'diff3' else []),
+          'ownership_adapter_sha256': fingerprint(ROOT/f'src/bridges/{name}-owned.rs') if name in ('diff', 'diff3') else None,
           'opaque_pointer_types': opaque, 'log': str(log.relative_to(ROOT)), 'log_sha256': fingerprint(log)}
 (ROOT/f'evidence/diffutils-{name}-translation.json').write_text(json.dumps(report, indent=2)+'\n')
 print('Translated GNU Diffutils', name, 'with', len(imports), 'helper imports and', len(exports), 'Rust exports')
