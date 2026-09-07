@@ -9770,5 +9770,21 @@
     "timeout_seconds": 600,
     "valgrind": false,
     "valgrind_reason": "The original measures native baseline virtual-memory use and imposes an additional 35000 KiB allowance for 200000 directory entries. These original resource limits are retained; instrumented traversal is covered separately."
+  },
+  {
+    "script": "tests/chown/preserve-root.sh",
+    "command": "chown",
+    "commands": [
+      "chown",
+      "chgrp",
+      "chmod"
+    ],
+    "sha256": "0eb6ec17ec7bdf591a4b69f1ca208e483b2406d381d707a360ab64cd0b57e575",
+    "clean_environment": true,
+    "valgrind": true,
+    "native_launcher": true,
+    "profile": "private-root",
+    "timeout_seconds": 300,
+    "profile_note": "Full original ownership root-guard assertions run as UID/GID 65534 in a copied disposable root with private mount/PID namespaces; the host root is never the tested root."
   }
 ]

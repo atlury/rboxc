@@ -95,8 +95,8 @@ Recorded checks:
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 `tail` file records on return (including ignored follow mode), and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 637 of 644 scripts/selections.
-The executed inventory contains 584 shell scripts and 5,958 Perl cases.
+failures). The reviewed original GNU runner now passes 638 of 645 scripts/selections.
+The executed inventory contains 585 shell scripts and 5,958 Perl cases.
 Forty-seven Perl scripts run their complete
 runtime case lists; 13 others retain explicit case selections. Case-count
 checks also cover scripts that call GNU's Perl harness more than once.
@@ -105,6 +105,14 @@ user lookup, processor counts, working directories, permission-sensitive touch
 and truncate behavior, checksums, encodings, UTF-8 text processing, and tee.
 
 Permission-sensitive scripts run as UID/GID 65534 with private staged binaries.
+The original ownership preserve-root script now passes natively and under
+Valgrind inside a copied disposable root. Private mount/PID namespaces supply
+its procfs and device filesystem; the test process runs as UID/GID 65534 with
+no supplementary groups or privilege gains. All seven chown/chgrp/chmod
+operations are matched to instrumented command logs, with nine clean logs
+per build including version and framework cleanup. Parent-root metadata is
+checked unchanged. `evidence/private-root-ownership.json` records the copied
+inputs, root identities, credentials, commands, and earlier staging attempts.
 The user-lookup profile binds a local-files NSS configuration inside a private
 mount namespace; the host configuration is checked unchanged after each run.
 The explicit UTF-8 profile uses the installed fr_FR.utf8 locale. Conditional
@@ -247,8 +255,8 @@ behavior, Valgrind behavior, and instrumented-equivalence comparisons. These
 reports use the candidate binary hash and its matching stdbuf helper. The
 installed binary remains unchanged until the two older factor runs complete.
 
-The reviewed Valgrind evidence records 584 clean results out of 622 scripts
-or selections: 5,729 Perl cases and 46,237 candidate/descendant process logs.
+The reviewed Valgrind evidence records 585 clean results out of 623 scripts
+or selections: 5,729 Perl cases and 46,246 candidate/descendant process logs.
 The 38 open results comprise 28 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, six with assertion
 failures under instrumentation, and two interrupted by watchdog deadlines. The status report records
@@ -641,9 +649,9 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 626 scripts
+the original test evidence into `evidence/gnu-suite-coverage.json`: 627 scripts
 passed, 13 have selected-case coverage, eight are skipped, 29 are excluded,
-and 57 remain pending. No recorded native failures
+and 56 remain pending. No recorded native failures
 remain in the executed selections. Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
 explicitly excluded with source hashes in inventory/gnu-suite-exclusions.json.

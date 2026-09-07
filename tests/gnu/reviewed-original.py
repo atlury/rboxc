@@ -18,6 +18,11 @@ from reviewed_checkpoint import RunCheckpoint
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = Path(os.environ.get('GNU_COREUTILS_SOURCE', '/opt/src/coreutils-9.11'))
 BUILD = ROOT/'build/gnu-coreutils'
+ROOT_GUARD_COMMANDS = [
+    'chown -R --preserve-root 0 /', 'chgrp -R --preserve-root 0 /',
+    'chmod -R --preserve-root u+r /', 'chown -RHh --preserve-root 65534 d',
+    'chgrp -RHh --preserve-root 65534 d', 'chown -RLh --preserve-root 65534 d',
+    'chgrp -RLh --preserve-root 65534 d']
 sys.path.insert(0, str(ROOT/'scripts'))
 from generated_tests import materialize
 PERL_SELECTION = r'''
@@ -164,7 +169,10 @@ def main():
             continue
         script = materialize(ROOT, SOURCE, row) if row.get('generator_inputs') else SOURCE/row['script']
         assert hashlib.sha256(script.read_bytes()).hexdigest() == row['sha256'], row['script']
-        assert row.get('profile') in (None, 'ordinary-user', 'loopback-device', 'private-mount'), 'unknown execution profile'
+        assert row.get('profile') in (None, 'ordinary-user', 'loopback-device', 'private-mount', 'private-root'), 'unknown execution profile'
+        if row.get('profile') == 'private-root':
+            assert row['script'] == 'tests/chown/preserve-root.sh'
+            assert row['commands'] == ['chown', 'chgrp', 'chmod'] and row.get('native_launcher')
         if row.get('upstream_valgrind'):
             assert row['script'] == 'tests/shuf/shuf-reservoir.sh' and row.get('native_launcher')
         if row.get('valgrind_log_fd'):
@@ -192,6 +200,22 @@ def main():
         test_shell = row.get('test_shell', '/bin/sh')
         assert test_shell in ('/bin/sh', '/bin/bash'), 'unsupported test shell'
         context = {**execution_context, 'definition': row, 'shell': fingerprint(Path(test_shell))}
+        if row.get('profile') == 'private-root':
+            context['root_driver'] = fingerprint(ROOT/'tests/gnu/private-root-profile.py')
+            context['root_tools'] = {name: fingerprint(Path('/usr/bin')/name)
+                                     for name in ('grep', 'sed', 'awk', 'diff', 'getconf')}
+            context['root_valgrind_runtime'] = {}
+            if instrument:
+                assert os.uname().machine == 'x86_64'
+                runtime = [Path('/usr/bin/valgrind'), Path('/usr/bin/valgrind.bin'),
+                    Path('/usr/libexec/valgrind/memcheck-amd64-linux'),
+                    Path('/usr/libexec/valgrind/vgpreload_core-amd64-linux.so'),
+                    Path('/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so'),
+                    Path('/usr/libexec/valgrind/default.supp')]
+                for binary in ('/lib64/ld-linux-x86-64.so.2', '/usr/lib/x86_64-linux-gnu/libc.so.6'):
+                    build_id = re.search(r'Build ID: ([a-f0-9]+)', subprocess.check_output(['readelf', '-n', binary], text=True))[1]
+                    runtime.append(Path('/usr/lib/debug/.build-id')/build_id[:2]/(build_id[2:]+'.debug'))
+                context['root_valgrind_runtime'] = {str(path): fingerprint(path) for path in runtime}
         if not row.get('clean_environment'):
             context['environment'] = hashlib.sha256(json.dumps(dict(os.environ), sort_keys=True).encode()).hexdigest()
         if 'stdbuf' in row.get('commands', [row['command']]):
@@ -434,6 +458,20 @@ def main():
                     driver = run/'terminal-profile.py'
                     shutil.copy2(ROOT/'tests/gnu/terminal-profile.py', driver)
                     command = [sys.executable, str(driver), *command]
+                if row.get('profile') == 'private-root':
+                    assert not credentials and not nss_profile and os.geteuid() == 0
+                    root_config = run/'private-root.json'
+                    root_config.write_text(json.dumps({'script': row['script'], 'run': str(run),
+                        'source': str(SOURCE), 'candidate': str(candidate),
+                        'gnu': str(BUILD/'src/coreutils'), 'getlimits': str(helper),
+                        'config_header': str(config_header), 'instrument': instrument,
+                        'memory': str(runtime_memory_dir) if instrument else None,
+                        'framework_commands': [entry['name'] for entry in json.loads((ROOT/'evidence/translation.json').read_text())],
+                        'valgrind_runtime': context['root_valgrind_runtime'],
+                        'parent_mount_namespace': parent_mount_namespace,
+                        'parent_pid_namespace': os.readlink('/proc/self/ns/pid')}))
+                    command = ['/usr/bin/unshare', '--mount', '--pid', '--fork', sys.executable,
+                               str(ROOT/'tests/gnu/private-root-profile.py'), str(root_config), *command]
                 started = time.monotonic()
                 config_hash = hashlib.sha256(config_header.read_bytes()).hexdigest()
                 deadline = row.get('valgrind_timeout_seconds', row.get('timeout_seconds', 60)) if instrument else row.get('timeout_seconds', 60)
@@ -453,6 +491,25 @@ def main():
                 if elf_input_build:
                     outcomes[implementation]['elf_input_binaries'] = {
                         name: fingerprint(elf_input_build/'src'/name) for name in row['elf_input_commands']}
+                if row.get('profile') == 'private-root':
+                    profiles = re.findall(rb'^RBOXC_PRIVATE_ROOT_PROFILE (.+)$', completed.stderr, re.M)
+                    profile = json.loads(profiles[0]) if len(profiles) == 1 else None
+                    outcomes[implementation]['private_root'] = profile
+                    outcomes[implementation]['private_root_driver_sha256'] = context['root_driver']
+                    outcomes[implementation]['parent_root_unchanged'] = len(re.findall(
+                        rb'^RBOXC_PRIVATE_ROOT_PARENT_UNCHANGED$', completed.stderr, re.M)) == 1
+                    calls = [call.decode() for call in re.findall(
+                        rb'^\+ ((?:chown|chgrp|chmod) [^\n]*--preserve-root[^\n]*)$', completed.stderr, re.M)]
+                    outcomes[implementation]['root_guard_commands'] = calls
+                    outcomes[implementation]['case_count'] = len(calls)
+                    outcomes[implementation]['case_count_pass'] = bool(profile) and (
+                        profile['uid'] == profile['gid'] == 65534 and profile['groups'] == []
+                        and profile['no_new_privileges'] and profile['private_pid'] > 1
+                        and profile['private_null_device'] and outcomes[implementation]['parent_root_unchanged']
+                        and profile['root_identity'] != profile['host_root_identity']
+                        and profile['candidate_sha256'] == binary_hashes[implementation]
+                        and calls == ROOT_GUARD_COMMANDS)
+                    assert os.readlink('/proc/self/ns/mnt') == parent_mount_namespace
                 if row.get('profile') == 'private-mount':
                     namespaces = re.findall(rb'^RBOXC_MOUNT_NAMESPACE (.+)$', completed.stderr, re.M)
                     assert len(namespaces) == 1, 'private mount namespace did not start'
@@ -512,8 +569,16 @@ def main():
                     for path in sorted(memory_dir.glob('*.log')):
                         report = path.read_text(errors='backslashreplace')
                         memory.append({'log': str(path.relative_to(ROOT)),
-                                       **parse_memory_log(report, path.stem, row.get('valgrind_log_fd', False) or row.get('upstream_valgrind', False))})
+                                       **parse_memory_log(report, path.stem, row.get('valgrind_log_fd', False) or row.get('upstream_valgrind', False) or row.get('profile') == 'private-root')})
                     outcomes[implementation]['memory'] = memory
+                    if row.get('profile') == 'private-root':
+                        calls = []
+                        for item in memory:
+                            report = (ROOT/item['log']).read_text(errors='backslashreplace')
+                            for name, args in re.findall(r'^==[0-9]+== Command: (\S+) ([^\n]*--preserve-root[^\n]*)$', report, re.M):
+                                calls.append(Path(name).name+' '+args)
+                        outcomes[implementation]['instrumented_root_guard_commands'] = sorted(calls)
+                        outcomes[implementation]['case_count_pass'] &= sorted(calls) == sorted(ROOT_GUARD_COMMANDS)
                     if row.get('perl_env_helper'):
                         observed = set()
                         for item in memory:
