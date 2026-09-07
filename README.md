@@ -238,11 +238,11 @@ The earlier sandbox run skipped those conditional strace branches.
 `evidence/yes-cleanup-candidate.json` records both profiles and the focused
 checks; this candidate also contains the prior cat/tac cleanup changes.
 
-The reviewed Valgrind evidence records 582 clean results out of 621 scripts
+The reviewed Valgrind evidence records 583 clean results out of 621 scripts
 or selections: 5,729 Perl cases and 37,207 candidate/descendant process logs.
-The 39 open results comprise 28 with passing original assertions but unresolved
+The 38 open results comprise 28 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, six with assertion
-failures under instrumentation, and three interrupted by watchdog deadlines. The status report records
+failures under instrumentation, and two interrupted by watchdog deadlines. The status report records
 these categories separately; they do not change the strict clean-pass count.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
@@ -273,9 +273,10 @@ output assertions. Earlier path-prefixed diagnostic differences remain saved.
 The full help/normal-output comparison now passes with the extended one-hour
 Valgrind deadline: GNU finishes in 1,747.649 seconds and rboxc in 1,707.440
 seconds, with 1,151 clean candidate process logs. The earlier GNU timeout
-remains in observation history. The source-option inventory comparison
-previously reached the 30-minute deadline in both builds; its retry allows
-two hours per instrumented implementation and remains in progress. Native
+remains in observation history. The source-option inventory comparison also
+passes with its extended deadline: GNU finishes in 2,320.199 seconds and
+rboxc in 2,268.521 seconds, with 1,213 clean candidate process logs. Eight
+reference-process findings and both earlier timeouts remain recorded. Native
 limits are unchanged, and timeouts do not count as assertion passes.
 The 54 reviewed tac Perl cases now also pass Valgrind, with 55 clean candidate
 process logs. This remains a case selection, not a full Perl-suite pass.
