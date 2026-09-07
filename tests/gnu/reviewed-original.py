@@ -37,6 +37,19 @@ do $ARGV[0];
 die $@ if $@;
 '''
 
+PERL_TTY_EOF = r'''
+require Expect;
+print STDERR "RBOXC_EXPECT_VERSION $Expect::VERSION\n";
+my $original_spawn = \&Expect::spawn;
+no warnings 'redefine';
+*Expect::spawn = sub {
+    print STDERR "RBOXC_TTY_COMMAND $_[1]\n";
+    goto &$original_spawn;
+};
+do $ARGV[0];
+die $@ if $@;
+'''
+
 
 def main():
     manifest = json.loads((ROOT/'inventory/gnu-reviewed-tests.json').read_text())
@@ -101,6 +114,10 @@ def main():
         script = materialize(ROOT, SOURCE, row) if row.get('generator_inputs') else SOURCE/row['script']
         assert hashlib.sha256(script.read_bytes()).hexdigest() == row['sha256'], row['script']
         assert row.get('profile') in (None, 'ordinary-user', 'loopback-device', 'private-mount'), 'unknown execution profile'
+        assert row.get('perl_driver') in (None, 'tty-eof'), 'unknown Perl driver'
+        if row.get('perl_driver') == 'tty-eof':
+            assert row['script'] == 'tests/misc/tty-eof.pl' and row.get('full_suite')
+            assert set(command.split()[0] for command in row['tty_commands']) == set(row['commands'])
         test_shell = row.get('test_shell', '/bin/sh')
         assert test_shell in ('/bin/sh', '/bin/bash'), 'unsupported test shell'
         outcomes = {}
@@ -207,7 +224,7 @@ def main():
                 if script.suffix == '.pl':
                     assert row.get('cases') or (row.get('full_suite') and row.get('expected_case_count')), 'Perl suites require a reviewed selection or full case count'
                     command = ['perl', '-I'+str(SOURCE/'tests'), '-MCuSkip', '-MCoreutils',
-                               '-e', PERL_SELECTION, str(script)]
+                               '-e', PERL_TTY_EOF if row.get('perl_driver') == 'tty-eof' else PERL_SELECTION, str(script)]
                 else:
                     command = [test_shell, '-c', 'exec "$1" "$2" 9>&2', 'test', test_shell, str(script)]
                 nss_profile = None
@@ -301,7 +318,16 @@ def main():
                 if nss_profile:
                     outcomes[implementation]['nss'] = nss_profile
                     assert Path('/etc/nsswitch.conf').read_text() == original_nss, 'host NSS configuration changed'
-                if script.suffix == '.pl':
+                if row.get('perl_driver') == 'tty-eof':
+                    commands_run = [line.decode() for line in re.findall(rb'^RBOXC_TTY_COMMAND (.+)$', completed.stderr, re.M)]
+                    expected_commands = [command+' 2> tty-eof.err' for command in row['tty_commands']] * 2
+                    versions = re.findall(rb'^RBOXC_EXPECT_VERSION (.+)$', completed.stderr, re.M)
+                    outcomes[implementation]['expect_version'] = versions[0].decode() if len(versions) == 1 else None
+                    outcomes[implementation]['tty_commands'] = commands_run
+                    outcomes[implementation]['case_count'] = len(commands_run)
+                    outcomes[implementation]['case_count_pass'] = (commands_run == expected_commands
+                        and len(commands_run) == row['expected_case_count'] and len(versions) == 1)
+                elif script.suffix == '.pl':
                     counts = re.findall(rb'^RBOXC_SELECTION (\d+) of \d+$', completed.stdout, re.M)
                     expected_count = row.get('expected_case_count', len(row.get('cases', [])))
                     outcomes[implementation]['case_count'] = sum(int(count) for count in counts)

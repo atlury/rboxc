@@ -95,10 +95,10 @@ Recorded checks:
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 `tail` file records on return (including ignored follow mode), and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 576 of 579 scripts/selections.
-The executed inventory contains 521 shell scripts and 5,623 Perl cases.
-Forty-six Perl scripts run their complete
-runtime case lists; 12 others retain explicit case selections. Case-count
+failures). The reviewed original GNU runner now passes 583 of 586 scripts/selections.
+The executed inventory contains 526 shell scripts and 5,958 Perl cases.
+Forty-seven Perl scripts run their complete
+runtime case lists; 13 others retain explicit case selections. Case-count
 checks also cover scripts that call GNU's Perl harness more than once.
 GNU's seven generic scripts pass across all 107 commands. New coverage includes
 user lookup, processor counts, working directories, permission-sensitive touch
@@ -114,8 +114,8 @@ script; `--report-name` gives independent batches distinct evidence files.
 New results record tested binary hashes, and exec-wrapper tests can request
 Valgrind child tracing.
 
-The reviewed Valgrind evidence records 456 clean results out of 478 scripts
-or selections: 3,372 Perl cases and 8,998 candidate/descendant process logs.
+The reviewed Valgrind evidence records 458 clean results out of 482 scripts
+or selections: 3,442 Perl cases and 9,146 candidate/descendant process logs.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
 memory and descriptors retained by host script interpreters. Both pass natively.
@@ -293,7 +293,10 @@ overlapping event headers, retry, symlinks, zero-count sleeping, truncation, and
 waiting. The overlapping-header script also passes Valgrind with normal PID-based
 shutdown. Four of the other new scripts retain resources on intentional SIGTERM;
 the wait script keeps its native 0.1-second deadlines without instrumentation.
-There are now twenty-two open reviewed Valgrind results. The observation files retain all
+The full 50-iteration rotation and directory-recreation originals also pass
+natively and satisfy their instrumented assertions. Their interrupted tail
+processes retain descriptors at SIGTERM with no lost heap. There are now
+twenty-four open reviewed Valgrind results. The observation files retain all
 superseded failures and prerequisite skips; none are converted into passes.
 
 The complete 63-case head and 12-case dircolors Perl suites pass in both modes.
@@ -305,6 +308,19 @@ and under Valgrind as an ordinary user. The complete cp/mv permission matrix
 passes natively with its expensive-test switch enabled; its Valgrind run remains
 pending. These three cp results supplement the earlier two-profile cp report
 and close three prerequisite skips in the overall script inventory.
+
+GNU's terminal EOF original now passes all 70 cases across 34 commands, both
+natively and under Valgrind. Its standalone Perl driver records each actual
+Expect spawn and verifies the complete command sequence with and without
+input; the upstream EOF, output, and exit-status assertions remain unchanged.
+Expect 1.38 is a test dependency. The env signal-handling script passes natively
+under Bash, and root-relative symlink coloring passes in both modes. Sort's
+seven-descriptor merge test passes natively under Bash; the recorded /bin/sh
+prerequisite skip came from shell redirection before sort ran. The original
+limit explicitly excludes Valgrind. A reviewed 265-case date selection adds
+calendar parsing, formatting, timezone conversion, and debug-mode checks; it
+passes natively, with its Valgrind run pending. The full date Perl suite remains
+partial.
 
 The full join suite passes all 147 cases with C and French UTF-8 coverage in
 both modes. The ls miscellaneous suite passes both complete 50-case runs, with
@@ -407,9 +423,9 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 608 scripts
-passed, three passed with profile skips, 12 have selected-case coverage, four
-skipped, 26 are excluded, and 80 remain pending. No recorded native failures
+the original test evidence into `evidence/gnu-suite-coverage.json`: 614 scripts
+passed, three passed with profile skips, 13 have selected-case coverage, four
+skipped, 26 are excluded, and 73 remain pending. No recorded native failures
 remain in the executed selections. Partial selections and skips
 are not full-suite passes; passing scripts can contain platform-conditional
 branches. No command is certified complete.
@@ -483,7 +499,7 @@ libraries, CMake, Rust 1.93.0 with rustfmt, the pinned nightly, and GNU Coreutil
 9.11 source, plus libacl and libattr development headers and libraries.
 For an existing build without metadata support, run
 `sh scripts/prepare-coreutils.sh --reconfigure` before translation and assembly.
-Test dependencies include Valgrind 3.26, strace, Perl, attr tools, and ordinary
+Test dependencies include Valgrind 3.26, strace, Perl with Expect 1.38, attr tools, and ordinary
 GNU shell utilities. Optional filesystem/locale prerequisites produce recorded
 skips. `inventory/sources.json` pins the GNU archive hash and C2Rust revision.
 The default GNU source location is `/opt/src/coreutils-9.11`; set
