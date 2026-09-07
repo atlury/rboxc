@@ -1427,7 +1427,6 @@ unsafe extern "C" fn tac_seekable(
         }
     }
 }
-static mut RBOXC_TEMP_STREAM: *mut FILE = ::core::ptr::null_mut();
 unsafe extern "C" fn copy_to_temp(
     mut g_tmp: *mut *mut FILE,
     mut g_tempfile: *mut *mut ::core::ffi::c_char,
@@ -1653,6 +1652,7 @@ unsafe extern "C" fn tac_file(mut filename: *const ::core::ffi::c_char) -> bool 
         xset_binary_mode(STDIN_FILENO, O_BINARY);
     } else {
         fd = open(filename, O_RDONLY | O_BINARY);
+        RBOXC_TAC_INPUT = fd;
         if fd < 0 as ::core::ffi::c_int {
             if 0 != 0 {
                 error(
@@ -1698,7 +1698,7 @@ unsafe extern "C" fn tac_file(mut filename: *const ::core::ffi::c_char) -> bool 
     } else {
         tac_seekable(fd, filename, file_size) as ::core::ffi::c_int
     } != 0;
-    if !is_stdin && close(fd) != 0 as ::core::ffi::c_int {
+    if !is_stdin && rboxc_finish_tac_input() != 0 as ::core::ffi::c_int {
         if 0 != 0 {
             error(
                 0 as ::core::ffi::c_int,
@@ -1745,6 +1745,28 @@ unsafe extern "C" fn tac_file(mut filename: *const ::core::ffi::c_char) -> bool 
     }
     return ok;
 }
+// G_buffer retains GNU's sentinel offset, even after growth.
+static mut RBOXC_TEMP_STREAM: *mut FILE = ::core::ptr::null_mut();
+static mut RBOXC_TAC_INPUT: ::core::ffi::c_int = -1;
+unsafe fn rboxc_finish_tac_input() -> ::core::ffi::c_int {
+    let fd = RBOXC_TAC_INPUT;
+    RBOXC_TAC_INPUT = -1;
+    close(fd)
+}
+unsafe extern "C" fn rboxc_free_write_resources() {
+    let saved_errno = *::libc::__errno_location();
+    if RBOXC_TAC_INPUT >= 0 { rboxc_finish_tac_input(); }
+    let buffer = G_buffer;
+    G_buffer = ::core::ptr::null_mut();
+    if !buffer.is_null() {
+        let offset = if sentinel_length != 0 { sentinel_length } else { 1 };
+        ::libc::free(buffer.sub(offset as usize).cast());
+    }
+    let stream = RBOXC_TEMP_STREAM;
+    RBOXC_TEMP_STREAM = ::core::ptr::null_mut();
+    if !stream.is_null() { ::libc::fclose(stream.cast()); }
+    *::libc::__errno_location() = saved_errno;
+}
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_tac(
     mut argc: ::core::ffi::c_int,
@@ -1765,6 +1787,7 @@ pub unsafe extern "C" fn single_binary_main_tac(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_free_write_resources));
     loop {
         optc = getopt_long(
             argc,
@@ -1959,15 +1982,7 @@ pub unsafe extern "C" fn single_binary_main_tac(
         };
         ok = r#false != 0;
     }
-    let offset = if sentinel_length != 0 { sentinel_length } else { 1 };
-    ::libc::free(G_buffer.sub(offset as usize).cast());
-    G_buffer = ::core::ptr::null_mut();
-    if !RBOXC_TEMP_STREAM.is_null() {
-        let saved_errno = *::libc::__errno_location();
-        ::libc::fclose(RBOXC_TEMP_STREAM.cast());
-        RBOXC_TEMP_STREAM = ::core::ptr::null_mut();
-        *::libc::__errno_location() = saved_errno;
-    }
+    rboxc_free_write_resources();
     return if ok as ::core::ffi::c_int != 0 {
         0 as ::core::ffi::c_int
     } else {

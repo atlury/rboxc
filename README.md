@@ -162,6 +162,22 @@ implementation. Its candidate memory evidence remains open for 263 shell logs
 and five cat/dd/tac logs. These include ordinary fatal-write cleanup still needed
 in cat and tac, as well as resources retained on SIGPIPE termination.
 
+A separately built cat/tac candidate now closes its named input and releases
+working buffers on normal and fatal exits. Tac also closes its cached temporary
+stream. Ownership slots are cleared before close/free, and cat clears a buffer
+slot before replacement allocation can fail. Cleanup preserves errno and GNU's
+existing diagnostics. The changes are applied by scripts/write_cleanup.py during
+C2Rust regeneration. All 34 focused GNU comparisons pass: 32 normal-exit cases
+have clean Valgrind memory/descriptors, and two closed-pipe cases preserve GNU's
+SIGPIPE termination with the resulting resource findings recorded separately.
+Coverage includes /dev/full, pipes, regex separators, buffer growth, and multiple
+operands. Seven selected native original scripts and six Valgrind originals
+also pass, with 60 clean candidate process logs. The candidate is staged at
+`target/write-cleanup/release/rboxc`; evidence/write-cleanup-candidate.json records
+its source and binary hashes. The installed release remains unchanged while
+older long-running comparisons still depend on its path. The full I/O-error
+report above remains the installed-release observation until that suite is rerun.
+
 The reviewed Valgrind evidence records 578 clean results out of 613 scripts
 or selections: 5,675 Perl cases and 36,991 candidate/descendant process logs.
 The 35 open results comprise 26 with passing original assertions but unresolved

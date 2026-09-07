@@ -1790,11 +1790,12 @@ unsafe extern "C" fn splice_cat() -> ::core::ffi::c_int {
     };
 }
 unsafe extern "C" fn ensure_buf_size(
-    mut buf: *mut ::core::ffi::c_char,
+    owner: *mut *mut ::core::ffi::c_char,
     mut buf_alloc: *mut idx_t,
     mut alignment: idx_t,
     mut size: idx_t,
 ) -> *mut ::core::ffi::c_char {
+    let mut buf = *owner;
     '_c2rust_label: {
         if !buf.is_null() || *buf_alloc < size {
         } else {
@@ -1807,11 +1808,31 @@ unsafe extern "C" fn ensure_buf_size(
         }
     };
     if *buf_alloc < size {
+        *owner = ::core::ptr::null_mut();
         alignfree(buf as *mut ::core::ffi::c_void);
         buf = xalignalloc(alignment, size) as *mut ::core::ffi::c_char;
+        *owner = buf;
         *buf_alloc = size;
     }
     return buf;
+}
+// Keep owned buffers and named input available to fatal-exit cleanup.
+static mut RBOXC_CAT_BUFFERS: [*mut ::core::ffi::c_char; 2] = [::core::ptr::null_mut(); 2];
+static mut RBOXC_CAT_INPUT: ::core::ffi::c_int = -1;
+unsafe fn rboxc_finish_cat_input() -> ::core::ffi::c_int {
+    let fd = RBOXC_CAT_INPUT;
+    RBOXC_CAT_INPUT = -1;
+    close(fd)
+}
+unsafe extern "C" fn rboxc_free_write_resources() {
+    let saved_errno = *::libc::__errno_location();
+    if RBOXC_CAT_INPUT >= 0 { rboxc_finish_cat_input(); }
+    for index in 0..2 {
+        let buffer = RBOXC_CAT_BUFFERS[index];
+        RBOXC_CAT_BUFFERS[index] = ::core::ptr::null_mut();
+        alignfree(buffer.cast());
+    }
+    *::libc::__errno_location() = saved_errno;
 }
 // Rbox read-error ownership tracking.
 static mut RBOXC_CAT_PIPE: [::core::ffi::c_int; 2] = [-1, -1];
@@ -1932,6 +1953,7 @@ pub unsafe extern "C" fn single_binary_main_cat(
     textdomain(PACKAGE.as_ptr());
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
     atexit(Some(rboxc_close_read_inputs));
+    atexit(Some(rboxc_free_write_resources));
     let mut c: ::core::ffi::c_int = 0;
     loop {
         c = getopt_long(
@@ -2054,8 +2076,8 @@ pub unsafe extern "C" fn single_binary_main_cat(
     let mut argind: ::core::ffi::c_int = optind;
     let mut ok: bool = r#true != 0;
     let mut page_size: idx_t = getpagesize() as idx_t;
-    let mut inbuf: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
-    let mut outbuf: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
+
+
     let mut inbuf_alloc: idx_t = 0 as idx_t;
     let mut outbuf_alloc: idx_t = 0 as idx_t;
     loop {
@@ -2072,6 +2094,7 @@ pub unsafe extern "C" fn single_binary_main_cat(
                 }
             } else {
                 input_desc = open(infile, file_open_mode);
+                RBOXC_CAT_INPUT = input_desc;
                 if input_desc < 0 as ::core::ffi::c_int {
                     if 0 != 0 {
                         error(
@@ -2289,16 +2312,15 @@ pub unsafe extern "C" fn single_binary_main_cat(
                                     != 0;
                             } else {
                                 insize = if insize > outsize { insize } else { outsize };
-                                inbuf =
-                                    ensure_buf_size(inbuf, &raw mut inbuf_alloc, page_size, insize);
+                                RBOXC_CAT_BUFFERS[0] =
+                                    ensure_buf_size(&raw mut RBOXC_CAT_BUFFERS[0], &raw mut inbuf_alloc, page_size, insize);
                                 ok = ok as ::core::ffi::c_int
-                                    & simple_cat(inbuf, insize) as ::core::ffi::c_int
+                                    & simple_cat(RBOXC_CAT_BUFFERS[0], insize) as ::core::ffi::c_int
                                     != 0;
                             }
                         }
                     } else {
-                        inbuf = ensure_buf_size(
-                            inbuf,
+                        RBOXC_CAT_BUFFERS[0] = ensure_buf_size(&raw mut RBOXC_CAT_BUFFERS[0],
                             &raw mut inbuf_alloc,
                             page_size,
                             insize + 1 as idx_t,
@@ -2330,12 +2352,12 @@ pub unsafe extern "C" fn single_binary_main_cat(
                         {
                             xalloc_die();
                         }
-                        outbuf = ensure_buf_size(outbuf, &raw mut outbuf_alloc, page_size, bufsize);
+                        RBOXC_CAT_BUFFERS[1] = ensure_buf_size(&raw mut RBOXC_CAT_BUFFERS[1], &raw mut outbuf_alloc, page_size, bufsize);
                         ok = ok as ::core::ffi::c_int
                             & cat(
-                                inbuf,
+                                RBOXC_CAT_BUFFERS[0],
                                 insize,
-                                outbuf,
+                                RBOXC_CAT_BUFFERS[1],
                                 outsize,
                                 show_nonprinting,
                                 show_tabs,
@@ -2348,7 +2370,7 @@ pub unsafe extern "C" fn single_binary_main_cat(
                     }
                 }
             }
-            if !reading_stdin && close(input_desc) < 0 as ::core::ffi::c_int {
+            if !reading_stdin && rboxc_finish_cat_input() < 0 as ::core::ffi::c_int {
                 if 0 != 0 {
                     error(
                         0 as ::core::ffi::c_int,
@@ -2435,8 +2457,7 @@ pub unsafe extern "C" fn single_binary_main_cat(
             });
         };
     }
-    ::libc::free(outbuf.cast());
-    ::libc::free(inbuf.cast());
+    rboxc_free_write_resources();
     return if ok as ::core::ffi::c_int != 0 {
         EXIT_SUCCESS
     } else {

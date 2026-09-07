@@ -452,32 +452,9 @@ unsafe fn rboxc_free_environment() {
                             '        ::libc::free(reservoir.cast());\n    }\n'+anchor)
     if name == 'pr':
         text = replace_once(text, '    cleanup();\n', '    cleanup();\n    free(file_names.cast());\n')
-    if name == 'tac':
-        declaration = 'unsafe extern "C" fn copy_to_temp('
-        text = replace_once(text, declaration,
-                            'static mut RBOXC_TEMP_STREAM: *mut FILE = ::core::ptr::null_mut();\n'
-                            + declaration)
-        opened = '    if !temp_stream(&raw mut fp, &raw mut file_name) {\n        return -1 as off_t;\n    }'
-        text = replace_once(text, opened, opened+'\n    RBOXC_TEMP_STREAM = fp;')
-        anchor = '    return if ok as ::core::ffi::c_int != 0 {\n        0 as ::core::ffi::c_int\n    } else {\n        1 as ::core::ffi::c_int\n    };\n}\npub const MANUAL_URL'
-        # GNU retains an interior pointer, including after buffer growth.
-        # Its reallocation path recovers the base using this same offset.
-        # Keep the cached stream through every operand, then close it.
-        text = replace_once(text, anchor,
-                            '    let offset = if sentinel_length != 0 { sentinel_length } else { 1 };\n'
-                            '    ::libc::free(G_buffer.sub(offset as usize).cast());\n'
-                            '    G_buffer = ::core::ptr::null_mut();\n'
-                            '    if !RBOXC_TEMP_STREAM.is_null() {\n'
-                            '        let saved_errno = *::libc::__errno_location();\n'
-                            '        ::libc::fclose(RBOXC_TEMP_STREAM.cast());\n'
-                            '        RBOXC_TEMP_STREAM = ::core::ptr::null_mut();\n'
-                            '        *::libc::__errno_location() = saved_errno;\n'
-                            '    }\n' + anchor)
-    if name == 'cat':
-        anchor = '    return if ok as ::core::ffi::c_int != 0 {\n        EXIT_SUCCESS\n    } else {\n        EXIT_FAILURE\n    };\n}\npub const __LONG_LONG_MAX__'
-        # Same two owned buffers released by GNU's #ifdef lint cleanup.
-        text = replace_once(text, anchor,
-                            '    ::libc::free(outbuf.cast());\n    ::libc::free(inbuf.cast());\n' + anchor)
+    if name in ('cat', 'tac'):
+        from write_cleanup import cleanup_writes
+        text = cleanup_writes(name, text, replace_once)
     if name == 'split':
         from split_cleanup import cleanup_split
         text = cleanup_split(text, replace_once)
