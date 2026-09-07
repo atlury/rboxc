@@ -1,3 +1,5 @@
+#[path = "generated/applet_which.rs"]
+mod applet_which;
 #[path = "generated/applet_time.rs"]
 mod applet_time;
 #[path = "generated/applet_hello.rs"]
@@ -325,6 +327,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"users", applet_users::single_binary_main_users),
     (b"vdir", applet_vdir::single_binary_main_vdir),
     (b"wc", applet_wc::single_binary_main_wc),
+    (b"which", applet_which::single_binary_main_which),
     (b"who", applet_who::single_binary_main_who),
     (b"whoami", applet_whoami::single_binary_main_whoami),
     (b"yes", applet_yes::single_binary_main_yes),

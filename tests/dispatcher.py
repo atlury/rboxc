@@ -54,7 +54,7 @@ def main():
                 'memory_clean': clean, 'log': str(log.relative_to(ROOT)),
                 'pass': expected == actual == instrumented and clean})
         names = sorted(r['name'] for r in json.loads((ROOT/'evidence/translation.json').read_text()))
-        for provider in ('hello', 'time'):
+        for provider in ('hello', 'time', 'which'):
             extra = ROOT/f'evidence/{provider}-translation.json'
             if extra.exists():
                 entry = json.loads(extra.read_text())
