@@ -9,6 +9,27 @@ def replace_once(text, before, after):
 
 
 def cleanup(name, text):
+    if name == 'stat':
+        declaration = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_stat('
+        helper = '''static mut RBOXC_DEFAULT_FORMATS: [*mut ::core::ffi::c_char; 2] = [::core::ptr::null_mut(); 2];
+unsafe extern "C" fn rboxc_free_default_formats() {
+    let saved_errno = *::libc::__errno_location();
+    for index in 0..2 {
+        let format = RBOXC_DEFAULT_FORMATS[index];
+        RBOXC_DEFAULT_FORMATS[index] = ::core::ptr::null_mut();
+        ::libc::free(format.cast());
+    }
+    *::libc::__errno_location() = saved_errno;
+}
+'''
+        text = replace_once(text, declaration, helper+declaration)
+        anchor = '    atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));'
+        text = replace_once(text, anchor, anchor+'\n    atexit(Some(rboxc_free_default_formats));')
+        # GNU default_format returns separate owned strings. Explicit formats
+        # borrow argv and alias format2, so only track these allocation sites.
+        for index, variable, device in ((0, 'format', 'false'), (1, 'format2', 'true')):
+            anchor = f'        {variable} = default_format(fs, terse, r#{device} != 0);'
+            text = replace_once(text, anchor, anchor+f'\n        RBOXC_DEFAULT_FORMATS[{index}] = {variable};')
     if name == 'chmod':
         declaration = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_chmod('
         helper = '''static mut RBOXC_MODE_STORAGE: *mut ::core::ffi::c_char = ::core::ptr::null_mut();

@@ -3530,6 +3530,16 @@ pub unsafe extern "C" fn _usage_stat(mut status: ::core::ffi::c_int) {
     }
     exit(status);
 }
+static mut RBOXC_DEFAULT_FORMATS: [*mut ::core::ffi::c_char; 2] = [::core::ptr::null_mut(); 2];
+unsafe extern "C" fn rboxc_free_default_formats() {
+    let saved_errno = *::libc::__errno_location();
+    for index in 0..2 {
+        let format = RBOXC_DEFAULT_FORMATS[index];
+        RBOXC_DEFAULT_FORMATS[index] = ::core::ptr::null_mut();
+        ::libc::free(format.cast());
+    }
+    *::libc::__errno_location() = saved_errno;
+}
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_stat(
     mut argc: ::core::ffi::c_int,
@@ -3553,6 +3563,7 @@ pub unsafe extern "C" fn single_binary_main_stat(
     };
     decimal_point_len = strlen(decimal_point);
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_free_default_formats));
     loop {
         c = getopt_long(
             argc,
@@ -3692,7 +3703,9 @@ pub unsafe extern "C" fn single_binary_main_stat(
         format2 = format;
     } else {
         format = default_format(fs, terse, r#false != 0);
+        RBOXC_DEFAULT_FORMATS[0] = format;
         format2 = default_format(fs, terse, r#true != 0);
+        RBOXC_DEFAULT_FORMATS[1] = format2;
     }
     let mut i: ::core::ffi::c_int = optind;
     while i < argc {

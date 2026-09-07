@@ -171,6 +171,11 @@ CASES = [
     ('chmod', ['-2000', 'input']),
     ('chmod', ['-w', '-x', 'input']),
     ('chmod', ['-w', '--reference=input', 'numbers']),
+    ('stat', ['/dev/null']),
+    ('stat', ['-t', '/dev/null']),
+    ('stat', ['-f', '-']),
+    ('stat', ['-f', '-t', '-']),
+    ('stat', ['missing']),
 ]
 
 
