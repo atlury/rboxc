@@ -31,6 +31,8 @@ pub struct quoting_options { _opaque: [u8; 0] }
 pub struct hash_table { _opaque: [u8; 0] }
 #[repr(C)]
 pub struct __dirstream { _opaque: [u8; 0] }
+#[repr(C)]
+pub struct _cap_struct { _opaque: [u8; 0] }
 use ::c2rust_bitfields;
 use ::libc;
 extern "C" {
@@ -417,6 +419,9 @@ extern "C" {
         arg: *const ::core::ffi::c_char,
     ) -> *mut ::core::ffi::c_char;
     static mut ls_mode: ls_modes;
+    fn cap_free(_: *mut ::core::ffi::c_void) -> ::core::ffi::c_int;
+    fn cap_get_file(_: *const ::core::ffi::c_char) -> cap_t;
+    fn cap_to_text(_: cap_t, _: *mut ssize_t) -> *mut ::core::ffi::c_char;
 }
 pub type __uint32_t = u32;
 pub type __uint64_t = u64;
@@ -1331,6 +1336,7 @@ impl quoting_style {
     pub const clocale_quoting_style: Self = Self(9);
     pub const custom_quoting_style: Self = Self(10);
 }
+pub type cap_t = *mut _cap_struct;
 #[derive(Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
 pub struct filetype(pub ::core::ffi::c_uint);
@@ -1766,9 +1772,9 @@ pub const ELOOP: ::core::ffi::c_int = 40 as ::core::ffi::c_int;
 pub const ENODATA: ::core::ffi::c_int = 61 as ::core::ffi::c_int;
 pub const EOVERFLOW: ::core::ffi::c_int = 75 as ::core::ffi::c_int;
 pub const EOPNOTSUPP: ::core::ffi::c_int = 95 as ::core::ffi::c_int;
-pub const LOCALEDIR: [::core::ffi::c_char; 38] = unsafe {
-    ::core::mem::transmute::<[u8; 38], [::core::ffi::c_char; 38]>(
-        *b"/root/rboxc/build/oracle/share/locale\0",
+pub const LOCALEDIR: [::core::ffi::c_char; 64] = unsafe {
+    ::core::mem::transmute::<[u8; 64], [::core::ffi::c_char; 64]>(
+        *b"/root/rboxc/build/capability-worktree/build/oracle/share/locale\0",
     )
 };
 #[inline]
@@ -11779,8 +11785,20 @@ unsafe extern "C" fn unsigned_file_size(mut size: off_t) -> uintmax_t {
     );
 }
 unsafe extern "C" fn has_capability(mut name: *const ::core::ffi::c_char) -> bool {
-    *__errno_location() = ENOTSUP;
-    return r#false != 0;
+    let mut result: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
+    let mut has_cap: bool = false;
+    let mut cap_d: cap_t = cap_get_file(name);
+    if cap_d.is_null() {
+        return r#false != 0;
+    }
+    result = cap_to_text(cap_d, ::core::ptr::null_mut::<ssize_t>());
+    cap_free(cap_d as *mut ::core::ffi::c_void);
+    if result.is_null() {
+        return r#false != 0;
+    }
+    has_cap = *result != 0;
+    cap_free(result as *mut ::core::ffi::c_void);
+    return has_cap;
 }
 unsafe extern "C" fn free_ent(mut f: *mut fileinfo) {
     free((*f).name as *mut ::core::ffi::c_void);
@@ -12664,24 +12682,11 @@ unsafe extern "C" fn cmp_width(
         cmp.expect("non-null function pointer")((*a).name, (*b).name)
     };
 }
-unsafe extern "C" fn rev_strcmp_ctime(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return cmp_ctime(
-        b as *const fileinfo,
-        a as *const fileinfo,
-        Some(
-            strcmp
-                as unsafe extern "C" fn(
-                    *const ::core::ffi::c_char,
-                    *const ::core::ffi::c_char,
-                ) -> ::core::ffi::c_int,
-        ),
-    );
-}
-unsafe extern "C" fn rev_strcmp_df_ctime(mut a: V, mut b: V) -> ::core::ffi::c_int {
+unsafe extern "C" fn xstrcoll_df_ctime(mut a: V, mut b: V) -> ::core::ffi::c_int {
     return dirfirst_check(
         a as *const fileinfo,
         b as *const fileinfo,
-        Some(rev_strcmp_ctime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
+        Some(xstrcoll_ctime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
     );
 }
 unsafe extern "C" fn strcmp_df_ctime(mut a: V, mut b: V) -> ::core::ffi::c_int {
@@ -12691,10 +12696,10 @@ unsafe extern "C" fn strcmp_df_ctime(mut a: V, mut b: V) -> ::core::ffi::c_int {
         Some(strcmp_ctime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
     );
 }
-unsafe extern "C" fn strcmp_ctime(mut a: V, mut b: V) -> ::core::ffi::c_int {
+unsafe extern "C" fn rev_strcmp_ctime(mut a: V, mut b: V) -> ::core::ffi::c_int {
     return cmp_ctime(
-        a as *const fileinfo,
         b as *const fileinfo,
+        a as *const fileinfo,
         Some(
             strcmp
                 as unsafe extern "C" fn(
@@ -12724,11 +12729,17 @@ unsafe extern "C" fn rev_xstrcoll_ctime(mut a: V, mut b: V) -> ::core::ffi::c_in
         ),
     );
 }
-unsafe extern "C" fn xstrcoll_df_ctime(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return dirfirst_check(
+unsafe extern "C" fn strcmp_ctime(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return cmp_ctime(
         a as *const fileinfo,
         b as *const fileinfo,
-        Some(xstrcoll_ctime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
+        Some(
+            strcmp
+                as unsafe extern "C" fn(
+                    *const ::core::ffi::c_char,
+                    *const ::core::ffi::c_char,
+                ) -> ::core::ffi::c_int,
+        ),
     );
 }
 unsafe extern "C" fn xstrcoll_ctime(mut a: V, mut b: V) -> ::core::ffi::c_int {
@@ -12744,31 +12755,11 @@ unsafe extern "C" fn xstrcoll_ctime(mut a: V, mut b: V) -> ::core::ffi::c_int {
         ),
     );
 }
-unsafe extern "C" fn rev_xstrcoll_df_mtime(mut a: V, mut b: V) -> ::core::ffi::c_int {
+unsafe extern "C" fn rev_strcmp_df_ctime(mut a: V, mut b: V) -> ::core::ffi::c_int {
     return dirfirst_check(
         a as *const fileinfo,
         b as *const fileinfo,
-        Some(rev_xstrcoll_mtime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
-    );
-}
-unsafe extern "C" fn rev_strcmp_mtime(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return cmp_mtime(
-        b as *const fileinfo,
-        a as *const fileinfo,
-        Some(
-            strcmp
-                as unsafe extern "C" fn(
-                    *const ::core::ffi::c_char,
-                    *const ::core::ffi::c_char,
-                ) -> ::core::ffi::c_int,
-        ),
-    );
-}
-unsafe extern "C" fn rev_strcmp_df_mtime(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return dirfirst_check(
-        a as *const fileinfo,
-        b as *const fileinfo,
-        Some(rev_strcmp_mtime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
+        Some(rev_strcmp_ctime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
     );
 }
 unsafe extern "C" fn strcmp_df_mtime(mut a: V, mut b: V) -> ::core::ffi::c_int {
@@ -12778,25 +12769,19 @@ unsafe extern "C" fn strcmp_df_mtime(mut a: V, mut b: V) -> ::core::ffi::c_int {
         Some(strcmp_mtime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
     );
 }
+unsafe extern "C" fn rev_xstrcoll_df_mtime(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return dirfirst_check(
+        a as *const fileinfo,
+        b as *const fileinfo,
+        Some(rev_xstrcoll_mtime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
+    );
+}
 unsafe extern "C" fn strcmp_mtime(mut a: V, mut b: V) -> ::core::ffi::c_int {
     return cmp_mtime(
         a as *const fileinfo,
         b as *const fileinfo,
         Some(
             strcmp
-                as unsafe extern "C" fn(
-                    *const ::core::ffi::c_char,
-                    *const ::core::ffi::c_char,
-                ) -> ::core::ffi::c_int,
-        ),
-    );
-}
-unsafe extern "C" fn xstrcoll_mtime(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return cmp_mtime(
-        a as *const fileinfo,
-        b as *const fileinfo,
-        Some(
-            xstrcoll
                 as unsafe extern "C" fn(
                     *const ::core::ffi::c_char,
                     *const ::core::ffi::c_char,
@@ -12824,8 +12809,15 @@ unsafe extern "C" fn xstrcoll_df_mtime(mut a: V, mut b: V) -> ::core::ffi::c_int
         Some(xstrcoll_mtime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
     );
 }
-unsafe extern "C" fn xstrcoll_atime(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return cmp_atime(
+unsafe extern "C" fn rev_strcmp_df_mtime(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return dirfirst_check(
+        a as *const fileinfo,
+        b as *const fileinfo,
+        Some(rev_strcmp_mtime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
+    );
+}
+unsafe extern "C" fn xstrcoll_mtime(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return cmp_mtime(
         a as *const fileinfo,
         b as *const fileinfo,
         Some(
@@ -12837,12 +12829,12 @@ unsafe extern "C" fn xstrcoll_atime(mut a: V, mut b: V) -> ::core::ffi::c_int {
         ),
     );
 }
-unsafe extern "C" fn rev_xstrcoll_atime(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return cmp_atime(
+unsafe extern "C" fn rev_strcmp_mtime(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return cmp_mtime(
         b as *const fileinfo,
         a as *const fileinfo,
         Some(
-            xstrcoll
+            strcmp
                 as unsafe extern "C" fn(
                     *const ::core::ffi::c_char,
                     *const ::core::ffi::c_char,
@@ -12870,6 +12862,32 @@ unsafe extern "C" fn rev_strcmp_atime(mut a: V, mut b: V) -> ::core::ffi::c_int 
         ),
     );
 }
+unsafe extern "C" fn strcmp_atime(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return cmp_atime(
+        a as *const fileinfo,
+        b as *const fileinfo,
+        Some(
+            strcmp
+                as unsafe extern "C" fn(
+                    *const ::core::ffi::c_char,
+                    *const ::core::ffi::c_char,
+                ) -> ::core::ffi::c_int,
+        ),
+    );
+}
+unsafe extern "C" fn rev_xstrcoll_atime(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return cmp_atime(
+        b as *const fileinfo,
+        a as *const fileinfo,
+        Some(
+            xstrcoll
+                as unsafe extern "C" fn(
+                    *const ::core::ffi::c_char,
+                    *const ::core::ffi::c_char,
+                ) -> ::core::ffi::c_int,
+        ),
+    );
+}
 unsafe extern "C" fn xstrcoll_df_atime(mut a: V, mut b: V) -> ::core::ffi::c_int {
     return dirfirst_check(
         a as *const fileinfo,
@@ -12884,19 +12902,6 @@ unsafe extern "C" fn strcmp_df_atime(mut a: V, mut b: V) -> ::core::ffi::c_int {
         Some(strcmp_atime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
     );
 }
-unsafe extern "C" fn strcmp_atime(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return cmp_atime(
-        a as *const fileinfo,
-        b as *const fileinfo,
-        Some(
-            strcmp
-                as unsafe extern "C" fn(
-                    *const ::core::ffi::c_char,
-                    *const ::core::ffi::c_char,
-                ) -> ::core::ffi::c_int,
-        ),
-    );
-}
 unsafe extern "C" fn rev_xstrcoll_df_atime(mut a: V, mut b: V) -> ::core::ffi::c_int {
     return dirfirst_check(
         a as *const fileinfo,
@@ -12904,57 +12909,10 @@ unsafe extern "C" fn rev_xstrcoll_df_atime(mut a: V, mut b: V) -> ::core::ffi::c
         Some(rev_xstrcoll_atime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
     );
 }
-unsafe extern "C" fn xstrcoll_df_btime(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return dirfirst_check(
+unsafe extern "C" fn xstrcoll_atime(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return cmp_atime(
         a as *const fileinfo,
         b as *const fileinfo,
-        Some(xstrcoll_btime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
-    );
-}
-unsafe extern "C" fn strcmp_btime(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return cmp_btime(
-        a as *const fileinfo,
-        b as *const fileinfo,
-        Some(
-            strcmp
-                as unsafe extern "C" fn(
-                    *const ::core::ffi::c_char,
-                    *const ::core::ffi::c_char,
-                ) -> ::core::ffi::c_int,
-        ),
-    );
-}
-unsafe extern "C" fn strcmp_df_btime(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return dirfirst_check(
-        a as *const fileinfo,
-        b as *const fileinfo,
-        Some(strcmp_btime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
-    );
-}
-unsafe extern "C" fn rev_strcmp_btime(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return cmp_btime(
-        b as *const fileinfo,
-        a as *const fileinfo,
-        Some(
-            strcmp
-                as unsafe extern "C" fn(
-                    *const ::core::ffi::c_char,
-                    *const ::core::ffi::c_char,
-                ) -> ::core::ffi::c_int,
-        ),
-    );
-}
-unsafe extern "C" fn rev_xstrcoll_df_btime(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return dirfirst_check(
-        a as *const fileinfo,
-        b as *const fileinfo,
-        Some(rev_xstrcoll_btime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
-    );
-}
-unsafe extern "C" fn rev_xstrcoll_btime(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return cmp_btime(
-        b as *const fileinfo,
-        a as *const fileinfo,
         Some(
             xstrcoll
                 as unsafe extern "C" fn(
@@ -12977,6 +12935,33 @@ unsafe extern "C" fn xstrcoll_btime(mut a: V, mut b: V) -> ::core::ffi::c_int {
         ),
     );
 }
+unsafe extern "C" fn strcmp_btime(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return cmp_btime(
+        a as *const fileinfo,
+        b as *const fileinfo,
+        Some(
+            strcmp
+                as unsafe extern "C" fn(
+                    *const ::core::ffi::c_char,
+                    *const ::core::ffi::c_char,
+                ) -> ::core::ffi::c_int,
+        ),
+    );
+}
+unsafe extern "C" fn xstrcoll_df_btime(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return dirfirst_check(
+        a as *const fileinfo,
+        b as *const fileinfo,
+        Some(xstrcoll_btime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
+    );
+}
+unsafe extern "C" fn strcmp_df_btime(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return dirfirst_check(
+        a as *const fileinfo,
+        b as *const fileinfo,
+        Some(strcmp_btime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
+    );
+}
 unsafe extern "C" fn rev_strcmp_df_btime(mut a: V, mut b: V) -> ::core::ffi::c_int {
     return dirfirst_check(
         a as *const fileinfo,
@@ -12984,11 +12969,71 @@ unsafe extern "C" fn rev_strcmp_df_btime(mut a: V, mut b: V) -> ::core::ffi::c_i
         Some(rev_strcmp_btime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
     );
 }
+unsafe extern "C" fn rev_strcmp_btime(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return cmp_btime(
+        b as *const fileinfo,
+        a as *const fileinfo,
+        Some(
+            strcmp
+                as unsafe extern "C" fn(
+                    *const ::core::ffi::c_char,
+                    *const ::core::ffi::c_char,
+                ) -> ::core::ffi::c_int,
+        ),
+    );
+}
+unsafe extern "C" fn rev_xstrcoll_btime(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return cmp_btime(
+        b as *const fileinfo,
+        a as *const fileinfo,
+        Some(
+            xstrcoll
+                as unsafe extern "C" fn(
+                    *const ::core::ffi::c_char,
+                    *const ::core::ffi::c_char,
+                ) -> ::core::ffi::c_int,
+        ),
+    );
+}
+unsafe extern "C" fn rev_xstrcoll_df_btime(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return dirfirst_check(
+        a as *const fileinfo,
+        b as *const fileinfo,
+        Some(rev_xstrcoll_btime as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
+    );
+}
+unsafe extern "C" fn rev_strcmp_df_size(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return dirfirst_check(
+        a as *const fileinfo,
+        b as *const fileinfo,
+        Some(rev_strcmp_size as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
+    );
+}
+unsafe extern "C" fn rev_strcmp_size(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return cmp_size(
+        b as *const fileinfo,
+        a as *const fileinfo,
+        Some(
+            strcmp
+                as unsafe extern "C" fn(
+                    *const ::core::ffi::c_char,
+                    *const ::core::ffi::c_char,
+                ) -> ::core::ffi::c_int,
+        ),
+    );
+}
 unsafe extern "C" fn rev_xstrcoll_df_size(mut a: V, mut b: V) -> ::core::ffi::c_int {
     return dirfirst_check(
         a as *const fileinfo,
         b as *const fileinfo,
         Some(rev_xstrcoll_size as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
+    );
+}
+unsafe extern "C" fn strcmp_df_size(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return dirfirst_check(
+        a as *const fileinfo,
+        b as *const fileinfo,
+        Some(strcmp_size as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
     );
 }
 unsafe extern "C" fn strcmp_size(mut a: V, mut b: V) -> ::core::ffi::c_int {
@@ -13037,15 +13082,8 @@ unsafe extern "C" fn xstrcoll_size(mut a: V, mut b: V) -> ::core::ffi::c_int {
         ),
     );
 }
-unsafe extern "C" fn rev_strcmp_df_size(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return dirfirst_check(
-        a as *const fileinfo,
-        b as *const fileinfo,
-        Some(rev_strcmp_size as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
-    );
-}
-unsafe extern "C" fn rev_strcmp_size(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return cmp_size(
+unsafe extern "C" fn rev_strcmp_name(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return cmp_name(
         b as *const fileinfo,
         a as *const fileinfo,
         Some(
@@ -13057,11 +13095,25 @@ unsafe extern "C" fn rev_strcmp_size(mut a: V, mut b: V) -> ::core::ffi::c_int {
         ),
     );
 }
-unsafe extern "C" fn strcmp_df_size(mut a: V, mut b: V) -> ::core::ffi::c_int {
+unsafe extern "C" fn rev_strcmp_df_name(mut a: V, mut b: V) -> ::core::ffi::c_int {
     return dirfirst_check(
         a as *const fileinfo,
         b as *const fileinfo,
-        Some(strcmp_size as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
+        Some(rev_strcmp_name as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
+    );
+}
+unsafe extern "C" fn strcmp_df_name(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return dirfirst_check(
+        a as *const fileinfo,
+        b as *const fileinfo,
+        Some(strcmp_name as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
+    );
+}
+unsafe extern "C" fn xstrcoll_df_name(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return dirfirst_check(
+        a as *const fileinfo,
+        b as *const fileinfo,
+        Some(xstrcoll_name as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
     );
 }
 unsafe extern "C" fn rev_xstrcoll_name(mut a: V, mut b: V) -> ::core::ffi::c_int {
@@ -13075,13 +13127,6 @@ unsafe extern "C" fn rev_xstrcoll_name(mut a: V, mut b: V) -> ::core::ffi::c_int
                     *const ::core::ffi::c_char,
                 ) -> ::core::ffi::c_int,
         ),
-    );
-}
-unsafe extern "C" fn strcmp_df_name(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return dirfirst_check(
-        a as *const fileinfo,
-        b as *const fileinfo,
-        Some(strcmp_name as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
     );
 }
 unsafe extern "C" fn rev_xstrcoll_df_name(mut a: V, mut b: V) -> ::core::ffi::c_int {
@@ -13108,33 +13153,6 @@ unsafe extern "C" fn strcmp_name(mut a: V, mut b: V) -> ::core::ffi::c_int {
     return cmp_name(
         a as *const fileinfo,
         b as *const fileinfo,
-        Some(
-            strcmp
-                as unsafe extern "C" fn(
-                    *const ::core::ffi::c_char,
-                    *const ::core::ffi::c_char,
-                ) -> ::core::ffi::c_int,
-        ),
-    );
-}
-unsafe extern "C" fn xstrcoll_df_name(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return dirfirst_check(
-        a as *const fileinfo,
-        b as *const fileinfo,
-        Some(xstrcoll_name as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
-    );
-}
-unsafe extern "C" fn rev_strcmp_df_name(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return dirfirst_check(
-        a as *const fileinfo,
-        b as *const fileinfo,
-        Some(rev_strcmp_name as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
-    );
-}
-unsafe extern "C" fn rev_strcmp_name(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return cmp_name(
-        b as *const fileinfo,
-        a as *const fileinfo,
         Some(
             strcmp
                 as unsafe extern "C" fn(
@@ -13171,12 +13189,12 @@ unsafe extern "C" fn rev_xstrcoll_df_extension(mut a: V, mut b: V) -> ::core::ff
         Some(rev_xstrcoll_extension as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
     );
 }
-unsafe extern "C" fn rev_xstrcoll_extension(mut a: V, mut b: V) -> ::core::ffi::c_int {
+unsafe extern "C" fn rev_strcmp_extension(mut a: V, mut b: V) -> ::core::ffi::c_int {
     return cmp_extension(
         b as *const fileinfo,
         a as *const fileinfo,
         Some(
-            xstrcoll
+            strcmp
                 as unsafe extern "C" fn(
                     *const ::core::ffi::c_char,
                     *const ::core::ffi::c_char,
@@ -13204,6 +13222,19 @@ unsafe extern "C" fn xstrcoll_extension(mut a: V, mut b: V) -> ::core::ffi::c_in
         ),
     );
 }
+unsafe extern "C" fn rev_xstrcoll_extension(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return cmp_extension(
+        b as *const fileinfo,
+        a as *const fileinfo,
+        Some(
+            xstrcoll
+                as unsafe extern "C" fn(
+                    *const ::core::ffi::c_char,
+                    *const ::core::ffi::c_char,
+                ) -> ::core::ffi::c_int,
+        ),
+    );
+}
 unsafe extern "C" fn strcmp_df_extension(mut a: V, mut b: V) -> ::core::ffi::c_int {
     return dirfirst_check(
         a as *const fileinfo,
@@ -13211,8 +13242,29 @@ unsafe extern "C" fn strcmp_df_extension(mut a: V, mut b: V) -> ::core::ffi::c_i
         Some(strcmp_extension as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
     );
 }
-unsafe extern "C" fn rev_strcmp_extension(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return cmp_extension(
+unsafe extern "C" fn rev_strcmp_df_width(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return dirfirst_check(
+        a as *const fileinfo,
+        b as *const fileinfo,
+        Some(rev_strcmp_width as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
+    );
+}
+unsafe extern "C" fn strcmp_df_width(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return dirfirst_check(
+        a as *const fileinfo,
+        b as *const fileinfo,
+        Some(strcmp_width as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
+    );
+}
+unsafe extern "C" fn xstrcoll_df_width(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return dirfirst_check(
+        a as *const fileinfo,
+        b as *const fileinfo,
+        Some(xstrcoll_width as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
+    );
+}
+unsafe extern "C" fn rev_strcmp_width(mut a: V, mut b: V) -> ::core::ffi::c_int {
+    return cmp_width(
         b as *const fileinfo,
         a as *const fileinfo,
         Some(
@@ -13235,13 +13287,6 @@ unsafe extern "C" fn xstrcoll_width(mut a: V, mut b: V) -> ::core::ffi::c_int {
                     *const ::core::ffi::c_char,
                 ) -> ::core::ffi::c_int,
         ),
-    );
-}
-unsafe extern "C" fn strcmp_df_width(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return dirfirst_check(
-        a as *const fileinfo,
-        b as *const fileinfo,
-        Some(strcmp_width as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
     );
 }
 unsafe extern "C" fn strcmp_width(mut a: V, mut b: V) -> ::core::ffi::c_int {
@@ -13275,33 +13320,6 @@ unsafe extern "C" fn rev_xstrcoll_width(mut a: V, mut b: V) -> ::core::ffi::c_in
                     *const ::core::ffi::c_char,
                 ) -> ::core::ffi::c_int,
         ),
-    );
-}
-unsafe extern "C" fn xstrcoll_df_width(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return dirfirst_check(
-        a as *const fileinfo,
-        b as *const fileinfo,
-        Some(xstrcoll_width as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
-    );
-}
-unsafe extern "C" fn rev_strcmp_width(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return cmp_width(
-        b as *const fileinfo,
-        a as *const fileinfo,
-        Some(
-            strcmp
-                as unsafe extern "C" fn(
-                    *const ::core::ffi::c_char,
-                    *const ::core::ffi::c_char,
-                ) -> ::core::ffi::c_int,
-        ),
-    );
-}
-unsafe extern "C" fn rev_strcmp_df_width(mut a: V, mut b: V) -> ::core::ffi::c_int {
-    return dirfirst_check(
-        a as *const fileinfo,
-        b as *const fileinfo,
-        Some(rev_strcmp_width as unsafe extern "C" fn(V, V) -> ::core::ffi::c_int),
     );
 }
 unsafe extern "C" fn cmp_version(
