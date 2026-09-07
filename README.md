@@ -66,7 +66,7 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The current release executable is 2,410,504 bytes (2.30 MiB), dynamically linked
+The current release executable is 2,411,560 bytes (2.30 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
@@ -181,7 +181,7 @@ processes are clean; the result remains open for external compression-shell,
 GNU tr, and GNU expr findings (8,094 candidate descendant logs).
 The complete I/O-error script also passes its assertions, with 1,336 logs per
 implementation. Its candidate memory evidence remains open for 263 shell logs
-and five cat/dd/tac logs. The staged candidate below repairs the two normal
+and five cat/dd/tac logs. The cleanup build below repairs the two normal
 cat/tac write exits; the other three logs follow SIGPIPE termination.
 The original large-directory memory test now also passes natively for rm,
 du, and chmod over 200,000 entries. Its additional 35,000 KiB allowance remains
@@ -197,7 +197,7 @@ and per-writer deadlines remain in effect. evidence/write-responsiveness.json
 records the command coverage and hashed logs; this native resource measurement
 is separate from the instrumented I/O-error script.
 
-A separately built cat/tac candidate now closes its named input and releases
+The cat/tac cleanup now closes its named input and releases
 working buffers on normal and fatal exits. Tac also closes its cached temporary
 stream. Ownership slots are cleared before close/free, and cat clears a buffer
 slot before replacement allocation can fail. Cleanup preserves errno and GNU's
@@ -207,16 +207,16 @@ have clean Valgrind memory/descriptors, and two closed-pipe cases preserve GNU's
 SIGPIPE termination with the resulting resource findings recorded separately.
 Coverage includes /dev/full, pipes, regex separators, buffer growth, and multiple
 operands. Seven selected native original scripts and six Valgrind originals
-also pass, with 60 clean candidate process logs. The candidate is staged at
+also pass, with 60 clean candidate process logs. The earlier candidate remains at
 `target/write-cleanup/release/rboxc`; evidence/write-cleanup-candidate.json records
-its source and binary hashes. The installed release remains unchanged while
-older long-running comparisons still depend on its path. The full original
+its source and binary hashes. Its changes are included in the activated cleanup
+build described below. The full original
 I/O-error rerun now also passes all assertions for the candidate: GNU takes
 967.858 seconds and rboxc 913.393 seconds, with 1,336 logs each. Both repaired
 normal cat/tac write exits are memory-clean. The strict comparison remains
 open for 263 external-shell logs and three SIGPIPE exits in cat, dd, and tac.
 The separate candidate report preserves these findings without replacing the
-installed-release observation above.
+historical observation above. A new full run against the activated build is in progress.
 The staged candidate also passes 428 help/version comparisons, 107 Valgrind
 help checks, 11 dispatcher checks, and all 318 native behavior, Valgrind behavior,
 and instrumented-equivalence comparisons. These baseline drivers accept
@@ -255,8 +255,12 @@ hashes; this check does not rerun the C2Rust translator.
 The latest candidate also passes the complete baseline: 428 help/version
 comparisons, 107 Valgrind help checks, 11 dispatcher checks, and 318 native
 behavior, Valgrind behavior, and instrumented-equivalence comparisons. These
-reports use the candidate binary hash and its matching stdbuf helper. The
-installed binary remains unchanged until the two older factor runs complete.
+reports use the candidate binary hash and its matching stdbuf helper. After
+both factor runs completed and their results were merged, that exact build was
+activated at `target/release/rboxc`. `evidence/cleanup-activation.json` records
+the old binary/report backups and hash-verified reuse of the complete baseline
+reports. Their origin is preserved; reuse does not claim a rerun. All 11
+dispatcher checks were then rerun successfully from the installed path.
 
 The full original `truncate` size-limit validation now passes natively and
 under Valgrind, with five clean logs per build. The original two-rotation
@@ -276,9 +280,9 @@ children retain redirected descriptors. `evidence/split-filter-original.json`
 and `evidence/split-filter-regular-current.json` retain these separate results.
 
 The reviewed Valgrind evidence records 594 clean results out of 632 scripts
-or selections: 5,729 Perl cases and 46,578 candidate/descendant process logs.
-The 38 open results comprise 30 with passing original assertions but unresolved
-memory/descriptor evidence, two prerequisite skips, six with assertion
+or selections: 5,729 Perl cases and 46,580 candidate/descendant process logs.
+The 38 open results comprise 29 with passing original assertions but unresolved
+memory/descriptor evidence, two prerequisite skips, seven with assertion
 failures under instrumentation. No current result is interrupted by a watchdog deadline. The status report records
 these categories separately; they do not change the strict clean-pass count.
 Two env results remain open. The env script encounters shebang/argv differences
