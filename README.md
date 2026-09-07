@@ -45,8 +45,8 @@ An external GNU executable used as an oracle is never counted as a port.
 GNU providers, and their current state. Rbox's `APPLET_COUNT` constant says 554,
 but its actual dispatcher and full binary list agree on 553 distinct commands;
 the one-name discrepancy remains recorded in `inventory/sources.json`.
-GNU Hello is now also source-pinned; other provider assignments outside the
-Coreutils set still require source/version confirmation before implementation.
+GNU Hello, Time, Which, Diffutils, and Grep are also source-pinned. Remaining
+provider assignments require source/version confirmation before implementation.
 
 GNU Hello 2.12.3 is pinned from the [official GNU release archive](https://ftp.gnu.org/gnu/hello/).
 Its signature verifies against the GNU-published keyring; archive, signature,
@@ -111,6 +111,12 @@ The combined Coreutils, Hello, Time, and Which regressions pass within their
 recorded scopes. `evidence/diffutils-activation.json` records integration, prior
 artifact backups, and the installed-path dispatcher check. Earlier failures
 and candidate binaries are retained; full-provider completion remains open.
+
+GNU Grep 3.12 is pinned from its signed official archive, and its native oracle
+is built with PCRE2 10.46 support. The original registration contains 128 tests,
+recorded for individual review before execution. Grep has one C command entry;
+`egrep` and `fgrep` are shell aliases in the GNU source. Translation and alias
+integration are underway separately from the installed Diffutils release.
 
 ## Status
 
