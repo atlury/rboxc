@@ -153,8 +153,9 @@ in the executable. All 56 focused comparisons now pass, including compression,
 decompression, file metadata, internal aliases, and output errors. Exit cleanup
 releases the directory cache and unfinished input ownership; alias write-error
 messages retain the configured Bash profile and pinned script line numbers.
-Fifteen individually reviewed original tests are now being validated, including
-an unprivileged write-error check. The installed release remains the validated
+All fifteen originals in the first reviewed batch pass natively and under
+Valgrind, including valid legacy unpacking, environment options, metadata, and
+an unprivileged write-error check. The original 4 GiB size test is running. The installed release remains the validated
 117-command Grep build.
 
 ## Status
