@@ -174,6 +174,11 @@ def main():
         if row.get('extra_real_aliases'):
             assert row['script'] == 'tests/misc/coreutils.sh' and row.get('native_launcher')
             assert row['extra_real_aliases'] == ['blah'], 'only the original unknown-command alias is reviewed'
+        if row.get('elf_input_commands'):
+            expected_inputs = {'tests/install/basic-1.sh': ['dd'],
+                               'tests/install/trap.sh': ['ginstall']}
+            assert row.get('elf_input_commands') == expected_inputs.get(row['script']), 'unreviewed ELF input profile'
+            assert not row.get('native_launcher'), 'ELF input staging uses the normal command launcher'
         assert row.get('perl_driver') in (None, 'tty-eof'), 'unknown Perl driver'
         if row.get('perl_driver') == 'tty-eof':
             assert row['script'] == 'tests/misc/tty-eof.pl' and row.get('full_suite')
@@ -220,6 +225,13 @@ def main():
                     shutil.copy2(config_header, runtime/'config.h')
                     helper = runtime/'getlimits'
                     config_header = runtime/'config.h'
+                elf_input_build = None
+                if row.get('elf_input_commands'):
+                    elf_input_build = run/'input-build'
+                    (elf_input_build/'src').mkdir(parents=True)
+                    assert candidate.read_bytes()[:4] == b'\x7fELF', 'install input must be an ELF binary'
+                    for name in row['elf_input_commands']:
+                        (elf_input_build/'src'/name).symlink_to(candidate)
                 commands = row.get('commands', [row['command']])
                 assert row['command'] in commands
                 stdbuf_library = None
@@ -291,7 +303,7 @@ def main():
                     **({'HOME': str(run), 'TMPDIR': str(run)} if row.get('clean_environment') else os.environ), 'PATH': f'{run}/src:/opt/gnu/coreutils-9.11/bin:/usr/bin:/bin',
                     'LC_ALL': 'C', 'LANGUAGE': 'C', 'TZ': 'UTC0', 'built_programs': ' '.join(row.get('built_programs', commands)),
                     'srcdir': str(SOURCE), 'top_srcdir': str(SOURCE), 'abs_srcdir': str(SOURCE),
-                    'abs_top_srcdir': str(SOURCE), 'abs_top_builddir': str(run),
+                    'abs_top_srcdir': str(SOURCE), 'abs_top_builddir': str(elf_input_build or run),
                     'CONFIG_HEADER': str(config_header), 'LOCALE_FR': row.get('locale_fr', ''),
                     'LOCALE_FR_UTF8': row.get('locale_fr_utf8', 'none'), 'VERSION': '9.11', 'PACKAGE_VERSION': '9.11',
                     'EXEEXT': '', 'host_os': 'linux-gnu', 'CC': 'cc', 'EGREP': 'grep -E', 'MAKE': 'make', 'PERL': 'perl', 'AWK': 'awk', 'SHELL': test_shell,
@@ -385,6 +397,9 @@ def main():
                                             'watchdog': {'path': str(watchdog), 'sha256': watchdog_hash},
                                             'test_shell': test_shell,
                                             'elapsed_seconds': round(time.monotonic()-started, 3)}
+                if elf_input_build:
+                    outcomes[implementation]['elf_input_binaries'] = {
+                        name: fingerprint(elf_input_build/'src'/name) for name in row['elf_input_commands']}
                 if row.get('profile') == 'private-mount':
                     namespaces = re.findall(rb'^RBOXC_MOUNT_NAMESPACE (.+)$', completed.stderr, re.M)
                     assert len(namespaces) == 1, 'private mount namespace did not start'

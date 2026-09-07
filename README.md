@@ -151,8 +151,8 @@ per implementation contain summaries. The result remains open because the
 external compression shells and GNU tr helper retain resources. The earlier
 measurement with incomplete exec logs is preserved in the observation history.
 
-The reviewed Valgrind evidence records 545 clean results out of 576 scripts
-or selections: 3,707 Perl cases and 21,031 candidate/descendant process logs.
+The reviewed Valgrind evidence records 547 clean results out of 578 scripts
+or selections: 3,707 Perl cases and 21,058 candidate/descendant process logs.
 The 31 open results comprise 24 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, and five with assertion
 failures under instrumentation in both GNU and rboxc. The status report records
@@ -169,6 +169,13 @@ Matching GNU findings are not counted as clean.
 Three more results remain open: dd's intentionally closed-stderr diagnostics,
 install's external strip children with host-shell descriptors and host-tool heap findings,
 and cat's injected pipe-creation failure interfering with Valgrind startup.
+The complete basic install and CHLD-handling scripts now pass natively and with
+clean candidate Valgrind evidence. Their original strip inputs are staged as
+real ELF files under a separate build-input directory; executable launchers
+remain on the test PATH. This preserves both strip coverage and GNU's verbose
+program-name diagnostics. Each result hashes the ELF inputs. Earlier launcher
+and diagnostic findings are retained. The five additional generic option/help
+profiles pass natively; their full Valgrind comparisons are running separately.
 All 46 registered move scripts now pass natively and under Valgrind.
 The GNU oracle and helper build explicitly enable ACL and extended-attribute
 support. `evidence/gnu-build-profile.json` records configuration and oracle

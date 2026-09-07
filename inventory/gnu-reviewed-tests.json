@@ -1393,9 +1393,11 @@
     ],
     "sha256": "a946b27781fb63313b789e45a4bd78d4c75701e0f3a112f3b26a14bd05d8ebdf",
     "clean_environment": true,
-    "timeout_seconds": 180,
+    "timeout_seconds": 1800,
     "full_suite": true,
-    "expected_case_count": 106
+    "expected_case_count": 106,
+    "valgrind": true,
+    "native_launcher": true
   },
   {
     "script": "tests/help/help-version.sh",
@@ -1621,7 +1623,10 @@
     ],
     "sha256": "d4c65a7c34a7cf515fa54469da0c77d8d0cf02666e871c780168a8c3ffb6e035",
     "clean_environment": true,
-    "timeout_seconds": 180
+    "timeout_seconds": 1800,
+    "valgrind": true,
+    "native_launcher": true,
+    "nss_profile": "local-files"
   },
   {
     "script": "tests/help/help-version-getopt.sh",
@@ -1847,7 +1852,9 @@
     ],
     "sha256": "823300385dbb2c889800eaa46daa68d750fa6729d45f607d2c4e7b6666e3a93e",
     "clean_environment": true,
-    "timeout_seconds": 180
+    "timeout_seconds": 1800,
+    "valgrind": true,
+    "native_launcher": true
   },
   {
     "script": "tests/groups/groups-dash.sh",
@@ -3848,10 +3855,13 @@
     ],
     "sha256": "677c65e84f41ea7fa883ec946c827e3b5ffc1025020e0de412dee5a66113386c",
     "clean_environment": true,
-    "valgrind": false,
+    "valgrind": true,
     "profile": "ordinary-user",
-    "timeout_seconds": 300,
-    "valgrind_note": "This original script strips a binary from the staged src directory. Instrumentation replaces that path with a shell launcher; native execution retains the actual ELF input. Separate install behavior is instrumented."
+    "timeout_seconds": 600,
+    "elf_input_commands": [
+      "dd"
+    ],
+    "trace_children": true
   },
   {
     "script": "tests/install/trap.sh",
@@ -3863,10 +3873,13 @@
     ],
     "sha256": "a64b15ecccc5520d6c1339a563481084b68a49b1211d64c43a823fdade039c5f",
     "clean_environment": true,
-    "valgrind": false,
+    "valgrind": true,
     "profile": "ordinary-user",
-    "timeout_seconds": 300,
-    "valgrind_note": "This original script strips a binary from the staged src directory. Instrumentation replaces that path with a shell launcher; native execution retains the actual ELF input. Separate install behavior is instrumented."
+    "timeout_seconds": 600,
+    "elf_input_commands": [
+      "ginstall"
+    ],
+    "trace_children": true
   },
   {
     "script": "tests/cat/cat-buf.sh",
@@ -6973,8 +6986,9 @@
     ],
     "sha256": "2b42c936b44a4bafab559768c4918bef30d360b08209d4cbe91f4250da220980",
     "clean_environment": true,
-    "valgrind": false,
-    "timeout_seconds": 1800
+    "valgrind": true,
+    "timeout_seconds": 1800,
+    "native_launcher": true
   },
   {
     "script": "tests/misc/usage_vs_getopt.sh",
@@ -7209,8 +7223,9 @@
     ],
     "sha256": "0f854d08588c02a2b630d8ebe4d584ca5804588de7ee96ba00c58ac9a42412d0",
     "clean_environment": true,
-    "valgrind": false,
-    "timeout_seconds": 1800
+    "valgrind": true,
+    "timeout_seconds": 1800,
+    "native_launcher": true
   },
   {
     "script": "tests/csplit/csplit-io-err.sh",
