@@ -173,7 +173,8 @@ comparisons match GNU and have clean Valgrind results, including regex reuse,
 partial compilation, directory input errors, and in-place edits. Ownership
 tracking invokes GNU's regex destructor and closes remaining registered streams
 through the existing exit callback. The initial 29/51 memory-clean result and
-candidate are retained. Seventeen reviewed originals are running separately.
+candidate are retained. All seventeen originals in the first reviewed batch pass natively and under
+Valgrind. Additional original batches remain in progress.
 
 ## Status
 
