@@ -237,6 +237,10 @@ pipe failures prevent Valgrind semaphore initialization in both builds.
 The earlier sandbox run skipped those conditional strace branches.
 `evidence/yes-cleanup-candidate.json` records both profiles and the focused
 checks; this candidate also contains the prior cat/tac cleanup changes.
+Reapplying the current transformation recipes to the saved C2Rust outputs
+reproduces all three staged entries byte for byte.
+`evidence/write-cleanup-regeneration.json` records the input, recipe, and output
+hashes; this check does not rerun the C2Rust translator.
 
 The reviewed Valgrind evidence records 583 clean results out of 621 scripts
 or selections: 5,729 Perl cases and 37,207 candidate/descendant process logs.
