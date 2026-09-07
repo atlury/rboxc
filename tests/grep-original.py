@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 from comparison_profile import ComparisonProfile, fingerprint
+from grep_dependencies import prepare
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'tests/gnu'))
@@ -28,6 +29,8 @@ locale_helper_sha256 = fingerprint(locale_helper)
 build_makefile = (ROOT/'build/gnu-grep/tests/Makefile').read_text()
 locale_environment = {name: re.search(r'^'+name+r' = (.*)$', build_makefile, re.M)[1]
                       for name in ('LOCALE_FR', 'LOCALE_FR_UTF8')}
+core_dependency, prerequisite_environment, prerequisite_metadata = prepare()
+driver_sha256 = fingerprint(Path(__file__))
 selected = set(profile.options.commands)
 assert selected <= {Path(r['script']).name for r in manifest['scripts'] if r['reviewed']}
 results = []
@@ -49,6 +52,8 @@ for index, row in enumerate(manifest['scripts']):
                 for sub in ('src', 'real', 'tests', 'memory'):
                     (work/sub).mkdir()
                 (work/'src/get-mb-cur-max').symlink_to(locale_helper)
+                for dependency in ('timeout', 'sleep'):
+                    (work/'src'/dependency).symlink_to(core_dependency)
                 for name in pin['commands']:
                     binary = oracles[name] if implementation == 'gnu' else profile.binary
                     (work/'real'/name).symlink_to(binary)
@@ -57,14 +62,22 @@ for index, row in enumerate(manifest['scripts']):
                         wrapper.write_text('#!/bin/sh\nPATH='+str(work/'real')+':$PATH\nexport PATH\n'
                             'exec /usr/bin/valgrind --leak-check=full --show-leak-kinds=all '
                             '--track-fds=yes --trace-children=yes --log-file='+str(work/'memory/%p.log')+
-                            ' '+name+' "$@"\n')
+                            ' '+('/bin/sh '+str(work/'real'/name) if implementation == 'gnu' and name != 'grep' else name)+' "$@"\n')
                         wrapper.chmod(0o755)
                     else:
                         (work/'src'/name).symlink_to(binary)
-                done = subprocess.run(['/bin/bash', '-c', 'exec 9>&2; exec /bin/bash "$1"',
-                                       'grep-test', str(script)], cwd=work/'tests',
+                if script.suffix == '.pl':
+                    assert row.get('cases')
+                    command = ['/usr/bin/perl', '-I'+str(source/'tests'), '-MCuSkip', '-MCoreutils',
+                               '-e', runner.PERL_SELECTION, str(script)]
+                else:
+                    command = ['/bin/bash', '-c', 'exec 9>&2; exec /bin/bash "$1"', 'grep-test', str(script)]
+                done = subprocess.run(command, cwd=work/'tests',
                     stdin=subprocess.DEVNULL, capture_output=True, timeout=row.get('timeout_seconds', 180),
-                    env={**locale_environment, 'PATH': str(work/'src')+':/usr/bin:/bin', 'HOME': directory,
+                    env={**locale_environment, **prerequisite_environment,
+                         'RBOXC_APPROVED_CASES': ','.join(row.get('cases', [])),
+                         'RUN_EXPENSIVE_TESTS': 'yes' if row.get('requires_expensive_tests') else 'no',
+                         'PATH': str(work/'src')+':/usr/bin:/bin', 'HOME': directory,
                          'TMPDIR': directory, 'LC_ALL': 'C', 'LANGUAGE': 'C', 'TZ': 'UTC0',
                          'srcdir': str(source/'tests'), 'top_srcdir': str(source),
                          'abs_top_srcdir': str(source), 'abs_srcdir': str(source/'tests'),
@@ -76,17 +89,20 @@ for index, row in enumerate(manifest['scripts']):
                 outcome = {'status': done.returncode, 'stdout': done.stdout.hex(),
                            'stderr': done.stderr.hex(), 'log': str(log.relative_to(ROOT)),
                            'log_sha256': fingerprint(log)}
+                if script.suffix == '.pl':
+                    counts = re.findall(rb'RBOXC_SELECTION ([0-9]+) of ([0-9]+)', done.stdout)
+                    outcome['case_count_pass'] = counts == [(str(len(row['cases'])).encode(), str(row['registered_cases']).encode())]
                 if instrument:
                     saved = profile.logs/f'{index:02}-{key}-memory'
                     shutil.copytree(work/'memory', saved)
-                    outcome['memory'] = [{**runner.parse_memory_log(p.read_text(), p.stem),
+                    outcome['memory'] = [{**runner.parse_memory_log(p.read_text(), p.stem, exec_only=True),
                         'log': str(p.relative_to(ROOT)), 'sha256': fingerprint(p)} for p in sorted(saved.glob('*.log'))]
                 outcomes[key] = outcome
     expected_status = row.get('expected_status', 0)
     native_pass = outcomes['gnu']['status'] == outcomes['rboxc']['status'] == expected_status
-    assertions_pass = native_pass and all(r['status'] == expected_status for r in outcomes.values())
+    assertions_pass = native_pass and all(r['status'] == expected_status and r.get('case_count_pass', True) for r in outcomes.values())
     logs = outcomes['rboxc-valgrind']['memory']
-    clean = bool(logs) and all(m['errors'] == 0 and m['non_inherited_descriptors'] == 0
+    clean = bool(logs) and all(m['complete_exec_log'] and m['errors'] == 0 and m['non_inherited_descriptors'] == 0
         and not any(m['heap_bytes'].get(k, 0) for k in ('definitely lost', 'indirectly lost', 'possibly lost')) for m in logs)
     skipped = all(value['status'] == 77 for value in outcomes.values())
     expected_failure = bool(row.get('upstream_xfail')) and assertions_pass
@@ -102,7 +118,8 @@ for index, row in enumerate(manifest['scripts']):
     # Preserve each completed selection before starting the next one.
     report = {'scope': 'Individually reviewed original assertions, native and Valgrind; provider children use matching commands from the private PATH. Pending and excluded originals are not executed.',
               **profile.metadata(), 'gnu_binaries': {n: {'path': str(p), 'sha256': oracle_hashes[n]} for n, p in oracles.items()},
-              'driver_sha256': fingerprint(Path(__file__)),
+              'driver_sha256': driver_sha256,
+              'prerequisites': prerequisite_metadata,
               'locale_environment': locale_environment,
               'locale_helper': {'path': str(locale_helper), 'sha256': locale_helper_sha256},
               'launch_profile': 'Valgrind locates the named command through a private PATH, preserving its initial argv[0]. Subsequent child execs remain traced.',
@@ -115,6 +132,7 @@ for index, row in enumerate(manifest['scripts']):
               'state_counts': {s: sum(r['state'] == s for r in results) for s in sorted({r['state'] for r in results})},
               'registered_original_scripts': len(manifest['scripts']),
               'remaining': [r for r in manifest['scripts'] if not r['reviewed']], 'results': results}
+    assert fingerprint(Path(__file__)) == driver_sha256, 'driver changed during run'
     assert fingerprint(locale_helper) == locale_helper_sha256
     assert all(fingerprint(p) == oracle_hashes[n] for n, p in oracles.items())
     temporary = profile.report.with_suffix('.tmp.json')

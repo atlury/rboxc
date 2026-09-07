@@ -130,7 +130,11 @@ changing logical bounds; this closes a PCRE JIT Valgrind finding also observed
 in the GNU oracle. All 11 reviewed PCRE originals pass on this candidate with
 clean Valgrind results. Additional matching, locale, and file original tests
 are being validated. The pattern-file error-path original now passes with
-clean Valgrind results; the initial timeout-prerequisite skip remains open.
+clean Valgrind results. All 11 prerequisite/diagnostic selections now pass,
+including the previously skipped timeout and locale originals. The driver
+uses pinned GNU timeout/sleep, nine private locales, and explicit PCRE
+configuration. One selection retains 11 of 12 original Perl diagnostics;
+its stress case remains excluded. The 100,000-entry traversal also passes.
 A bounded 8.7 MB cached-input observation found after/before median runtime
 ratios of 0.83–1.01 across four matchers; concurrent tests and process startup
 limit precision, so this is not a performance certification. The installed release

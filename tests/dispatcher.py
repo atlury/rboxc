@@ -64,6 +64,9 @@ def main():
             extra = ROOT/f'evidence/diffutils-{command}-translation.json'
             if extra.exists() and json.loads(extra.read_text())['translated']:
                 names = sorted([*names, command])
+        extra = ROOT/'evidence/grep-translation.json'
+        if extra.exists() and json.loads(extra.read_text())['translated']:
+            names = sorted([*names, 'grep', 'egrep', 'fgrep'])
         for alias in ('rboxc', 'rbox'):
             listed = execute([str(run/alias), '--list'])
             unknown = execute([str(run/alias), 'unknown-command'])
