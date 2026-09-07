@@ -80,6 +80,18 @@ It is separate evidence, not a change to the main release's link profile.
 Building the ACL and Attr libraries from pinned sources and incorporating their
 commands is planned after Coreutils; other shared dependencies remain.
 
+A separate capability-enabled Coreutils build now passes all three original
+capability metadata scripts: cp preservation, ls coloring, and disabling ls
+capability lookups. All 23 Valgrind logs per build are clean. The candidate
+also passes 428 help/version comparisons, 107 Valgrind help checks, and 17
+selected cp/ls/dir/vdir behavior comparisons. `evidence/capability-candidate.json`
+records the package, configuration, translated source, binaries, and test logs.
+The translated ls change is preserved on the `capability-profile` branch.
+The main GNU preparation script now requires libcap development headers and
+checks `HAVE_CAP`; existing builds without support need `--reconfigure`.
+Integration waits for the installed cleanup build's ongoing original I/O test.
+This candidate evidence does not change the main configuration's recorded skips.
+
 Recorded checks:
 
 | Check | Result | Coverage limit |
@@ -782,7 +794,7 @@ and an overflow rejection check under Valgrind, with zero live heap.
 
 The current host needs GCC, GNU Make, Python 3, binutils, Clang/LLVM 21 development
 libraries, CMake, Rust 1.93.0 with rustfmt, the pinned nightly, and GNU Coreutils
-9.11 source, plus libacl and libattr development headers and libraries.
+9.11 source, plus libacl, libattr, and libcap development headers and libraries.
 For an existing build without metadata support, run
 `sh scripts/prepare-coreutils.sh --reconfigure` before translation and assembly.
 Test dependencies include Valgrind 3.26, strace, Perl with Expect 1.38, attr tools, and ordinary

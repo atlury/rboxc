@@ -1,0 +1,509 @@
+{
+  "scope": "Separate capability-enabled build using the same pinned GNU Coreutils and C2Rust sources. The installed release and its GNU oracle are unchanged. This is candidate evidence; canonical coverage remains on the installed configuration.",
+  "worktree_base": "e6f78b6",
+  "candidate": {
+    "path": "build/capability-worktree/target/release/rboxc",
+    "sha256": "32946c05751cdbb38368fe2c1f6341602c6fda9ac02fcdc6c4668b8db33894ac",
+    "bytes": 2412120
+  },
+  "oracle": {
+    "path": "build/capability-worktree/build/gnu-coreutils/src/coreutils",
+    "sha256": "ae29b114cb7d6dcd1a87a20be45707bb5be0fe14997e491c7acd1b03e8596640",
+    "bytes": 6966024
+  },
+  "config_header": {
+    "path": "build/capability-worktree/build/gnu-coreutils/lib/config.h",
+    "sha256": "c137a4c0ea7a2c785e7a1707820dfb8590a1e23d762c5bf3848cbb58b964b041",
+    "bytes": 193186
+  },
+  "header_package": {
+    "package": "libcap-dev",
+    "version": "1:2.75-10ubuntu2",
+    "archive": {
+      "path": "build/libcap-dev_1%3a2.75-10ubuntu2_amd64.deb",
+      "sha256": "74fa71aa089d90d720722f6278314b90b72fa2e1631aea5dc32b770d0324ce86",
+      "bytes": 619148
+    },
+    "repository_sha256": "74fa71aa089d90d720722f6278314b90b72fa2e1631aea5dc32b770d0324ce86"
+  },
+  "build_commands": [
+    "CPPFLAGS=-I/root/rboxc/build/capability-deps/usr/include LDFLAGS=-L/root/rboxc/build/capability-deps/usr/lib/x86_64-linux-gnu sh scripts/prepare-coreutils.sh",
+    "C2RUST=/root/rboxc/.tools/c2rust-build/release/c2rust python3 scripts/translate-coreutils.py ls dir vdir",
+    "python3 scripts/assemble-coreutils.py",
+    "RUSTFLAGS='-L native=/root/rboxc/build/capability-deps/usr/lib/x86_64-linux-gnu' cargo build --locked --release"
+  ],
+  "sources": [
+    {
+      "path": "build/capability-worktree/src/generated/applet_ls.rs",
+      "sha256": "6cff11c7963e8f6ec4c865c289a259ec9fd0378c87c47f036b7de95cadf31161",
+      "bytes": 592955
+    },
+    {
+      "path": "scripts/prepare-coreutils.sh",
+      "sha256": "f8087ec942adeffd7eaf8a5cd04838f57b192aa1c87a7511c8cf2671c8b0b591",
+      "bytes": 2210
+    }
+  ],
+  "validation": {
+    "gnu-reviewed-native-capability-enabled": {
+      "report": {
+        "path": "build/capability-worktree/evidence/raw/gnu-reviewed-native-capability-enabled.json",
+        "sha256": "fadce016525112d1aef57c9eb313798e8cfe4ebec4b34572afa5558d5e68e5ce",
+        "bytes": 5288
+      },
+      "passed": 3,
+      "total": 3,
+      "results": [
+        {
+          "script": "tests/ls/capability.sh",
+          "source_sha256": "59ad124bd341dd46f03cb5d919662717e0ecafa76530db7177822a1c1003dfd2",
+          "pass": true,
+          "outcomes": {
+            "gnu": {
+              "status": 0,
+              "binary_sha256": "ae29b114cb7d6dcd1a87a20be45707bb5be0fe14997e491c7acd1b03e8596640",
+              "log": {
+                "path": "build/capability-worktree/evidence/raw/reviewed-tests-ls-capability.sh-gnu-rboxc-upstream-ep2hrev2.log",
+                "sha256": "ed9743fe42bf6103515d84ccd54bc4602eb2a69ec2f8c526334a193a8d61525f",
+                "bytes": 4579
+              },
+              "memory_logs": [],
+              "memory_log_count": 0
+            },
+            "rboxc": {
+              "status": 0,
+              "binary_sha256": "32946c05751cdbb38368fe2c1f6341602c6fda9ac02fcdc6c4668b8db33894ac",
+              "log": {
+                "path": "build/capability-worktree/evidence/raw/reviewed-tests-ls-capability.sh-rboxc-rboxc-upstream-04rroq03.log",
+                "sha256": "eea5980819a159a363513307247adf71d2427a248348d8acb65e504b77db5653",
+                "bytes": 4579
+              },
+              "memory_logs": [],
+              "memory_log_count": 0
+            }
+          }
+        },
+        {
+          "script": "tests/ls/no-cap.sh",
+          "source_sha256": "6efc730595916f951c1d141c758d7a23d125d31bef86f283bb22296d7a36e2d4",
+          "pass": true,
+          "outcomes": {
+            "gnu": {
+              "status": 0,
+              "binary_sha256": "ae29b114cb7d6dcd1a87a20be45707bb5be0fe14997e491c7acd1b03e8596640",
+              "log": {
+                "path": "build/capability-worktree/evidence/raw/reviewed-tests-ls-no-cap.sh-gnu-rboxc-upstream-cqgqu68p.log",
+                "sha256": "f872cda7d1978069010bb324a2b9b5054d2a3d80e9bbf1f5649933bc1ce9ae70",
+                "bytes": 3781
+              },
+              "memory_logs": [],
+              "memory_log_count": 0
+            },
+            "rboxc": {
+              "status": 0,
+              "binary_sha256": "32946c05751cdbb38368fe2c1f6341602c6fda9ac02fcdc6c4668b8db33894ac",
+              "log": {
+                "path": "build/capability-worktree/evidence/raw/reviewed-tests-ls-no-cap.sh-rboxc-rboxc-upstream-_hn4bsqe.log",
+                "sha256": "bf2790255684593b84d91d167cacd4e97e97912cae01aed8f1bd5bb7f4d5db1f",
+                "bytes": 3781
+              },
+              "memory_logs": [],
+              "memory_log_count": 0
+            }
+          }
+        },
+        {
+          "script": "tests/cp/capability.sh",
+          "source_sha256": "363fa9a81e3424b1657b534311384e883d5f9025d5da035a5d8c9321ec10f79c",
+          "pass": true,
+          "outcomes": {
+            "gnu": {
+              "status": 0,
+              "binary_sha256": "ae29b114cb7d6dcd1a87a20be45707bb5be0fe14997e491c7acd1b03e8596640",
+              "log": {
+                "path": "build/capability-worktree/evidence/raw/reviewed-tests-cp-capability.sh-gnu-rboxc-upstream-x7fpey8_.log",
+                "sha256": "afe95f1c1fe5387a233e25dfcdfda31089c2fe07b41e561b59ac64c92810e3e1",
+                "bytes": 3874
+              },
+              "memory_logs": [],
+              "memory_log_count": 0
+            },
+            "rboxc": {
+              "status": 0,
+              "binary_sha256": "32946c05751cdbb38368fe2c1f6341602c6fda9ac02fcdc6c4668b8db33894ac",
+              "log": {
+                "path": "build/capability-worktree/evidence/raw/reviewed-tests-cp-capability.sh-rboxc-rboxc-upstream-0wmc8y1n.log",
+                "sha256": "da3c8ddd653caa76c58b77d6ae939fd3bb612d8717b7083eaca0469f9d7ad34d",
+                "bytes": 3874
+              },
+              "memory_logs": [],
+              "memory_log_count": 0
+            }
+          }
+        }
+      ]
+    },
+    "gnu-reviewed-valgrind-capability-enabled": {
+      "report": {
+        "path": "build/capability-worktree/evidence/raw/gnu-reviewed-valgrind-capability-enabled.json",
+        "sha256": "a0ca85cfc5263dbcfac4160c157cc7da1fc7faa754417fde77e4c93f9a4ee8f1",
+        "bytes": 20812
+      },
+      "passed": 3,
+      "total": 3,
+      "results": [
+        {
+          "script": "tests/ls/capability.sh",
+          "source_sha256": "59ad124bd341dd46f03cb5d919662717e0ecafa76530db7177822a1c1003dfd2",
+          "pass": true,
+          "outcomes": {
+            "gnu": {
+              "status": 0,
+              "binary_sha256": "ae29b114cb7d6dcd1a87a20be45707bb5be0fe14997e491c7acd1b03e8596640",
+              "log": {
+                "path": "build/capability-worktree/evidence/raw/reviewed-vg-tests-ls-capability.sh-gnu-rboxc-upstream-zxw_q3tu.log",
+                "sha256": "eb5c440752a22db9f84d2add2bc9bbca0815f4b35848778d825c527fad8b0bb8",
+                "bytes": 4579
+              },
+              "memory_logs": [
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-zxw_q3tu-gnu/210274.log",
+                  "sha256": "46de353a3b795f573f3eea2338173c25a971c94d4150698254b5b2c434bc9c7c",
+                  "bytes": 3961
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-zxw_q3tu-gnu/210283.log",
+                  "sha256": "431c45dea3e48003dc91801ff26381055cff307e71c8a0958fe619291725fd36",
+                  "bytes": 3956
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-zxw_q3tu-gnu/211148.log",
+                  "sha256": "292730ce5c338a9e16a77a6febbf0fb8b4535fc63424d89ba1e4629bb744ad44",
+                  "bytes": 3937
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-zxw_q3tu-gnu/211151.log",
+                  "sha256": "12c1179d54584f48e01ef83c70e651b4f21c304a8b3aad6474dbf6ed659a7a91",
+                  "bytes": 3932
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-zxw_q3tu-gnu/211164.log",
+                  "sha256": "eabedb974eab8495303a6df63c11bf91464c48f2c2f6971857577c070e4ce157",
+                  "bytes": 3979
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-zxw_q3tu-gnu/211175.log",
+                  "sha256": "10177f5acd3b5196ece2d4964b20db40919bf9e0e9e534ecbca3b6c95b1f1ac9",
+                  "bytes": 779
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-zxw_q3tu-gnu/211183.log",
+                  "sha256": "89bc8bc1e9fcd376d7903ef43e4674fc3e9c830d1760753f28f2e8a3b4450c79",
+                  "bytes": 783
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-zxw_q3tu-gnu/211198.log",
+                  "sha256": "c7f210a8c9f412f2a92f71a50eebe4a42b1a38c07de58a71ca77bfb43f7ca8bf",
+                  "bytes": 4532
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-zxw_q3tu-gnu/211209.log",
+                  "sha256": "900698f7adc633fec53b571cb665908375b39c4c9c7cad68d2c32129cd0385f6",
+                  "bytes": 840
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-zxw_q3tu-gnu/211213.log",
+                  "sha256": "800118e5fc864ea3382ef0a5197c23cad8a09c16247ed038fcd238a48215e959",
+                  "bytes": 4532
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-zxw_q3tu-gnu/211219.log",
+                  "sha256": "d26d41b6c4c6af355e14fa9a66218a37fa7efb7000b00149b739c027e75d52f7",
+                  "bytes": 840
+                }
+              ],
+              "memory_log_count": 11
+            },
+            "rboxc": {
+              "status": 0,
+              "binary_sha256": "32946c05751cdbb38368fe2c1f6341602c6fda9ac02fcdc6c4668b8db33894ac",
+              "log": {
+                "path": "build/capability-worktree/evidence/raw/reviewed-vg-tests-ls-capability.sh-rboxc-rboxc-upstream-uv970r2b.log",
+                "sha256": "74d8d419302bee49a979a5e96377ec14be854e67dc42fef6e462a6e11d672b97",
+                "bytes": 4579
+              },
+              "memory_logs": [
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-uv970r2b-rboxc/211247.log",
+                  "sha256": "2cb1be4c7c4eb9f3f8221002cf585ce44264622232423b26ab155640ac1ea353",
+                  "bytes": 4094
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-uv970r2b-rboxc/211253.log",
+                  "sha256": "5aa7e259f3de931ed05d275389beae8e9d823c12bb2996fda2fa84c89a461594",
+                  "bytes": 4089
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-uv970r2b-rboxc/211261.log",
+                  "sha256": "fa2dbefa12d5ecc677a56d76f5fcb374ca227ec5598149122f7aefc6621cb6d6",
+                  "bytes": 4070
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-uv970r2b-rboxc/211271.log",
+                  "sha256": "a6397c898eb516d041429289997fd09d790bf76d5f9b71ce19b204c284033634",
+                  "bytes": 4065
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-uv970r2b-rboxc/211281.log",
+                  "sha256": "f363399efbac9590b9930139a5f80beb68fac8893b90b1341c9d158cf864ef53",
+                  "bytes": 4112
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-uv970r2b-rboxc/211292.log",
+                  "sha256": "e469b56145f26bb999b2fbb018ae347cfe46e2514a954147b1b387b5b3a7310e",
+                  "bytes": 779
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-uv970r2b-rboxc/211297.log",
+                  "sha256": "0c2c415af9a748e3d7927a6f5df89e54016c39664ffaf73441e76680aba4d91d",
+                  "bytes": 783
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-uv970r2b-rboxc/211316.log",
+                  "sha256": "b6500a69ee24164573aff51b105d9b6fcaa28610301ec09dc7f8aa9cf347e240",
+                  "bytes": 4514
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-uv970r2b-rboxc/211319.log",
+                  "sha256": "2bd6f1c961ba77c100d31ef07a3ea53481fdf392a56ce74bbe698bebf5af5e96",
+                  "bytes": 840
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-uv970r2b-rboxc/211328.log",
+                  "sha256": "c78ad2a5038493f9efdf022bd0b4eec2063a33cdc5dd72a2716ff90a0ac3a3bf",
+                  "bytes": 4514
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-uv970r2b-rboxc/211338.log",
+                  "sha256": "eb11a11b6f927b3af6e300ce3b0bcf2b3845fb595d93d03be8378535028399d0",
+                  "bytes": 840
+                }
+              ],
+              "memory_log_count": 11
+            }
+          }
+        },
+        {
+          "script": "tests/ls/no-cap.sh",
+          "source_sha256": "6efc730595916f951c1d141c758d7a23d125d31bef86f283bb22296d7a36e2d4",
+          "pass": true,
+          "outcomes": {
+            "gnu": {
+              "status": 0,
+              "binary_sha256": "ae29b114cb7d6dcd1a87a20be45707bb5be0fe14997e491c7acd1b03e8596640",
+              "log": {
+                "path": "build/capability-worktree/evidence/raw/reviewed-vg-tests-ls-no-cap.sh-gnu-rboxc-upstream-931ao7ym.log",
+                "sha256": "f512012e75e8342d2bdc3b852462fcf79fa96103b833efb40709dc37ef6b0d56",
+                "bytes": 3784
+              },
+              "memory_logs": [
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-931ao7ym-gnu/211361.log",
+                  "sha256": "a2ccecc22968cda075153d8fc3db7e400a3bb239ed48107aacd44bba92ae8caa",
+                  "bytes": 3961
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-931ao7ym-gnu/211363.log",
+                  "sha256": "20f7097e3b39838b7c74312afb237e6fd9b5f062ddd3a48cf302e4a03f801fa2",
+                  "bytes": 3956
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-931ao7ym-gnu/211367.log",
+                  "sha256": "45535292bd86b80fe6b90d697e148a3e90bf2c2be412c9893daf44161e3636f3",
+                  "bytes": 3937
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-931ao7ym-gnu/211369.log",
+                  "sha256": "e0f486fa02a1ced21a16c865e4645730dc005b7e8e1425001d17d73522473ae5",
+                  "bytes": 3932
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-931ao7ym-gnu/211376.log",
+                  "sha256": "8b7ad3ca45a61190f6123e8b1062f0e37147f49b893833913af6723a269506a1",
+                  "bytes": 3975
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-931ao7ym-gnu/211384.log",
+                  "sha256": "b6241fe99ba4ebc79c5e737f1fead16239da509122efb4da77000fe1c70ccb5b",
+                  "bytes": 779
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-931ao7ym-gnu/211400.log",
+                  "sha256": "bcffbf76ae996ace286796319185f0d2395aa48264b6d63d2a2e4e94675594cb",
+                  "bytes": 778
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-931ao7ym-gnu/211411.log",
+                  "sha256": "9cd556ca409b352cddb0d0469759f7082e51ef41326fd74f4c52d1ddf83b7c7a",
+                  "bytes": 4568
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-931ao7ym-gnu/211416.log",
+                  "sha256": "896a64ee25da7770a00a85d34dab3a9baf40e6fb811d5eeddbecc154e0dd6b66",
+                  "bytes": 4567
+                }
+              ],
+              "memory_log_count": 9
+            },
+            "rboxc": {
+              "status": 0,
+              "binary_sha256": "32946c05751cdbb38368fe2c1f6341602c6fda9ac02fcdc6c4668b8db33894ac",
+              "log": {
+                "path": "build/capability-worktree/evidence/raw/reviewed-vg-tests-ls-no-cap.sh-rboxc-rboxc-upstream-n1fbu1qy.log",
+                "sha256": "af6adaa923ce461a8c8bf9c256b35075f6cce2055aebcc34f880351ff008fea6",
+                "bytes": 3784
+              },
+              "memory_logs": [
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-n1fbu1qy-rboxc/211441.log",
+                  "sha256": "f092ef16df714db0a5d72858a4ac0e0f0bb9cca725e1ba6dd5e2416ea261ea2e",
+                  "bytes": 4094
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-n1fbu1qy-rboxc/211445.log",
+                  "sha256": "7b30ae4036fda9acd56c567c4c692aa2a63ec037c2c6747e2efe86db9530f257",
+                  "bytes": 4089
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-n1fbu1qy-rboxc/211446.log",
+                  "sha256": "dff71a723060c3d8ed710c27d098d0dbc32dd0c07fbec157d1f037f0409d03c7",
+                  "bytes": 4070
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-n1fbu1qy-rboxc/211453.log",
+                  "sha256": "716361fea292337f400f1891d8da0e1ebe21837243dea0ada1458f584e0b62b8",
+                  "bytes": 4065
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-n1fbu1qy-rboxc/211459.log",
+                  "sha256": "33f0047100c55e374b1e76523eaab371b3c6921f3f0a4226e357bc71ef43e3c7",
+                  "bytes": 4108
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-n1fbu1qy-rboxc/211466.log",
+                  "sha256": "8510b2340e6a30ba26e6b1edbd116d29b4c89542490b0c47ef436b16806c87f1",
+                  "bytes": 779
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-n1fbu1qy-rboxc/211479.log",
+                  "sha256": "1a55f2547f1a7045812839088d9d15ad0de645ba4d3c5debddfe79ef983445eb",
+                  "bytes": 778
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-n1fbu1qy-rboxc/211491.log",
+                  "sha256": "82de410d63b9b0af7bcc95ff7bc33e0c7bf866c33d8e3f21562a51ebb48fbd34",
+                  "bytes": 4500
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-n1fbu1qy-rboxc/211498.log",
+                  "sha256": "4cd934cc593219364296c12c597412b1a338dc12f943d036681582066a6772ca",
+                  "bytes": 4500
+                }
+              ],
+              "memory_log_count": 9
+            }
+          }
+        },
+        {
+          "script": "tests/cp/capability.sh",
+          "source_sha256": "363fa9a81e3424b1657b534311384e883d5f9025d5da035a5d8c9321ec10f79c",
+          "pass": true,
+          "outcomes": {
+            "gnu": {
+              "status": 0,
+              "binary_sha256": "ae29b114cb7d6dcd1a87a20be45707bb5be0fe14997e491c7acd1b03e8596640",
+              "log": {
+                "path": "build/capability-worktree/evidence/raw/reviewed-vg-tests-cp-capability.sh-gnu-rboxc-upstream-lyakvhcv.log",
+                "sha256": "882c69c3c50ef432da912a095d4a8f9dfd1b6ec117215b83b47095b9239a433b",
+                "bytes": 3874
+              },
+              "memory_logs": [
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-lyakvhcv-gnu/211562.log",
+                  "sha256": "db9a26e6e45fb236659214d9c77efbb6d2816f9e1b9bacc1099e23a2c83b5cd7",
+                  "bytes": 779
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-lyakvhcv-gnu/211584.log",
+                  "sha256": "50f6b928d25978cb1b64cf8aac898c6c450d6db2eaab5a17d688662e3bc2eff2",
+                  "bytes": 3684
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-lyakvhcv-gnu/211586.log",
+                  "sha256": "6982b6802b9882019ed60250c192b8ab7039e610624f4a4ffab398a387821455",
+                  "bytes": 4949
+                }
+              ],
+              "memory_log_count": 3
+            },
+            "rboxc": {
+              "status": 0,
+              "binary_sha256": "32946c05751cdbb38368fe2c1f6341602c6fda9ac02fcdc6c4668b8db33894ac",
+              "log": {
+                "path": "build/capability-worktree/evidence/raw/reviewed-vg-tests-cp-capability.sh-rboxc-rboxc-upstream-jdpqjp2g.log",
+                "sha256": "9185559fec7c0de993c5090378e4ebef9b9e780f251605553908dc66485314a6",
+                "bytes": 3874
+              },
+              "memory_logs": [
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-jdpqjp2g-rboxc/211626.log",
+                  "sha256": "6157d9cab61468fede8a5ea58498b314422983ecf59e8a89009392431f15a477",
+                  "bytes": 779
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-jdpqjp2g-rboxc/211649.log",
+                  "sha256": "62859f3f24c5b676736469b436849f2f4ea779aa0682a472a70f541f66d34920",
+                  "bytes": 4024
+                },
+                {
+                  "path": "build/capability-worktree/evidence/raw/reviewed-vg-rboxc-upstream-jdpqjp2g-rboxc/211654.log",
+                  "sha256": "a3b88c99ed2d84cf78fbc8a52484c4b71f9265d8f1da3d8f9ad01cfa95410ca4",
+                  "bytes": 5503
+                }
+              ],
+              "memory_log_count": 3
+            }
+          }
+        }
+      ]
+    },
+    "capability-smoke": {
+      "report": {
+        "path": "build/capability-worktree/evidence/capability-smoke.json",
+        "sha256": "c56bd09db6d01df8c507786376f84f38f04d6203e3e4ecb54e64a52df1128829",
+        "bytes": 72732
+      },
+      "passed": 428,
+      "total": 428
+    },
+    "capability-behavior": {
+      "report": {
+        "path": "build/capability-worktree/evidence/capability-behavior.json",
+        "sha256": "6ed5e77531527468673eb15d3e909f159169d6c7a7720e9db462d0f8dec9f8c7",
+        "bytes": 476098
+      },
+      "passed": 17,
+      "total": 17
+    },
+    "capability-valgrind-help": {
+      "report": {
+        "path": "build/capability-worktree/evidence/capability-valgrind-help.json",
+        "bytes": 50651,
+        "sha256": "e076993cdd215750fd0452265b6992508a5559723ddad4f679047aa4c84b25f0"
+      },
+      "passed": 107,
+      "total": 107
+    }
+  },
+  "implementation_commit": "d1eec42"
+}
