@@ -54,6 +54,11 @@ def main():
                 'memory_clean': clean, 'log': str(log.relative_to(ROOT)),
                 'pass': expected == actual == instrumented and clean})
         names = sorted(r['name'] for r in json.loads((ROOT/'evidence/translation.json').read_text()))
+        extra = ROOT/'evidence/hello-translation.json'
+        if extra.exists():
+            entry = json.loads(extra.read_text())
+            if entry['translated']:
+                names = sorted([*names, entry['command']])
         for alias in ('rboxc', 'rbox'):
             listed = execute([str(run/alias), '--list'])
             unknown = execute([str(run/alias), 'unknown-command'])

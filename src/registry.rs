@@ -1,3 +1,5 @@
+#[path = "generated/applet_hello.rs"]
+mod applet_hello;
 #[path = "generated/applet__.rs"]
 mod applet__;
 #[path = "generated/applet_arch.rs"]
@@ -250,6 +252,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"fold", applet_fold::single_binary_main_fold),
     (b"groups", applet_groups::single_binary_main_groups),
     (b"head", applet_head::single_binary_main_head),
+    (b"hello", applet_hello::single_binary_main_hello),
     (b"hostid", applet_hostid::single_binary_main_hostid),
     (b"hostname", applet_hostname::single_binary_main_hostname),
     (b"id", applet_id::single_binary_main_id),

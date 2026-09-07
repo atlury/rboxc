@@ -141,3 +141,5 @@ stdbuf_adaptation = prepare_stdbuf_cleanup(ROOT, SOURCE, BUILD, runtime_helper)
                          'sha256': hashlib.sha256(runtime_helper.read_bytes()).hexdigest()}]}, indent=2)+'\n')
 (ROOT/'evidence/translation.json').write_text(json.dumps(rows,indent=2)+'\n')
 print(f'Prepared {len(rows)-len(failed)} Rust entries, {len(failed)} explicit temporary C entries, and {len(prepared)} helper archives')
+if (ROOT/'evidence/hello-translation.json').exists():
+    subprocess.run([sys.executable, str(ROOT/'scripts/assemble-hello.py')], check=True)

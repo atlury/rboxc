@@ -14,7 +14,7 @@ def fingerprint(path):
 
 
 class ComparisonProfile:
-    def __init__(self, default_report, *, selections=False):
+    def __init__(self, default_report, *, selections=False, oracle=None):
         parser = argparse.ArgumentParser()
         parser.add_argument('--candidate', type=Path, default=ROOT/'target/release/rboxc')
         parser.add_argument('--report-name', help='Separate report and memory-log directory for a candidate build')
@@ -36,7 +36,7 @@ class ComparisonProfile:
             self.logs.mkdir(exist_ok=True)
             self.logs = Path(tempfile.mkdtemp(prefix='run-', dir=self.logs))
         self.binary_sha256 = fingerprint(self.binary)
-        self.oracle = ROOT/'build/gnu-coreutils/src/coreutils'
+        self.oracle = Path(oracle) if oracle is not None else ROOT/'build/gnu-coreutils/src/coreutils'
         self.oracle_sha256 = fingerprint(self.oracle)
         self.runtime_helpers = {path: fingerprint(path) for path in
                                 [self.binary.parent/'libstdbuf.so', self.oracle.parent/'libstdbuf.so']
