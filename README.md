@@ -114,8 +114,8 @@ script; `--report-name` gives independent batches distinct evidence files.
 New results record tested binary hashes, and exec-wrapper tests can request
 Valgrind child tracing.
 
-The reviewed Valgrind evidence records 467 clean results out of 495 scripts
-or selections: 3,707 Perl cases and 10,517 candidate/descendant process logs.
+The reviewed Valgrind evidence records 469 clean results out of 496 scripts
+or selections: 3,707 Perl cases and 10,973 candidate/descendant process logs.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
 memory and descriptors retained by host script interpreters. Both pass natively.
@@ -285,7 +285,10 @@ stops on the first memory error; the parser sums every recorded summary and
 requires the last exec image to finish, rejecting mixed-PID or truncated logs.
 Seven parser regression checks pass, and reassessing 20,983 existing GNU and
 candidate logs changes no recorded results. The separate chroot failure script
-still has incomplete exec reports. Generic read-error,
+now uses GNU's explicit multicall dispatcher while tracing children: this keeps
+its expected command name in diagnostics, and all 17 candidate process logs
+finish cleanly. Both original chroot scripts now pass natively and under
+Valgrind. Generic read-error,
 warning-output, write-error, closed-stdout, and line-buffer responsiveness
 scripts pass natively across their registered applicable command sets.
 The generic read-error script now passes Valgrind after owned-input cleanup
@@ -294,7 +297,9 @@ cat's splice pipe and frees date's batch line buffer on fatal read errors.
 Thirteen additional behavior fixtures pass native GNU comparisons and Valgrind;
 all eight selected original regression scripts also pass natively. Native
 launchers now trace the warning-output and line-buffer responsiveness scripts
-through exec; both pass Valgrind. The harness stages and hashes each build's
+through exec; both pass Valgrind. GNU's complete option-alias script also passes
+under Valgrind with 456 clean candidate process logs, including its text-processing
+helpers. The harness stages and hashes each build's
 own stdbuf library beside its test executables. The closed-stdout script passes
 its assertions but stays open under Valgrind: printf, verbose cp, and two mktemp
 invocations report operations on intentionally closed stdout, without lost heap

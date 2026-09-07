@@ -143,6 +143,9 @@ def main():
         if row.get('valgrind_log_fd'):
             assert row.get('native_launcher') and row['script'] == 'tests/chroot/chroot-credentials.sh', 'log descriptor mode requires a reviewed exec-only profile'
             assert row.get('valgrind_vgdb') is False, 'credential changes require disabling vgdb files'
+        if row.get('valgrind_multicall'):
+            assert not row.get('native_launcher') and row.get('trace_children')
+            assert row['script'] == 'tests/chroot/chroot-fail.sh', 'multicall tracing requires a reviewed profile'
         assert row.get('perl_driver') in (None, 'tty-eof'), 'unknown Perl driver'
         if row.get('perl_driver') == 'tty-eof':
             assert row['script'] == 'tests/misc/tty-eof.pl' and row.get('full_suite')
@@ -183,6 +186,9 @@ def main():
                 memory_dir = None
                 if instrument:
                     (run/'real').mkdir()
+                    if row.get('valgrind_multicall'):
+                        assert 'coreutils' not in commands
+                        (run/'real/coreutils').symlink_to(candidate)
                     if stdbuf_library:
                         shutil.copy2(stdbuf_library, run/'real/libstdbuf.so')
                     memory_dir = ROOT/'evidence/raw'/('reviewed-vg-'+run.name+'-'+implementation)
@@ -209,9 +215,13 @@ def main():
                         if row.get('native_launcher'):
                             wrapper.symlink_to('.valgrind-launch')
                             continue
+                        # GNU's explicit dispatcher preserves the command name in
+                        # diagnostics when Valgrind rewrites argv[0] during exec.
+                        invocation = (['coreutils', '--coreutils-prog='+command]
+                                      if row.get('valgrind_multicall') else [command])
                         vg = ['valgrind', '--leak-check=full', '--show-leak-kinds=all',
                               '--track-fds=yes', *(['--vgdb=no'] if row.get('valgrind_vgdb') is False else []), *(['--trace-children=yes'] if row.get('trace_children') else []),
-                              '--log-file='+str(runtime_memory_dir/'%p.log'), command]
+                              '--log-file='+str(runtime_memory_dir/'%p.log'), *invocation]
                         startup = ''
                         if tmpdir_library:
                             # Valgrind needs an existing directory at startup. The
