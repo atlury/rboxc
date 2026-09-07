@@ -4013,6 +4013,7 @@ unsafe extern "C" fn tail_forever_inotify(
         xalloc_die();
     }
     *wd_to_namep = wd_to_name;
+    RBOXC_TAIL_WATCH_TABLE = wd_to_name;
     let mut inotify_wd_mask: uint32_t = IN_MODIFY as uint32_t;
     if follow_mode.0 == Follow_mode::Follow_name.0 {
         inotify_wd_mask |= (IN_ATTRIB | IN_DELETE_SELF | IN_MOVE_SELF) as uint32_t;
@@ -4362,6 +4363,7 @@ unsafe extern "C" fn tail_forever_inotify(
             .wrapping_add(::core::mem::size_of::<inotify_event>().wrapping_add(1usize)
                 as ::core::ffi::c_ulong) as idx_t;
     evbuf = ximalloc(evlen) as *mut ::core::ffi::c_char;
+    RBOXC_TAIL_EVENTS = evbuf;
     let mut len: ptrdiff_t = 0 as ptrdiff_t;
     loop {
         let mut fspec: *mut File_spec = ::core::ptr::null_mut::<File_spec>();
@@ -4497,6 +4499,7 @@ unsafe extern "C" fn tail_forever_inotify(
                 evlen *= 2 as idx_t;
                 evbuf =
                     xirealloc(evbuf as *mut ::core::ffi::c_void, evlen) as *mut ::core::ffi::c_char;
+                RBOXC_TAIL_EVENTS = evbuf;
                 continue;
             } else if len <= 0 as ptrdiff_t {
                 if 0 != 0 {
@@ -5793,6 +5796,43 @@ unsafe extern "C" fn ignore_fifo_and_pipe(
     }
     return some_viable;
 }
+static mut RBOXC_TAIL_FILES: *mut File_spec = ::core::ptr::null_mut();
+static mut RBOXC_TAIL_FILE_COUNT: ::core::ffi::c_int = 0;
+static mut RBOXC_TAIL_WATCH_FD: ::core::ffi::c_int = -1;
+static mut RBOXC_TAIL_WATCH_TABLE: *mut Hash_table = ::core::ptr::null_mut();
+static mut RBOXC_TAIL_EVENTS: *mut ::core::ffi::c_char = ::core::ptr::null_mut();
+unsafe fn rboxc_free_tail_watches() {
+    let events = RBOXC_TAIL_EVENTS;
+    RBOXC_TAIL_EVENTS = ::core::ptr::null_mut();
+    free(events.cast());
+    let table = RBOXC_TAIL_WATCH_TABLE;
+    RBOXC_TAIL_WATCH_TABLE = ::core::ptr::null_mut();
+    if !table.is_null() { hash_free(table); }
+    let fd = RBOXC_TAIL_WATCH_FD;
+    RBOXC_TAIL_WATCH_FD = -1;
+    if fd >= 0 { close(fd); }
+}
+unsafe extern "C" fn rboxc_free_tail_resources() {
+    let saved_errno = *::libc::__errno_location();
+    rboxc_free_tail_watches();
+    let files = RBOXC_TAIL_FILES;
+    let count = RBOXC_TAIL_FILE_COUNT;
+    RBOXC_TAIL_FILES = ::core::ptr::null_mut();
+    RBOXC_TAIL_FILE_COUNT = 0;
+    for i in 0..count {
+        let file = files.offset(i as isize);
+        let fd = (*file).fd;
+        (*file).fd = -1;
+        // GNU's main owns stdin's close; these entries own only named files.
+        if fd > STDIN_FILENO { close(fd); }
+    }
+    free(files.cast());
+    let writers = pids;
+    pids = ::core::ptr::null_mut();
+    nbpids = 0;
+    free(writers.cast());
+    *::libc::__errno_location() = saved_errno;
+}
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_tail(
     mut argc: ::core::ffi::c_int,
@@ -5812,6 +5852,7 @@ pub unsafe extern "C" fn single_binary_main_tail(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_free_tail_resources));
     let mut p: ::core::ffi::c_int = getpagesize();
     if IDX_MAX < p as ::core::ffi::c_long {
         xalloc_die();
@@ -5981,6 +6022,7 @@ pub unsafe extern "C" fn single_binary_main_tail(
     ) as *mut File_spec;
     let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     while i_0 < n_files {
+        (*F.offset(i_0 as isize)).fd = -1;
         (*F.offset(i_0 as isize)).name = *file.offset(i_0 as isize);
         (*F.offset(i_0 as isize)).prettyname = if streq(
             *file.offset(i_0 as isize),
@@ -5998,6 +6040,8 @@ pub unsafe extern "C" fn single_binary_main_tail(
         };
         i_0 += 1;
     }
+    RBOXC_TAIL_FILES = F;
+    RBOXC_TAIL_FILE_COUNT = n_files;
     if header_mode_0.0 == header_mode::always.0
         || header_mode_0.0 == header_mode::multiple_files.0 && n_files > 1 as ::core::ffi::c_int
     {
@@ -6088,14 +6132,14 @@ pub unsafe extern "C" fn single_binary_main_tail(
         }
         if !disable_inotify {
             let mut wd: ::core::ffi::c_int = inotify_init();
+            RBOXC_TAIL_WATCH_FD = wd;
             if 0 as ::core::ffi::c_int <= wd {
                 if fflush_unlocked(stdout) < 0 as ::core::ffi::c_int {
                     write_error();
                 }
                 let mut ht: *mut Hash_table = ::core::ptr::null_mut::<Hash_table>();
                 tail_forever_inotify(wd, F, n_files, sleep_interval, &raw mut ht);
-                hash_free(ht);
-                close(wd);
+                rboxc_free_tail_watches();
                 *__errno_location() = 0 as ::core::ffi::c_int;
             }
             if 0 != 0 {
@@ -6162,7 +6206,7 @@ pub unsafe extern "C" fn single_binary_main_tail(
             });
         };
     }
-    free(F.cast());
+    rboxc_free_tail_resources();
     return if ok as ::core::ffi::c_int != 0 {
         0 as ::core::ffi::c_int
     } else {

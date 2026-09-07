@@ -9,6 +9,9 @@ def replace_once(text, before, after):
 
 
 def cleanup(name, text):
+    if name == 'sort':
+        from sort_cleanup import cleanup_sort
+        text = cleanup_sort(text, replace_once)
     if name in ('cp', 'mv'):
         from copy_cleanup import cleanup_copy
         text = cleanup_copy(name, text, replace_once)
@@ -509,10 +512,8 @@ unsafe extern "C" fn rboxc_free_date_resources() {
         text = replace_once(text, anchor,
                             '    rboxc_free_date_resources();\n' + anchor)
     if name == 'tail':
-        anchor = '    return if ok as ::core::ffi::c_int != 0 {\n        0 as ::core::ffi::c_int\n    } else {\n        1 as ::core::ffi::c_int\n    };\n}\npub const __CHAR_BIT__'
-        # All uses of the table have finished when main returns. Its names
-        # borrow argv, including when -f is ignored for piped standard input.
-        text = replace_once(text, anchor, '    free(F.cast());\n' + anchor)
+        from tail_cleanup import cleanup_tail
+        text = cleanup_tail(text, replace_once)
     if name == 'tr':
         declaration = 'unsafe extern "C" fn spec_init(mut spec_list: *mut Spec_list) {'
         helper = '''// Each list owns its dummy head and every appended element.

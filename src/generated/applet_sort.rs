@@ -3192,6 +3192,9 @@ unsafe extern "C" fn create_temp_file(
     cs_leave(&raw mut cs);
     *__errno_location() = saved_errno;
     if fd < 0 as ::core::ffi::c_int {
+        free(node as *mut ::core::ffi::c_void);
+        node = ::core::ptr::null_mut::<tempnode>();
+        *__errno_location() = saved_errno;
         if !(survive_fd_exhaustion as ::core::ffi::c_int != 0 && *__errno_location() == EMFILE) {
             if 0 != 0 {
                 error(
@@ -3233,8 +3236,6 @@ unsafe extern "C" fn create_temp_file(
                 });
             };
         }
-        free(node as *mut ::core::ffi::c_void);
-        node = ::core::ptr::null_mut::<tempnode>();
     }
     *pfd = fd;
     return node;
@@ -8376,6 +8377,32 @@ unsafe extern "C" fn key_init(mut key: *mut keyfield) -> *mut keyfield {
     (*key).eword = SIZE_MAX as size_t;
     return key;
 }
+static mut RBOXC_SORT_FILES: *mut *mut ::core::ffi::c_char = ::core::ptr::null_mut();
+static mut RBOXC_SORT_MERGE_FILES: *mut sortfile = ::core::ptr::null_mut();
+static mut RBOXC_SORT_LIST_STREAM: *mut FILE = ::core::ptr::null_mut();
+static mut RBOXC_SORT_TOKENS: ::core::mem::MaybeUninit<Tokens> = ::core::mem::MaybeUninit::uninit();
+static mut RBOXC_SORT_TOKENS_READY: bool = false;
+unsafe extern "C" { fn readtokens0_free(t: *mut Tokens); }
+unsafe fn rboxc_free_sort_files() {
+    let files = RBOXC_SORT_FILES;
+    RBOXC_SORT_FILES = ::core::ptr::null_mut();
+    free(files.cast());
+}
+unsafe extern "C" fn rboxc_free_sort_resources() {
+    let saved_errno = *::libc::__errno_location();
+    let stream = RBOXC_SORT_LIST_STREAM;
+    RBOXC_SORT_LIST_STREAM = ::core::ptr::null_mut();
+    if !stream.is_null() { fclose(stream); }
+    let merge_files = RBOXC_SORT_MERGE_FILES;
+    RBOXC_SORT_MERGE_FILES = ::core::ptr::null_mut();
+    free(merge_files.cast());
+    rboxc_free_sort_files();
+    if RBOXC_SORT_TOKENS_READY {
+        RBOXC_SORT_TOKENS_READY = false;
+        readtokens0_free((&raw mut RBOXC_SORT_TOKENS).cast());
+    }
+    *::libc::__errno_location() = saved_errno;
+}
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_sort(
     mut argc: ::core::ffi::c_int,
@@ -8438,53 +8465,7 @@ pub unsafe extern "C" fn single_binary_main_sort(
     let mut files: *mut *mut ::core::ffi::c_char =
         ::core::ptr::null_mut::<*mut ::core::ffi::c_char>();
     let mut files_from: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
-    let mut tok: Tokens = Tokens {
-        n_tok: 0,
-        tok: ::core::ptr::null_mut::<*mut ::core::ffi::c_char>(),
-        tok_len: ::core::ptr::null_mut::<size_t>(),
-        o_data: obstack {
-            chunk_size: 0,
-            chunk: ::core::ptr::null_mut::<_obstack_chunk>(),
-            object_base: ::core::ptr::null_mut::<::core::ffi::c_char>(),
-            next_free: ::core::ptr::null_mut::<::core::ffi::c_char>(),
-            chunk_limit: ::core::ptr::null_mut::<::core::ffi::c_char>(),
-            temp: C2Rust_Unnamed_15 { tempint: 0 },
-            alignment_mask: 0,
-            chunkfun: C2Rust_Unnamed_14 { plain: None },
-            freefun: C2Rust_Unnamed_13 { plain: None },
-            extra_arg: ::core::ptr::null_mut::<::core::ffi::c_void>(),
-            use_extra_arg_maybe_empty_object_alloc_failed: [0; 1],
-            c2rust_padding: [0; 7],
-        },
-        o_tok: obstack {
-            chunk_size: 0,
-            chunk: ::core::ptr::null_mut::<_obstack_chunk>(),
-            object_base: ::core::ptr::null_mut::<::core::ffi::c_char>(),
-            next_free: ::core::ptr::null_mut::<::core::ffi::c_char>(),
-            chunk_limit: ::core::ptr::null_mut::<::core::ffi::c_char>(),
-            temp: C2Rust_Unnamed_15 { tempint: 0 },
-            alignment_mask: 0,
-            chunkfun: C2Rust_Unnamed_14 { plain: None },
-            freefun: C2Rust_Unnamed_13 { plain: None },
-            extra_arg: ::core::ptr::null_mut::<::core::ffi::c_void>(),
-            use_extra_arg_maybe_empty_object_alloc_failed: [0; 1],
-            c2rust_padding: [0; 7],
-        },
-        o_tok_len: obstack {
-            chunk_size: 0,
-            chunk: ::core::ptr::null_mut::<_obstack_chunk>(),
-            object_base: ::core::ptr::null_mut::<::core::ffi::c_char>(),
-            next_free: ::core::ptr::null_mut::<::core::ffi::c_char>(),
-            chunk_limit: ::core::ptr::null_mut::<::core::ffi::c_char>(),
-            temp: C2Rust_Unnamed_15 { tempint: 0 },
-            alignment_mask: 0,
-            chunkfun: C2Rust_Unnamed_14 { plain: None },
-            freefun: C2Rust_Unnamed_13 { plain: None },
-            extra_arg: ::core::ptr::null_mut::<::core::ffi::c_void>(),
-            use_extra_arg_maybe_empty_object_alloc_failed: [0; 1],
-            c2rust_padding: [0; 7],
-        },
-    };
+    let tok = (&raw mut RBOXC_SORT_TOKENS).cast::<Tokens>();
     let mut outfile: *const ::core::ffi::c_char = ::core::ptr::null::<::core::ffi::c_char>();
     let mut locale_ok: bool = false;
     set_program_name(*argv.offset(0isize));
@@ -8547,12 +8528,14 @@ pub unsafe extern "C" fn single_binary_main_sort(
     }
     signal(SIGCHLD, SIG_DFL);
     atexit(Some(exit_cleanup as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_free_sort_resources));
     key_init(&raw mut gkey);
     gkey.sword = SIZE_MAX as size_t;
     files = xnmalloc(
         argc as size_t,
         ::core::mem::size_of::<*mut ::core::ffi::c_char>(),
     ) as *mut *mut ::core::ffi::c_char;
+    RBOXC_SORT_FILES = files;
     loop {
         let mut oi: ::core::ffi::c_int = -1 as ::core::ffi::c_int;
         if c == -1 as ::core::ffi::c_int
@@ -9207,8 +9190,10 @@ pub unsafe extern "C" fn single_binary_main_sort(
         }
         let mut stream: *mut FILE =
             xfopen(files_from, b"r\0".as_ptr() as *const ::core::ffi::c_char);
-        readtokens0_init(&raw mut tok);
-        if !readtokens0(stream, &raw mut tok) {
+        if stream != stdin { RBOXC_SORT_LIST_STREAM = stream; }
+        readtokens0_init(tok);
+        RBOXC_SORT_TOKENS_READY = true;
+        if !readtokens0(stream, tok) {
             if 0 != 0 {
                 error(
                     C2Rust_Unnamed_20::SORT_FAILURE.0 as ::core::ffi::c_int,
@@ -9251,11 +9236,12 @@ pub unsafe extern "C" fn single_binary_main_sort(
                 });
             };
         }
+        RBOXC_SORT_LIST_STREAM = ::core::ptr::null_mut();
         xfclose(stream, files_from);
-        if tok.n_tok != 0 {
-            free(files as *mut ::core::ffi::c_void);
-            files = tok.tok;
-            nfiles = tok.n_tok;
+        if (*tok).n_tok != 0 {
+            rboxc_free_sort_files();
+            files = (*tok).tok;
+            nfiles = (*tok).n_tok;
             let mut i_1: size_t = 0 as size_t;
             while i_1 < nfiles {
                 if streq(
@@ -9581,9 +9567,10 @@ pub unsafe extern "C" fn single_binary_main_sort(
     }
     if nfiles == 0 as size_t {
         nfiles = 1 as size_t;
-        free(files as *mut ::core::ffi::c_void);
+        rboxc_free_sort_files();
         files = xmalloc(::core::mem::size_of::<*mut ::core::ffi::c_char>())
             as *mut *mut ::core::ffi::c_char;
+        RBOXC_SORT_FILES = files;
         *files = b"-\0".as_ptr() as *const ::core::ffi::c_char as *mut ::core::ffi::c_char;
     }
     if (0 as size_t) < sort_size {
@@ -9668,6 +9655,7 @@ pub unsafe extern "C" fn single_binary_main_sort(
     if mergeonly {
         let mut sortfiles: *mut sortfile =
             xcalloc(nfiles, ::core::mem::size_of::<sortfile>()) as *mut sortfile;
+        RBOXC_SORT_MERGE_FILES = sortfiles;
         let mut i_2: size_t = 0 as size_t;
         while i_2 < nfiles {
             (*sortfiles.offset(i_2 as isize)).name = *files.offset(i_2 as isize);
@@ -9707,9 +9695,7 @@ pub unsafe extern "C" fn single_binary_main_sort(
             b"-\0".as_ptr() as *const ::core::ffi::c_char,
         );
     }
-    if files_from.is_null() {
-        free(files as *mut ::core::ffi::c_void);
-    }
+    rboxc_free_sort_resources();
     return 0 as ::core::ffi::c_int;
 }
 pub const __SCHAR_MAX__: ::core::ffi::c_int = 127 as ::core::ffi::c_int;

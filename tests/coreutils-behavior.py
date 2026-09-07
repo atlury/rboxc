@@ -217,6 +217,20 @@ CASES = [
     ('date', ['-u', '-d', 'not-a-date', '+%-N']),
     ('date', ['-u', '-f', 'missing', '+%-N']),
     ('tail', ['-f', '-n', '1']),
+    ('sort', ['-m', 'left', 'right']),
+    ('sort', ['-m', '--batch-size=0', 'left', 'right']),
+    ('sort', ['-c', 'left']),
+    ('sort', ['--files0-from=/dev/null']),
+    ('sort', ['--files0-from=empty-utmp']),
+    ('sort', ['--files0-from=dir']),
+    ('sort', ['--files0-from=missing']),
+    ('sort', ['--files0-from=-']),
+    ('sort', ['-m', '--batch-size=2', '-Tmissing', 'left', 'right', 'left']),
+    ('tail', ['-f', '--pid=2147483647', 'input']),
+    ('tail', ['-f', '---disable-inotify', '--pid=2147483647', 'input']),
+    ('tail', ['-f', '--pid=2147483647', 'missing']),
+    ('tail', ['-f', '--pid=2147483647', '-']),
+    ('tail', ['-f', '--pid=1', '--pid=invalid', 'input']),
 ]
 
 
