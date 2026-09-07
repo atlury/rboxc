@@ -147,3 +147,5 @@ if (ROOT/'evidence/time-translation.json').exists():
     subprocess.run([sys.executable, str(ROOT/'scripts/assemble-time.py')], check=True)
 if (ROOT/'evidence/which-translation.json').exists():
     subprocess.run([sys.executable, str(ROOT/'scripts/assemble-which.py')], check=True)
+if (ROOT/'evidence/diffutils-diff-translation.json').exists():
+    subprocess.run([sys.executable, str(ROOT/'scripts/assemble-diffutils.py')], check=True)

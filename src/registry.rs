@@ -1,3 +1,11 @@
+#[path = "generated/applet_sdiff.rs"]
+mod applet_sdiff;
+#[path = "generated/applet_diff3.rs"]
+mod applet_diff3;
+#[path = "generated/applet_diff.rs"]
+mod applet_diff;
+#[path = "generated/applet_cmp.rs"]
+mod applet_cmp;
 #[path = "generated/applet_which.rs"]
 mod applet_which;
 #[path = "generated/applet_time.rs"]
@@ -234,6 +242,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"chown", applet_chown::single_binary_main_chown),
     (b"chroot", applet_chroot::single_binary_main_chroot),
     (b"cksum", applet_cksum::single_binary_main_cksum),
+    (b"cmp", applet_cmp::single_binary_main_cmp),
     (b"comm", applet_comm::single_binary_main_comm),
     (b"coreutils", applet_coreutils::single_binary_main_coreutils),
     (b"cp", applet_cp::single_binary_main_cp),
@@ -242,6 +251,8 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"date", applet_date::single_binary_main_date),
     (b"dd", applet_dd::single_binary_main_dd),
     (b"df", applet_df::single_binary_main_df),
+    (b"diff", applet_diff::single_binary_main_diff),
+    (b"diff3", applet_diff3::single_binary_main_diff3),
     (b"dir", applet_dir::single_binary_main_dir),
     (b"dircolors", applet_dircolors::single_binary_main_dircolors),
     (b"dirname", applet_dirname::single_binary_main_dirname),
@@ -291,6 +302,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"realpath", applet_realpath::single_binary_main_realpath),
     (b"rm", applet_rm::single_binary_main_rm),
     (b"rmdir", applet_rmdir::single_binary_main_rmdir),
+    (b"sdiff", applet_sdiff::single_binary_main_sdiff),
     (b"seq", applet_seq::single_binary_main_seq),
     (b"sha1sum", applet_sha1sum::single_binary_main_sha1sum),
     (b"sha224sum", applet_sha224sum::single_binary_main_sha224sum),
