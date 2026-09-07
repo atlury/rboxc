@@ -114,14 +114,14 @@ script; `--report-name` gives independent batches distinct evidence files.
 New results record tested binary hashes, and exec-wrapper tests can request
 Valgrind child tracing.
 
-The reviewed Valgrind evidence records 462 clean results out of 486 scripts
-or selections: 3,707 Perl cases and 10,326 candidate/descendant process logs.
+The reviewed Valgrind evidence records 465 clean results out of 488 scripts
+or selections: 3,707 Perl cases and 10,496 candidate/descendant process logs.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
 memory and descriptors retained by host script interpreters. Both pass natively.
 Matching GNU findings are not counted as clean.
 Three more results remain open: dd's intentionally closed-stderr diagnostics,
-install's external strip children whose successful exec leaves incomplete logs,
+install's external strip children with host-shell descriptors and host-tool heap findings,
 and cat's injected pipe-creation failure interfering with Valgrind startup.
 All 46 registered move scripts now pass natively and under Valgrind.
 The GNU oracle and helper build explicitly enable ACL and extended-attribute
@@ -278,16 +278,29 @@ original script and its mode assertions remain unchanged and pass both modes.
 
 The two chroot scripts pass natively. The credentials test gives only its child
 supplementary group 0, matching the original test's assumption; the parent's
-groups remain unchanged. Instrumented chroot still has incomplete exec reports
-and log-file permission failures after credential changes. Generic read-error,
+groups remain unchanged. Its Valgrind profile now keeps one pre-opened log
+descriptor across credential changes and disables optional vgdb files. All 32
+candidate process logs, spanning 95 exec images, finish cleanly. The launcher
+stops on the first memory error; the parser sums every recorded summary and
+requires the last exec image to finish, rejecting mixed-PID or truncated logs.
+Seven parser regression checks pass, and reassessing 20,983 existing GNU and
+candidate logs changes no recorded results. The separate chroot failure script
+still has incomplete exec reports. Generic read-error,
 warning-output, write-error, closed-stdout, and line-buffer responsiveness
 scripts pass natively across their registered applicable command sets.
 The generic read-error script now passes Valgrind after owned-input cleanup
 for cat, csplit, date, join, shuf, sort, tail, and uniq. The cleanup also closes
 cat's splice pipe and frees date's batch line buffer on fatal read errors.
 Thirteen additional behavior fixtures pass native GNU comparisons and Valgrind;
-all eight selected original regression scripts also pass natively. The warning
-test still has an env exec report without a final summary. The two tail
+all eight selected original regression scripts also pass natively. Native
+launchers now trace the warning-output and line-buffer responsiveness scripts
+through exec; both pass Valgrind. The harness stages and hashes each build's
+own stdbuf library beside its test executables. The closed-stdout script passes
+its assertions but stays open under Valgrind: printf, verbose cp, and two mktemp
+invocations report operations on intentionally closed stdout, without lost heap
+or leaked descriptors. Install's strip-program assertions also pass with child
+tracing; findings in the host shell, sed, and grep remain recorded as open.
+The two tail
 prerequisite reruns now execute their assertions successfully, but retain
 descriptors when follow mode is terminated by a signal; pipe-f also probes
 intentionally closed stdout. Six additional tail scripts pass natively, covering

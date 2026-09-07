@@ -51,6 +51,30 @@ die $@ if $@;
 '''
 
 
+def parse_memory_log(report, pid, exec_only=False):
+    """Assess all summaries, including append-only logs spanning reviewed execs."""
+    errors = list(re.finditer(r'ERROR SUMMARY: ([\d,]+) errors', report))
+    fds = list(re.finditer(r'FILE DESCRIPTORS: (\d+) open \((\d+) (?:inherited|std)\)', report))
+    entry = {
+        'errors': sum(int(found[1].replace(',', '')) for found in errors) if errors else None,
+        'non_inherited_descriptors': sum(int(found[1])-int(found[2]) for found in fds) if fds else None,
+        'heap_bytes': {kind: sum(int(found.replace(',', '')) for found in matches)
+            for kind in ['definitely lost', 'indirectly lost', 'possibly lost', 'still reachable']
+            if (matches := re.findall(re.escape(kind)+r': ([\d,]+) bytes', report))}}
+    if exec_only:
+        pids = sorted(set(re.findall(r'^==([0-9]+)==', report, re.M)))
+        images = list(re.finditer(r'^==[0-9]+== Command: ', report, re.M))
+        # This profile only execs: forked writers or an unfinished
+        # last image must never be accepted as a clean process.
+        entry['exec_images'] = len(images)
+        entry['log_pids'] = pids
+        entry['complete_exec_log'] = (pids == [pid] and bool(images)
+            and bool(errors) and bool(fds) and len(errors) == len(fds)
+            and errors[-1].start() > images[-1].start()
+            and fds[-1].start() > images[-1].start())
+    return entry
+
+
 def main():
     manifest = json.loads((ROOT/'inventory/gnu-reviewed-tests.json').read_text())
     parser = argparse.ArgumentParser(description=__doc__)
@@ -91,16 +115,18 @@ def main():
         return results
 
     native_launchers = {}
-    for direct in sorted({bool(row.get('direct_valgrind')) for row in manifest
+    for direct, log_fd in sorted({(bool(row.get('direct_valgrind')), bool(row.get('valgrind_log_fd'))) for row in manifest
                           if instrument and row.get('native_launcher') and included(row)}):
-        native_launcher = ROOT/('build/valgrind-launch-direct' if direct else 'build/valgrind-launch')
+        native_launcher = ROOT/('build/valgrind-launch'+('-direct' if direct else '')+('-log-fd' if log_fd else ''))
         extra = ['-DRBOXC_VALGRIND_EXECUTABLE="/usr/bin/valgrind.bin"'] if direct else []
+        if log_fd:
+            extra.append('-DRBOXC_VALGRIND_LOG_FD=1')
         if direct:
             assert Path('/usr/bin/valgrind.bin').read_bytes()[:4] == b'\x7fELF'
         subprocess.run(['cc', '-O2', '-Wall', '-Wextra', '-Werror',
                         *extra,
                         ROOT/'tests/gnu/valgrind-launch.c', '-o', native_launcher], check=True)
-        native_launchers[direct] = native_launcher
+        native_launchers[direct, log_fd] = native_launcher
     tmpdir_adapter = None
     if instrument and any(row.get('valgrind_tmpdir_adapter') and included(row) for row in manifest):
         tmpdir_adapter = ROOT/'build/valgrind-tmpdir.so'
@@ -114,6 +140,9 @@ def main():
         script = materialize(ROOT, SOURCE, row) if row.get('generator_inputs') else SOURCE/row['script']
         assert hashlib.sha256(script.read_bytes()).hexdigest() == row['sha256'], row['script']
         assert row.get('profile') in (None, 'ordinary-user', 'loopback-device', 'private-mount'), 'unknown execution profile'
+        if row.get('valgrind_log_fd'):
+            assert row.get('native_launcher') and row['script'] == 'tests/chroot/chroot-credentials.sh', 'log descriptor mode requires a reviewed exec-only profile'
+            assert row.get('valgrind_vgdb') is False, 'credential changes require disabling vgdb files'
         assert row.get('perl_driver') in (None, 'tty-eof'), 'unknown Perl driver'
         if row.get('perl_driver') == 'tty-eof':
             assert row['script'] == 'tests/misc/tty-eof.pl' and row.get('full_suite')
@@ -146,9 +175,16 @@ def main():
                     config_header = runtime/'config.h'
                 commands = row.get('commands', [row['command']])
                 assert row['command'] in commands
+                stdbuf_library = None
+                if 'stdbuf' in commands:
+                    stdbuf_library = (BUILD/'src/libstdbuf.so' if implementation == 'gnu'
+                                      else candidate_binary.parent/'libstdbuf.so')
+                    shutil.copy2(stdbuf_library, run/'src/libstdbuf.so')
                 memory_dir = None
                 if instrument:
                     (run/'real').mkdir()
+                    if stdbuf_library:
+                        shutil.copy2(stdbuf_library, run/'real/libstdbuf.so')
                     memory_dir = ROOT/'evidence/raw'/('reviewed-vg-'+run.name+'-'+implementation)
                     memory_dir.mkdir()
                 runtime_memory_dir = memory_dir
@@ -160,7 +196,7 @@ def main():
                     elif row.get('shared_runtime'):
                         runtime_memory_dir.chmod(0o1777)
                 if instrument and row.get('native_launcher'):
-                    shutil.copy2(native_launchers[bool(row.get('direct_valgrind'))], run/'src/.valgrind-launch')
+                    shutil.copy2(native_launchers[bool(row.get('direct_valgrind')), bool(row.get('valgrind_log_fd'))], run/'src/.valgrind-launch')
                 tmpdir_library = None
                 if instrument and row.get('valgrind_tmpdir_adapter'):
                     assert not row.get('native_launcher'), 'TMPDIR adapter requires the shell launcher'
@@ -311,6 +347,8 @@ def main():
                     outcomes[implementation]['loopback_runner_sha256'] = hashlib.sha256((ROOT/'tests/gnu/loopback-profile.py').read_bytes()).hexdigest()
                 if instrument and row.get('native_launcher'):
                     outcomes[implementation]['launcher_source_sha256'] = hashlib.sha256((ROOT/'tests/gnu/valgrind-launch.c').read_bytes()).hexdigest()
+                if stdbuf_library:
+                    outcomes[implementation]['stdbuf_library_sha256'] = hashlib.sha256(stdbuf_library.read_bytes()).hexdigest()
                 if tmpdir_library:
                     outcomes[implementation]['tmpdir_adapter_source_sha256'] = hashlib.sha256((ROOT/'tests/gnu/valgrind-tmpdir.c').read_bytes()).hexdigest()
                 if row.get('locale_profile') == 'extended':
@@ -339,20 +377,15 @@ def main():
                     memory = []
                     for path in sorted(memory_dir.glob('*.log')):
                         report = path.read_text(errors='backslashreplace')
-                        errors = re.search(r'ERROR SUMMARY: ([\d,]+) errors', report)
-                        fds = re.search(r'FILE DESCRIPTORS: (\d+) open \((\d+) (?:inherited|std)\)', report)
                         memory.append({'log': str(path.relative_to(ROOT)),
-                                       'errors': int(errors[1].replace(',', '')) if errors else None,
-                                       'non_inherited_descriptors': int(fds[1])-int(fds[2]) if fds else None,
-                                       'heap_bytes': {kind: int(found[1].replace(',', ''))
-                                           for kind in ['definitely lost','indirectly lost','possibly lost','still reachable']
-                                           if (found := re.search(re.escape(kind)+r': ([\d,]+) bytes', report))}})
+                                       **parse_memory_log(report, path.stem, row.get('valgrind_log_fd', False))})
                     outcomes[implementation]['memory'] = memory
         passed = outcomes['gnu']['status'] == outcomes['rboxc']['status'] == 0
         passed &= all(result.get('case_count_pass', True) for result in outcomes.values())
         if instrument:
             memory = outcomes['rboxc']['memory']
-            passed &= bool(memory) and all(m['errors'] == 0 and m['non_inherited_descriptors'] == 0 for m in memory)
+            passed &= bool(memory) and all(m['errors'] == 0 and m['non_inherited_descriptors'] == 0
+                                          and m.get('complete_exec_log', True) for m in memory)
         state = 'pass' if passed else 'skip' if outcomes['gnu']['status'] == outcomes['rboxc']['status'] == 77 else 'open'
         results_by_script[row['script']] = {**row, **outcomes, 'pass': passed, 'state': state}
         print(state.upper(), row['script'], {key: value['status'] for key, value in outcomes.items()}, flush=True)

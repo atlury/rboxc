@@ -2,6 +2,7 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 #define _GNU_SOURCE 1
 #include <errno.h>
+#include <fcntl.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,16 +42,39 @@ int main(int argc, char **argv)
       perror("test launcher exec");
       return 126;
     }
-  char **args = calloc((size_t)argc + 10, sizeof *args);
+#ifdef RBOXC_VALGRIND_LOG_FD
+  /* Keep the same open description across a tested credential change and
+     exec. Only explicitly selected exec-only profiles use this mode. */
+  char log_file[PATH_MAX];
+  int file_length = snprintf(log_file, sizeof log_file, "%s/../memory/%ld.log",
+                             self, (long)getpid());
+  if (file_length < 0 || (size_t)file_length >= sizeof log_file)
+    return 125;
+  int original_fd = open(log_file, O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW, 0600);
+  if (original_fd < 0)
+    return 125;
+  int log_fd = fcntl(original_fd, F_DUPFD, 64);
+  close(original_fd);
+  if (log_fd < 0)
+    return 125;
+  snprintf(log, sizeof log, "--log-fd=%d", log_fd);
+#endif
+  char **args = calloc((size_t)argc + 12, sizeof *args);
   if (!args)
     return 125;
   char *options[] = {RBOXC_VALGRIND_EXECUTABLE, "--leak-check=full",
                     "--show-leak-kinds=all", "--track-fds=yes",
-                    "--trace-children=yes", log, executable, "--rboxc-dispatch"};
-  for (size_t i = 0; i < sizeof options / sizeof *options; i++)
+                    "--trace-children=yes",
+#ifdef RBOXC_VALGRIND_LOG_FD
+                    /* vgdb files cannot survive the reviewed UID changes. */
+                    "--vgdb=no", "--exit-on-first-error=yes", "--error-exitcode=97",
+#endif
+                    log, executable, "--rboxc-dispatch"};
+  size_t option_count = sizeof options / sizeof *options;
+  for (size_t i = 0; i < option_count; i++)
     args[i] = options[i];
   for (int i = 0; i < argc; i++)
-    args[i + 8] = argv[i];
+    args[i + option_count] = argv[i];
   execv(args[0], args);
   int saved_errno = errno;
   free(args);
