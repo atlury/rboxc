@@ -206,8 +206,9 @@ under Valgrind, with 9,868 complete logs per implementation. Candidate sort
 processes are clean; the result remains open for external compression-shell,
 GNU tr, and GNU expr findings (8,094 candidate descendant logs).
 The complete I/O-error script also passes its assertions, with 1,336 logs per
-implementation. Its candidate memory evidence remains open for 263 shell logs
-and five cat/dd/tac logs. The cleanup build below repairs the two normal
+implementation. The latest installed-build comparison passes all assertions
+and remains memory-open for 263 shell logs and three cat/dd/tac SIGPIPE exits.
+The cleanup build below repairs the two normal
 cat/tac write exits; the other three logs follow SIGPIPE termination.
 The original large-directory memory test now also passes natively for rm,
 du, and chmod over 200,000 entries. Its additional 35,000 KiB allowance remains
@@ -242,7 +243,11 @@ I/O-error rerun now also passes all assertions for the candidate: GNU takes
 normal cat/tac write exits are memory-clean. The strict comparison remains
 open for 263 external-shell logs and three SIGPIPE exits in cat, dd, and tac.
 The separate candidate report preserves these findings without replacing the
-historical observation above. A new full run against the activated build is in progress.
+historical observation above. The full activated-build rerun now also passes
+all assertions: GNU took 931.210 seconds and rboxc took 863.037 seconds, with
+1,336 logs each. `evidence/installed-cleanup-io.json` verifies both repaired
+normal exits and records the remaining 266 finding logs. The earlier 268-log
+observation is retained in history.
 The staged candidate also passes 428 help/version comparisons, 107 Valgrind
 help checks, 11 dispatcher checks, and all 318 native behavior, Valgrind behavior,
 and instrumented-equivalence comparisons. These baseline drivers accept
