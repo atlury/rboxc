@@ -213,11 +213,11 @@ checks, so this stricter comparison remains open.
 `evidence/shuf-reservoir.json` records every matrix case and log hash; each
 build has 83 captured logs including version and Valgrind prerequisite checks.
 
-The reviewed Valgrind evidence records 580 clean results out of 619 scripts
+The reviewed Valgrind evidence records 581 clean results out of 619 scripts
 or selections: 5,729 Perl cases and 37,164 candidate/descendant process logs.
-The 39 open results comprise 27 with passing original assertions but unresolved
+The 38 open results comprise 27 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, six with assertion
-failures under instrumentation, and four interrupted by watchdog deadlines. The status report records
+failures under instrumentation, and three interrupted by watchdog deadlines. The status report records
 these categories separately; they do not change the strict clean-pass count.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
@@ -245,12 +245,13 @@ outside instrumentation, preserving short argv[0] in diagnostics. The actual
 `env -/` case remains instrumented. The runner requires a matching Valgrind
 command log for every one of the 106 cases, in addition to GNU's case-count and
 output assertions. Earlier path-prefixed diagnostic differences remain saved.
-The full help/normal-output comparison finishes for rboxc, but GNU reaches the
-30-minute watchdog deadline. The source-option inventory comparison reaches
-the same deadline in both builds. These measurements remain incomplete; their
-logs are retained and no timeout is counted as an assertion pass. The retries
-allow one hour per Valgrind implementation for the help script and two hours
-for the source-option inventory, without changing native limits.
+The full help/normal-output comparison now passes with the extended one-hour
+Valgrind deadline: GNU finishes in 1,747.649 seconds and rboxc in 1,707.440
+seconds, with 1,151 clean candidate process logs. The earlier GNU timeout
+remains in observation history. The source-option inventory comparison
+previously reached the 30-minute deadline in both builds; its retry allows
+two hours per instrumented implementation and remains in progress. Native
+limits are unchanged, and timeouts do not count as assertion passes.
 The 54 reviewed tac Perl cases now also pass Valgrind, with 55 clean candidate
 process logs. This remains a case selection, not a full Perl-suite pass.
 All 46 registered move scripts now pass natively and under Valgrind.
