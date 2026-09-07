@@ -1965,6 +1965,18 @@ unsafe extern "C" fn batch_convert(
     free(line as *mut ::core::ffi::c_void);
     return ok;
 }
+static mut RBOXC_DATE_FORMAT: *mut ::core::ffi::c_char = ::core::ptr::null_mut();
+static mut RBOXC_DATE_TIMEZONE: timezone_t = ::core::ptr::null_mut();
+unsafe extern "C" fn rboxc_free_date_resources() {
+    let saved_errno = *::libc::__errno_location();
+    let format = RBOXC_DATE_FORMAT;
+    RBOXC_DATE_FORMAT = ::core::ptr::null_mut();
+    free(format.cast());
+    let timezone = RBOXC_DATE_TIMEZONE;
+    RBOXC_DATE_TIMEZONE = ::core::ptr::null_mut();
+    if !timezone.is_null() { tzfree(timezone); }
+    *::libc::__errno_location() = saved_errno;
+}
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_date(
     mut argc: ::core::ffi::c_int,
@@ -1986,6 +1998,7 @@ pub unsafe extern "C" fn single_binary_main_date(
     bindtextdomain(PACKAGE.as_ptr(), LOCALEDIR.as_ptr());
     textdomain(PACKAGE.as_ptr());
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    atexit(Some(rboxc_free_date_resources));
     let mut optc: ::core::ffi::c_int = 0;
     loop {
         optc = getopt_long(
@@ -2411,6 +2424,7 @@ pub unsafe extern "C" fn single_binary_main_date(
         }
     }
     let mut format_copy: *mut ::core::ffi::c_char = adjust_resolution(format);
+    RBOXC_DATE_FORMAT = format_copy;
     let mut format_res: *const ::core::ffi::c_char = if !format_copy.is_null() {
         format_copy as *const ::core::ffi::c_char
     } else {
@@ -2420,6 +2434,7 @@ pub unsafe extern "C" fn single_binary_main_date(
         tzstring = getenv(b"TZ\0".as_ptr() as *const ::core::ffi::c_char);
     }
     let mut tz: timezone_t = tzalloc(tzstring);
+    RBOXC_DATE_TIMEZONE = tz;
     let mut ok: bool = r#true != 0;
     if !batch_file.is_null() {
         ok = batch_convert(batch_file, format_res, format_in_c_locale, tz, tzstring);
@@ -2604,8 +2619,7 @@ pub unsafe extern "C" fn single_binary_main_date(
             & show_date_helper(format_res, format_in_c_locale, when, tz) as ::core::ffi::c_int
             != 0;
     }
-    free(format_copy.cast());
-    tzfree(tz);
+    rboxc_free_date_resources();
     return if ok as ::core::ffi::c_int != 0 {
         0 as ::core::ffi::c_int
     } else {

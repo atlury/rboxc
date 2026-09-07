@@ -484,14 +484,35 @@ unsafe fn rboxc_free_environment() {
                             '    fn tzalloc(__name: *const ::core::ffi::c_char) -> timezone_t;',
                             '    fn tzalloc(__name: *const ::core::ffi::c_char) -> timezone_t;\n'
                             '    fn tzfree(tz: timezone_t);')
+        declaration = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_date('
+        helper = '''static mut RBOXC_DATE_FORMAT: *mut ::core::ffi::c_char = ::core::ptr::null_mut();
+static mut RBOXC_DATE_TIMEZONE: timezone_t = ::core::ptr::null_mut();
+unsafe extern "C" fn rboxc_free_date_resources() {
+    let saved_errno = *::libc::__errno_location();
+    let format = RBOXC_DATE_FORMAT;
+    RBOXC_DATE_FORMAT = ::core::ptr::null_mut();
+    free(format.cast());
+    let timezone = RBOXC_DATE_TIMEZONE;
+    RBOXC_DATE_TIMEZONE = ::core::ptr::null_mut();
+    if !timezone.is_null() { tzfree(timezone); }
+    *::libc::__errno_location() = saved_errno;
+}
+'''
+        text = replace_once(text, declaration, helper+declaration)
+        anchor = '    atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));'
+        text = replace_once(text, anchor, anchor+'\n    atexit(Some(rboxc_free_date_resources));')
+        anchor = '    let mut format_copy: *mut ::core::ffi::c_char = adjust_resolution(format);'
+        text = replace_once(text, anchor, anchor+'\n    RBOXC_DATE_FORMAT = format_copy;')
+        anchor = '    let mut tz: timezone_t = tzalloc(tzstring);'
+        text = replace_once(text, anchor, anchor+'\n    RBOXC_DATE_TIMEZONE = tz;')
         anchor = '    return if ok as ::core::ffi::c_int != 0 {\n        0 as ::core::ffi::c_int\n    } else {\n        1 as ::core::ffi::c_int\n    };\n}\npub const MANUAL_URL'
         text = replace_once(text, anchor,
-                            '    free(format_copy.cast());\n    tzfree(tz);\n' + anchor)
+                            '    rboxc_free_date_resources();\n' + anchor)
     if name == 'tail':
         anchor = '    return if ok as ::core::ffi::c_int != 0 {\n        0 as ::core::ffi::c_int\n    } else {\n        1 as ::core::ffi::c_int\n    };\n}\npub const __CHAR_BIT__'
-        # File names in F borrow argv; tail_file closes non-followed files.
-        # No member owns an allocation in this non-following path.
-        text = replace_once(text, anchor, '    if !forever { free(F.cast()); }\n' + anchor)
+        # All uses of the table have finished when main returns. Its names
+        # borrow argv, including when -f is ignored for piped standard input.
+        text = replace_once(text, anchor, '    free(F.cast());\n' + anchor)
     if name == 'tr':
         declaration = 'unsafe extern "C" fn spec_init(mut spec_list: *mut Spec_list) {'
         helper = '''// Each list owns its dummy head and every appended element.

@@ -213,6 +213,10 @@ CASES = [
     ('mv', ['missing', 'input', 'empty']),
     ('mv', ['--backup=invalid', '-t', 'empty', 'input']),
     ('mv', ['-bn', '-t', 'empty', 'input']),
+    ('date', ['--debug', '-d', 'TZ="America/Edmonton" 2006-04-02 02:30:00']),
+    ('date', ['-u', '-d', 'not-a-date', '+%-N']),
+    ('date', ['-u', '-f', 'missing', '+%-N']),
+    ('tail', ['-f', '-n', '1']),
 ]
 
 
