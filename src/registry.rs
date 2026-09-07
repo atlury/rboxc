@@ -1,3 +1,5 @@
+#[path = "generated/applet_time.rs"]
+mod applet_time;
 #[path = "generated/applet_hello.rs"]
 mod applet_hello;
 #[path = "generated/applet__.rs"]
@@ -307,6 +309,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"tail", applet_tail::single_binary_main_tail),
     (b"tee", applet_tee::single_binary_main_tee),
     (b"test", applet_test::single_binary_main_test),
+    (b"time", applet_time::single_binary_main_time),
     (b"timeout", applet_timeout::single_binary_main_timeout),
     (b"touch", applet_touch::single_binary_main_touch),
     (b"tr", applet_tr::single_binary_main_tr),
