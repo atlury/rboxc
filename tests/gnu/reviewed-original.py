@@ -100,6 +100,7 @@ def main():
             continue
         script = materialize(ROOT, SOURCE, row) if row.get('generator_inputs') else SOURCE/row['script']
         assert hashlib.sha256(script.read_bytes()).hexdigest() == row['sha256'], row['script']
+        assert row.get('profile') in (None, 'ordinary-user', 'loopback-device', 'private-mount'), 'unknown execution profile'
         test_shell = row.get('test_shell', '/bin/sh')
         assert test_shell in ('/bin/sh', '/bin/bash'), 'unsupported test shell'
         outcomes = {}
@@ -232,6 +233,14 @@ def main():
                 # Enter the private namespace before dropping credentials.
                 # Ordinary tests without this profile still drop in Popen.
                 launch_credentials = {} if nss_profile and credentials else dict(credentials)
+                parent_mount_namespace = os.readlink('/proc/self/ns/mnt')
+                if row.get('profile') == 'private-mount':
+                    assert os.geteuid() == 0 and not credentials and not nss_profile
+                    namespace_driver = ("import os,sys; "
+                                        "print('RBOXC_MOUNT_NAMESPACE '+os.readlink('/proc/self/ns/mnt'), file=sys.stderr, flush=True); "
+                                        "os.execv(sys.argv[1], sys.argv[1:])")
+                    command = ['/usr/bin/unshare', '--mount', '--propagation', 'private',
+                               sys.executable, '-c', namespace_driver, *command]
                 if row.get('profile') == 'loopback-device':
                     assert not credentials and not nss_profile
                     command = ['/usr/bin/unshare', '--mount', '--propagation', 'private',
@@ -266,6 +275,15 @@ def main():
                                             'watchdog': {'path': str(watchdog), 'sha256': watchdog_hash},
                                             'test_shell': test_shell,
                                             'elapsed_seconds': round(time.monotonic()-started, 3)}
+                if row.get('profile') == 'private-mount':
+                    namespaces = re.findall(rb'^RBOXC_MOUNT_NAMESPACE (.+)$', completed.stderr, re.M)
+                    assert len(namespaces) == 1, 'private mount namespace did not start'
+                    child_namespace = namespaces[0].decode()
+                    assert child_namespace != parent_mount_namespace, 'mount namespace was not isolated'
+                    assert os.readlink('/proc/self/ns/mnt') == parent_mount_namespace, 'parent namespace changed'
+                    outcomes[implementation]['mount_namespace'] = {
+                        'parent': parent_mount_namespace, 'child': child_namespace,
+                        'private_propagation': True, 'parent_unchanged': True}
                 if row.get('terminal'):
                     profiles = re.findall(rb'^RBOXC_TERMINAL_PROFILE (.+)$', completed.stderr, re.M)
                     outcomes[implementation]['terminal_profile'] = json.loads(profiles[0]) if profiles else None

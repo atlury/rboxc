@@ -95,9 +95,9 @@ Recorded checks:
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 `tail` file records on return (including ignored follow mode), and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 572 of 575 scripts/selections.
-The executed inventory contains 520 shell scripts and 5,372 Perl cases.
-Forty-three Perl scripts run their complete
+failures). The reviewed original GNU runner now passes 576 of 579 scripts/selections.
+The executed inventory contains 521 shell scripts and 5,623 Perl cases.
+Forty-six Perl scripts run their complete
 runtime case lists; 12 others retain explicit case selections. Case-count
 checks also cover scripts that call GNU's Perl harness more than once.
 GNU's seven generic scripts pass across all 107 commands. New coverage includes
@@ -114,8 +114,8 @@ script; `--report-name` gives independent batches distinct evidence files.
 New results record tested binary hashes, and exec-wrapper tests can request
 Valgrind child tracing.
 
-The reviewed Valgrind evidence records 452 clean results out of 474 scripts
-or selections: 3,121 Perl cases and 8,740 candidate/descendant process logs.
+The reviewed Valgrind evidence records 456 clean results out of 478 scripts
+or selections: 3,372 Perl cases and 8,998 candidate/descendant process logs.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
 memory and descriptors retained by host script interpreters. Both pass natively.
@@ -306,6 +306,15 @@ passes natively with its expensive-test switch enabled; its Valgrind run remains
 pending. These three cp results supplement the earlier two-profile cp report
 and close three prerequisite skips in the overall script inventory.
 
+The full join suite passes all 147 cases with C and French UTF-8 coverage in
+both modes. The ls miscellaneous suite passes both complete 50-case runs, with
+and without the generated color configuration, as an ordinary user under
+local-files NSS. All four xstrtol diagnostics exercised through pr also pass
+in both modes. The original tac temporary-storage-full test passes against a
+1 MiB tmpfs inside a private mount namespace. The runner records different
+parent/child mount namespace IDs, verifies the parent remains unchanged, and
+rejects unknown execution profiles.
+
 The complete expand, fmt, fold, and uniq Perl suites now pass natively,
 including 1,020 uniq cases and 47 fold cases with UTF-8 coverage. Their expanded
 Valgrind runs also pass in full. Test locale aliases explicitly map normalized encoding names to the
@@ -398,9 +407,9 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 604 scripts
+the original test evidence into `evidence/gnu-suite-coverage.json`: 608 scripts
 passed, three passed with profile skips, 12 have selected-case coverage, four
-skipped, 26 are excluded, and 84 remain pending. No recorded native failures
+skipped, 26 are excluded, and 80 remain pending. No recorded native failures
 remain in the executed selections. Partial selections and skips
 are not full-suite passes; passing scripts can contain platform-conditional
 branches. No command is certified complete.
