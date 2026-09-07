@@ -144,7 +144,9 @@ def main():
     fingerprint = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
     execution_context = {
         'binaries': binary_hashes, 'valgrind': instrument,
-        'valgrind_version': subprocess.check_output(['valgrind', '--version'], text=True).strip() if instrument else None,
+        'valgrind_version': subprocess.check_output(['/usr/bin/valgrind', '--version'], text=True).strip() if instrument else None,
+        'valgrind_runtime': {name: fingerprint(Path(name)) for name in
+                             ['/usr/bin/valgrind', '/usr/bin/valgrind.bin']} if instrument else None,
         'config_header': fingerprint(BUILD/'lib/config.h'),
         'getlimits': fingerprint(BUILD/'src/getlimits'),
         'watchdog': watchdog_hash, 'source': str(SOURCE),
@@ -155,7 +157,7 @@ def main():
             ROOT/'tests/gnu/terminal-profile.py', ROOT/'tests/gnu/loopback-profile.py',
             ROOT/'scripts/generated_tests.py']},
         'gnu_harness': {name: fingerprint(SOURCE/name) for name in
-                        ['tests/init.sh', 'tests/Coreutils.pm', 'tests/CuSkip.pm']},
+                        ['init.cfg', 'tests/init.sh', 'tests/Coreutils.pm', 'tests/CuSkip.pm']},
     }
     for row in manifest:
         if not included(row):
@@ -263,7 +265,7 @@ def main():
                         # diagnostics when Valgrind rewrites argv[0] during exec.
                         invocation = (['coreutils', '--coreutils-prog='+command]
                                       if row.get('valgrind_multicall') else [command])
-                        vg = ['valgrind', '--leak-check=full', '--show-leak-kinds=all',
+                        vg = ['/usr/bin/valgrind', '--leak-check=full', '--show-leak-kinds=all',
                               '--track-fds=yes', *(['--vgdb=no'] if row.get('valgrind_vgdb') is False else []), *(['--trace-children=yes'] if row.get('trace_children') else []),
                               '--log-file='+str(runtime_memory_dir/'%p.log'), *invocation]
                         startup = ''

@@ -95,8 +95,8 @@ Recorded checks:
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 `tail` file records on return (including ignored follow mode), and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 588 of 591 scripts/selections.
-The executed inventory contains 531 shell scripts and 5,958 Perl cases.
+failures). The reviewed original GNU runner now passes 633 of 640 scripts/selections.
+The executed inventory contains 580 shell scripts and 5,958 Perl cases.
 Forty-seven Perl scripts run their complete
 runtime case lists; 13 others retain explicit case selections. Case-count
 checks also cover scripts that call GNU's Perl harness more than once.
@@ -151,8 +151,8 @@ per implementation contain summaries. The result remains open because the
 external compression shells and GNU tr helper retain resources. The earlier
 measurement with incomplete exec logs is preserved in the observation history.
 
-The reviewed Valgrind evidence records 500 clean results out of 531 scripts
-or selections: 3,707 Perl cases and 20,571 candidate/descendant process logs.
+The reviewed Valgrind evidence records 545 clean results out of 576 scripts
+or selections: 3,707 Perl cases and 21,031 candidate/descendant process logs.
 The 31 open results comprise 24 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, and five with assertion
 failures under instrumentation in both GNU and rboxc. The status report records
@@ -512,9 +512,9 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 619 scripts
-passed, three passed with profile skips, 13 have selected-case coverage, four
-skipped, 29 are excluded, and 65 remain pending. No recorded native failures
+the original test evidence into `evidence/gnu-suite-coverage.json`: 622 scripts
+passed, 13 have selected-case coverage, eight are skipped, 29 are excluded,
+and 61 remain pending. No recorded native failures
 remain in the executed selections. Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
 explicitly excluded with source hashes in inventory/gnu-suite-exclusions.json.
@@ -570,6 +570,21 @@ reopening, and late exit output at four buffering configurations. An earlier
 fixture that left reopened files open is retained in raw evidence.
 GNU's complete original buffering script also passes natively and under Valgrind.
 The main rboxc executable is unchanged by this helper-only update.
+
+Forty-five more original cp scripts now pass natively and with clean Valgrind
+evidence, bringing cp's reviewed Valgrind script coverage to 48. These cover
+backup policies, source identity, hard/symbolic links, mode and timestamp
+preservation, ACLs, read-only directories, sparse extents, reflink fallback,
+interactive overwrite options, and special permission bits. Ordinary-user tests
+run as UID/GID 65534; root ownership tests stage binaries and writable log/runtime
+directories for their children. The original group-preservation script clears
+PATH and copies its launcher; the harness now invokes Valgrind by absolute path.
+Its earlier launcher lookup failure is retained in observation history.
+Checkpoint fingerprints also include GNU init.cfg and the Valgrind driver/runtime.
+Four additional original optional-feature scripts return matching prerequisite
+skips: two require Smack and two require libcap-enabled ls. These are recorded
+as skipped rather than passed.
+
 A narrow `freopen_safer` adaptation checks descriptor
 validity with `fcntl(F_GETFD)` instead of self-duplication, preserving GNU's
 reopen/protection flow and avoiding Valgrind's self-duplication findings.
