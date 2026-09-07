@@ -26,6 +26,25 @@ for row in inventory:
                valgrind_fixture_pass=bool(checks) and all(r['valgrind_pass'] for r in checks),
                gnu_tests_pass=False, valgrind_pass=False, complete=False)
 (ROOT/'inventory/applets.json').write_text(json.dumps(inventory, indent=2)+'\n')
+reviewed_valgrind = read('evidence/gnu-reviewed-valgrind.json')
+assessments = {'clean': 0, 'assertions_passed_memory_open': 0,
+               'prerequisite_skip': 0, 'assertions_open': 0}
+for row in reviewed_valgrind['results']:
+    statuses = [row[implementation]['status'] for implementation in ('gnu', 'rboxc')]
+    assertions_pass = statuses == [0, 0] and all(
+        row[implementation].get('case_count_pass', True) for implementation in ('gnu', 'rboxc'))
+    if row['pass']:
+        assert assertions_pass, 'clean memory evidence requires passing original assertions'
+        assessment = 'clean'
+    elif statuses == [77, 77]:
+        assessment = 'prerequisite_skip'
+    elif assertions_pass:
+        assessment = 'assertions_passed_memory_open'
+    else:
+        assessment = 'assertions_open'
+    assessments[assessment] += 1
+assert sum(assessments.values()) == reviewed_valgrind['total']
+assert assessments['clean'] == reviewed_valgrind['passed']
 binary = ROOT/'target/release/rboxc'
 summary = {
     'binary': {'path': str(binary.relative_to(ROOT)), 'bytes': binary.stat().st_size,
@@ -49,10 +68,11 @@ summary = {
         'shell_scripts': sum(row['script'].endswith('.sh') for row in read('evidence/gnu-reviewed-original.json')['results']),
     },
     'reviewed_original_valgrind': {
-        'passed_selections': read('evidence/gnu-reviewed-valgrind.json')['passed'],
-        'total_selections': read('evidence/gnu-reviewed-valgrind.json')['total'],
-        'selected_perl_cases': sum(row.get('expected_case_count', len(row.get('cases', []))) for row in read('evidence/gnu-reviewed-valgrind.json')['results']),
-        'candidate_processes': sum(len(row['rboxc']['memory']) for row in read('evidence/gnu-reviewed-valgrind.json')['results']),
+        'passed_selections': reviewed_valgrind['passed'],
+        'total_selections': reviewed_valgrind['total'],
+        'selected_perl_cases': sum(row.get('expected_case_count', len(row.get('cases', []))) for row in reviewed_valgrind['results']),
+        'candidate_processes': sum(len(row['rboxc']['memory']) for row in reviewed_valgrind['results']),
+        'assessment_counts': assessments,
     },
     'allocation_adapter': read('evidence/aligned-alloc.json'),
     'descriptor_probe_adapter': {key: read('evidence/freopen-safer.json')[key]

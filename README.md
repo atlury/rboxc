@@ -116,6 +116,10 @@ Valgrind child tracing.
 
 The reviewed Valgrind evidence records 471 clean results out of 498 scripts
 or selections: 3,707 Perl cases and 10,981 candidate/descendant process logs.
+The 27 open results comprise 22 with passing original assertions but unresolved
+memory/descriptor evidence, two prerequisite skips, and three with assertion
+failures under instrumentation in both GNU and rboxc. The status report records
+these categories separately; they do not change the strict clean-pass count.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
 memory and descriptors retained by host script interpreters. Both pass natively.
