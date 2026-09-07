@@ -79,6 +79,15 @@ certify Time complete. The exact candidate also passes all Coreutils baseline
 checks and the Hello original/focused comparisons. `evidence/time-activation.json`
 records activation with previous artifacts retained.
 
+GNU Which 2.25 is source-pinned with its verified GNU release signature. The
+separate 110-command candidate translates its command entry and keeps 23
+provider symbol names private, including five Rust definitions referenced by
+its helpers. The port frees alias/function records and the final explicit-path
+buffer after lookup. All 42 initial native/Valgrind fixtures match GNU, with
+zero live candidate heap in those fixtures; GNU's retained allocations remain
+in the report. The distribution registers no runtime test suite, so this is
+focused compatibility evidence rather than a full original-suite pass.
+
 ## Status
 
 The executable registers 109 commands: 107 Coreutils entries, GNU Hello, and
