@@ -6,7 +6,7 @@ import json
 import os
 import re
 import shlex
-import sys
+import argparse
 from pathlib import Path
 import subprocess
 import tempfile
@@ -32,11 +32,21 @@ die $@ if $@;
 
 def main():
     manifest = json.loads((ROOT/'inventory/gnu-reviewed-tests.json').read_text())
-    instrument = '--valgrind' in sys.argv[1:]
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--valgrind', action='store_true')
+    parser.add_argument('commands', nargs='*')
+    options = parser.parse_args()
+    instrument = options.valgrind
     if instrument:
         manifest = [row for row in manifest if row.get('valgrind')]
-    results = []
+    selected = set(options.commands)
+    assert selected <= {row['command'] for row in manifest}, 'unknown command selection'
+    output = 'evidence/gnu-reviewed-valgrind.json' if instrument else 'evidence/gnu-reviewed-original.json'
+    previous = json.loads((ROOT/output).read_text())['results'] if selected and (ROOT/output).exists() else []
+    results_by_script = {row['script']: row for row in previous}
     for row in manifest:
+        if selected and row['command'] not in selected:
+            continue
         script = SOURCE/row['script']
         assert hashlib.sha256(script.read_bytes()).hexdigest() == row['sha256'], row['script']
         outcomes = {}
@@ -103,13 +113,14 @@ def main():
         if instrument:
             memory = outcomes['rboxc']['memory']
             passed &= bool(memory) and all(m['errors'] == 0 and m['non_inherited_descriptors'] == 0 for m in memory)
-        results.append({**row, **outcomes, 'pass': passed})
+        results_by_script[row['script']] = {**row, **outcomes, 'pass': passed}
         print('PASS' if passed else 'OPEN', row['script'], {key: value['status'] for key, value in outcomes.items()}, flush=True)
+    results = [results_by_script[row['script']] for row in manifest if row['script'] in results_by_script]
     report = {'scope': 'selected original GNU compatibility cases; unselected tests remain open',
               'passed': sum(row['pass'] for row in results), 'total': len(results), 'results': results}
     output = 'evidence/gnu-reviewed-valgrind.json' if instrument else 'evidence/gnu-reviewed-original.json'
     (ROOT/output).write_text(json.dumps(report, indent=2)+'\n')
-    return report['passed'] != report['total']
+    return any(not row['pass'] for row in results if not selected or row['command'] in selected)
 
 
 if __name__ == '__main__':

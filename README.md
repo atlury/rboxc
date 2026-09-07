@@ -88,9 +88,10 @@ Cleanup now releases `expr` results, `date` timezone/format storage,
 non-following `tail` file records, and `tr` construct lists (including parse
 failures). Selected original GNU tests pass: 22 `expr`, 56 `tr`, 54 `tac`, and 33 `pr`
 cases, plus 51 `numfmt` and 67 `seq` cases and twelve date/tail/cat/dd/split/sort/od/printf/df/stdbuf
-shell scripts. Another 123 selected cases pass for `paste` (26), `expand` (25),
-`unexpand` (53), and `fold` (19), bringing the total to 406 Perl cases.
-These four new selections also pass under Valgrind against both executables.
+shell scripts. Selected cases also pass for `paste` (26), `expand` (25),
+`unexpand` (53), `fold` (19), `head` (60), `wc` (16), `fmt` (9), and
+`uniq` (51), bringing the total to 542 Perl cases. These eight selections
+also pass under Valgrind against both executables (267 candidate processes).
 The runner preserves each command's exit status for GNU's assertions, then
 separately requires clean candidate memory and descriptor results. Per-process
 observations are retained in `evidence/gnu-reviewed-valgrind.json`.
