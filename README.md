@@ -151,9 +151,9 @@ per implementation contain summaries. The result remains open because the
 external compression shells and GNU tr helper retain resources. The earlier
 measurement with incomplete exec logs is preserved in the observation history.
 
-The reviewed Valgrind evidence records 499 clean results out of 531 scripts
+The reviewed Valgrind evidence records 500 clean results out of 531 scripts
 or selections: 3,707 Perl cases and 20,571 candidate/descendant process logs.
-The 32 open results comprise 25 with passing original assertions but unresolved
+The 31 open results comprise 24 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, and five with assertion
 failures under instrumentation in both GNU and rboxc. The status report records
 these categories separately; they do not change the strict clean-pass count.
@@ -163,9 +163,9 @@ memory and descriptors retained by host script interpreters. Both pass natively.
 The separate env signal-handler script also passes natively; its Valgrind run
 has timing/signal assertion differences and incomplete logs in both builds.
 The original unknown-command dispatcher test now passes natively and under
-Valgrind. The buffering script passes its assertions but still records two
-allocations retained by the GNU preload helper. Matching GNU findings are not
-counted as clean.
+Valgrind. The buffering script now also has clean candidate memory evidence;
+its previous two preload-helper allocations remain in the observation history.
+Matching GNU findings are not counted as clean.
 Three more results remain open: dd's intentionally closed-stderr diagnostics,
 install's external strip children with host-shell descriptors and host-tool heap findings,
 and cat's injected pipe-creation failure interfering with Valgrind startup.
@@ -557,9 +557,20 @@ that reads only 64 bytes and closes its pipe. `hostname` frees its result,
 input, and reservoir storage, including an unused buffer after early EOF.
 `stdbuf` now releases its borrowed environment strings when exec fails.
 
-Assembly copies the matching GNU `libstdbuf.so` (21,600 bytes) beside the release
-executable. Keep that helper alongside the binary when moving it. The original
-GNU buffering test passes. A narrow `freopen_safer` adaptation checks descriptor
+Assembly builds `libstdbuf.so` (16,144 bytes) from the pinned GNU source with a
+source-hashed buffer-ownership adaptation. Keep that helper alongside the binary
+when moving it. On GNU libc, successfully installed malloc-backed buffers are
+transferred to the stream using `_IO_setb`; close, replacement, and final cleanup
+then release them. The buffer remains available for pending output and application
+exit handlers. The adaptation uses GNU libc internals and is validated on glibc
+2.43; other libc behavior is unchanged. All 24 lifetime cases match GNU natively
+and under Valgrind with clean candidate memory/descriptor results. Cases cover
+unused streams, ordinary I/O, explicit close, replacement with static buffers,
+reopening, and late exit output at four buffering configurations. An earlier
+fixture that left reopened files open is retained in raw evidence.
+GNU's complete original buffering script also passes natively and under Valgrind.
+The main rboxc executable is unchanged by this helper-only update.
+A narrow `freopen_safer` adaptation checks descriptor
 validity with `fcntl(F_GETFD)` instead of self-duplication, preserving GNU's
 reopen/protection flow and avoiding Valgrind's self-duplication findings.
 All 24 descriptor-preservation cases pass, including close-on-exec flags,

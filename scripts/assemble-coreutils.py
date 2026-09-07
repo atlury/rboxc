@@ -10,6 +10,7 @@ import subprocess
 import sys
 from native_cleanup import sort_cleanup
 from stream_cleanup import prepare as prepare_stream_cleanup
+from stdbuf_cleanup import prepare as prepare_stdbuf_cleanup
 
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT/'build/gnu-coreutils'
@@ -119,11 +120,10 @@ link.insert(0, str(fd_object))
 stream_objects, stream_records = prepare_stream_cleanup(ROOT, SOURCE, BUILD, target)
 link[0:0] = stream_objects
 (ROOT/'build/rust-link-inputs.txt').write_text('\n'.join(link)+'\n')
-# GNU stdbuf locates its preload helper beside the executable. Keep the
-# matching GNU build product there for the release profile used by this port.
+# GNU stdbuf locates its preload helper beside the executable. Build the
+# source-hashed ownership adaptation while preserving GNU's buffering flow.
 runtime_helper = ROOT/'target/release/libstdbuf.so'
-runtime_helper.parent.mkdir(parents=True, exist_ok=True)
-shutil.copy2(BUILD/'src/libstdbuf.so', runtime_helper)
+stdbuf_adaptation = prepare_stdbuf_cleanup(ROOT, SOURCE, BUILD, runtime_helper)
 (ROOT/'evidence/link.json').write_text(json.dumps({'entries':len(rows),
     'rust_entries':sum(row['active_rust'] for row in rows), 'temporary_C_entries':failed,
     'C_entry_objects_removed_for_all_active_Rust_commands':True, 'helper_archives':list(prepared),
@@ -135,6 +135,7 @@ shutil.copy2(BUILD/'src/libstdbuf.so', runtime_helper)
         'original_sha256': hashlib.sha256(original_fd_helper.encode()).hexdigest(),
         'adapted_sha256': hashlib.sha256(fd_helper.encode()).hexdigest(),
         'scope': 'test descriptor validity with fcntl F_GETFD; preserve GNU reopen/protection flow'},
+    'stdbuf_buffer_adapter': stdbuf_adaptation,
     'runtime_helpers': [{'path': str(runtime_helper.relative_to(ROOT)),
                          'bytes': runtime_helper.stat().st_size,
                          'sha256': hashlib.sha256(runtime_helper.read_bytes()).hexdigest()}]}, indent=2)+'\n')

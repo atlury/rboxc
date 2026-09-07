@@ -82,6 +82,8 @@ summary = {
                                  for key in ('passed', 'total')},
     'standard_stream_adapters': {key: read('evidence/standard-streams.json')[key]
                                  for key in ('passed', 'total')},
+    'stdbuf_buffer_adapter': {key: read('evidence/stdbuf-lifetime.json')[key]
+                               for key in ('passed', 'total', 'libc')},
     'runtime_helpers': read('evidence/link.json').get('runtime_helpers', []),
     'external_dependency_observations': len(read('evidence/host-dependency-findings.json')['results']),
     'dispatcher': {key: read('evidence/dispatcher.json')[key] for key in ('passed', 'total')},
