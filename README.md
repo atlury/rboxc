@@ -88,7 +88,13 @@ Cleanup now releases `expr` results, `date` timezone/format storage,
 non-following `tail` file records, and `tr` construct lists (including parse
 failures). Selected original GNU tests pass: 22 `expr`, 56 `tr`, 54 `tac`, and 33 `pr`
 cases, plus 51 `numfmt` and 67 `seq` cases and twelve date/tail/cat/dd/split/sort/od/printf/df/stdbuf
-shell scripts. These selections are pinned in
+shell scripts. Another 123 selected cases pass for `paste` (26), `expand` (25),
+`unexpand` (53), and `fold` (19), bringing the total to 406 Perl cases.
+These four new selections also pass under Valgrind against both executables.
+The runner preserves each command's exit status for GNU's assertions, then
+separately requires clean candidate memory and descriptor results. Per-process
+observations are retained in `evidence/gnu-reviewed-valgrind.json`.
+These selections are pinned in
 `inventory/gnu-reviewed-tests.json`; they do not certify the whole suites.
 
 `pr` now releases its filename list. `tac` frees the base of its working
@@ -180,6 +186,7 @@ python3 tests/aligned-alloc.py
 python3 tests/freopen-safer.py
 python3 tests/gnu/cp-original.py
 python3 tests/gnu/reviewed-original.py
+python3 tests/gnu/reviewed-original.py --valgrind
 python3 tests/gnu/cp-backups.py
 python3 tests/gnu/cp-mutations.py
 python3 scripts/update-evidence.py

@@ -4,6 +4,9 @@
 import hashlib
 import json
 import os
+import re
+import shlex
+import sys
 from pathlib import Path
 import subprocess
 import tempfile
@@ -29,6 +32,9 @@ die $@ if $@;
 
 def main():
     manifest = json.loads((ROOT/'inventory/gnu-reviewed-tests.json').read_text())
+    instrument = '--valgrind' in sys.argv[1:]
+    if instrument:
+        manifest = [row for row in manifest if row.get('valgrind')]
     results = []
     for row in manifest:
         script = SOURCE/row['script']
@@ -41,8 +47,22 @@ def main():
                 candidate = BUILD/'src/coreutils' if implementation == 'gnu' else ROOT/'target/release/rboxc'
                 commands = row.get('commands', [row['command']])
                 assert row['command'] in commands
+                memory_dir = None
+                if instrument:
+                    (run/'real').mkdir()
+                    memory_dir = ROOT/'evidence/raw'/('reviewed-vg-'+run.name+'-'+implementation)
+                    memory_dir.mkdir()
                 for command in commands:
-                    (run/'src'/command).symlink_to(candidate)
+                    if instrument:
+                        (run/'real'/command).symlink_to(candidate)
+                        wrapper = run/'src'/command
+                        vg = ['valgrind', '--leak-check=full', '--show-leak-kinds=all',
+                              '--track-fds=yes', '--log-file='+str(memory_dir/'%p.log'), command]
+                        wrapper.write_text('#!/bin/sh\nPATH='+shlex.quote(str(run/'real'))+':"$PATH"\n'
+                                           'export PATH\nexec '+shlex.join(vg)+' "$@"\n')
+                        wrapper.chmod(0o755)
+                    else:
+                        (run/'src'/command).symlink_to(candidate)
                 (run/'src/getlimits').symlink_to(BUILD/'src/getlimits')
                 environment = {
                     **os.environ, 'PATH': f'{run}/src:/opt/gnu/coreutils-9.11/bin:/usr/bin:/bin',
@@ -63,15 +83,32 @@ def main():
                     command = ['/bin/sh', '-c', 'exec /bin/sh "$1" 9>&2', 'test', str(script)]
                 completed = subprocess.run(['timeout', '--kill-after=5s', '60s', *command],
                                            cwd=run, env=environment, capture_output=True)
-                log = ROOT/'evidence/raw'/('reviewed-'+row['script'].replace('/', '-')+'-'+implementation+'.log')
+                log = ROOT/'evidence/raw'/('reviewed-'+('vg-' if instrument else '')+row['script'].replace('/', '-')+'-'+implementation+'.log')
                 log.write_bytes(completed.stdout+completed.stderr)
                 outcomes[implementation] = {'status': completed.returncode, 'log': str(log.relative_to(ROOT))}
+                if instrument:
+                    memory = []
+                    for path in sorted(memory_dir.glob('*.log')):
+                        report = path.read_text()
+                        errors = re.search(r'ERROR SUMMARY: ([\d,]+) errors', report)
+                        fds = re.search(r'FILE DESCRIPTORS: (\d+) open \((\d+) (?:inherited|std)\)', report)
+                        memory.append({'log': str(path.relative_to(ROOT)),
+                                       'errors': int(errors[1].replace(',', '')) if errors else None,
+                                       'non_inherited_descriptors': int(fds[1])-int(fds[2]) if fds else None,
+                                       'heap_bytes': {kind: int(found[1].replace(',', ''))
+                                           for kind in ['definitely lost','indirectly lost','possibly lost','still reachable']
+                                           if (found := re.search(re.escape(kind)+r': ([\d,]+) bytes', report))}})
+                    outcomes[implementation]['memory'] = memory
         passed = outcomes['gnu']['status'] == outcomes['rboxc']['status'] == 0
+        if instrument:
+            memory = outcomes['rboxc']['memory']
+            passed &= bool(memory) and all(m['errors'] == 0 and m['non_inherited_descriptors'] == 0 for m in memory)
         results.append({**row, **outcomes, 'pass': passed})
-        print('PASS' if passed else 'OPEN', row['script'], outcomes, flush=True)
+        print('PASS' if passed else 'OPEN', row['script'], {key: value['status'] for key, value in outcomes.items()}, flush=True)
     report = {'scope': 'selected original GNU compatibility cases; unselected tests remain open',
               'passed': sum(row['pass'] for row in results), 'total': len(results), 'results': results}
-    (ROOT/'evidence/gnu-reviewed-original.json').write_text(json.dumps(report, indent=2)+'\n')
+    output = 'evidence/gnu-reviewed-valgrind.json' if instrument else 'evidence/gnu-reviewed-original.json'
+    (ROOT/output).write_text(json.dumps(report, indent=2)+'\n')
     return report['passed'] != report['total']
 
 

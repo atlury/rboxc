@@ -46,6 +46,12 @@ summary = {
         'total_selections': read('evidence/gnu-reviewed-original.json')['total'],
         'selected_perl_cases': sum(len(row.get('cases', [])) for row in read('inventory/gnu-reviewed-tests.json')),
     },
+    'reviewed_original_valgrind': {
+        'passed_selections': read('evidence/gnu-reviewed-valgrind.json')['passed'],
+        'total_selections': read('evidence/gnu-reviewed-valgrind.json')['total'],
+        'selected_perl_cases': sum(len(row['cases']) for row in read('evidence/gnu-reviewed-valgrind.json')['results']),
+        'candidate_processes': sum(len(row['rboxc']['memory']) for row in read('evidence/gnu-reviewed-valgrind.json')['results']),
+    },
     'allocation_adapter': read('evidence/aligned-alloc.json'),
     'descriptor_probe_adapter': {key: read('evidence/freopen-safer.json')[key]
                                  for key in ('passed', 'total')},
