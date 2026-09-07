@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Compare GNU multicall alias and argument dispatch, including Valgrind."""
 # SPDX-License-Identifier: GPL-3.0-or-later
+import argparse
+import sys
 import hashlib
 import json
 import os
@@ -11,6 +13,16 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 from comparison_profile import ComparisonProfile
+provider_commands = {name: data['commands'] for name, data in json.loads((ROOT/'inventory/sources.json').read_text()).items()
+                     if name != 'coreutils' and isinstance(data, dict) and 'commands' in data}
+parser = argparse.ArgumentParser(add_help=False)
+parser.add_argument('--providers', nargs='*', choices=sorted(provider_commands))
+selection, remaining = parser.parse_known_args()
+sys.argv = [sys.argv[0], *remaining]
+expected_providers = selection.providers
+if expected_providers is None:
+    status = json.loads((ROOT/'evidence/status.json').read_text())
+    expected_providers = [name for name, data in status['extra_providers'].items() if data['active_rust_entries']]
 PROFILE = ComparisonProfile('dispatcher')
 BINARY = PROFILE.binary
 GNU = ROOT/'build/gnu-coreutils/src/coreutils'
@@ -54,19 +66,8 @@ def main():
                 'memory_clean': clean, 'log': str(log.relative_to(ROOT)),
                 'pass': expected == actual == instrumented and clean})
         names = sorted(r['name'] for r in json.loads((ROOT/'evidence/translation.json').read_text()))
-        for provider in ('hello', 'time', 'which'):
-            extra = ROOT/f'evidence/{provider}-translation.json'
-            if extra.exists():
-                entry = json.loads(extra.read_text())
-                if entry['translated']:
-                    names = sorted([*names, entry['command']])
-        for command in ('cmp', 'diff', 'diff3', 'sdiff'):
-            extra = ROOT/f'evidence/diffutils-{command}-translation.json'
-            if extra.exists() and json.loads(extra.read_text())['translated']:
-                names = sorted([*names, command])
-        extra = ROOT/'evidence/grep-translation.json'
-        if extra.exists() and json.loads(extra.read_text())['translated']:
-            names = sorted([*names, 'grep', 'egrep', 'fgrep'])
+        for provider in expected_providers:
+            names = sorted([*names, *provider_commands[provider]])
         for alias in ('rboxc', 'rbox'):
             listed = execute([str(run/alias), '--list'])
             unknown = execute([str(run/alias), 'unknown-command'])
@@ -74,7 +75,8 @@ def main():
                 and bytes.fromhex(listed['stdout']).decode().splitlines() == names
                 and unknown == {'status': 127, 'stdout': '', 'stderr': b'rboxc: unknown program\n'.hex()})
             results.append({'alias': alias, 'scope': 'rbox command selection', 'pass': passed})
-    report = {**PROFILE.metadata(),
+    report = {**PROFILE.metadata(), 'expected_providers': expected_providers,
+              'driver_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
               'passed': sum(r['pass'] for r in results), 'total': len(results), 'results': results}
     PROFILE.report.write_text(json.dumps(report, indent=2)+'\n')
     print(f"Dispatcher: {report['passed']}/{report['total']} pass")

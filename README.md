@@ -45,7 +45,7 @@ An external GNU executable used as an oracle is never counted as a port.
 GNU providers, and their current state. Rbox's `APPLET_COUNT` constant says 554,
 but its actual dispatcher and full binary list agree on 553 distinct commands;
 the one-name discrepancy remains recorded in `inventory/sources.json`.
-GNU Hello, Time, Which, Diffutils, and Grep are also source-pinned. Remaining
+GNU Hello, Time, Which, Diffutils, Grep, Gzip, and Sed are also source-pinned. Remaining
 provider assignments require source/version confirmation before implementation.
 
 GNU Hello 2.12.3 is pinned from the [official GNU release archive](https://ftp.gnu.org/gnu/hello/).
@@ -93,7 +93,7 @@ in `evidence/which-activation.json`.
 
 GNU Diffutils 3.12 is pinned from its verified signed archive. All four command
 entries (`cmp`, `diff`, `diff3`, and `sdiff`) are active in the installed
-117-command executable. Its native helpers and Rust-owned diff state share 369
+121-command executable. Its native helpers and Rust-owned diff state share 369
 private symbols. The translation retains C23 null-pointer semantics through a
 GNU17 parser adaptation and preserves provider pathname diagnostics. All 33
 registered original scripts are inventoried. Of 30 reviewed originals, the
@@ -117,7 +117,7 @@ is built with PCRE2 10.46 support. The original registration contains 128 tests,
 recorded for individual review before execution. Grep has one C command entry;
 `egrep` and `fgrep` are shell aliases in the GNU source. Their warnings and option
 insertion now dispatch internally to the translated grep entry in the installed
-117-command executable. The matcher helpers and Rust-owned state use 338 private
+121-command executable. The matcher helpers and Rust-owned state use 338 private
 symbols. All 68 focused native/Valgrind comparisons pass, including basic,
 extended, fixed, and PCRE matching; both aliases; quiet recursive searches;
 compiler errors; long lines; and output errors. Cleanup releases completed
@@ -128,7 +128,7 @@ destructors retain the original matching logic and track allocation bases
 separately from interior pointers. Input buffers are initialized without
 changing logical bounds; this closes a PCRE JIT Valgrind finding also observed
 in the GNU oracle. All 94 reviewed original selections pass natively and under
-Valgrind: 93 complete scripts and 11 selected diagnostics from one Perl script.
+Valgrind on the retained 117-command build: 93 complete scripts and 11 selected diagnostics from one Perl script.
 The strict audit verifies 3,823 complete, clean candidate process logs. This
 includes the byte/locale matrices, PCRE originals, and 100,000-entry traversal.
 The driver uses pinned GNU timeout/sleep, nine private locales, and explicit
@@ -139,24 +139,30 @@ A bounded 8.7 MB cached-input observation found after/before median runtime
 ratios of 0.83–1.01 across four matchers; concurrent tests and process startup
 limit precision, so this is not a performance certification. Activation,
 prior artifact backups, and installed-path checks are recorded in
-`evidence/grep-activation.json`.
+`evidence/grep-activation.json`. The 121-command build passes all 68 fresh
+focused comparisons. Its Grep source, native helper objects, and compiler inputs
+are verified unchanged; the original results retain their actual earlier
+binary hash and are not counted as a new original-suite run.
 
 GNU Gzip 1.14 is also pinned from its verified signed archive. Its native
 oracle and compiler records are prepared for the `gzip`, `gunzip`, `uncompress`,
 and `zcat` inventory entries. The latter entries use upstream shell adapters
 and an installed alias; their compatibility work is separate from Grep.
 The 30 original Gzip registrations remain inventoried for individual review.
-A separate 121-command candidate now compiles with the translated C entry,
+The installed 121-command executable includes the translated C entry,
 three internal shell-alias adaptations, and 170 private helper/state symbols.
 Its three GNU input/output/window buffer alignments are retained and verified
 in the executable. All 56 focused comparisons now pass, including compression,
 decompression, file metadata, internal aliases, and output errors. Exit cleanup
 releases the directory cache and unfinished input ownership; alias write-error
 messages retain the configured Bash profile and pinned script line numbers.
-All fifteen originals in the first reviewed batch pass natively and under
-Valgrind, including valid legacy unpacking, environment options, metadata, and
-an unprivileged write-error check. The original 4 GiB size test is running. The installed release remains the validated
-117-command Grep build.
+Seventeen reviewed original selections pass natively and under Valgrind:
+sixteen full scripts, including the 4 GiB size and unprivileged write-error
+tests, plus the help/version script scoped to the three configured ported
+programs. The strict audit verifies 235 complete, clean candidate process logs.
+The combined Coreutils and prior-provider checks pass within their recorded
+scopes. `evidence/gzip-activation.json` records activation and retained
+artifacts. Auxiliary shell programs and the remaining originals stay open.
 
 GNU Sed 4.10 is pinned from its verified signed archive. Its native oracle
 and compiler records are prepared with SELinux explicitly disabled. The
@@ -165,8 +171,8 @@ Entry translation and runtime compatibility remain separate work.
 
 ## Status
 
-The installed executable registers 117 commands: 107 Coreutils entries, GNU Hello,
-GNU Time, GNU Which, four GNU Diffutils commands, and three GNU Grep commands,
+The installed executable registers 121 commands: 107 Coreutils entries, GNU Hello,
+GNU Time, GNU Which, four GNU Diffutils commands, three GNU Grep commands, and four GNU Gzip commands,
 all with active Rust command entries. No native C command entry remains, and assembly succeeds without the
 C-entry opt-in. `printf`, `sort`, `od`, `numfmt`, and `seq` use native numeric
 helpers: floating values stay inside GNU C functions and cross the boundary
@@ -182,7 +188,7 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The current release executable is 2,895,248 bytes (2.76 MiB), dynamically linked
+The current release executable is 2,992,440 bytes (2.85 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.

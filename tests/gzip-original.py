@@ -64,7 +64,7 @@ for index,row in enumerate(manifest['scripts']):
                          'LC_ALL':'C','LANGUAGE':'C','TZ':'UTC0','srcdir':str(source/'tests'),
                          'top_srcdir':str(source),'abs_top_srcdir':str(source),'abs_srcdir':str(source/'tests'),
                          'abs_top_builddir':directory,'VERSION':pin['version'],'PACKAGE_BUGREPORT':'bug-gzip@gnu.org',
-                         'built_programs':' '.join(pin['commands']),'PERL':'/usr/bin/perl','SHELL':'/bin/bash'})
+                         'built_programs':' '.join(row.get('built_programs',pin['commands'])),'PERL':'/usr/bin/perl','SHELL':'/bin/bash'})
                 log=profile.logs/f'{index:02}-{key}.log';log.write_bytes(done.stdout+done.stderr)
                 outcome={'status':done.returncode,'stdout':done.stdout.hex(),'stderr':done.stderr.hex(),
                          'log':str(log.relative_to(ROOT)),'log_sha256':fingerprint(log)}

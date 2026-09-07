@@ -160,7 +160,19 @@ if all(path.exists() for path in grep_reports):
     manifest = read('inventory/grep-tests.json')
     expected = {r['script']: r['source_sha256'] for r in manifest['scripts']}
     assert all(expected.get(r['script']) == r['source_sha256'] for r in original['results'])
-    current = all(report['binary_sha256'] == binary_sha256 for report in (original, focused))
+    original_current = original['binary_sha256'] == binary_sha256
+    retained_verified = False
+    reuse_path = ROOT/'evidence/grep-original-reuse.json'
+    if not original_current and reuse_path.exists():
+        reuse = json.loads(reuse_path.read_text())
+        retained_verified = (reuse['binary_sha256'] == binary_sha256 and reuse['passed'] == reuse['total'] == 1
+                             and reuse['original_observations']['sha256'] == hashlib.sha256(grep_reports[0].read_bytes()).hexdigest())
+        for name, expected_hash in {**reuse['unchanged_compiler_inputs'], **reuse['unchanged_provider_inputs']}.items():
+            retained_verified = retained_verified and hashlib.sha256((ROOT/name).read_bytes()).hexdigest() == expected_hash
+        retained_verified = retained_verified and all(not (ROOT/name).exists() for name in reuse['absent_compiler_configs'])
+        focused_source = ROOT/reuse['focused_observations']['path']
+        retained_verified = retained_verified and hashlib.sha256(focused_source.read_bytes()).hexdigest() == reuse['focused_observations']['sha256']
+    current = focused['binary_sha256'] == binary_sha256 and (original_current or retained_verified)
     source_current = (entry['rust_sha256'] == linked['rust_source_sha256'] ==
                       hashlib.sha256((ROOT/entry['rust_file']).read_bytes()).hexdigest())
     listed = subprocess.check_output([binary, '--list'], text=True).splitlines()
@@ -183,6 +195,8 @@ if all(path.exists() for path in grep_reports):
                    completion_scope='Pinned GNU Grep 3.12 Linux/glibc/PCRE2 profile. Reviewed originals and focused comparisons pass; one partial Perl script, excluded originals, and pending resource profiles prevent a full-suite completion claim.')
         active_entries += int(active)
     extra_providers['grep'] = {'active_rust_entries':active_entries,
+        'original_binary_sha256':original['binary_sha256'],
+        'originals_on_current_binary':original_current,'retained_original_inputs_verified':retained_verified,
         'original_native_passed':original['native_passed'],'original_selections_passed':original['passed'],
         'original_selections_executed':original['total'],'original_scripts':len(expected),
         'full_original_scripts_passed':original['full_original_scripts_passed'],
@@ -190,6 +204,45 @@ if all(path.exists() for path in grep_reports):
         'selected_perl_cases':original['selected_perl_cases'],
         'original_states':original['state_counts'],'behavior_passed':focused['passed'],
         'behavior_total':focused['total'],'complete':False,'completion_scope':row['completion_scope']}
+gzip_reports = [ROOT/'evidence/gzip-original.json', ROOT/'evidence/gzip-behavior.json']
+if all(path.exists() for path in gzip_reports):
+    original, focused = [json.loads(path.read_text()) for path in gzip_reports]
+    entry = read('evidence/gzip-translation.json')
+    linked = read('evidence/gzip-link.json')
+    manifest = read('inventory/gzip-tests.json')
+    expected = {r['script']: r for r in manifest['scripts'] if r['reviewed']}
+    assert set(expected) == {r['script'] for r in original['results']}
+    assert all(expected[r['script']]['source_sha256'] == r['source_sha256'] and
+               expected[r['script']].get('built_programs') == r.get('built_programs')
+               for r in original['results'])
+    current = all(report['binary_sha256'] == binary_sha256 for report in (original, focused))
+    source_current = (entry['rust_sha256'] == linked['rust_source_sha256'] ==
+                      hashlib.sha256((ROOT/entry['rust_file']).read_bytes()).hexdigest())
+    listed = subprocess.check_output([binary, '--list'], text=True).splitlines()
+    active_entries = 0
+    for command in ('gzip', 'gunzip', 'uncompress', 'zcat'):
+        active = current and source_current and entry['translated'] and command in listed and not linked['native_command_entries']
+        checks = [r for r in focused['results'] if r['command'] == command]
+        help_checks = [r for r in checks if r['name'] in (command+'-help', command+'-version')]
+        assert len(help_checks) == 2
+        behavior_pass = active and bool(checks) and all(r['pass'] for r in checks)
+        row = next(r for r in inventory if r['name'] == command)
+        row.update(translated=entry['translated'], compiles=active, active_rust=active,
+                   provider_confirmed=True, state='compiled-rust-entry' if active else 'queued',
+                   help_version_pass=active and all(r['pass'] for r in help_checks),
+                   valgrind_help_pass=active and all(r['memory_clean'] for r in help_checks),
+                   behavior_fixture_count=len(checks), behavior_fixture_pass=behavior_pass,
+                   valgrind_fixture_pass=behavior_pass and all(r['memory_clean'] for r in checks),
+                   gnu_tests_pass=False, valgrind_pass=False, complete=False,
+                   completion_scope='GNU Gzip 1.14 Linux/glibc with configured Bash alias diagnostics. Sixteen full originals and one three-program help/version selection pass; auxiliary ports and remaining originals are open.')
+        active_entries += int(active)
+    extra_providers['gzip'] = {'active_rust_entries': active_entries,
+        'original_native_passed': original['native_passed'], 'original_selections_passed': original['passed'],
+        'original_selections_executed': original['total'], 'original_scripts': len(manifest['scripts']),
+        'full_original_scripts_passed': original['full_original_scripts_passed'],
+        'partial_original_scripts': original['partial_original_scripts'],
+        'original_states': original['state_counts'], 'behavior_passed': focused['passed'],
+        'behavior_total': focused['total'], 'complete': False, 'completion_scope': row['completion_scope']}
 (ROOT/'inventory/applets.json').write_text(json.dumps(inventory, indent=2)+'\n')
 reviewed_valgrind = read('evidence/gnu-reviewed-valgrind.json')
 assessments = {'clean': 0, 'assertions_passed_memory_open': 0,
