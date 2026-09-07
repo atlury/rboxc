@@ -95,8 +95,8 @@ Recorded checks:
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 `tail` file records on return (including ignored follow mode), and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 583 of 586 scripts/selections.
-The executed inventory contains 526 shell scripts and 5,958 Perl cases.
+failures). The reviewed original GNU runner now passes 584 of 587 scripts/selections.
+The executed inventory contains 527 shell scripts and 5,958 Perl cases.
 Forty-seven Perl scripts run their complete
 runtime case lists; 13 others retain explicit case selections. Case-count
 checks also cover scripts that call GNU's Perl harness more than once.
@@ -114,8 +114,8 @@ script; `--report-name` gives independent batches distinct evidence files.
 New results record tested binary hashes, and exec-wrapper tests can request
 Valgrind child tracing.
 
-The reviewed Valgrind evidence records 470 clean results out of 497 scripts
-or selections: 3,707 Perl cases and 10,979 candidate/descendant process logs.
+The reviewed Valgrind evidence records 471 clean results out of 498 scripts
+or selections: 3,707 Perl cases and 10,981 candidate/descendant process logs.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
 memory and descriptors retained by host script interpreters. Both pass natively.
@@ -442,6 +442,13 @@ separate collection at `/usr/lib/locale/rboxc-tests`, and records file hashes.
 Tests select it through LOCPATH. The system locale archive remains unchanged;
 the standard data location permits Ubuntu's confined locale utility to read it.
 
+GNU's complete random-sort benchmark now passes natively and under Valgrind.
+Each implementation sorts 500,000 random 100-character lines (50.5 MB including
+newlines), and the original script compares the complete output against Perl's
+independent sort. Both candidate process logs finish cleanly. The script
+generates fresh random data per run, so its elapsed times are not a comparison
+on identical input.
+
 GNU's original multicall test exposed different unknown-symlink diagnostics.
 Alternate executable names now reach the translated GNU dispatcher, including
 `ginstall` and names ending in `coreutils`. The `rboxc COMMAND` interface retains
@@ -451,9 +458,9 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 614 scripts
+the original test evidence into `evidence/gnu-suite-coverage.json`: 615 scripts
 passed, three passed with profile skips, 13 have selected-case coverage, four
-skipped, 29 are excluded, and 70 remain pending. No recorded native failures
+skipped, 29 are excluded, and 69 remain pending. No recorded native failures
 remain in the executed selections. Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
 explicitly excluded with source hashes in inventory/gnu-suite-exclusions.json.
