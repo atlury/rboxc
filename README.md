@@ -95,8 +95,8 @@ Recorded checks:
 
 Cleanup now releases `expr` results, `date` timezone/format storage,
 `tail` file records on return (including ignored follow mode), and `tr` construct lists (including parse
-failures). The reviewed original GNU runner now passes 633 of 640 scripts/selections.
-The executed inventory contains 580 shell scripts and 5,958 Perl cases.
+failures). The reviewed original GNU runner now passes 634 of 641 scripts/selections.
+The executed inventory contains 581 shell scripts and 5,958 Perl cases.
 Forty-seven Perl scripts run their complete
 runtime case lists; 13 others retain explicit case selections. Case-count
 checks also cover scripts that call GNU's Perl harness more than once.
@@ -197,8 +197,8 @@ binary or runtime-helper changes during execution. Seven profile checks cover
 report isolation, input changes, and separate log directories. The equivalence
 assessment accepts `--observations` for the separately saved behavior report.
 
-The reviewed Valgrind evidence records 579 clean results out of 617 scripts
-or selections: 5,729 Perl cases and 37,078 candidate/descendant process logs.
+The reviewed Valgrind evidence records 580 clean results out of 618 scripts
+or selections: 5,729 Perl cases and 37,081 candidate/descendant process logs.
 The 38 open results comprise 27 with passing original assertions but unresolved
 memory/descriptor evidence, two prerequisite skips, five with assertion
 failures under instrumentation, and four interrupted by watchdog deadlines. The status report records
@@ -337,12 +337,19 @@ rboxc. Execution times are recorded for
 new runs. Named native batches
 can be merged with scripts/merge-reviewed-evidence.py --native after completion.
 
-All 43 reviewed rm scripts pass natively and under Valgrind, including
+All 44 reviewed rm scripts pass natively and under Valgrind, including
 interactive decisions, inaccessible directories, deep trees, and disposable
 read-only and cross-filesystem fixtures. All five stty scripts and tty pass
 natively with a private controlling terminal; the large stty pair matrix still
 awaits instrumentation. Additional du coverage includes sparse and allocated
 large files, filesystem boundaries, and bind-mount cycles.
+The full original 400,000-file deletion benchmark now passes on a verified
+512 MiB ext4 image with 524,288 inodes. GNU and rboxc each remove the directory
+in 4 seconds natively; Valgrind measurements are 7 and 8 seconds respectively,
+with three clean process logs per implementation. These are single observations
+on this host, with the original 60-second minimum threshold unchanged. The
+existing 32 MiB image profile still passes the original du threshold script.
+The benchmark summary and report hashes are in evidence/rm-ext4-benchmark.json.
 
 Every registered df script has a native result: twelve pass and two skip
 because this host lacks the requested user-namespace/proc and rootfs profiles.
@@ -581,9 +588,9 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 622 scripts
+the original test evidence into `evidence/gnu-suite-coverage.json`: 623 scripts
 passed, 13 have selected-case coverage, eight are skipped, 29 are excluded,
-and 61 remain pending. No recorded native failures
+and 60 remain pending. No recorded native failures
 remain in the executed selections. Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
 explicitly excluded with source hashes in inventory/gnu-suite-exclusions.json.

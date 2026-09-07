@@ -357,6 +357,11 @@ def main():
                     environment['TMPDIR'] = str(shared_tmp)
                 if row.get('very_expensive'):
                     environment['RUN_VERY_EXPENSIVE_TESTS'] = 'yes'
+                if row.get('loopback_geometry'):
+                    assert row['script'] == 'tests/rm/ext3-perf.sh' and row['profile'] == 'loopback-device'
+                    assert row['loopback_geometry'] == {'bytes': 536870912, 'inodes': 524288}
+                    environment['RBOXC_LOOPBACK_IMAGE_BYTES'] = str(row['loopback_geometry']['bytes'])
+                    environment['RBOXC_LOOPBACK_INODES'] = str(row['loopback_geometry']['inodes'])
                 if row.get('expensive'):
                     environment['RUN_EXPENSIVE_TESTS'] = 'yes'
                 if row.get('locale_profile') == 'extended':

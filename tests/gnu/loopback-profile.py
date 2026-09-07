@@ -14,9 +14,12 @@ mountpoint = run/'device-test-mount'
 assert os.geteuid() == 0 and len(sys.argv) > 1
 assert os.readlink('/proc/self/ns/mnt') != os.readlink('/proc/1/ns/mnt'), 'private mount namespace required'
 mountpoint.mkdir()
+image_bytes = int(os.environ.get('RBOXC_LOOPBACK_IMAGE_BYTES', 32 * 1024 * 1024))
+inodes = int(os.environ.get('RBOXC_LOOPBACK_INODES', 0))
+assert (image_bytes, inodes) in ((32 * 1024 * 1024, 0), (512 * 1024 * 1024, 524288)), 'unreviewed image geometry'
 with image.open('xb') as stream:
-    stream.truncate(32 * 1024 * 1024)
-subprocess.run(['/usr/sbin/mkfs.ext4', '-q', '-F', image], check=True)
+    stream.truncate(image_bytes)
+subprocess.run(['/usr/sbin/mkfs.ext4', '-q', '-F', *(['-N', str(inodes)] if inodes else []), image], check=True)
 mounted = subprocess.run(['/usr/bin/mount', '-t', 'ext4', '-o', 'loop,nosuid,nodev,noexec',
                           image, mountpoint], capture_output=True)
 if mounted.returncode:
@@ -34,7 +37,8 @@ try:
     assert backing.resolve(strict=True) == image.resolve(strict=True), 'unexpected backing device'
     (mountpoint/'src').symlink_to(run/'src', target_is_directory=True)
     print('RBOXC_LOOPBACK_PROFILE '+json.dumps({'bytes': image.stat().st_size,
-          'filesystem': 'ext4', 'verified_backing_image': True,
+          'filesystem': 'ext4', 'inodes': os.statvfs(mountpoint).f_files,
+          'verified_backing_image': True,
           'private_mount_namespace': True}), file=sys.stderr, flush=True)
     result = subprocess.run(sys.argv[1:], cwd=mountpoint,
                             env={**os.environ, 'TMPDIR': str(mountpoint), 'PWD': str(mountpoint)})
