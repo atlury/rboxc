@@ -136,6 +136,12 @@ ratios of 0.83–1.01 across four matchers; concurrent tests and process startup
 limit precision, so this is not a performance certification. The installed release
 remains the validated 114-command build.
 
+GNU Gzip 1.14 is also pinned from its verified signed archive. Its native
+oracle and compiler records are prepared for the `gzip`, `gunzip`, `uncompress`,
+and `zcat` inventory entries. The latter entries use upstream shell adapters
+and an installed alias; their compatibility work is separate from Grep.
+The 30 original Gzip registrations remain inventoried for individual review.
+
 ## Status
 
 The executable registers 114 commands: 107 Coreutils entries, GNU Hello,
