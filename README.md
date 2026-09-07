@@ -114,8 +114,8 @@ script; `--report-name` gives independent batches distinct evidence files.
 New results record tested binary hashes, and exec-wrapper tests can request
 Valgrind child tracing.
 
-The reviewed Valgrind evidence records 465 clean results out of 488 scripts
-or selections: 3,707 Perl cases and 10,496 candidate/descendant process logs.
+The reviewed Valgrind evidence records 467 clean results out of 495 scripts
+or selections: 3,707 Perl cases and 10,517 candidate/descendant process logs.
 Two env results remain open. The env script encounters shebang/argv differences
 under instrumentation; the env -S script passes its assertions but records
 memory and descriptors retained by host script interpreters. Both pass natively.
@@ -300,6 +300,12 @@ its assertions but stays open under Valgrind: printf, verbose cp, and two mktemp
 invocations report operations on intentionally closed stdout, without lost heap
 or leaked descriptors. Install's strip-program assertions also pass with child
 tracing; findings in the host shell, sed, and grep remain recorded as open.
+Seven additional original tail-follow scripts now have Valgrind evidence.
+Append-only operation on the disposable ext4 image and follow-name termination
+pass cleanly. Header updates, missing directories, rename tracking, descriptor
+following, and initial flushing pass their assertions but keep descriptors
+when the scripts terminate tail with SIGTERM; all nine affected candidate
+processes record zero lost heap.
 The two tail
 prerequisite reruns now execute their assertions successfully, but retain
 descriptors when follow mode is terminated by a signal; pipe-f also probes
