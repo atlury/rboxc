@@ -29,7 +29,8 @@ pub unsafe extern "C" fn main(mut argc: c_int, mut argv: *mut *mut c_char) -> c_
     if argc < 1 || argv.is_null() || (*argv).is_null() { return 1; }
     let path = CStr::from_ptr(*argv).to_bytes();
     let mut name = path.rsplit(|byte| *byte == b'/').next().unwrap_or(path);
-    if name == b"rboxc" || name == b"rbox" {
+    let rbox_invocation = name == b"rboxc" || name == b"rbox";
+    if rbox_invocation {
         if argc < 2 {
             write_all(2, b"Usage: rboxc COMMAND [ARGUMENTS...]\n       rboxc --list\n");
             return 1;
@@ -49,6 +50,11 @@ pub unsafe extern "C" fn main(mut argc: c_int, mut argv: *mut *mut c_char) -> c_
     }
     for (command, entry) in APPLETS {
         if name == *command { return entry(argc, argv); }
+    }
+    if !rbox_invocation {
+        // GNU owns alternate executable names, including ginstall, prefixed
+        // coreutils names, and the diagnostic for an unknown symlink name.
+        return applet_coreutils::single_binary_main_coreutils(argc, argv);
     }
     write_all(2, b"rboxc: unknown program\n");
     127

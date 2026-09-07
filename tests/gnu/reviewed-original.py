@@ -75,7 +75,7 @@ def main():
                         (run/'src'/command).symlink_to(candidate)
                 (run/'src/getlimits').symlink_to(BUILD/'src/getlimits')
                 environment = {
-                    **os.environ, 'PATH': f'{run}/src:/opt/gnu/coreutils-9.11/bin:/usr/bin:/bin',
+                    **({'HOME': str(run), 'TMPDIR': str(run)} if row.get('clean_environment') else os.environ), 'PATH': f'{run}/src:/opt/gnu/coreutils-9.11/bin:/usr/bin:/bin',
                     'LC_ALL': 'C', 'LANGUAGE': 'C', 'TZ': 'UTC0', 'built_programs': ' '.join(commands),
                     'srcdir': str(SOURCE), 'top_srcdir': str(SOURCE), 'abs_srcdir': str(SOURCE),
                     'abs_top_srcdir': str(SOURCE), 'abs_top_builddir': str(run),

@@ -49,7 +49,7 @@ summary = {
     'reviewed_original_valgrind': {
         'passed_selections': read('evidence/gnu-reviewed-valgrind.json')['passed'],
         'total_selections': read('evidence/gnu-reviewed-valgrind.json')['total'],
-        'selected_perl_cases': sum(len(row['cases']) for row in read('evidence/gnu-reviewed-valgrind.json')['results']),
+        'selected_perl_cases': sum(len(row.get('cases', [])) for row in read('evidence/gnu-reviewed-valgrind.json')['results']),
         'candidate_processes': sum(len(row['rboxc']['memory']) for row in read('evidence/gnu-reviewed-valgrind.json')['results']),
     },
     'allocation_adapter': read('evidence/aligned-alloc.json'),
@@ -57,6 +57,8 @@ summary = {
                                  for key in ('passed', 'total')},
     'runtime_helpers': read('evidence/link.json').get('runtime_helpers', []),
     'external_dependency_observations': len(read('evidence/host-dependency-findings.json')['results']),
+    'dispatcher': {key: read('evidence/dispatcher.json')[key] for key in ('passed', 'total')},
+    'gnu_suite': {key: read('evidence/gnu-suite-coverage.json')[key] for key in ('total', 'counts')},
     'complete_commands': 0,
 }
 (ROOT/'evidence/status.json').write_text(json.dumps(summary, indent=2)+'\n')

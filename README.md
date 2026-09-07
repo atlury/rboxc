@@ -66,7 +66,7 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The initial release executable is 2,390,424 bytes (2.28 MiB), dynamically linked
+The initial release executable is 2,392,224 bytes (2.28 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
@@ -87,8 +87,8 @@ Recorded checks:
 Cleanup now releases `expr` results, `date` timezone/format storage,
 non-following `tail` file records, and `tr` construct lists (including parse
 failures). Selected original GNU tests pass: 22 `expr`, 56 `tr`, 54 `tac`, and 33 `pr`
-cases, plus 51 `numfmt` and 67 `seq` cases and twelve date/tail/cat/dd/split/sort/od/printf/df/stdbuf
-shell scripts. Selected cases also pass for `paste` (26), `expand` (25),
+cases, plus 51 `numfmt` and 67 `seq` cases and 26 original shell scripts
+covering text, process, environment, and chmod behavior. Selected cases also pass for `paste` (26), `expand` (25),
 `unexpand` (53), `fold` (19), `head` (60), `wc` (16), `fmt` (9), and
 `uniq` (51), bringing the total to 542 Perl cases. These eight selections
 also pass under Valgrind against both executables (267 candidate processes).
@@ -97,6 +97,22 @@ separately requires clean candidate memory and descriptor results. Per-process
 observations are retained in `evidence/gnu-reviewed-valgrind.json`.
 These selections are pinned in
 `inventory/gnu-reviewed-tests.json`; they do not certify the whole suites.
+
+GNU's original multicall test exposed different unknown-symlink diagnostics.
+Alternate executable names now reach the translated GNU dispatcher, including
+`ginstall` and names ending in `coreutils`. The `rboxc COMMAND` interface retains
+its own command-selection behavior. Eleven dispatch checks pass, including
+nine GNU comparisons under Valgrind; all 428 help/version comparisons and 107
+Valgrind help paths pass after the change.
+
+The complete pinned suite registration contains 733 scripts, including 41
+root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
+the original test evidence into `evidence/gnu-suite-coverage.json`: 69 scripts
+passed, three passed with profile skips, 14 have selected-case coverage, five
+skipped, 26 are excluded, and 616 remain pending. Partial selections and skips
+are not full-suite passes; passing scripts can contain platform-conditional
+branches. No command is certified complete.
+
 
 `pr` now releases its filename list. `tac` frees the base of its working
 buffer after all operands and closes its cached temporary stream after the
