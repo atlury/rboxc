@@ -79,19 +79,29 @@ for index, row in enumerate(manifest['scripts']):
     logs = outcomes['rboxc-valgrind']['memory']
     clean = bool(logs) and all(m['errors'] == 0 and m['non_inherited_descriptors'] == 0
         and not any(m['heap_bytes'].get(k, 0) for k in ('definitely lost', 'indirectly lost', 'possibly lost')) for m in logs)
-    passed = assertions_pass and clean
+    skipped = all(value['status'] == 77 for value in outcomes.values())
+    expected_failure = bool(row.get('upstream_xfail')) and assertions_pass
+    matched = assertions_pass and clean
+    passed = matched and not expected_failure
+    state = ('prerequisite_skip' if skipped else 'expected_failure_matches' if expected_failure and clean
+             else 'passed' if passed else 'assertions_passed_memory_open' if assertions_pass
+             else 'assertions_open')
     results.append({**row, 'pass': passed, 'native_pass': native_pass,
-                    'assertions_pass': assertions_pass, 'memory_clean': clean, 'outcomes': outcomes})
-    print('PASS' if passed else 'OPEN', row['script'], flush=True)
+                    'assertions_pass': assertions_pass, 'memory_clean': clean, 'state': state,
+                    'expected_failure': expected_failure, 'skipped': skipped, 'matched': matched, 'outcomes': outcomes})
+    print(state.upper(), row['script'], flush=True)
     # Preserve each completed selection before starting the next one.
     report = {'scope': 'Individually reviewed original assertions, native and Valgrind; provider children use matching commands from the private PATH. Pending and excluded originals are not executed.',
               **profile.metadata(), 'gnu_binaries': {n: {'path': str(p), 'sha256': oracle_hashes[n]} for n, p in oracles.items()},
               'driver_sha256': fingerprint(Path(__file__)),
               'launch_profile': 'Valgrind locates the named command through a private PATH, preserving its initial argv[0]. Subsequent child execs remain traced.',
-              'passed': sum(r['pass'] for r in results), 'native_passed': sum(r['native_pass'] for r in results),
-              'assertions_passed': sum(r['assertions_pass'] for r in results), 'total': len(results),
+              'passed': sum(r['pass'] for r in results), 'native_passed': sum(r['native_pass'] and not r.get('upstream_xfail') for r in results),
+              'assertions_passed': sum(r['assertions_pass'] and not r.get('upstream_xfail') for r in results), 'total': len(results),
               'reviewed_scripts': sum(r['reviewed'] for r in manifest['scripts']),
               'selected_scripts': sorted(selected),
+              'expected_failures': sum(r['expected_failure'] for r in results),
+              'prerequisite_skips': sum(r['skipped'] for r in results),
+              'state_counts': {s: sum(r['state'] == s for r in results) for s in sorted({r['state'] for r in results})},
               'registered_original_scripts': len(manifest['scripts']),
               'remaining': [r for r in manifest['scripts'] if not r['reviewed']], 'results': results}
     assert all(fingerprint(p) == oracle_hashes[n] for n, p in oracles.items())

@@ -92,8 +92,8 @@ instrumentation gap retained. Activation and prior artifact backups are recorded
 in `evidence/which-activation.json`.
 
 GNU Diffutils 3.12 is pinned from its verified signed archive. All four command
-entries (`cmp`, `diff`, `diff3`, and `sdiff`) translate and link in a separate
-114-command candidate. Its native helpers and Rust-owned diff state share 369
+entries (`cmp`, `diff`, `diff3`, and `sdiff`) are active in the installed
+114-command executable. Its native helpers and Rust-owned diff state share 369
 private symbols. The translation retains C23 null-pointer semantics through a
 GNU17 parser adaptation and preserves provider pathname diagnostics. All 33
 registered original scripts are inventoried. Of 30 reviewed originals, the
@@ -102,14 +102,20 @@ one upstream expected failure. Three originals remain excluded from this profile
 All 56 ordinary native/Valgrind formatting, comparison, merge, allocation-growth,
 and I/O-error fixtures pass after ownership cleanup. Cleanup releases cmp inputs,
 replaced diff regex programs and directory descriptors, and diff3 allocations,
-merge input, and child pipes. The original-suite Valgrind run and combined
-regressions are still in progress; the installed release remains the validated
-110-command build. Raw earlier failures and candidate binaries are retained.
+merge input, and child pipes. The final original Valgrind run has 27 passes,
+one prerequisite skip, one matching expected failure, and cmp's timing assertion
+open in both builds. A separate measurement confirms both builds pass natively
+within 0.4 seconds and under Valgrind with five seconds. All 349 candidate logs
+from the final original and focused runs have complete, clean final images.
+The combined Coreutils, Hello, Time, and Which regressions pass within their
+recorded scopes. `evidence/diffutils-activation.json` records integration, prior
+artifact backups, and the installed-path dispatcher check. Earlier failures
+and candidate binaries are retained; full-provider completion remains open.
 
 ## Status
 
-The executable registers 110 commands: 107 Coreutils entries, GNU Hello,
-GNU Time, and GNU Which, all with active Rust command entries. No native C command entry remains, and assembly succeeds without the
+The executable registers 114 commands: 107 Coreutils entries, GNU Hello,
+GNU Time, GNU Which, and four GNU Diffutils commands, all with active Rust command entries. No native C command entry remains, and assembly succeeds without the
 C-entry opt-in. `printf`, `sort`, `od`, `numfmt`, and `seq` use native numeric
 helpers: floating values stay inside GNU C functions and cross the boundary
 only as bytes or text. This preserves the host's x87 `long double`
@@ -124,7 +130,7 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The current release executable is 2,493,552 bytes (2.38 MiB), dynamically linked
+The current release executable is 2,702,936 bytes (2.58 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.

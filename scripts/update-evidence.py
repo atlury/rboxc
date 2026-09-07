@@ -118,6 +118,40 @@ if which_report.exists():
     extra_providers['which'] = {'active_rust_entries': int(active), 'original_scripts': 0,
         'behavior_passed': focused['passed'], 'behavior_total': focused['total'],
         'complete': False, 'completion_scope': row['completion_scope']}
+diffutils_reports = [ROOT/'evidence/diffutils-original.json', ROOT/'evidence/diffutils-behavior.json']
+if all(path.exists() for path in diffutils_reports):
+    original, focused = [json.loads(path.read_text()) for path in diffutils_reports]
+    linked = read('evidence/diffutils-link.json')
+    manifest = read('inventory/diffutils-tests.json')
+    expected = {r['script']: r['source_sha256'] for r in manifest['scripts']}
+    assert all(expected.get(r['script']) == r['source_sha256'] for r in original['results'])
+    current = all(report['binary_sha256'] == binary_sha256 for report in (original, focused))
+    listed = subprocess.check_output([binary, '--list'], text=True).splitlines()
+    active_entries = 0
+    for command in ('cmp', 'diff', 'diff3', 'sdiff'):
+        entry = read(f'evidence/diffutils-{command}-translation.json')
+        source_current = (entry['rust_sha256'] == linked['rust_source_sha256'][command] ==
+                          hashlib.sha256((ROOT/entry['rust_file']).read_bytes()).hexdigest())
+        active = current and source_current and entry['translated'] and command in listed and not linked['native_command_entries']
+        checks = [r for r in focused['results'] if r['command'] == command]
+        help_checks = [r for r in checks if r['name'] in (command+'-help', command+'-version')]
+        assert len(help_checks) == 2
+        behavior_pass = active and bool(checks) and all(r['pass'] for r in checks)
+        row = next(r for r in inventory if r['name'] == command)
+        row.update(translated=entry['translated'], compiles=active, active_rust=active,
+                   provider_confirmed=True, state='compiled-rust-entry' if active else 'queued',
+                   help_version_pass=active and all(r['pass'] for r in help_checks),
+                   valgrind_help_pass=active and all(r['memory_clean'] for r in help_checks),
+                   behavior_fixture_count=len(checks), behavior_fixture_pass=behavior_pass,
+                   valgrind_fixture_pass=behavior_pass and all(r['memory_clean'] for r in checks),
+                   gnu_tests_pass=False, valgrind_pass=False, complete=False,
+                   completion_scope='Pinned GNU Diffutils 3.12 Linux profile. Provider suite retains three excluded originals, a prerequisite skip, an upstream expected failure, and an instrumented cmp deadline assertion; no full-suite completion claim.')
+        active_entries += int(active)
+    extra_providers['diffutils'] = {'active_rust_entries': active_entries,
+        'original_native_passed': original['native_passed'], 'original_scripts_passed': original['passed'],
+        'original_scripts_executed': original['total'], 'original_scripts': len(expected),
+        'original_states': original['state_counts'], 'behavior_passed': focused['passed'],
+        'behavior_total': focused['total'], 'complete': False, 'completion_scope': row['completion_scope']}
 (ROOT/'inventory/applets.json').write_text(json.dumps(inventory, indent=2)+'\n')
 reviewed_valgrind = read('evidence/gnu-reviewed-valgrind.json')
 assessments = {'clean': 0, 'assertions_passed_memory_open': 0,
