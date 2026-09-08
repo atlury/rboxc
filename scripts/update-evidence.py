@@ -243,6 +243,67 @@ if all(path.exists() for path in gzip_reports):
         'partial_original_scripts': original['partial_original_scripts'],
         'original_states': original['state_counts'], 'behavior_passed': focused['passed'],
         'behavior_total': focused['total'], 'complete': False, 'completion_scope': row['completion_scope']}
+sed_reports = [ROOT/'evidence/sed-original.json', ROOT/'evidence/sed-behavior.json']
+if all(path.exists() for path in sed_reports):
+    original, focused = [json.loads(path.read_text()) for path in sed_reports]
+    entry = read('evidence/sed-translation.json')
+    linked = read('evidence/sed-link.json')
+    manifest = read('inventory/sed-tests.json')
+    expected = {r['script']: r for r in manifest['scripts'] if r['reviewed']}
+    assert set(expected) == {r['script'] for r in original['results']}
+    assert all(expected[r['script']]['source_sha256'] == r['source_sha256'] for r in original['results'])
+    current = all(r['binary_sha256'] == binary_sha256 for r in (original, focused))
+    source_current = entry['rust_sha256'] == linked['rust_source_sha256'] == hashlib.sha256((ROOT/entry['rust_file']).read_bytes()).hexdigest()
+    listed = subprocess.check_output([binary, '--list'], text=True).splitlines()
+    active = current and source_current and entry['translated'] and 'sed' in listed and not linked['native_command_entries']
+    checks = focused['results']; help_checks = [r for r in checks if r['name'] in ('help','version')]
+    assert len(help_checks) == 2
+    row = next(r for r in inventory if r['name'] == 'sed')
+    row.update(translated=entry['translated'], compiles=active, active_rust=active,
+        provider_confirmed=True, state='compiled-rust-entry' if active else 'queued',
+        help_version_pass=active and all(r['pass'] for r in help_checks),
+        valgrind_help_pass=active and all(r['memory_clean'] for r in help_checks),
+        behavior_fixture_count=len(checks), behavior_fixture_pass=active and all(r['pass'] for r in checks),
+        valgrind_fixture_pass=active and all(r['memory_clean'] for r in checks),
+        gnu_tests_pass=False, valgrind_pass=False, complete=False,
+        completion_scope='GNU Sed 4.10 Linux/glibc reviewed original selections and focused comparisons. External child findings, platform skips, excluded originals, and dedicated remaining profiles are recorded separately; full-suite completion is not claimed.')
+    extra_providers['sed'] = {'active_rust_entries':int(active),'original_native_passed':original['native_passed'],
+        'original_selections_passed':original['passed'],'original_selections_executed':original['total'],
+        'original_scripts':len(manifest['scripts']),'original_states':original['state_counts'],
+        'sed_assertions_and_memory_passed':original['sed_assertions_and_memory_passed'],
+        'behavior_passed':focused['passed'],'behavior_total':focused['total'],
+        'complete':False,'completion_scope':row['completion_scope']}
+bc_reports = [ROOT/'evidence/bc-original.json', ROOT/'evidence/bc-behavior.json', ROOT/'evidence/bc-terminal.json']
+if all(path.exists() for path in bc_reports):
+    original, focused, terminal = [json.loads(path.read_text()) for path in bc_reports]
+    linked = read('evidence/bc-link.json'); manifest = read('inventory/bc-tests.json')
+    expected = {r['path']:r for r in manifest['inputs'] if r['state']=='reviewed'}
+    assert set(expected) == {r['path'] for r in original['results']}
+    assert all(all(r[k]==v for k,v in expected[r['path']].items()) for r in original['results'])
+    current = all(r['binary_sha256'] == binary_sha256 for r in (original, focused, terminal))
+    listed = subprocess.check_output([binary, '--list'], text=True).splitlines(); active_entries = 0
+    for command in ('bc','dc'):
+        entry = read('evidence/bc-'+command+'-translation.json')
+        source_current = entry['rust_sha256'] == linked['rust_source_sha256'][command] == hashlib.sha256((ROOT/entry['rust_file']).read_bytes()).hexdigest()
+        active = current and source_current and entry['translated'] and command in listed and not linked['native_command_entries']
+        checks = [r for r in focused['results'] if r['command']==command]
+        help_checks = [r for r in checks if r['name'] in (command+'-help',command+'-version')]
+        assert len(help_checks)==2
+        row = next(r for r in inventory if r['name']==command)
+        row.update(translated=entry['translated'], compiles=active, active_rust=active,
+            provider_confirmed=True, state='compiled-rust-entry' if active else 'queued',
+            help_version_pass=active and all(r['pass'] for r in help_checks),
+            valgrind_help_pass=active and all(r['memory_clean'] for r in help_checks),
+            behavior_fixture_count=len(checks), behavior_fixture_pass=active and all(r['pass'] for r in checks),
+            valgrind_fixture_pass=active and all(r['memory_clean'] for r in checks),
+            gnu_tests_pass=False, valgrind_pass=False, complete=False,
+            completion_scope='GNU BC 1.08.2 bc/dc entries with separate native helpers. All reviewed historical arithmetic inputs, focused checks, and four controlling-terminal profiles pass; no automated upstream runtime suite is registered. Broader terminal, locale, and signal profiles remain open.')
+        active_entries += int(active)
+    extra_providers['bc'] = {'active_rust_entries':active_entries,'original_inputs_passed':original['passed'],
+        'original_inputs_executed':original['total'],'registered_runtime_tests':original['registered_runtime_tests'],
+        'behavior_passed':focused['passed'],'behavior_total':focused['total'],
+        'terminal_passed':terminal['passed'],'terminal_total':terminal['total'],
+        'complete':False,'completion_scope':row['completion_scope']}
 (ROOT/'inventory/applets.json').write_text(json.dumps(inventory, indent=2)+'\n')
 reviewed_valgrind = read('evidence/gnu-reviewed-valgrind.json')
 assessments = {'clean': 0, 'assertions_passed_memory_open': 0,

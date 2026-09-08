@@ -4,6 +4,7 @@
 import importlib.util
 import json
 from pathlib import Path
+import re
 import sys
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -12,13 +13,14 @@ sys.path.insert(0,str(ROOT/'tests/gnu'))
 from comparison_profile import ComparisonProfile, fingerprint
 spec=importlib.util.spec_from_file_location('reviewed',ROOT/'tests/gnu/reviewed-original.py')
 runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner)
-profile=ComparisonProfile('gzip-original',oracle=ROOT/'build/gnu-gzip/gzip')
+profile=ComparisonProfile('gzip-original',oracle=ROOT/'build/gnu-gzip/gzip',selections=True)
 manifest=json.loads((ROOT/'inventory/gzip-tests.json').read_text())
 # Each completed batch covers a disjoint reviewed selection.
-names=['initial','large','help']
+names=profile.options.commands or ['gzip-original-initial','gzip-original-large','gzip-original-help']
 rows={};sources=[];seen_logs=set();audit=[]
 for name in names:
-    path=ROOT/f'evidence/gzip-original-{name}.json'
+    assert re.fullmatch(r'[a-z0-9-]+',name)
+    path=ROOT/f'evidence/{name}.json'
     report=json.loads(path.read_text())
     assert report['binary_sha256']==profile.binary_sha256
     assert report['gnu_binary_sha256']==profile.oracle_sha256
