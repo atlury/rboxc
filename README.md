@@ -75,7 +75,7 @@ there where available.
 | Patch | 2.8 | Candidate passes 23 focused comparisons and eight reviewed originals |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
-| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; eight originals pass with clean Valgrind, broader acceptance open |
+| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; ten originals pass with clean Valgrind; tilde and broader acceptance open |
 | Less | 704 | Candidate passes ten focused comparisons; original suite pending |
 | Screen | 5.0.2 | Candidate passes five option comparisons and the descriptor-preservation contract |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and four reviewed originals |
@@ -91,7 +91,16 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-The latest Bash ownership checkpoint passes **eight complete reviewed original
+Two more complete Bash originals, `herestr` and `rhs-exp`, pass against GNU's
+expected output with clean Valgrind process trees on the same ownership
+candidate. This brings the reviewed passing original scripts to ten. The
+additional `tilde` script matches GNU output, but remains open: both the native
+GNU shell and candidate lose a 24-byte tilde table, and the host's
+`libnss_sss.so.2` reports an invalid descriptor during name lookup. The raw
+findings are retained in `evidence/bash-expansion-original.json`; they are not
+counted as passes. Eleven of the 88 top-level recipes have now been reviewed.
+
+The preceding Bash ownership checkpoint passes **eight complete reviewed original
 scripts** (`arith-for`, `attr`, `case`, `casemod`, `invert`, `precedence`, `shopt`,
 `strip`) with clean Valgrind process trees. This includes every nested dependency
 of the selected scripts. It also passes 44 focused Bash checks, all 69 shell
