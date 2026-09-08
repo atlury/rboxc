@@ -1,6 +1,6 @@
 {
   "scope": "Preflight each descriptor with F_GETFD, preserving errno, and mark only known EBADF descriptors negative before GNU poll. The existing polling and callback policy remains in place for valid handles, including O_PATH behavior.",
-  "driver_sha256": "78632500327e84d7686a77ef124ed2ea10a6f520370c159acf13b5062ca02824",
+  "driver_sha256": "3f8fcecd04208b2f98cef268b630850ef1060bb867bf21834314c592f75cc746",
   "original_sha256": "58977822e300f76a65d134adc84b286fb8088a2594a8c996c1b934953893d285",
   "adapted_source_sha256": "3b9b3d79a0d1869cb509c4cc7ad3bbbdcdf5007e31789f3c8b3115ca8f21abfa",
   "object_sha256": "ba17a1a8a7a5f9a71095218d3b278c0416e3082c27f874fcc439bc55f1ac1180",
@@ -30,8 +30,8 @@
   "log": "evidence/raw/findutils-fd-probe-build.log",
   "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
   "find_cleanup": {
-    "scope": "Release samefile reference descriptors at exit, including parse failures; free execdir working-directory storage after each single execution and on open failure.",
-    "archive_sha256": "b22deeda927da9f23fbbed02a1815ddc24fdd2ba5e17814913e181b3649f7901",
+    "scope": "Release samefile reference descriptors at exit, including parse failures; free execdir working-directory storage after each single execution, on open failure, and when the final pending batch is completed.",
+    "archive_sha256": "1690a5a2636c7b67729c2cfde2e40142d40b62b887c09f0fa61427a357dc74e1",
     "objects": [
       {
         "name": "parser",
@@ -97,6 +97,39 @@
           "-g"
         ],
         "log": "evidence/raw/findutils-exec-cleanup-build.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "util",
+        "original_sha256": "008c07db01315c9aef0a0fc292cb2896f979d416cb77ca42154932042c6d5ba9",
+        "adapted_source_sha256": "cec4b328fc4a10c9d736f11d39f6def61b2f428e297c00bdd6064383c5c0f583",
+        "object_sha256": "2c8072dfb442a18f08f9fafba7a17eba1cda764dcebe309adf4a1182ba4b78c1",
+        "compiler_arguments": [
+          "gcc",
+          "-DHAVE_CONFIG_H",
+          "-I.",
+          "-I/opt/src/findutils-4.11.0/find",
+          "-I..",
+          "-I../gl/lib",
+          "-I/opt/src/findutils-4.11.0/lib",
+          "-I/opt/src/findutils-4.11.0/gl/lib",
+          "-DLOCALEDIR=\"/root/rboxc/build/oracle/findutils/share/locale\"",
+          "-g",
+          "-O2",
+          "-MT",
+          "util.o",
+          "-MD",
+          "-MP",
+          "-MF",
+          ".deps/util.Tpo",
+          "-c",
+          "-o",
+          "/root/rboxc/build/findutils-cleanup/util.o",
+          "/root/rboxc/build/findutils-cleanup/util.c",
+          "-I/opt/src/findutils-4.11.0/find",
+          "-g"
+        ],
+        "log": "evidence/raw/findutils-util-cleanup-build.log",
         "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       }
     ]

@@ -256,6 +256,13 @@ A further ownership pass handles repeated database searches, partial regex
 compilation, and failed xargs children with argument files; all 81 focused
 checks pass on that candidate. Both earlier candidates and reports remain
 available. Additional reviewed original selections are running.
+All 66 supplemental original selections pass their assertions; 62 pass strict
+checks for every traced process. Two retain system-shell file descriptors,
+one exposed final execdir-batch ownership, and one reached a host NSS module
+that probes an invalid descriptor. The execdir and early-output-file cleanup
+fixes pass an expanded 83/83 focused profile. The original NSS case is being
+rechecked with a private local-files configuration, and 105 additional
+POSIX/System V selections are running. Earlier observations remain unchanged.
 
 ## Status
 

@@ -45,26 +45,39 @@ for name in ('exists1','exists2','exists3','notexists1','notexists2','notexists3
 selections.update({'locate/bigendian':(1,['../locate.gnu/locateddb.old.powerpc.xi']),
                    'locate/littleendian':(1,['../locate.gnu/locateddb.old.x86.xi']),
                    'locate/bigprefix1':(2,[]),'locate/exceedshort':(1,[]),'locate/sv-bug-14535':(8,[])})
+# POSIX/System V originals reviewed together with their literal shell inputs.
+for name in ('and','bracket-depth','depth1','dotdotfiles','empty-parens','exec-one','files-not-expressions1','files-not-expressions2','files-not-expressions3','group-empty','group-missing','grouping','links','mtime0','name-missing','name','nameslash','parent','perm-X','perm-vanilla','posixnot','prune-result','prune-stat','prune','size-missing','sizes','sizetype','sv-bug-11175','sv-bug-12181','sv-bug-15235','sv-bug-25359','sv-bug-27563-exec','sv-bug-30777','typesize','user-empty','user-missing'):
+ selections['find/posix:'+name]=(4,[])
+selections.update({'find/posix:size-invalid':(40,[]),'find/posix:typearg':(8,[]),'find/posix:sv-bug-19617':(12,[])})
+for category in ('posix','sysv'):
+ for script in sorted((source/'xargs/testsuite'/('xargs.'+category)).glob('*.exp')):
+  fixtures=re.findall(r'([^\s{}]+\.xi)',script.read_text())
+  selections['xargs/'+category+':'+script.stem]=(1,fixtures)
+def selected_path(selection):
+ command,name=selection.split('/')
+ if ':' in name:category,name=name.split(':');category=command+'.'+category
+ else:category=command+'.gnu'
+ return command,category,name
 selected=profile.options.commands or list(selections)
 assert set(selected)<=set(selections)
 oracles={n:ROOT/'build/gnu-findutils'/n/n for n in ('find','xargs','locate')}
-helpers={n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','mkdir','chmod','touch','sort','echo','basename','cp','ln','true','false','sleep','ls','mv','mktemp','cut','id','date')}
+helpers={n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','mkdir','chmod','touch','sort','echo','basename','cp','ln','true','false','sleep','ls','mv','mktemp','cut','id','date','printf','dd','rmdir')}
 helpers.update({n:ROOT/'build/gnu-diffutils/src'/n for n in ('cmp','diff')})
 helpers['sed']=ROOT/'build/gnu-sed/sed/sed'
 frcode=ROOT/'build/gnu-findutils/locate/frcode'
 updatedb=ROOT/'build/gnu-findutils/locate/updatedb'
-inputs={p:fingerprint(p) for p in {*oracles.values(),*helpers.values(),frcode,updatedb,Path('/usr/bin/sort'),Path('/usr/bin/locale'),source/'locate/updatedb.sh',Path(__file__)}}
+inputs={p:fingerprint(p) for p in {*oracles.values(),*helpers.values(),frcode,updatedb,Path('/usr/bin/sort'),Path('/usr/bin/locale'),source/'locate/updatedb.sh',Path('/bin/sh'),Path('/usr/bin/sh'),Path('/bin/sh').resolve(),Path(__file__)}}
 for selection in selected:
- command,name=selection.split('/');suite=source/command/'testsuite'
- for p in [suite/'config/unix.exp',suite/(command+'.gnu')/(name+'.exp'),*[(suite/'inputs'/n).resolve() for n in selections[selection][1]]]:inputs[p]=fingerprint(p)
+ command,category,name=selected_path(selection);suite=source/command/'testsuite'
+ for p in [suite/'config/unix.exp',suite/category/(name+'.exp'),*[(suite/'inputs'/n).resolve() for n in selections[selection][1]]]:inputs[p]=fingerprint(p)
  for suffix in ('xo','xe'):
-  p=suite/(command+'.gnu')/(name+'.'+suffix)
+  p=suite/category/(name+'.'+suffix)
   if p.exists():inputs[p]=fingerprint(p)
 results=[]
 def memory_clean(logs):
  return bool(logs) and all(m['complete_exec_log'] and m['errors']==0 and m['non_inherited_descriptors']==0 and not any(m['heap_bytes'].get(k,0) for k in ('definitely lost','indirectly lost','possibly lost')) for m in logs)
 for index,selection in enumerate(selected):
- command,name=selection.split('/');expected,_=selections[selection];outcomes={}
+ command,category,name=selected_path(selection);expected,_=selections[selection];outcomes={}
  for implementation in ('gnu','rboxc'):
   for instrument in (False,True):
    key=implementation+('-valgrind' if instrument else '')
@@ -88,8 +101,16 @@ for index,selection in enumerate(selected):
     cwd=work/command/'testsuite';suite=source/command/'testsuite'
     (cwd/'site.exp').write_text('set srcdir "'+str(suite)+'"\nset objdir "'+str(cwd)+'"\nset build_triplet x86_64-pc-linux-gnu\nset host_triplet x86_64-pc-linux-gnu\n')
     env={'PATH':str(deps)+':/usr/bin:/bin','HOME':directory,'LC_ALL':'C','LANGUAGE':'C','TZ':'UTC0','TMPDIR':directory,'DEJAGNU':'/dev/null','TERM':'dumb'}
-    invocation=['/usr/bin/runtest','--tool',command,'--srcdir',str(suite),command+'.gnu/'+name+'.exp']
+    invocation=['/usr/bin/runtest','--tool',command,'--srcdir',str(suite),category+'/'+name+'.exp']
+    nss=None
+    if command=='find' and (name.startswith('user-') or name.startswith('group-')):
+     host_nss=Path('/etc/nsswitch.conf').read_text()
+     local_nss=re.sub(r'^(passwd|group|shadow|gshadow|initgroups):.*$',r'\1: files',host_nss,flags=re.M)
+     config=work/'nsswitch.conf';config.write_text(local_nss)
+     nss={'profile':'private-mount-local-files','host_sha256':fingerprint(Path('/etc/nsswitch.conf')),'private_sha256':fingerprint(config)}
+     invocation=['/usr/bin/unshare','--mount','--propagation','private','/bin/sh','-c','/usr/bin/mount --bind "$1" /etc/nsswitch.conf || exit 77; shift; exec "$@"','local-nss',str(config),*invocation]
     done=subprocess.run(invocation,cwd=cwd,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=180)
+    if nss:assert Path('/etc/nsswitch.conf').read_text()==host_nss
     (saved/'driver.log').write_bytes(done.stdout)
     for suffix in ('sum','log'):
      p=cwd/(command+'.'+suffix)
@@ -98,16 +119,27 @@ for index,selection in enumerate(selected):
     summary=(saved/(command+'.sum')).read_text() if (saved/(command+'.sum')).exists() else ''
     assertions=re.findall(r'^(PASS|FAIL|XFAIL|XPASS|UNRESOLVED|UNSUPPORTED|UNTESTED|ERROR): (.*)$',summary,re.M)
     logs=[{**runner.parse_memory_log(p.read_text(),p.stem,exec_only=True),'log':str(p.relative_to(ROOT)),'sha256':fingerprint(p)} for p in sorted((saved/'memory').glob('*.log'))]
+    for log in logs:
+     commands=re.findall(r'^==\d+== Command: (.*)$',(ROOT/log['log']).read_text(),re.M)
+     assert commands
+     log['command']=commands[-1]
+     executable=commands[-1].split(' ',1)[0]
+     log['applet_process']=bool(re.fullmatch(r'/tmp/rboxc-findutils-original-[^/]+/exec/'+command,executable))
+     log['pass']=memory_clean([log])
+    own=[m for m in logs if m['applet_process']]
     outcomes[key]={'status':done.returncode,'assertions':assertions,'assertions_pass':done.returncode==0 and len(assertions)==expected and all(r[0]=='PASS' for r in assertions),
                    'memory':logs,'memory_clean':memory_clean(logs) if instrument else None,
+                   'applet_memory_clean':memory_clean(own) if instrument else None,'nss_profile':nss,
                    'driver_log':str((saved/'driver.log').relative_to(ROOT)),'driver_log_sha256':fingerprint(saved/'driver.log')}
  row={'selection':selection,'expected_assertions':expected,'outcomes':outcomes}
  row['assertions_pass']=all(v['assertions_pass'] for v in outcomes.values()) and all(v['assertions']==outcomes['gnu']['assertions'] for v in outcomes.values())
  row['pass']=row['assertions_pass'] and outcomes['rboxc-valgrind']['memory_clean']
+ row['applet_assertions_and_memory_passed']=row['assertions_pass'] and outcomes['rboxc-valgrind']['applet_memory_clean']
  results.append(row)
  assert all(fingerprint(p)==h for p,h in inputs.items()),'test input changed'
  report={'scope':'Reviewed original DejaGNU scripts and expected fixtures, unchanged. Four GNU/Rust/native/Valgrind observations per selection. Private shell wrappers only select executables and instrumentation. Original find tests retain optimization levels 0,1,2,3. Native frcode and updatedb are fixture helpers and are not counted as ports. Their source/configured scripts and the configured absolute sort helper are pinned. Locale case-folding uses the available native UTF-8 locale selected by the unchanged original script.',
          **profile.metadata(),'inputs':{str(p):h for p,h in inputs.items()},'passed':sum(r['pass'] for r in results),'total':len(results),
+         'applet_assertions_and_memory_passed':sum(r['applet_assertions_and_memory_passed'] for r in results),
          'assertions_passed':sum(r['expected_assertions'] for r in results if r['assertions_pass']),'results':results}
  profile.report.write_text(json.dumps(report,indent=2)+'\n')
  print('PASS' if row['pass'] else 'OPEN',selection,flush=True)

@@ -2019,10 +2019,18 @@ extern "C" {
     static mut rboxc_initial_wd: *mut ::core::ffi::c_void;
     #[link_name = "rboxc_findutils_find_free_cwd"]
     fn rboxc_free_cwd(directory: *mut ::core::ffi::c_void);
+    #[link_name = "rboxc_findutils_find_sharefile_destroy"]
+    fn rboxc_sharefile_destroy(files: *mut ::core::ffi::c_void);
 }
 extern "C" fn rboxc_release_initial_wd() {
     unsafe {
         let saved_errno = *libc::__errno_location();
+        let files = state.shared_files;
+        if !files.is_null() {
+            state.shared_files = ::core::ptr::null_mut();
+            rboxc_sharefile_destroy(files.cast());
+            libc::free(files.cast());
+        }
         let directory = rboxc_initial_wd;
         if !directory.is_null() {
             rboxc_initial_wd = ::core::ptr::null_mut();

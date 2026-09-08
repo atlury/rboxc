@@ -47,6 +47,8 @@ for name,args in [
     ('execdir-batch',['tree','-type','f','-execdir','echo','{}','+']),
     ('samefile-twice',['tree','-samefile','tree/a.txt','-o','-samefile','tree/b.log']),
     ('samefile-parse-error',['tree','-samefile','tree/a.txt','-not-a-predicate']),
+    ('execdir-root',['/','-maxdepth','0','-execdir','echo','==','{}','+']),
+    ('fprint-parse-error',['tree','-fprint','output','-not-a-predicate']),
 ]:case('find-'+name,'find',args)
 for name,args,data in [
     ('default',[],b'alpha beta\n'),('quotes',[],b'"two words" \'three words\' four\\ five\n'),

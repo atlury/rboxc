@@ -43,7 +43,7 @@ def prepare(root):
     find_archive=stage/'libfindtools.a'
     shutil.copy2(root/'build/gnu-findutils/find/libfindtools.a',find_archive)
     fixes=[]
-    for name in ('parser','exec'):
+    for name in ('parser','exec','util'):
         original=Path(pin['source'])/'find'/(name+'.c')
         assert fingerprint(original)==pin['helper_source_sha256'][name]
         text=original.read_text()
@@ -68,7 +68,7 @@ def prepare(root):
       errno = saved_errno;
       return false;
     }''')
-        else:
+        elif name=='parser':
             anchor='static bool\nparse_samefile (const struct parser_table* entry, char **argv, int *arg_ptr)'
             assert text.count(anchor)==1
             text=text.replace(anchor,'''/* Keep reference files open throughout traversal, then release them. */
@@ -104,6 +104,28 @@ rboxc_release_samefile_fds (void)
             assert function.count('close (fd);')==2
             function=function.replace('close (fd);','close (fd);\n                      owned->fd = -1;')
             text=text[:start]+function+text[end:]
+        else:
+            start=text.index('void\ncomplete_pending_execs (struct predicate *p)')
+            end=text.index('\nvoid\nrecord_initial_cwd',start)
+            body=text[start:end]
+            anchor='          bc_do_exec (&execp->ctl, &execp->state);'
+            assert body.count(anchor)==1
+            body=body.replace(anchor,anchor+'''
+          /* Exit completion can consume an execdir batch before the
+             directory-completion walk sees it.  Release its owned cwd now. */
+          if (execp->wd_for_exec && execp->wd_for_exec != initial_wd)
+            {
+              free_cwd (execp->wd_for_exec);
+              free (execp->wd_for_exec);
+              execp->wd_for_exec = NULL;
+            }''')
+            text=text[:start]+body+text[end:]
+            anchor='  sharefile_destroy (state.shared_files);'
+            assert text.count(anchor)==1
+            text=text.replace(anchor,'''  sharefile_handle owned_files = state.shared_files;
+  state.shared_files = NULL;
+  sharefile_destroy (owned_files);
+  free (owned_files);''')
         adapted=stage/(name+'.c');adapted.write_text(text)
         records=[json.loads(p.read_text()) for p in (root/'build/findutils-cc-records').glob('*.json')]
         records=[r for r in records if Path(r['file'])==original];assert len(records)==1
@@ -119,7 +141,7 @@ rboxc_release_samefile_fds (void)
                       'object_sha256':fingerprint(output),'compiler_arguments':arguments,
                       'log':str(log.relative_to(root)),'log_sha256':fingerprint(log)})
     subprocess.run(['ranlib',find_archive],check=True)
-    report['find_cleanup']={'scope':'Release samefile reference descriptors at exit, including parse failures; free execdir working-directory storage after each single execution and on open failure.',
+    report['find_cleanup']={'scope':'Release samefile reference descriptors at exit, including parse failures; free execdir working-directory storage after each single execution, on open failure, and when the final pending batch is completed.',
                             'archive_sha256':fingerprint(find_archive),'objects':fixes}
     (root/'evidence/findutils-native-cleanup.json').write_text(json.dumps(report,indent=2)+'\n')
     return {'libfind.a':archive,'libfindtools.a':find_archive}

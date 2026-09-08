@@ -100,17 +100,26 @@ ownership_adaptations = []
 if name == 'find':
     assert mapping['initial_wd'] == 'rboxc_findutils_find_initial_wd'
     assert mapping['free_cwd'] == 'rboxc_findutils_find_free_cwd'
-    imports += ['initial_wd', 'free_cwd']
+    assert mapping['sharefile_destroy'] == 'rboxc_findutils_find_sharefile_destroy'
+    imports += ['initial_wd', 'free_cwd', 'sharefile_destroy']
     text += '''
 extern "C" {
     #[link_name = "rboxc_findutils_find_initial_wd"]
     static mut rboxc_initial_wd: *mut ::core::ffi::c_void;
     #[link_name = "rboxc_findutils_find_free_cwd"]
     fn rboxc_free_cwd(directory: *mut ::core::ffi::c_void);
+    #[link_name = "rboxc_findutils_find_sharefile_destroy"]
+    fn rboxc_sharefile_destroy(files: *mut ::core::ffi::c_void);
 }
 extern "C" fn rboxc_release_initial_wd() {
     unsafe {
         let saved_errno = *libc::__errno_location();
+        let files = state.shared_files;
+        if !files.is_null() {
+            state.shared_files = ::core::ptr::null_mut();
+            rboxc_sharefile_destroy(files.cast());
+            libc::free(files.cast());
+        }
         let directory = rboxc_initial_wd;
         if !directory.is_null() {
             rboxc_initial_wd = ::core::ptr::null_mut();
@@ -126,6 +135,7 @@ extern "C" fn rboxc_release_initial_wd() {
     assert text.count(anchor) == 1
     text = text.replace(anchor, cleanup_registration + anchor)
     ownership_adaptations.append('Register idempotent saved-directory cleanup again after close_stdout so write-error exits release it first.')
+    ownership_adaptations.append('Release output-file ownership on early exit; native normal cleanup now clears the owner before destroying it.')
 elif name == 'xargs':
     anchor = '        let mut arglen: *mut size_t =\n'
     assert text.count(anchor) == 1
