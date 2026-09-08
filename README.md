@@ -71,7 +71,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 26 reviewed originals pass |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 47 reviewed originals pass |
 | Patch | 2.8 | Candidate passes 23 focused comparisons and eight reviewed originals |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -91,7 +91,14 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-Gawk now passes **26 reviewed original Make recipes** and all 85 focused
+Gawk now passes **47 reviewed original Make recipes**, including additional
+field splitting, numeric formatting, symbol-table/array operations, exit status
+and expected diagnostic cases. Original recipes and expected output remain
+unchanged. Together with the retained 85 focused comparisons on the same binary,
+`evidence/gawk-language-memory-audit.json` verifies 132 clean candidate process
+logs. Other original Gawk inputs and extension profiles remain open.
+
+The preceding Gawk checkpoint passes **26 reviewed original Make recipes** and all 85 focused
 comparisons on the current candidate. The additional originals cover field and
 numeric conversions, regular expressions, Unicode whitespace, lint diagnostics,
 8 KiB text input and profiling. The runner overrides GNU's `AWKPROG` variable,

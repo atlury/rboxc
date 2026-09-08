@@ -21,7 +21,8 @@ profile=ComparisonProfile('gawk-original',oracle=ROOT/'build/gnu-gawk/gawk')
 source=Path(json.loads((ROOT/'inventory/sources.json').read_text())['gawk']['source'])
 manifest=json.loads((ROOT/'inventory/gawk-tests.json').read_text())
 selected=[r for r in manifest['inputs'] if r['reviewed']]
-assert len(selected)==26
+assert selected and len({r['target'] for r in selected})==len(selected)
+assert fingerprint(source/'test/Makefile.am')==manifest['registration_sha256']
 makefile=ROOT/'build/gnu-gawk/test/Makefile'
 helpers={'cmp':ROOT/'build/gnu-diffutils/src/cmp',
          'sed':ROOT/'build/gnu-sed/sed/sed',
@@ -31,6 +32,11 @@ inputs={p:fingerprint(p) for p in {makefile,source/'test/Makefile.am',source/'te
 for row in selected:
     inputs[source/row['path']]=row['sha256']
     inputs.update({source/'test'/n:h for n,h in row['fixtures'].items()})
+assert all(fingerprint(p)==h for p,h in inputs.items())
+for row in selected:
+    if row.get('configured_recipe_sha256'):
+        recipe=re.search('^'+re.escape(row['target'])+r':.*?(?=\n\S|\Z)',makefile.read_text(),re.M|re.S)[0]
+        assert __import__('hashlib').sha256(recipe.encode()).hexdigest()==row['configured_recipe_sha256']
 results=[]
 for row in selected:
     name=row['target'];outcomes={}
@@ -80,7 +86,7 @@ for row in selected:
     results.append({'selection':name,'source':row['path'],'source_sha256':row['sha256'],
                     'pass':passed,'outcomes':outcomes})
     assert all(fingerprint(p)==h for p,h in inputs.items())
-    report={**profile.metadata(),'scope':'Twenty-six reviewed unchanged GNU Make recipes compare original supplied programs and input against GNU expected output in private directories. Every selected Gawk invocation is instrumented; native findings are preserved.',
+    report={**profile.metadata(),'scope':'Reviewed unchanged GNU Make recipes compare original supplied programs and input against GNU expected output in private directories. Every selected Gawk invocation is instrumented; native findings are preserved.',
         'inputs':{str(p):h for p,h in inputs.items()},'driver_sha256':fingerprint(Path(__file__)),
         'planned_total':len(selected),'complete':len(results)==len(selected),
         'passed':sum(r['pass'] for r in results),'total':len(results),'results':results}
