@@ -8,8 +8,12 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tests/gnu'))
 spec=importlib.util.spec_from_file_location('reviewed',ROOT/'tests/gnu/reviewed-original.py')
 runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner)
-profile=ComparisonProfile('shell-adapters-behavior',oracle=ROOT/'build/gnu-bash/bash')
+profile=ComparisonProfile('shell-adapters-behavior',selections=True,oracle=ROOT/'build/gnu-bash/bash')
 script=(ROOT/'build/gnu-findutils/locate/updatedb').read_text()
+assert script.count('/usr/bin/sort')==2
+script=script.replace('/usr/bin/sort',str(ROOT/'build/gnu-coreutils/src/sort'))
+oracle_tools={n:ROOT/'build/gnu-coreutils/src'/n for n in ('sort','rm','cut','id','mktemp','mkdir','date','chmod','mv')}
+oracle_tools['sed']=ROOT/'build/gnu-sed/sed/sed'
 cases=[]
 builtins={'.':['./source','one'],':':['argument'],'alias':['sample=printf'],'break':[],
  'cd':['.'],'continue':[],'declare':['-p','BASH_VERSION'],'eval':['printf "evaluated\\n"'],
@@ -35,7 +39,8 @@ for label,args in [('help',['--help']),('version',['--version']),('option',['--u
  ('format',['--dbformat=obsolete']),('locate02',[]),('slocate',['--dbformat=slocate']),
  ('prune',['--prunepaths={work}/files/tree/pruned']),('empty',['--localpaths='])]:
  cases.append(('updatedb-'+label,'updatedb',args,script,True))
-inputs={str(p):fingerprint(p) for p in [profile.binary,profile.oracle,ROOT/'build/gnu-findutils/locate/updatedb',Path(__file__).resolve()]}
+if profile.options.commands:cases=[c for c in cases if c[1] in profile.options.commands]
+inputs={str(p):fingerprint(p) for p in [profile.binary,profile.oracle,ROOT/'build/gnu-findutils/locate/updatedb',ROOT/'build/gnu-findutils/locate/frcode',ROOT/'build/gnu-findutils/find/find',ROOT/'build/gnu-findutils/locate/locate',*oracle_tools.values(),Path(__file__).resolve()]}
 results=[]
 for index,(name,command,args,oracle_script,database) in enumerate(cases):
  outcomes={}
@@ -54,6 +59,7 @@ for index,(name,command,args,oracle_script,database) in enumerate(cases):
     if database:
      selected=['--localpaths='+str(cwd/'tree'),'--netpaths=','--prunepaths=','--prunefs=','--output='+str(cwd/'db'),*selected]
      if not candidate:
+      for tool,binary in oracle_tools.items():(work/'exec'/tool).symlink_to(binary)
       env['BINDIR']=str(ROOT/'build/gnu-findutils/find');env['LIBEXECDIR']=str(ROOT/'build/gnu-findutils/locate')
     invocation='.' if command=='.' else str(alias)
     argv=([str(profile.binary),'.',*selected] if command=='.' else [invocation,*selected]) if candidate else [str(profile.oracle),'--noprofile','--norc','-c',oracle_script,invocation,*selected]
@@ -73,8 +79,8 @@ for index,(name,command,args,oracle_script,database) in enumerate(cases):
     assert not instrument or row['memory']
     if database and (cwd/'db').exists():
      reader=profile.binary if candidate else ROOT/'build/gnu-findutils/locate/locate'
-     cmd=[str(reader),*(['locate'] if candidate else []),'-d',str(cwd/'db'),'tree']
-     read=subprocess.run(cmd,capture_output=True,env=env,timeout=20)
+     cmd=['locate','-d',str(cwd/'db'),'tree']
+     read=subprocess.run(cmd,executable=reader,capture_output=True,env=env,timeout=20)
      row['database_read']={'status':read.returncode,'stdout':normalize(read.stdout).hex(),'stderr':normalize(read.stderr).hex()}
     outcomes[key]=row
  reference=outcomes['gnu'];fields=['status','stdout','stderr','tree','database_read']
@@ -82,6 +88,6 @@ for index,(name,command,args,oracle_script,database) in enumerate(cases):
  clean=all(m['clean'] for m in outcomes['rboxc-valgrind']['memory'])
  results.append({'name':name,'command':command,'args':args,'equivalent':equivalent,'memory_clean':clean,'pass':equivalent and clean,'outcomes':outcomes})
  for p,h in inputs.items():assert fingerprint(Path(p))==h
- report={**profile.metadata(),'inputs':inputs,'complete':len(results)==len(cases),'total':len(results),'planned_total':len(cases),'equivalent':sum(r['equivalent'] for r in results),'passed':sum(r['pass'] for r in results),'results':results}
+ report={**profile.metadata(),'oracle_profile':'Configured GNU updatedb shell source, with only the configured sort executable rebound to pinned GNU Coreutils; PATH tools are pinned GNU oracles. Database readers receive identical argv[0].','inputs':inputs,'complete':len(results)==len(cases),'total':len(results),'planned_total':len(cases),'equivalent':sum(r['equivalent'] for r in results),'passed':sum(r['pass'] for r in results),'results':results}
  profile.report.write_text(json.dumps(report,indent=2)+'\n');print('PASS' if results[-1]['pass'] else 'OPEN',name,flush=True)
 raise SystemExit(report['passed']!=report['total'])

@@ -67,15 +67,15 @@ there where available.
 | Sed | 4.10 | `sed` installed |
 | BC | 1.08.2 | `bc`, `dc` installed |
 | Ed | 1.22.6 | `ed` installed |
-| Findutils | 4.11.0 | `find`, `xargs`, `locate` installed; `updatedb` pending |
+| Findutils | 4.11.0 | `find`, `xargs`, `locate` installed; `updatedb` and private `frcode` integrated in candidate |
 | Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; ten reviewed originals validated; tape-device operations untested |
 | Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 11 reviewed originals pass |
 | Patch | 2.8 | Candidate passes 23 focused comparisons and eight reviewed originals |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
-| Inetutils | 2.8 | Nine entries compile; option checks and read-only interface listing pass; four entries pending |
-| Bash | 5.3 | Native oracle built; Rust control-flow adaptation pending |
+| Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
+| Bash | 5.3 | All 28 shell/builtin names integrated; focused behavior matches GNU; strict findings remain open |
 | Less | 704 | Candidate passes ten focused comparisons; original suite pending |
 | Screen | 5.0.2 | Candidate passes five option comparisons and the descriptor-preservation contract |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and four reviewed originals |
@@ -94,16 +94,31 @@ GNU's readline dependency.
 The latest source checkpoint builds a **187-command candidate**: all **54 of 54**
 previously queued names now compile, with **zero integrations remaining** in that
 queue. This is integration coverage, not full acceptance. The candidate is
-14,708,680 bytes; its SHA-256 is
-`7bcdabbc9eb7507e7968be2edbd42c33971dd23dda42ac6400dabc2b0d5f2e34`.
-The final combined regression and adapter checks are in progress at this checkpoint.
+14,708,688 bytes (14.03 MiB); its SHA-256 is
+`257c7fadad46e70c7e9694082a2f7912e552dc62e3e8b3881644c9c6181bf456`. An independent rebuild is byte-identical.
+The final encoder cleanup passes all ten frcode checks under native execution
+and Valgrind, plus 428 smoke and 11 dispatcher checks. All eight updatedb
+comparisons still match GNU. `evidence/all-integrations-validation.json` records
+these results and hashes the source files and preserved process logs.
+All 22 selected combined-regression jobs pass on the preceding 187-command
+candidate, along with
+318 saved instrumented Coreutils comparisons. The separate shell adapter checks on that build
+pass all 61 builtin/conditional cases. Eight updatedb cases match GNU, including
+LOCATE02/slocate output and database reads, with strict Bash pipeline findings
+still open. The initial host-tool oracle failures are preserved; the final oracle
+uses pinned GNU sort and other pipeline tools. The 32 Bash cases retain 27 strict
+passes and five baseline findings. `evidence/gnu187-regression-summary.json`
+records the actual combined-build results. All 88 generated gate/result structure
+layouts match C; the native and instrumented recovery contract verifies normal
+return, errno, both jump buffers and signal-mask restoration. Rebuilding the
+separate C lowering oracle also produces an identical executable.
 
 The last additions are the four Inetutils entries, all 28 Bash shell/builtin
 names, and Findutils `updatedb`. The four Inetutils entries pass 36 focused
 native/Valgrind comparisons on their 158-command candidate. Their actual Rust
 entry logic is retained; narrowly outlined nonlocal recovery loops stay in C.
 Bash's translated entry retains the configured GNU main decisions, with four
-recovery checkpoints and 89 C call boundaries returning explicit outcomes.
+recovery checkpoints and 87 C call boundaries returning explicit outcomes.
 Signals are deferred during Rust computation and restored to GNU's logical mask
 at each C call. All 32 initial Bash cases match original GNU and a separately
 lowered C executable, including recovery and no-shebang execution; 27 pass the
@@ -130,6 +145,21 @@ The user-switch helper `su` remains external and that profile is untested.
 No external updatedb executable is counted as a port. C helpers own adapter
 arguments and remove the private command directory on the owning process's normal
 exit; forked children cannot remove their parent's directory.
+
+After preparing the pinned native providers, the final entries can be regenerated
+with the following commands. The private encoder preparation refreshes its exact
+GNU compile and link records, including recovery from older record formats.
+
+```sh
+python3 scripts/prepare-frcode.py
+for command in tftpd tftp ftpd telnet bash frcode; do
+    python3 scripts/translate-entry-provider.py "$command" || exit
+    python3 scripts/assemble-entry-provider.py "$command" || exit
+done
+python3 scripts/embed-updatedb.py
+CARGO_TARGET_DIR=target/regenerated-integrations cargo +nightly-2026-01-22 build --release
+cp target/release/libstdbuf.so target/regenerated-integrations/release/libstdbuf.so
+```
 
 The previously validated source checkpoint built a 154-command candidate.
 The installed release remains at 133 commands pending activation. The previous combined
@@ -408,8 +438,9 @@ validated 128-command release. Their native helpers have separate command
 namespaces (1,465 symbols), and their C entry objects are excluded. The native
 build retains GNU's libm linkage. The original shell/DejaGNU inventory contains
 240 test and harness inputs under individual review. DejaGNU is installed
-as a test prerequisite. updatedb and its private frcode encoder remain separate
-porting work; the three translated commands are installed.
+as a test prerequisite. At that checkpoint, updatedb and its private frcode
+encoder were separate porting work; both are now integrated in the 187-command
+candidate described above. The three earlier translated commands are installed.
 
 The Findutils candidate passes 68/68 focused behavior and Valgrind checks.
 The preserved baseline matched behavior but passed only 23/68 strict checks;
@@ -450,8 +481,9 @@ focused profiles, and four BC terminal profiles. The hash-verified activation
 in `evidence/findutils-activation.json` retains the previous 125-command binary
 and reports. Original suites from earlier providers retain their actual
 binary hashes under unchanged-input validation and fresh focused checks.
-Findutils' excluded originals, external-child findings, and pending
-updatedb/frcode integration prevent a full-provider completion claim.
+Findutils' excluded originals and external-child findings still prevent a
+full-provider completion claim. Updatedb/frcode integration is now complete,
+with updatedb's strict shell-pipeline findings recorded separately.
 
 GNU Tar 1.35 is pinned from its signature-verified GNU archive. The native
 reference builds with SELinux disabled and ACL/xattr support retained. C2Rust

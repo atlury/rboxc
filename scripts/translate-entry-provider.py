@@ -138,7 +138,7 @@ pub unsafe extern "C" fn single_binary_main_less(argc: ::core::ffi::c_int, argv:
     rboxc_less_main_inner(argc, argv.cast())
 }
 '''
-if provider == 'glibc':
+if provider == 'glibc' or name == 'frcode':
     anchor = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_'+name+'('
     assert text.count(anchor) == 1
     text = text.replace(anchor, 'unsafe extern "C" fn rboxc_'+name+'_main_inner(')
@@ -174,6 +174,10 @@ pub unsafe extern "C" fn single_binary_main_'''+name+'''(argc: ::core::ffi::c_in
 '''+hook_assignment+'    rboxc_'+name+'''_main_inner(argc, argv)
 }
 '''
+if name == 'frcode':
+    anchor = '                display_findutils_version(b"frcode\\0".as_ptr() as *const ::core::ffi::c_char);\n                return 0 as ::core::ffi::c_int;'
+    assert text.count(anchor) == 1
+    text = text.replace(anchor, anchor.replace('                return', '                free(path.cast());\n                free(oldpath.cast());\n                return'))
 if name == 'iconv':
     from glibc_entry_adapters import iconv_cleanup
     text = iconv_cleanup(text)
@@ -203,10 +207,11 @@ report = {'provider':provider,'version':pin['version'],'command':name,
 report['enum_bitfield_integer_delegation'] = enum_fields
 if split_report:
     report['split_entry_report'] = {'path':f'evidence/{name}-split-entry.json','sha256':fingerprint(ROOT/f'evidence/{name}-split-entry.json')}
+if name == 'frcode': report['adaptations'].append('Release the two allocated pathname buffers before the early --version return; normal encoding already releases both.')
 if name == 'inetd': report['adaptations'].append('Pass the process environ as GNU main\'s third argument through a two-argument dispatcher adapter.')
 if name == 'less': report['adaptations'].append('Preserve Less const-qualified argv pointees through a dispatcher pointer-qualification adapter.')
-if provider == 'glibc': report['adaptations'].append('Bind libc invocation-name globals to the dispatched OS argv storage, reproducing standalone GNU startup.')
-if provider == 'glibc': report['adaptations'].append('Use GNU error_print_progname to preserve the full invocation path in libc utility diagnostics while retaining the shared GNU error formatter.')
+if provider == 'glibc' or name == 'frcode': report['adaptations'].append('Bind libc invocation-name globals to the dispatched OS argv storage, reproducing standalone GNU startup.')
+if provider == 'glibc' or name == 'frcode': report['adaptations'].append('Use GNU error_print_progname to preserve the full invocation path in libc utility diagnostics while retaining the shared GNU error formatter.')
 if name == 'iconv': report['adaptations'].append('Register the namespaced GNU version callback with the process libc argp parser before entering the translated command.')
 if name == 'iconv': report['adaptations'].append('Close successful encoding probes immediately; close the owned conversion handle, release its output buffer and destroy borrowed-key print-list nodes at process exit, preserving errno.')
 if name == 'patch': report['adaptations'].append('Close the unused per-file temporary descriptor when -o sends output to a separately owned stream, after the original final use.')

@@ -427,8 +427,7 @@ unsafe extern "C" fn outerr() {
         });
     };
 }
-#[no_mangle]
-pub unsafe extern "C" fn single_binary_main_frcode(
+unsafe extern "C" fn rboxc_frcode_main_inner(
     mut argc: ::core::ffi::c_int,
     mut argv: *mut *mut ::core::ffi::c_char,
 ) -> ::core::ffi::c_int {
@@ -554,6 +553,8 @@ pub unsafe extern "C" fn single_binary_main_frcode(
             }
             118 => {
                 display_findutils_version(b"frcode\0".as_ptr() as *const ::core::ffi::c_char);
+                free(path.cast());
+                free(oldpath.cast());
                 return 0 as ::core::ffi::c_int;
             }
             _ => {
@@ -733,3 +734,26 @@ pub unsafe extern "C" fn single_binary_main_frcode(
 pub const __SHRT_MAX__: ::core::ffi::c_int = 32767 as ::core::ffi::c_int;
 pub const __INT_MAX__: ::core::ffi::c_int = 2147483647 as ::core::ffi::c_int;
 pub const __LONG_MAX__: ::core::ffi::c_long = 9223372036854775807 as ::core::ffi::c_long;
+
+extern "C" {
+    #[link_name = "program_invocation_name"]
+    static mut RBOXC_LIBC_INVOCATION: *mut ::core::ffi::c_char;
+    #[link_name = "program_invocation_short_name"]
+    static mut RBOXC_LIBC_SHORT_INVOCATION: *mut ::core::ffi::c_char;
+    #[link_name = "error_print_progname"]
+    static mut RBOXC_ERROR_PRINT_PROGNAME: Option<unsafe extern "C" fn()>;
+    #[link_name = "stderr"]
+    static mut RBOXC_ERROR_STDERR: *mut libc::FILE;
+}
+unsafe extern "C" fn rboxc_glibc_error_prefix() {
+    libc::fprintf(RBOXC_ERROR_STDERR, b"%s: \0".as_ptr().cast(), RBOXC_LIBC_INVOCATION);
+}
+#[no_mangle]
+pub unsafe extern "C" fn single_binary_main_frcode(argc: ::core::ffi::c_int, argv: *mut *mut ::core::ffi::c_char) -> ::core::ffi::c_int {
+    RBOXC_LIBC_INVOCATION = *argv;
+    let bytes = ::core::ffi::CStr::from_ptr(*argv).to_bytes();
+    let offset = bytes.iter().rposition(|b| *b == b'/').map_or(0, |i| i+1);
+    RBOXC_LIBC_SHORT_INVOCATION = (*argv).add(offset);
+    RBOXC_ERROR_PRINT_PROGNAME = Some(rboxc_glibc_error_prefix);
+    rboxc_frcode_main_inner(argc, argv)
+}
