@@ -1,0 +1,37 @@
+{
+  "provider": "GNU Screen 5.0.2",
+  "registration": {
+    "path": "Makefile.in",
+    "sha256": "b36f4ad8889fc6a5325f0422be29bb1d0f57198e14a05f59503b18ae43b4fd5d"
+  },
+  "scope": "All three registered check targets inventoried. Two native helper units have audited original assertions; the Rust entry terminal integration is accounted separately. Unit validation does not certify complete Screen behavior.",
+  "targets": [
+    {
+      "target": "tests/test-winmsgcond",
+      "source": "tests/test-winmsgcond.c",
+      "sha256": "d671f0613ec730b443f156f25dce4ad3de2412b3979bad155de351b6b76ccd46",
+      "reviewed": true,
+      "state": "native-original-pass-and-private-instrumented-pass",
+      "review": "Ordinary bounded window-message state, buffer growth, strings and allocation-failure handling. Original assertions retained; private instrumented buffer fixture initializes two unused bytes before preservation comparisons. Native helpers only.",
+      "evidence": "evidence/screen-original-helpers-validation.json"
+    },
+    {
+      "target": "tests/test-winmsgbuf",
+      "source": "tests/test-winmsgbuf.c",
+      "sha256": "3e42c8b24a4af1e12d5b316ec9c7c2fd1a874fb2e8014ffdfb68e7de1b03d817",
+      "reviewed": true,
+      "state": "native-original-pass-and-private-instrumented-pass",
+      "review": "Ordinary bounded window-message state, buffer growth, strings and allocation-failure handling. Original assertions retained; private instrumented buffer fixture initializes two unused bytes before preservation comparisons. Native helpers only.",
+      "evidence": "evidence/screen-original-helpers-validation.json"
+    },
+    {
+      "target": "tests/test-detach-cli",
+      "source": "tests/integration-detach.c",
+      "sha256": "c29c60c4252cd9eaedceecd210d96bf286ea6a377429a046e88bd74bc5cc4169",
+      "reviewed": true,
+      "state": "native-pass-instrumented-profile-open",
+      "review": "Private local Screen session with bounded sleep; util-linux script supplies terminal; observe Attached and Detached states and client exit; quit own session.",
+      "evidence": "evidence/screen-original-detach-bounded.json"
+    }
+  ]
+}

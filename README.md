@@ -80,9 +80,18 @@ there where available.
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
 | Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 17 reviewed originals pass with clean Valgrind; broader acceptance open |
 | Less | 704 | Ten focused checks, one production terminal check and all 18 original screen replays pass across declared profiles |
-| Screen | 5.0.2 | Candidate passes five option comparisons and the descriptor-preservation contract |
+| Screen | 5.0.2 | Five option checks, descriptor contract and both original helper units pass in recorded profiles; terminal validation in progress |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
 | glibc | 2.43 | Both entries integrated; 50 focused checks, both getconf originals and three iconv buffer recipes pass |
+
+Screen's two original helper units now pass against both the native GNU and
+namespaced production helper objects. The private instrumented profile keeps
+GNU's allocation mocks active through symbol renaming and initializes two
+unused fixture bytes before the original preservation assertions read them.
+All four final helper processes are clean under Valgrind. These tests validate
+native helpers; the Rust entry's terminal integration is separate.
+`evidence/screen-original-helpers-validation.json` checks source identities,
+object transformations and raw logs, preserving the initial framework findings.
 
 Less now passes **all 18 original screen replays**, covering **2,245
 screen assertions**, in GNU's required `LESSTEST`/`USE_TERMCAP` configuration.
