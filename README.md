@@ -71,7 +71,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 266 reviewed originals pass; one original failure matches GNU |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 328 reviewed originals pass; two original failures match GNU |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -91,7 +91,18 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-Gawk now passes **266 reviewed original Make recipes**; one additional original,
+Gawk now passes **328 reviewed original Make recipes**. Two further originals,
+`typeof7` and `elemnew2`, fail their unchanged assertions identically in pinned
+GNU 5.4.1 and rboxc, with and without Valgrind. The latter prints `0` where its
+expected file has an empty final line. Both failures remain separate from passes;
+the original assertions are unchanged. The expanded coverage includes arrays,
+parameter handling, regular expressions, CSV and pretty-printing.
+`evidence/gawk-array-baseline-memory-audit.json` verifies all 330 recorded
+outcomes and **415 clean candidate process logs**, including 85 focused comparisons.
+The initial array run and its exact driver and outputs are retained. The other
+304 program inputs and extension profiles remain open.
+
+The preceding Gawk checkpoint passes **266 reviewed original Make recipes**; one additional original,
 `typeof7`, fails its supplied assertion identically in GNU and rboxc. Both print
 `test2 <0>` where the unchanged expected file says `test2 <>`. That result remains
 an explicit baseline failure, not a passing original or a registered GNU XFAIL.

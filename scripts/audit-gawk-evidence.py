@@ -55,7 +55,7 @@ for recipe in baselines.values():
         actual=(ROOT/outcome['driver_log']).parent/'actual-output'
         assert actual.read_bytes()==recipe['expected_baseline_output'].encode()
         baseline_evidence[str(actual.relative_to(ROOT))]=fingerprint(actual)
-    archive=ROOT/'evidence/raw/gawk-conversion-driver.py'
+    archive=ROOT/recipe['baseline_driver_archive']
     assert fingerprint(archive)==previous['driver_sha256']
     baseline_evidence[str(archive.relative_to(ROOT))]=fingerprint(archive)
     baseline_evidence[recipe['baseline_report']]=fingerprint(previous_path)
