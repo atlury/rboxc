@@ -402,9 +402,15 @@ no longer needed and finalizes its owned index stream at exit, preserving GNU
 output-error status behavior. It passes 57/57 focused comparisons, including
 five index-file normal/error cases, 11/11 dispatcher checks, and 17/17 unchanged
 originals covering checkpoints, output routing, and all exclusion-tag variants.
-The new original audit verifies 76 clean Tar processes. Earlier originals are
-being checked against these new bytes; their prior reports remain unchanged.
-This candidate is 4,449,352 bytes (4.24 MiB) and is not installed. The parser explicitly supplies the C17 spellings
+The initial new-original audit verifies 76 clean Tar processes. The completed
+combined audit, `evidence/tar-original-snapshot-index-final-audited.json`, now
+verifies all 76 selected originals and 830 clean Tar processes on this candidate.
+Preserved driver bytes support auditing reports that predate a formatting
+change, and incomplete batches are explicitly rejected. The prior reports keep
+their actual binary hashes. Source reviews for the next multi-volume-label and
+owner/group originals are recorded without claiming execution. This candidate
+is 4,449,352 bytes (4.24 MiB) and is not installed; broader originals and current
+combined-provider validation remain open. The parser explicitly supplies the C17 spellings
 for boolean and static-assert constructs detected by the native C23 build.
 
 ## Status
