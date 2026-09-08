@@ -264,6 +264,13 @@ fixes pass an expanded 83/83 focused profile. The original NSS case is being
 rechecked with a private local-files configuration, and 105 additional
 POSIX/System V selections are running. Earlier observations remain unchanged.
 
+GNU Tar 1.35 is pinned from its signature-verified GNU archive. The native
+reference builds with SELinux disabled and ACL/xattr support retained. C2Rust
+has translated its entry with 90 helper imports and 105 Rust definitions;
+linking and runtime validation remain pending. Its original Autotest inputs
+are inventoried for review. The parser explicitly supplies the C17 spellings
+for boolean and static-assert constructs detected by the native C23 build.
+
 ## Status
 
 The installed executable registers 125 commands: 107 Coreutils entries, GNU Hello,
