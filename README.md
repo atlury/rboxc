@@ -315,8 +315,9 @@ and those fresh focused profiles.
 
 GNU Tar 1.35 is pinned from its signature-verified GNU archive. The native
 reference builds with SELinux disabled and ACL/xattr support retained. C2Rust
-has translated its entry with 90 helper imports and 105 Rust definitions;
-linking and runtime validation remain pending. Its original Autotest inputs
+has translated its entry with 90 helper imports and 105 Rust definitions.
+An isolated Rust type check passes against the root lockfile dependency
+versions; linking and runtime validation remain pending. Its original Autotest inputs
 are inventoried for review. The parser explicitly supplies the C17 spellings
 for boolean and static-assert constructs detected by the native C23 build.
 
