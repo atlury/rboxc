@@ -1,3 +1,5 @@
+#[path = "generated/applet_ed.rs"]
+mod applet_ed;
 #[path = "generated/applet_dc.rs"]
 mod applet_dc;
 #[path = "generated/applet_bc.rs"]
@@ -270,6 +272,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"dirname", applet_dirname::single_binary_main_dirname),
     (b"du", applet_du::single_binary_main_du),
     (b"echo", applet_echo::single_binary_main_echo),
+    (b"ed", applet_ed::single_binary_main_ed),
     (b"egrep", applet_grep::single_binary_main_egrep),
     (b"env", applet_env::single_binary_main_env),
     (b"expand", applet_expand::single_binary_main_expand),

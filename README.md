@@ -207,6 +207,13 @@ definition-only testfn input has a declared bounded invocation. The timing
 wrapper's ten input files are covered individually; the wrapper itself is not
 counted as another test. Combined validation of the 124-command candidate continues.
 
+GNU Ed 1.22.6 is pinned from its verified signed archive. Its Rust command
+entry compiles in a separate 125-command candidate with 89 private helper/state
+symbols. A small wrapper adapts dispatcher arguments to Ed's const argv type.
+All 44 initial focused observations match GNU; all retain memory or descriptor
+findings awaiting cleanup. The original check script and 90 editing/diagnostic
+input files are inventoried for individual review. Ed is not installed yet.
+
 ## Status
 
 The installed executable registers 121 commands: 107 Coreutils entries, GNU Hello,

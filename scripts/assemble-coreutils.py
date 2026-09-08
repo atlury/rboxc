@@ -161,3 +161,6 @@ if (ROOT/'evidence/sed-translation.json').exists():
 
 if all((ROOT/f'evidence/bc-{name}-translation.json').exists() for name in ('bc', 'dc')):
     subprocess.run([sys.executable, str(ROOT/'scripts/assemble-bc.py')], check=True)
+
+if (ROOT/'evidence/ed-translation.json').exists():
+    subprocess.run([sys.executable, str(ROOT/'scripts/assemble-ed.py')], check=True)
