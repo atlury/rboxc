@@ -1,3 +1,7 @@
+#[path = "generated/applet_mt.rs"]
+mod applet_mt;
+#[path = "generated/applet_cpio.rs"]
+mod applet_cpio;
 #[path = "generated/applet_uudecode.rs"]
 mod applet_uudecode;
 #[path = "generated/applet_uuencode.rs"]
@@ -271,6 +275,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"comm", applet_comm::single_binary_main_comm),
     (b"coreutils", applet_coreutils::single_binary_main_coreutils),
     (b"cp", applet_cp::single_binary_main_cp),
+    (b"cpio", applet_cpio::single_binary_main_cpio),
     (b"csplit", applet_csplit::single_binary_main_csplit),
     (b"cut", applet_cut::single_binary_main_cut),
     (b"date", applet_date::single_binary_main_date),
@@ -317,6 +322,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"mkfifo", applet_mkfifo::single_binary_main_mkfifo),
     (b"mknod", applet_mknod::single_binary_main_mknod),
     (b"mktemp", applet_mktemp::single_binary_main_mktemp),
+    (b"mt", applet_mt::single_binary_main_mt),
     (b"mv", applet_mv::single_binary_main_mv),
     (b"nice", applet_nice::single_binary_main_nice),
     (b"nl", applet_nl::single_binary_main_nl),

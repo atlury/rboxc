@@ -70,6 +70,7 @@ there where available.
 | Findutils | 4.11.0 | `find`, `xargs`, `locate` installed; `updatedb` pending |
 | Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
+| Cpio | 2.15 | `cpio`, `mt` translated and linked in a separate 133-command candidate |
 
 For a later upstream fix, identify its upstream commit or patch and the release
 baseline in this table. Record the affected commands, upstream reference, local
@@ -457,6 +458,18 @@ commit retaining the recovered staged tree and all readable parent history.
 Git's full integrity check then passed. The Tar and Sharutils original-suite
 inputs and logs remain intact; damaged partial evidence is retained separately.
 See `evidence/git-recovery-20260908.json` for the recovery record and limitations.
+
+GNU Cpio 2.15 is pinned from its signed GNU release archive. Both `cpio`'s
+`main.c` and `mt.c` are translated, with independent native Pax/Gnulib helper
+namespaces and both C entry objects excluded. The first focused run matches
+GNU on all 52 cases; one `mt` early-exit descriptor finding is fixed by tracking
+and closing only its owned local descriptor. The corrected run passes 52/52.
+Ten reviewed unchanged Cpio originals pass their assertions; the first memory
+run identifies one native copy-pass allocation leak, also present in GNU.
+A copied helper adaptation frees the temporary current-directory string after
+its contents are copied. Fresh originals and combined provider regressions are
+running on that further candidate. Real tape operations and broader original
+coverage remain unvalidated; the installed release remains at 131 commands.
 
 ## Status
 
