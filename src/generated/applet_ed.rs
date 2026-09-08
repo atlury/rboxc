@@ -587,17 +587,12 @@ unsafe extern "C" fn rboxc_ed_main_const(
             has_arg: ap_Has_arg::ap_no,
         },
     ];
-    let mut parser: Arg_parser = Arg_parser {
-        data: ::core::ptr::null_mut::<ap_Record>(),
-        error: ::core::ptr::null_mut::<::core::ffi::c_char>(),
-        data_size: 0,
-        argv_index: 0,
-    };
+
     if argc > 0 as ::core::ffi::c_int {
         invocation_name = *argv.offset(0isize);
     }
     if ap_init(
-        &raw mut parser,
+        &raw mut RBOXC_ED_PARSER,
         argc,
         argv,
         &raw const options as *const ap_Option,
@@ -611,21 +606,21 @@ unsafe extern "C" fn rboxc_ed_main_const(
         );
         return 1 as ::core::ffi::c_int;
     }
-    if !ap_error(&raw mut parser).is_null() {
+    if !ap_error(&raw mut RBOXC_ED_PARSER).is_null() {
         show_error(
-            ap_error(&raw mut parser),
+            ap_error(&raw mut RBOXC_ED_PARSER),
             0 as ::core::ffi::c_int,
             r#true != 0,
         );
         return 1 as ::core::ffi::c_int;
     }
     let mut argind: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    while argind < ap_arguments(&raw mut parser) {
-        let code: ::core::ffi::c_int = ap_code(&raw mut parser, argind);
+    while argind < ap_arguments(&raw mut RBOXC_ED_PARSER) {
+        let code: ::core::ffi::c_int = ap_code(&raw mut RBOXC_ED_PARSER, argind);
         if code == 0 {
             break;
         }
-        let arg: *const ::core::ffi::c_char = ap_argument(&raw mut parser, argind);
+        let arg: *const ::core::ffi::c_char = ap_argument(&raw mut RBOXC_ED_PARSER, argind);
         match code {
             69 => {
                 extended_regexp_ = r#true != 0;
@@ -682,10 +677,11 @@ unsafe extern "C" fn rboxc_ed_main_const(
     if !init_buffers() {
         return 1 as ::core::ffi::c_int;
     }
+    RBOXC_ED_BUFFERS_READY = true;
     let mut start_re_arg: *const ::core::ffi::c_char = ::core::ptr::null::<::core::ffi::c_char>();
     let mut start_addr: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    while argind < ap_arguments(&raw mut parser) {
-        let arg_0: *const ::core::ffi::c_char = ap_argument(&raw mut parser, argind);
+    while argind < ap_arguments(&raw mut RBOXC_ED_PARSER) {
+        let arg_0: *const ::core::ffi::c_char = ap_argument(&raw mut RBOXC_ED_PARSER, argind);
         if strcmp(arg_0, b"-\0".as_ptr() as *const ::core::ffi::c_char) == 0 as ::core::ffi::c_int {
             scripted_ = r#true != 0;
         } else if *arg_0.offset(0isize) as ::core::ffi::c_int == '+' as ::core::ffi::c_int {
@@ -775,17 +771,43 @@ unsafe extern "C" fn rboxc_ed_main_const(
         }
         argind += 1;
     }
-    ap_free(&raw mut parser);
+    ap_free(&raw mut RBOXC_ED_PARSER);
     return main_loop(initial_error, loose);
 }
 pub const PROGVERSION: [::core::ffi::c_char; 7] =
     unsafe { ::core::mem::transmute::<[u8; 7], [::core::ffi::c_char; 7]>(*b"1.22.6\0") };
 pub const __INT_MAX__: ::core::ffi::c_int = 2147483647 as ::core::ffi::c_int;
 
+static mut RBOXC_ED_PARSER: Arg_parser = Arg_parser {
+        data: ::core::ptr::null_mut::<ap_Record>(),
+        error: ::core::ptr::null_mut::<::core::ffi::c_char>(),
+        data_size: 0,
+        argv_index: 0,
+    };
+
+static mut RBOXC_ED_BUFFERS_READY: bool = false;
+extern "C" {
+    #[link_name = "rboxc_ed_close_sbuf"]
+    fn rboxc_ed_close_owned_scratch() -> bool;
+}
+extern "C" fn rboxc_ed_release_owned() {
+    unsafe {
+        let saved_errno = *libc::__errno_location();
+        ap_free(&raw mut RBOXC_ED_PARSER);
+        // The scratch destructor traverses initialized yank/undo lists.
+        if RBOXC_ED_BUFFERS_READY {
+            RBOXC_ED_BUFFERS_READY = false;
+            rboxc_ed_close_owned_scratch();
+        }
+        *libc::__errno_location() = saved_errno;
+    }
+}
+
 // The multicall ABI supplies mutable argv; GNU Ed only reads it.
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_ed(
     argc: ::core::ffi::c_int, argv: *mut *mut ::core::ffi::c_char,
 ) -> ::core::ffi::c_int {
+    if libc::atexit(rboxc_ed_release_owned) != 0 { return 1; }
     rboxc_ed_main_const(argc, argv as *const *const ::core::ffi::c_char)
 }

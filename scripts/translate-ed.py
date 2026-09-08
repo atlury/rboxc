@@ -77,6 +77,38 @@ def renamed_export(match):
     return '#[export_name = "'+mapping[symbol]+'"]'
 text = re.sub(r'#\[export_name = "(?P<name>\w+)"\]', renamed_export, text)
 assert set(exports) == defined_symbols([ROOT/'build/gnu-ed/main.o']) - {'main'}
+assert mapping['close_sbuf'] == 'rboxc_ed_close_sbuf'
+imports.append('close_sbuf')
+# Keep parser storage alive until libc exit, including parse_addr's direct
+# exit path. GNU's normal ap_free is idempotent and clears the owned pointers.
+parser_init = re.search(r'    let mut parser: Arg_parser = (Arg_parser \{.*?\n    \});', text, re.S)
+assert parser_init
+initializer = parser_init[1]
+text = text[:parser_init.start()] + text[parser_init.end():]
+text = re.sub(r'\bparser\b', 'RBOXC_ED_PARSER', text)
+anchor = '    if !init_buffers() {\n        return 1 as ::core::ffi::c_int;\n    }'
+assert text.count(anchor) == 1
+text = text.replace(anchor, anchor+'\n    RBOXC_ED_BUFFERS_READY = true;')
+text += '\nstatic mut RBOXC_ED_PARSER: Arg_parser = '+initializer+';\n'
+text += '''
+static mut RBOXC_ED_BUFFERS_READY: bool = false;
+extern "C" {
+    #[link_name = "rboxc_ed_close_sbuf"]
+    fn rboxc_ed_close_owned_scratch() -> bool;
+}
+extern "C" fn rboxc_ed_release_owned() {
+    unsafe {
+        let saved_errno = *libc::__errno_location();
+        ap_free(&raw mut RBOXC_ED_PARSER);
+        // The scratch destructor traverses initialized yank/undo lists.
+        if RBOXC_ED_BUFFERS_READY {
+            RBOXC_ED_BUFFERS_READY = false;
+            rboxc_ed_close_owned_scratch();
+        }
+        *libc::__errno_location() = saved_errno;
+    }
+}
+'''
 anchor = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_ed('
 assert text.count(anchor) == 1
 text = text.replace(anchor, 'unsafe extern "C" fn rboxc_ed_main_const(')
@@ -86,6 +118,7 @@ text += '''
 pub unsafe extern "C" fn single_binary_main_ed(
     argc: ::core::ffi::c_int, argv: *mut *mut ::core::ffi::c_char,
 ) -> ::core::ffi::c_int {
+    if libc::atexit(rboxc_ed_release_owned) != 0 { return 1; }
     rboxc_ed_main_const(argc, argv as *const *const ::core::ffi::c_char)
 }
 '''
@@ -104,7 +137,8 @@ report = {'provider': 'ed', 'version': pin['version'], 'command': name,
           'adaptations': ['GNU17 parser adaptation maps C23 nullptr to a null pointer constant.',
                           'Use pinned-nightly VaList and exposed-provenance API spellings.',
                           'Namespace native helpers and Rust-owned state together.',
-                          'Adapt mutable dispatcher argv to the unchanged const GNU Ed entry signature.'],
+                          'Adapt mutable dispatcher argv to the unchanged const GNU Ed entry signature.',
+                          'Keep parser storage valid through exit and call GNU parser/scratch destructors, including early exits; preserve errno.'],
           'opaque_pointer_types': opaque, 'log': str(log.relative_to(ROOT)), 'log_sha256': fingerprint(log)}
 (ROOT/'evidence/ed-translation.json').write_text(json.dumps(report, indent=2)+'\n')
 print('Translated GNU Ed', name, 'with', len(imports), 'helper imports and', len(exports), 'Rust exports')
