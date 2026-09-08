@@ -52,7 +52,9 @@ for row in selected:
                 (saved/'driver.log').write_bytes(done.stdout)
                 successful=done.stdout.count(b'Test successful.')
                 counts=[(successful,successful,0)]
-                passed=done.returncode==0 and successful==1 and b'Test failed:' not in done.stdout
+                expected_skip=row.get('expected_feature_skip')
+                skip_matches=bool(expected_skip) and done.returncode==77 and successful==0 and ("Skipped test: Wget misses feature '"+expected_skip+"'").encode() in done.stdout and re.search(rb'^\s+'+expected_skip.encode()+rb'=0$',done.stdout,re.M) is not None
+                passed=(skip_matches if expected_skip else done.returncode==0 and successful==1 and b'Test failed:' not in done.stdout)
                 shutil.copytree(work/'memory',saved/'memory')
                 logs=[]
                 for p in sorted((saved/'memory').glob('*.log')):
@@ -63,17 +65,19 @@ for row in selected:
                 clean=bool(logs) and all(m['complete_exec_log'] and m['errors']==0
                     and m['non_inherited_descriptors']==0 and not any(m['heap_bytes'].get(k,0)
                     for k in ('definitely lost','indirectly lost','possibly lost')) for m in logs)
-                outcomes[key]={'status':done.returncode,'assertions_pass':passed,'assertion_counts':[[int(n) for n in row] for row in counts],
+                outcomes[key]={'status':done.returncode,'assertions_pass':passed and not expected_skip,'expectation_matches':passed,'feature_skip_matches':skip_matches,'assertion_counts':[[int(n) for n in row] for row in counts],
                     'driver_log':str((saved/'driver.log').relative_to(ROOT)),'driver_log_sha256':fingerprint(saved/'driver.log'),
                     'memory':logs,'memory_clean':clean if instrument else None}
-    passed=all(o['assertions_pass'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
-    results.append({'selection':name,'source':row['path'],'source_sha256':row['sha256'],
+    passed=all(o['expectation_matches'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
+    results.append({'selection':name,'expected_feature_skip':row.get('expected_feature_skip'),'source':row['path'],'source_sha256':row['sha256'],
                     'pass':passed,'outcomes':outcomes})
     assert all(fingerprint(p)==h for p,h in inputs.items())
-    report={**profile.metadata(),'scope':'Reviewed unchanged GNU Wget Perl scripts serve fixed HTTP responses or FTP file listings/content on their own localhost server and verify status, resumed content and downloaded filenames. Local input/output error cases preserve the original assertions. All Wget processes are instrumented without upstream suppressions; server helpers are not instrumented.',
+    report={**profile.metadata(),'scope':'Reviewed unchanged GNU Wget Perl scripts serve fixed HTTP responses or FTP file listings/content on their own localhost server and verify status, resumed content and downloaded filenames. Local input/output error cases preserve the original assertions. GNU feature-gate skips are recorded separately and do not count as tested optional behavior. All Wget processes, including feature probes, are instrumented without upstream suppressions; server helpers are not instrumented.',
         'inputs':{str(p):h for p,h in inputs.items()},'driver_sha256':fingerprint(Path(__file__)),
+        'ordinary_passed':sum(r['pass'] and not r['expected_feature_skip'] for r in results),
+        'feature_skips_matched':sum(r['pass'] and bool(r['expected_feature_skip']) for r in results),
         'planned_total':len(selected),'complete':len(results)==len(selected),
         'passed':sum(r['pass'] for r in results),'total':len(results),'results':results}
     profile.report.write_text(json.dumps(report,indent=2)+'\n')
-    print('PASS' if passed else 'OPEN',name,flush=True)
+    print(('FEATURE-SKIP' if row.get('expected_feature_skip') else 'PASS') if passed else 'OPEN',name,flush=True)
 raise SystemExit(report['passed']!=report['total'])

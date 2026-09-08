@@ -78,7 +78,7 @@ there where available.
 | Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 17 reviewed originals pass with clean Valgrind; broader acceptance open |
 | Less | 704 | Candidate passes ten focused comparisons; original suite pending |
 | Screen | 5.0.2 | Candidate passes five option comparisons and the descriptor-preservation contract |
-| Wget | 1.25.0 | Candidate passes 14 focused comparisons and 60 reviewed originals |
+| Wget | 1.25.0 | Candidate passes 14 focused comparisons and 62 original scripts pass; 14 optional-feature skips match GNU |
 | glibc | 2.43 | Both entries integrated; 50 focused checks, both getconf originals and three iconv buffer recipes pass |
 
 The next-provider work is preserved before release activation. Gawk's candidate
@@ -115,7 +115,16 @@ preserved in `evidence/gawk-expanded-original.json`; the corrected run and its
 `evidence/gawk-locale-memory-audit.json`. Other original Gawk inputs and extension
 profiles remain open.
 
-Wget now passes **60 reviewed original HTTP/FTP scripts** and all 14 focused
+Wget now passes **62 original HTTP/FTP scripts** and matches **14 original IRI
+feature-gate skips**. Both pinned builds advertise `-iri`; the unchanged GNU
+feature checks exit 77 before creating a server, so optional IRI behavior remains
+untested. The added ordinary tests cover HTTPS-only link policy and byte-preserving
+`--no-iri` filenames. All 14 focused comparisons also pass, and
+`evidence/wget-feature-memory-audit.json` verifies 91 clean candidate process
+logs, including feature probes. Ten original HTTPS scripts and the unit-test
+profile remain open; one privacy reproduction remains held out.
+
+The preceding Wget checkpoint passes **60 reviewed original HTTP/FTP scripts** and all 14 focused
 comparisons. The added FTP originals cover transfer resumption, nested directories,
 URL-list input, listing conventions, hidden files and interrupted passive setup
 using fixed localhost fixtures. `evidence/wget-ftp-memory-audit.json` verifies
