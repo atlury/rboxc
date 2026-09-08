@@ -45,7 +45,7 @@ An external GNU executable used as an oracle is never counted as a port.
 GNU providers, and their current state. Rbox's `APPLET_COUNT` constant says 554,
 but its actual dispatcher and full binary list agree on 553 distinct commands;
 the one-name discrepancy remains recorded in `inventory/sources.json`.
-GNU Hello, Time, Which, Diffutils, Grep, Gzip, Sed, BC, Ed, Findutils, and Tar are also source-pinned. Remaining
+GNU Hello, Time, Which, Diffutils, Grep, Gzip, Sed, BC, Ed, Findutils, Tar, and Sharutils are also source-pinned. Remaining
 provider assignments require source/version confirmation before implementation.
 
 The upstream release baselines below are the versions used for translation
@@ -68,8 +68,8 @@ there where available.
 | BC | 1.08.2 | `bc`, `dc` installed |
 | Ed | 1.22.6 | `ed` installed |
 | Findutils | 4.11.0 | `find`, `xargs`, `locate` installed; `updatedb` pending |
-| Tar | 1.35 | `tar` linked in a 129-command candidate; validation in progress |
-| Sharutils | 4.15.2 | `uuencode`, `uudecode` translated; candidate validation in progress |
+| Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
+| Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 
 For a later upstream fix, identify its upstream commit or patch and the release
 baseline in this table. Record the affected commands, upstream reference, local
@@ -443,7 +443,11 @@ equivalence. All eleven other provider focused batches pass on this same
 terminal profiles. Retaining the prior Findutils originals now verifies their
 separate memory audit as well as unchanged source/helper inputs; a fresh audit
 again checks its 982 clean applet processes and retains 488 native child
-findings. Tar's 84 reviewed originals are being rerun before installation.
+findings. Tar's fresh rerun passes all 84 reviewed originals with 905 clean
+processes. The 131-command build is now installed; a separate source rebuild
+produces identical executable bytes, and the shared-library dependency list is
+unchanged. `evidence/sharutils-candidate-proof.json` binds 30 validation reports
+to the installed executable and its recorded source/helper inputs.
 
 On 2026-09-08, recovery preserved the damaged Git directory, working sources,
 and raw evidence under `/root/backups/rboxc-recovery-20260908T064111Z`.
@@ -458,13 +462,12 @@ See `evidence/git-recovery-20260908.json` for the recovery record and limitation
 
 Of the 553 observed names, 189 currently have GNU provider assignments, including
 the excluded SELinux commands `chcon` and `runcon`. After those exclusions,
-59 GNU-assigned names remain to install: Tar is a candidate and 58 others await
-implementation. Another 354 names remain deferred for provider review, and
+56 GNU-assigned names remain to install. Another 354 names remain deferred for provider review, and
 12 SELinux commands in total are excluded. These are implementation counts;
 full compatibility validation remains separate.
 
-The installed executable registers 128 commands: 107 Coreutils entries, GNU Hello,
-GNU Time, GNU Which, four GNU Diffutils commands, three GNU Grep commands, four GNU Gzip commands, GNU Sed, GNU bc/dc, GNU Ed, and Findutils (`find`, `xargs`, `locate`),
+The installed executable registers 131 commands: 107 Coreutils entries, GNU Hello,
+GNU Time, GNU Which, four GNU Diffutils commands, three GNU Grep commands, four GNU Gzip commands, GNU Sed, GNU bc/dc, GNU Ed, Findutils (`find`, `xargs`, `locate`), GNU Tar, and Sharutils (`uuencode`, `uudecode`),
 all with active Rust command entries. No native C command entry remains, and assembly succeeds without the
 C-entry opt-in. `printf`, `sort`, `od`, `numfmt`, and `seq` use native numeric
 helpers: floating values stay inside GNU C functions and cross the boundary
@@ -480,16 +483,16 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The current release executable is 3,951,688 bytes (3.77 MiB), dynamically linked
+The current release executable is 4,687,504 bytes (4.47 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
 
 Original-suite results for unchanged earlier providers retain their actual binary
-hashes: the 124-command release, the 125-command Ed release, or the earlier
-117-command Grep release. Verified
+hashes: the 124-command release, the 125-command Ed release, the earlier
+117-command Grep release, or the 128-command Findutils release. Verified
 source/helper identity and complete fresh focused comparisons support retaining
-those results. They are not reported as original-suite reruns on the 128-command
+those results. They are not reported as original-suite reruns on the 131-command
 executable. The input-identity validator also rejects incomplete focused batches.
 
 The current release dynamically links libacl, libattr, and libcap for GNU metadata
