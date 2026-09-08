@@ -27,7 +27,11 @@ expected={'gawk':['-lreadline','-lm'],'patch':['-lattr'],'less':['-ltinfo'],
     'dnsdomainname':['-lutil'],'logger':['-lutil'],'inetd':['-lutil'],
     'syslogd':['-lutil'],'tftpd':['-lutil'],'traceroute':['-lutil'],
     'ping':[],'ping6':[],'ifconfig':[],'telnetd':['-ltermcap','-lutil','-lcrypt']}
-if provider=='binutils':
+if provider=='glibc':
+    assert flags[-1:] == ['-lgcc']
+    assert all(f.startswith('-Wl,') or f=='-lgcc' for f in flags)
+    flags=[]
+elif provider=='binutils':
     assert '-lz' in local, 'retain the configured bundled zlib'
     assert [f for f in flags if not f.startswith('-L')]==['-lzstd']
     assert all(Path(f[2:]).resolve().is_relative_to(ROOT/'build/gnu-binutils') for f in flags if f.startswith('-L'))
@@ -38,7 +42,7 @@ link_file=ROOT/'build/rust-link-inputs.txt';link=link_file.read_text().splitline
 report_path=ROOT/f'evidence/{name}-link.json'
 if report_path.exists():
     previous=json.loads(report_path.read_text())['link_inputs']
-    if previous[0] in link:
+    if previous and previous[0] in link:
         start=link.index(previous[0])
         assert link[start:start+len(previous)]==previous
         del link[start:start+len(previous)]

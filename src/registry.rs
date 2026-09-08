@@ -1,3 +1,7 @@
+#[path = "generated/applet_iconv.rs"]
+mod applet_iconv;
+#[path = "generated/applet_getconf.rs"]
+mod applet_getconf;
 #[path = "generated/applet_screen.rs"]
 mod applet_screen;
 #[path = "generated/applet_wget.rs"]
@@ -338,6 +342,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"fmt", applet_fmt::single_binary_main_fmt),
     (b"fold", applet_fold::single_binary_main_fold),
     (b"gawk", applet_gawk::single_binary_main_gawk),
+    (b"getconf", applet_getconf::single_binary_main_getconf),
     (b"grep", applet_grep::single_binary_main_grep),
     (b"groups", applet_groups::single_binary_main_groups),
     (b"gunzip", applet_gzip::single_binary_main_gunzip),
@@ -346,6 +351,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"hello", applet_hello::single_binary_main_hello),
     (b"hostid", applet_hostid::single_binary_main_hostid),
     (b"hostname", applet_hostname::single_binary_main_hostname),
+    (b"iconv", applet_iconv::single_binary_main_iconv),
     (b"id", applet_id::single_binary_main_id),
     (b"ifconfig", applet_ifconfig::single_binary_main_ifconfig),
     (b"inetd", applet_inetd::single_binary_main_inetd),

@@ -1,0 +1,36 @@
+{
+  "provider": "glibc",
+  "version": "2.43",
+  "command": "iconv",
+  "entry": "single_binary_main_iconv",
+  "source": "/opt/src/glibc-2.43/iconv/iconv_prog.c",
+  "source_sha256": "b304ba8dbeb9b4e4bc56592e0be3197c191c9f9fed0f29e495cc960b36e6c4cd",
+  "translated": true,
+  "scope": "C2Rust entry with namespaced GNU native helpers. Compilation and behavior validation are separate.",
+  "rust_file": "src/generated/applet_iconv.rs",
+  "rust_sha256": "1ecdced7e32dfa12adbb968f8ba002f53a30f9d4127adc9b0a4badf1a63d8599",
+  "raw_translation_sha256": "70b5d01a77a7d8fc73c7a2f56a10c88ddb906654854a4eb11985e4be25a90735",
+  "compile_database_sha256": "07bfaeb35c10d532bf7f2d5072343e893ac64b845e14c13151f25fccf4fd9e49",
+  "adaptations": [
+    "Pinned Rust ABI/API spelling and opaque pointer type adaptations; helper imports and exports are provider-private.",
+    "Bind libc invocation-name globals to the dispatched OS argv storage, reproducing standalone GNU startup.",
+    "Use GNU error_print_progname to preserve the full invocation path in libc utility diagnostics while retaining the shared GNU error formatter.",
+    "Register the namespaced GNU version callback with the process libc argp parser before entering the translated command.",
+    "Close successful encoding probes immediately; close the owned conversion handle, release its output buffer and destroy borrowed-key print-list nodes at process exit, preserving errno."
+  ],
+  "helper_imports": {
+    "charmap_conversion": "rboxc_iconv_charmap_conversion",
+    "charmap_read": "rboxc_iconv_charmap_read",
+    "verbose": "rboxc_iconv_verbose"
+  },
+  "rust_exports": {
+    "argp_program_version_hook": "rboxc_iconv_argp_program_version_hook",
+    "omit_invalid": "rboxc_iconv_omit_invalid"
+  },
+  "opaque_pointer_types": [
+    "_IO_jump_t"
+  ],
+  "log": "evidence/raw/transpile-entry-iconv.log",
+  "log_sha256": "5ce9bcd5fca5ba2725946ab12126bef32ae4394c8daa908a757621ec0e8cddf5",
+  "enum_bitfield_integer_delegation": []
+}

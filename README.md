@@ -79,7 +79,7 @@ there where available.
 | Less | 704 | Candidate passes ten focused comparisons; original suite pending |
 | Screen | 5.0.2 | Candidate passes five option comparisons and the descriptor-preservation contract |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and four reviewed originals |
-| glibc | 2.43 | `getconf`, `iconv` source-pinned; entry builds pending |
+| glibc | 2.43 | Both entries in a candidate; 50 focused checks and both original getconf tests pass |
 
 The next-provider work is preserved before release activation. Gawk's candidate
 uses GNU's `MEMDEBUG` per-object allocation mode; the earlier pooled native and
@@ -91,9 +91,9 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-The latest source checkpoint builds a 152-command candidate: 19 of the 54
-previously queued names now compile, with 35 still awaiting integration.
-The installed release remains at 133 commands pending activation. The combined
+The latest source checkpoint builds a 154-command candidate: 21 of the 54
+previously queued names now compile, with 33 still awaiting integration.
+The installed release remains at 133 commands pending activation. The previous combined
 152-command build passes 428 Coreutils smoke checks, 107 instrumented help
 checks, all 318 native/instrumented behavior comparisons and 11 dispatcher
 checks. Focused regressions for every installed additional provider and Gawk
@@ -132,6 +132,29 @@ remain open. Earlier findings and candidate binaries are preserved.
 
 The glibc baseline matches the host's 2.43 release and is a fixed port baseline,
 not a claim about the latest available upstream version.
+
+The glibc utility candidate is 12,758,424 bytes (12.17 MiB), an increase of
+82,592 bytes over the validated 152-command build. A separate build is
+byte-identical. Both command entries are translated Rust; getconf needs no
+native command helpers and iconv retains nine GNU helper objects. The process
+still loads the existing host `libc.so.6` and conversion modules. The local
+full glibc build only prepares authoritative utility objects and headers; its
+CRT objects, libc archives and dynamic loader are excluded from Rboxc's link
+inputs. Binutils supplies only `ar`, `readelf` and `strings` in this inventory;
+its assembler and linker are build tools, not additional Rboxc applets.
+
+The utility adapters bind libc invocation names to dispatched argv storage and
+register iconv's GNU version callback with libc's argp parser. GNU's supported
+error-prefix callback preserves full invocation paths. Iconv closes successful
+encoding probes, its owned conversion descriptor and output buffer, and the
+print-list nodes after their final use. The print-list strings remain owned by
+libc. All 50 focused native/Valgrind comparisons pass, and both unchanged GNU
+getconf tests pass in all four modes. The strict audit reparses 242 clean
+candidate process logs. Thirteen iconv interface structures also match pinned
+GNU C sizes, alignments and field offsets. These results cover the host glibc
+2.43 profile; iconv originals, charmaps and other profiles remain open. The
+initial diagnostic and allocation findings are retained. Combined regression
+on this 154-command build is tracked separately in `evidence/gnu154-*.json`.
 
 For a later upstream fix, identify its upstream commit or patch and the release
 baseline in this table. Record the affected commands, upstream reference, local

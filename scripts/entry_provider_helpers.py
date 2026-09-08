@@ -7,12 +7,13 @@ import subprocess
 
 ENTRY_OBJECTS = {'gawk':'main.o','bash':'shell.o','patch':'src/patch.o',
     'less':'main.o','screen':'screen.o','wget':'src/main.o',
+    'getconf':'posix/getconf.o','iconv':'iconv/iconv_prog.o',
     'ar':'binutils/not-ranlib.o','readelf':'binutils/readelf.o','strings':'binutils/strings.o',
     'dnsdomainname':'src/dnsdomainname.o','logger':'src/logger.o','inetd':'src/inetd.o',
     'syslogd':'src/syslogd.o','tftpd':'src/tftpd.o','traceroute':'src/traceroute.o',
     'ping':'ping/ping.o','ping6':'ping/ping6.o','ifconfig':'ifconfig/ifconfig.o',
     'telnetd':'telnetd/telnetd.o'}
-PROVIDERS = {n: ('binutils' if n in ('ar','readelf','strings') else
+PROVIDERS = {n: ('glibc' if n in ('getconf','iconv') else 'binutils' if n in ('ar','readelf','strings') else
                  n if n in ('gawk','bash','patch','less','screen','wget') else 'inetutils') for n in ENTRY_OBJECTS}
 
 def binary_path(root,command):
@@ -52,9 +53,14 @@ def native_inputs(root,provider):
              for word in record['arguments'][1:] if word.endswith(('.o','.a')) or word in libraries]
     entry=root/f'build/gnu-{PROVIDERS[provider]}'/ENTRY_OBJECTS[provider]
     assert objects.count(entry)==1
+    if PROVIDERS[provider]=='glibc':
+        # The Rust toolchain supplies startup objects and the process libc.
+        # Retain only GNU command helper modules, never CRT or libc archives.
+        return [p for p in objects if p!=entry and p.parent==entry.parent]
     return [p for p in objects if p!=entry]
 
 def defined_symbols(paths):
+    if not paths:return set()
     output=subprocess.check_output(['nm','-g','--defined-only','--format=posix',*paths],text=True)
     return set(re.findall(r'^(\w+) [A-Z] ',output,re.M))
 

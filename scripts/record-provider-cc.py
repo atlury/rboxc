@@ -11,8 +11,8 @@ import sys
 args = sys.argv[1:]
 directory = Path(os.environ['RBOXC_CC_RECORDS'])
 directory.mkdir(parents=True, exist_ok=True)
-sources = [arg for arg in args if arg.endswith('.c') and not arg.startswith('-')]
-if '-o' in args or ('-c' in args and len(sources) == 1):
+sources = [arg for arg in args if arg.endswith(('.c','.S','.s')) and not arg.startswith('-')]
+if ('-c' not in args and '-o' in args) or ('-c' in args and len(sources) == 1):
     output = args[args.index('-o')+1] if '-o' in args else Path(sources[0]).stem+'.o'
     kind = 'compile' if '-c' in args else 'link'
     key = hashlib.sha256((os.getcwd()+'\0'+kind+'\0'+output).encode()).hexdigest()

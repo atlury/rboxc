@@ -92,7 +92,7 @@ def namespace_renamed(match):
     imports.append(symbol)
     return '#[link_name = "'+mapping[symbol]+'"]'
 text = re.sub(r'#\[link_name = "(?P<name>\w+)"\]', namespace_renamed, text)
-assert imports
+assert imports or provider == 'glibc'
 exports = []
 def export(match):
     symbol = match['name']
@@ -132,6 +132,45 @@ pub unsafe extern "C" fn single_binary_main_less(argc: ::core::ffi::c_int, argv:
     rboxc_less_main_inner(argc, argv.cast())
 }
 '''
+if provider == 'glibc':
+    anchor = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_'+name+'('
+    assert text.count(anchor) == 1
+    text = text.replace(anchor, 'unsafe extern "C" fn rboxc_'+name+'_main_inner(')
+    # GNU's standalone startup initializes these libc globals from argv[0].
+    # Multicall dispatch has already shifted argv, so reproduce that binding
+    # using the existing OS argument storage, without allocating a replacement.
+    hook_declaration = '''
+    #[link_name = "argp_program_version_hook"]
+    static mut RBOXC_LIBC_VERSION_HOOK: Option<unsafe extern "C" fn(*mut FILE, *mut argp_state)>;
+''' if name == 'iconv' else ''
+    hook_assignment = '    RBOXC_LIBC_VERSION_HOOK = argp_program_version_hook;\n' if name == 'iconv' else ''
+    text += '''
+extern "C" {
+    #[link_name = "program_invocation_name"]
+    static mut RBOXC_LIBC_INVOCATION: *mut ::core::ffi::c_char;
+    #[link_name = "program_invocation_short_name"]
+    static mut RBOXC_LIBC_SHORT_INVOCATION: *mut ::core::ffi::c_char;
+    #[link_name = "error_print_progname"]
+    static mut RBOXC_ERROR_PRINT_PROGNAME: Option<unsafe extern "C" fn()>;
+    #[link_name = "stderr"]
+    static mut RBOXC_ERROR_STDERR: *mut libc::FILE;
+'''+hook_declaration+'''}
+unsafe extern "C" fn rboxc_glibc_error_prefix() {
+    libc::fprintf(RBOXC_ERROR_STDERR, b"%s: \\0".as_ptr().cast(), RBOXC_LIBC_INVOCATION);
+}
+#[no_mangle]
+pub unsafe extern "C" fn single_binary_main_'''+name+'''(argc: ::core::ffi::c_int, argv: *mut *mut ::core::ffi::c_char) -> ::core::ffi::c_int {
+    RBOXC_LIBC_INVOCATION = *argv;
+    let bytes = ::core::ffi::CStr::from_ptr(*argv).to_bytes();
+    let offset = bytes.iter().rposition(|b| *b == b'/').map_or(0, |i| i+1);
+    RBOXC_LIBC_SHORT_INVOCATION = (*argv).add(offset);
+    RBOXC_ERROR_PRINT_PROGNAME = Some(rboxc_glibc_error_prefix);
+'''+hook_assignment+'    rboxc_'+name+'''_main_inner(argc, argv)
+}
+'''
+if name == 'iconv':
+    from glibc_entry_adapters import iconv_cleanup
+    text = iconv_cleanup(text)
 if name == 'patch':
     anchor = '        if replace_file {\n            output_file('
     assert text.count(anchor) == 1
@@ -158,6 +197,10 @@ report = {'provider':provider,'version':pin['version'],'command':name,
 report['enum_bitfield_integer_delegation'] = enum_fields
 if name == 'inetd': report['adaptations'].append('Pass the process environ as GNU main\'s third argument through a two-argument dispatcher adapter.')
 if name == 'less': report['adaptations'].append('Preserve Less const-qualified argv pointees through a dispatcher pointer-qualification adapter.')
+if provider == 'glibc': report['adaptations'].append('Bind libc invocation-name globals to the dispatched OS argv storage, reproducing standalone GNU startup.')
+if provider == 'glibc': report['adaptations'].append('Use GNU error_print_progname to preserve the full invocation path in libc utility diagnostics while retaining the shared GNU error formatter.')
+if name == 'iconv': report['adaptations'].append('Register the namespaced GNU version callback with the process libc argp parser before entering the translated command.')
+if name == 'iconv': report['adaptations'].append('Close successful encoding probes immediately; close the owned conversion handle, release its output buffer and destroy borrowed-key print-list nodes at process exit, preserving errno.')
 if name == 'patch': report['adaptations'].append('Close the unused per-file temporary descriptor when -o sends output to a separately owned stream, after the original final use.')
 (ROOT/f'evidence/{name}-translation.json').write_text(json.dumps(report,indent=2)+'\n')
 print('Translated GNU',name,'with',len(imports),'helper imports and',len(exports),'Rust exports')

@@ -1,0 +1,33 @@
+{
+  "scope": "Pinned GNU utility and helper objects; original utilities use the recorded existing host runtime via a private interpreter symlink. The full native build is preparation only. No make install, CRT/libc archive integration, or host library replacement.",
+  "version": "2.43",
+  "configure_arguments": [
+    "/opt/src/glibc-2.43/configure",
+    "--prefix=/root/rboxc/build/oracle/glibc",
+    "--disable-werror"
+  ],
+  "make_arguments": [
+    "make",
+    "-j8",
+    "CC=python3 /root/rboxc/scripts/record-provider-cc.py"
+  ],
+  "build_cflags": "-g -O2",
+  "driver_sha256": "31b0309c7d4fe5fbf0957b115ad2924e188fbb9b945e100ae52ea0362689ec32",
+  "runtime": {
+    "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2": "c5e80a563850d6ab5c2f2482e4202d9c1b71fbf44854b8c399e63527202c64e1",
+    "/usr/lib/x86_64-linux-gnu/libc.so.6": "a3947513a02831ec692ebf13053c07614882ab54a2101fb91a1b15724062ed0c"
+  },
+  "oracles": {
+    "getconf": {
+      "path": "/root/rboxc/build/gnu-glibc/posix/getconf",
+      "sha256": "bbab00fb2a2705e1cb8582e611877144435eb209ba24b5d43c5c4133679a53eb",
+      "version": "getconf (GNU libc) 2.43"
+    },
+    "iconv": {
+      "path": "/root/rboxc/build/gnu-glibc/iconv/iconv_prog",
+      "sha256": "205ce3b79b83300de75fee6c4cfdf26e2e68a78672221718ad71683910c7cfb5",
+      "version": "iconv (GNU libc) 2.43"
+    }
+  },
+  "tool_profile_sha256": "adbcab49664b7644dd4283aa4ba3ee143db8ce09c40e70d3154cfe32353ecce8"
+}
