@@ -1,6 +1,6 @@
 {
-  "scope": "Keep GNU selection and directory behavior, while tracking live name allocations independently of discarded selection cursors, releasing consumed directory/option records, and closing/freeing owned working-directory state at exit. Native oracle objects remain unchanged.",
-  "driver_sha256": "0cd3884645f132ed9d2371c4c2707ebba2fd6e9f3cbd9c8df352d55dc51e3749",
+  "scope": "Keep GNU selection and directory behavior, while tracking live name allocations independently of discarded selection cursors, releasing consumed directory/option records, closing/freeing owned working-directory state, and retaining/freeing the allocation base of the aligned comparison buffer at exit. Native oracle objects remain unchanged.",
+  "driver_sha256": "108ae15d4dec4ec4818ed3fdc9053249d3e88cccd17a7dc7223b261db9c69588",
   "adaptations": [
     {
       "source": "/opt/src/tar-1.35/src/misc.c",
@@ -70,6 +70,41 @@
         "-I/opt/src/tar-1.35/src"
       ],
       "log": "evidence/raw/tar-names-cleanup-build.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/opt/src/tar-1.35/src/compare.c",
+      "original_sha256": "e65a377c0903c6583f105da573949331610043edc20082e0aad48700536ffd93",
+      "adapted_source": "build/tar-cleanup/compare.c",
+      "adapted_source_sha256": "067ff5ffe7f34d83420fe2c6be32af73d9dd7c504fe0defd18e5454237904c31",
+      "object": "build/tar-cleanup/compare.o",
+      "object_sha256": "8abe90d2b97ee84c77875f038d4206c169e63bbdb49038fc94c556f7153d4bed",
+      "compiler_arguments": [
+        "gcc",
+        "-DHAVE_CONFIG_H",
+        "-I.",
+        "-I/opt/src/tar-1.35/src",
+        "-I..",
+        "-I/opt/src/tar-1.35/gnu",
+        "-I../",
+        "-I../gnu",
+        "-I/opt/src/tar-1.35/lib",
+        "-I../lib",
+        "-g",
+        "-O2",
+        "-MT",
+        "compare.o",
+        "-MD",
+        "-MP",
+        "-MF",
+        ".deps/compare.Tpo",
+        "-c",
+        "-o",
+        "/root/rboxc/build/tar-cleanup/compare.o",
+        "/root/rboxc/build/tar-cleanup/compare.c",
+        "-I/opt/src/tar-1.35/src"
+      ],
+      "log": "evidence/raw/tar-compare-cleanup-build.log",
       "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
   ]

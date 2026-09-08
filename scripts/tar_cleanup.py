@@ -13,7 +13,7 @@ def prepare(root):
     records = [json.loads(p.read_text()) for p in (root/'build/tar-cc-records').glob('*.json')]
     outputs = {}
     evidence = []
-    for name in ('misc', 'names'):
+    for name in ('misc', 'names', 'compare'):
         original = Path(pin['source'])/'src'/(name+'.c')
         assert fingerprint(original) == pin['helper_source_sha256']['src/'+name+'.c']
         text = original.read_text()
@@ -65,6 +65,28 @@ rboxc_release_working_directories (void)
             names_source = Path(pin['source'])/'src/names.c'
             assert fingerprint(names_source) == pin['helper_source_sha256']['src/names.c']
             assert names_source.read_text().count('chdir_arg (xstrdup (ep->v.name))') == 3
+        elif name == 'compare':
+            replace('static char *diff_buffer;', '''static char *diff_buffer;
+static void *rboxc_diff_allocation;
+static bool rboxc_diff_cleanup_registered;
+static void
+rboxc_release_diff_buffer (void)
+{
+  int saved_errno = errno;
+  free (rboxc_diff_allocation);
+  rboxc_diff_allocation = NULL;
+  diff_buffer = NULL;
+  errno = saved_errno;
+}''')
+            replace('''  void *ptr;
+  diff_buffer = page_aligned_alloc (&ptr, record_size);''', '''  if (!rboxc_diff_cleanup_registered)
+    {
+      if (atexit (rboxc_release_diff_buffer))
+        xalloc_die ();
+      rboxc_diff_cleanup_registered = true;
+    }
+  rboxc_release_diff_buffer ();
+  diff_buffer = page_aligned_alloc (&rboxc_diff_allocation, record_size);''')
         else:
             replace('static struct name *\nmake_name (const char *file_name)', '''/* Keep ownership independent of GNU's selection-list cursors. */
 struct rboxc_owned_name
@@ -134,7 +156,7 @@ make_name (const char *file_name)''')
                          'adapted_source': str(adapted.relative_to(root)), 'adapted_source_sha256': fingerprint(adapted),
                          'object': str(output.relative_to(root)), 'object_sha256': fingerprint(output),
                          'compiler_arguments': arguments, 'log': str(log.relative_to(root)), 'log_sha256': fingerprint(log)})
-    report = {'scope': 'Keep GNU selection and directory behavior, while tracking live name allocations independently of discarded selection cursors, releasing consumed directory/option records, and closing/freeing owned working-directory state at exit. Native oracle objects remain unchanged.',
+    report = {'scope': 'Keep GNU selection and directory behavior, while tracking live name allocations independently of discarded selection cursors, releasing consumed directory/option records, closing/freeing owned working-directory state, and retaining/freeing the allocation base of the aligned comparison buffer at exit. Native oracle objects remain unchanged.',
               'driver_sha256': fingerprint(Path(__file__)), 'adaptations': evidence}
     (root/'evidence/tar-native-cleanup.json').write_text(json.dumps(report, indent=2)+'\n')
     return outputs

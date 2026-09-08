@@ -337,7 +337,13 @@ behaviors now match GNU, with 11/30 strict checks passing. Remaining findings
 concern native helper ownership of directory handles and file-selection records.
 The following ownership candidate releases those resources while preserving
 all 30 behaviors; 28/30 strict checks pass. The two remaining comparisons
-retain the allocation base of GNU Tar's page-aligned comparison buffer. A 30-case
+lose the allocation base of GNU Tar's page-aligned comparison buffer.
+Retaining and freeing that base produces 30/30 strict focused passes.
+The first three unchanged Autotest selections pass their assertions, including
+all five archive formats in the append test. Version passes Valgrind; append
+and exclusion tests expose additional ownership work in old-style arguments
+and TAR_OPTIONS processing. These original findings remain open in
+`evidence/tar-original-reviewed.json`. A 30-case
 archive-operation harness matches GNU Tar against itself in every comparison;
 only 9/30 native control cases are strict memory-clean, with the other GNU
 findings preserved as baseline observations. This control is not Rust port
