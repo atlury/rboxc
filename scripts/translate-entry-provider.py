@@ -182,6 +182,8 @@ if name == 'iconv':
     from glibc_entry_adapters import iconv_cleanup
     text = iconv_cleanup(text)
 if name == 'patch':
+    from patch_cleanup import output_ownership
+    text = output_ownership(text)
     anchor = '        if replace_file {\n            output_file('
     assert text.count(anchor) == 1
     text = text.replace(anchor, '''        if !outfile.is_null() && outfd >= 0 && close(outfd) < 0 {
@@ -216,5 +218,6 @@ if name == 'iconv': report['adaptations'].append('Register the namespaced GNU ve
 if name == 'iconv': report['adaptations'].append('Close successful encoding probes immediately; close the owned conversion handle, release its output buffer and destroy borrowed-key print-list nodes at process exit, preserving errno.')
 if name == 'iconv': report['adaptations'].append('Close the abandoned anonymous output spool on the original conversion-error return without flushing or replacing overlapping input; preserve errno.')
 if name == 'patch': report['adaptations'].append('Close the unused per-file temporary descriptor when -o sends output to a separately owned stream, after the original final use.')
+if name == 'patch': report['adaptations'].append('Retain ownership of each pending output descriptor or fdopen stream across GNU fatal exit; forget it before normal close and release any abandoned resource at process exit, preserving errno.')
 (ROOT/f'evidence/{name}-translation.json').write_text(json.dumps(report,indent=2)+'\n')
 print('Translated GNU',name,'with',len(imports),'helper imports and',len(exports),'Rust exports')

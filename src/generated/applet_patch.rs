@@ -780,6 +780,9 @@ pub unsafe extern "C" fn single_binary_main_patch(
     xstdopen();
     setbuf(stderr, &raw mut serrbuf as *mut ::core::ffi::c_char);
     atexit(Some(close_stdout as unsafe extern "C" fn() -> ()));
+    if atexit(Some(rboxc_release_pending_output)) != 0 {
+        libc::_exit(2);
+    }
     strippath = -1 as intmax_t;
     val = getenv(b"QUOTING_STYLE\0".as_ptr() as *const ::core::ffi::c_char);
     let mut i: ::core::ffi::c_int = (if !val.is_null() {
@@ -997,6 +1000,7 @@ pub unsafe extern "C" fn single_binary_main_patch(
             O_WRONLY | binary_transput,
             instat.st_mode & S_IRWXUGO as mode_t,
         );
+        RBOXC_PENDING_OUTPUT_FD = outfd;
         if outfd < 0 as ::core::ffi::c_int {
             if diff_type.0 == diff::ED_DIFF.0
                 || !(*__errno_location() == ELOOP || *__errno_location() == EXDEV)
@@ -1050,6 +1054,7 @@ pub unsafe extern "C" fn single_binary_main_patch(
                         b"w\0".as_ptr() as *const ::core::ffi::c_char
                     },
                 );
+                RBOXC_PENDING_OUTPUT_STREAM = outstate.ofp;
                 if outstate.ofp.is_null() {
                     pfatal(b"%s\0".as_ptr() as *const ::core::ffi::c_char, tmpout.name);
                 }
@@ -1450,6 +1455,8 @@ pub unsafe extern "C" fn single_binary_main_patch(
         if 0 as ::core::ffi::c_int <= ifd && close(ifd) < 0 as ::core::ffi::c_int {
             read_fatal();
         }
+        RBOXC_PENDING_OUTPUT_FD = -1;
+        RBOXC_PENDING_OUTPUT_STREAM = ::core::ptr::null_mut();
         if outfile.is_null() {
             if !outstate.ofp.is_null() {
                 Fclose(outstate.ofp);
@@ -3619,3 +3626,19 @@ pub const nullptr: *mut ::core::ffi::c_void = ::core::ptr::null_mut::<::core::ff
 pub const __SCHAR_MAX__: ::core::ffi::c_int = 127 as ::core::ffi::c_int;
 pub const r#true: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
 pub const r#false: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+
+static mut RBOXC_PENDING_OUTPUT_FD: ::core::ffi::c_int = -1;
+static mut RBOXC_PENDING_OUTPUT_STREAM: *mut FILE = ::core::ptr::null_mut();
+unsafe extern "C" fn rboxc_release_pending_output() {
+    let saved_errno = *libc::__errno_location();
+    let stream = RBOXC_PENDING_OUTPUT_STREAM;
+    let fd = RBOXC_PENDING_OUTPUT_FD;
+    RBOXC_PENDING_OUTPUT_STREAM = ::core::ptr::null_mut();
+    RBOXC_PENDING_OUTPUT_FD = -1;
+    if !stream.is_null() {
+        libc::fclose(stream.cast());
+    } else if fd >= 0 {
+        libc::close(fd);
+    }
+    *libc::__errno_location() = saved_errno;
+}

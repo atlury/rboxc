@@ -72,7 +72,7 @@ there where available.
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
 | Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 71 reviewed originals pass |
-| Patch | 2.8 | 23 focused comparisons and 24 original scripts pass; two GNU expected failures match |
+| Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
 | Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 17 reviewed originals pass with clean Valgrind; broader acceptance open |
@@ -115,7 +115,32 @@ preserved in `evidence/gawk-expanded-original.json`; the corrected run and its
 `evidence/gawk-locale-memory-audit.json`. Other original Gawk inputs and extension
 profiles remain open.
 
-Patch now passes **24 reviewed original scripts**, and exactly matches the two
+Patch's 49 registered original scripts are now accounted for: **38 pass, two
+match GNU's registered expected failures, and nine mixed reproduction scripts
+remain held out**. The 40 reviewed selections include merge conflicts, timestamps,
+Ed-format input and all three read-only policies. Read-only tests use uid/gid
+65534 with private byte-identical executable copies. Ed-format tests retain
+GNU's configured external `/usr/bin/ed` dependency (GNU Ed 1.22.4); that helper
+is separate from the integrated Ed entry.
+
+The expanded tests found three issues also visible in native GNU: an abandoned
+output stream on syntax-error exit, a descriptor created when restoring stdin
+after an Ed script, and an uninitialized merge search limit. The Rust entry now
+tracks and releases pending output ownership. Native cleanup finalizes the
+restored stdin descriptor only while its recorded identity still matches, and
+the merge helper initializes its search limit using the pinned GNU Diffutils
+3.12 policy. Original patch application logic and test assertions are retained.
+The earlier 33/35 and 37/40 results remain in `evidence/patch-merge-original.json`
+and `evidence/patch-output-ownership-original.json`.
+
+`evidence/patch-merge-initialization-memory-audit.json` verifies **201 clean
+candidate Patch process logs**, 23 focused comparisons, 428 smoke checks and
+11 dispatcher checks. The new 187-command candidate is 14,716,368 bytes and its
+independent rebuild is byte-identical. The installed 133-command release remains
+unchanged; broader GNU acceptance is still open. Each provider checkpoint
+records its own tested candidate hash.
+
+The preceding Patch checkpoint passes **24 reviewed original scripts**, and exactly matches the two
 failures that GNU Patch 2.8 registers in `XFAIL_TESTS` (`context-format` and
 `dash-o-append`). Those two retain their failing assertion counts and identical
 GNU/candidate output; they are not counted as ordinary passes. All 23 focused
