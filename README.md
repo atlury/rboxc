@@ -45,7 +45,7 @@ An external GNU executable used as an oracle is never counted as a port.
 GNU providers, and their current state. Rbox's `APPLET_COUNT` constant says 554,
 but its actual dispatcher and full binary list agree on 553 distinct commands;
 the one-name discrepancy remains recorded in `inventory/sources.json`.
-GNU Hello, Time, Which, Diffutils, Grep, Gzip, Sed, BC, Ed, Findutils, Tar, and Sharutils are also source-pinned. Remaining
+GNU Hello, Time, Which, Diffutils, Grep, Gzip, Sed, BC, Ed, Findutils, Tar, Sharutils, and Cpio are also source-pinned. Remaining
 provider assignments require source/version confirmation before implementation.
 
 The upstream release baselines below are the versions used for translation
@@ -70,7 +70,7 @@ there where available.
 | Findutils | 4.11.0 | `find`, `xargs`, `locate` installed; `updatedb` pending |
 | Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
-| Cpio | 2.15 | `cpio`, `mt` translated and linked in a separate 133-command candidate |
+| Cpio | 2.15 | `cpio`, `mt` installed; ten reviewed originals validated; tape-device operations untested |
 
 For a later upstream fix, identify its upstream commit or patch and the release
 baseline in this table. Record the affected commands, upstream reference, local
@@ -445,7 +445,7 @@ terminal profiles. Retaining the prior Findutils originals now verifies their
 separate memory audit as well as unchanged source/helper inputs; a fresh audit
 again checks its 982 clean applet processes and retains 488 native child
 findings. Tar's fresh rerun passes all 84 reviewed originals with 905 clean
-processes. The 131-command build is now installed; a separate source rebuild
+processes. The 131-command build was installed before the Cpio increment; a separate source rebuild
 produces identical executable bytes, and the shared-library dependency list is
 unchanged. `evidence/sharutils-candidate-proof.json` binds 30 validation reports
 to the installed executable and its recorded source/helper inputs.
@@ -467,20 +467,27 @@ and closing only its owned local descriptor. The corrected run passes 52/52.
 Ten reviewed unchanged Cpio originals pass their assertions; the first memory
 run identifies one native copy-pass allocation leak, also present in GNU.
 A copied helper adaptation frees the temporary current-directory string after
-its contents are copied. Fresh originals and combined provider regressions are
-running on that further candidate. Real tape operations and broader original
-coverage remain unvalidated; the installed release remains at 131 commands.
+its contents are copied. The final audit passes all ten reviewed originals
+and all 52 focused cases, verifying 95 clean candidate processes. All installed
+providers pass fresh focused regressions. The combined Coreutils assessment
+passes 318/318: 314 cases passed initially, and four `stdbuf` cases pass after
+staging the existing byte-identical `libstdbuf.so` companion. Both runs remain
+recorded. The installed build now has 133 commands; an independent rebuild
+produces identical bytes, with no added shared-library dependencies.
+`evidence/cpio-candidate-proof.json` binds 32 validation reports to this build.
+Seven other registered Cpio originals and actual tape operations remain
+unvalidated; these results do not certify full-provider compatibility.
 
 ## Status
 
 Of the 553 observed names, 189 currently have GNU provider assignments, including
 the excluded SELinux commands `chcon` and `runcon`. After those exclusions,
-56 GNU-assigned names remain to install. Another 354 names remain deferred for provider review, and
+54 GNU-assigned names remain to install. Another 354 names remain deferred for provider review, and
 12 SELinux commands in total are excluded. These are implementation counts;
 full compatibility validation remains separate.
 
-The installed executable registers 131 commands: 107 Coreutils entries, GNU Hello,
-GNU Time, GNU Which, four GNU Diffutils commands, three GNU Grep commands, four GNU Gzip commands, GNU Sed, GNU bc/dc, GNU Ed, Findutils (`find`, `xargs`, `locate`), GNU Tar, and Sharutils (`uuencode`, `uudecode`),
+The installed executable registers 133 commands: 107 Coreutils entries, GNU Hello,
+GNU Time, GNU Which, four GNU Diffutils commands, three GNU Grep commands, four GNU Gzip commands, GNU Sed, GNU bc/dc, GNU Ed, Findutils (`find`, `xargs`, `locate`), GNU Tar, Sharutils (`uuencode`, `uudecode`), and Cpio (`cpio`, `mt`),
 all with active Rust command entries. No native C command entry remains, and assembly succeeds without the
 C-entry opt-in. `printf`, `sort`, `od`, `numfmt`, and `seq` use native numeric
 helpers: floating values stay inside GNU C functions and cross the boundary
@@ -496,16 +503,17 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The current release executable is 4,687,504 bytes (4.47 MiB), dynamically linked
+The current release executable is 4,940,736 bytes (4.71 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
 
 Original-suite results for unchanged earlier providers retain their actual binary
 hashes: the 124-command release, the 125-command Ed release, the earlier
-117-command Grep release, or the 128-command Findutils release. Verified
+117-command Grep release, the 128-command Findutils release, or the 131-command
+Tar/Sharutils release. Verified
 source/helper identity and complete fresh focused comparisons support retaining
-those results. They are not reported as original-suite reruns on the 131-command
+those results. They are not reported as original-suite reruns on the 133-command
 executable. The input-identity validator also rejects incomplete focused batches.
 
 The current release dynamically links libacl, libattr, and libcap for GNU metadata

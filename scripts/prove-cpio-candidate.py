@@ -17,8 +17,8 @@ assert len(subprocess.check_output([candidate,'--list'],text=True).splitlines())
 mapping = {
     'smoke':'cpio-combined-coreutils-smoke',
     'valgrind':'cpio-combined-coreutils-valgrind',
-    'behavior':'cpio-combined-coreutils-behavior',
-    'valgrind-equivalence':'cpio-combined-coreutils-equivalence',
+    'behavior':'cpio-staged-coreutils-behavior',
+    'valgrind-equivalence':'cpio-staged-coreutils-equivalence',
     'dispatcher':'cpio-combined-dispatcher',
     'bc-terminal':'cpio-combined-bc-terminal',
     'cpio-original':'cpio-cleanup-original',
@@ -77,7 +77,8 @@ for provider in (*providers,'cpio'):
 for name in ('inventory/sources.json','src/registry.rs','src/main.rs','src/bridges/sharutils-owned.rs','src/bridges/cpio-invocation.rs','src/bridges/mt-owned.rs',
              'Cargo.toml','Cargo.lock','rust-toolchain.toml','build.rs','build/rust-link-inputs.txt',
              'scripts/prove-cpio-candidate.py','scripts/activate-candidate.py','scripts/update-evidence.py',
-             'scripts/audit-cpio-evidence.py','scripts/prepare-cpio.sh','scripts/translate-cpio.py','scripts/assemble-cpio.py','scripts/cpio_helpers.py','scripts/cpio_cleanup.py','scripts/validate-retained-provider.py','scripts/validate-original-reuse.py'):
+             'scripts/audit-cpio-evidence.py','scripts/merge-cpio-coreutils-evidence.py','tests/coreutils-behavior.py','tests/valgrind-equivalence.py',
+             'scripts/prepare-cpio.sh','scripts/translate-cpio.py','scripts/assemble-cpio.py','scripts/cpio_helpers.py','scripts/cpio_cleanup.py','scripts/validate-retained-provider.py','scripts/validate-original-reuse.py'):
     sources[name] = digest(ROOT/name)
 needed = lambda p: sorted(re.findall(r'Shared library: \[([^]]+)\]',subprocess.check_output(['readelf','-d',p],text=True)))
 assert needed(candidate) == needed(ROOT/'target/release/rboxc'), 'review added shared dependencies'
