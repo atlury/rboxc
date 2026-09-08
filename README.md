@@ -422,8 +422,9 @@ read and write, and closes owned local archive handles on fatal exit while
 invalidating every explicitly closed handle. The owner original uses files-only
 NSS in a private mount namespace; its earlier host SSSD diagnostic remains in
 the baseline report. Earlier allocation and descriptor findings are preserved.
-The preceding 76 originals are being rerun on these bytes; this candidate is
-not installed or fully certified.
+The completed audit now verifies all 84 selected originals and 905 clean Tar
+processes on these bytes. Coreutils help/version checks pass 428/428. This
+candidate is not installed or fully certified.
 
 ## Status
 
