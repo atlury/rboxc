@@ -55,7 +55,10 @@ def run(row):
                     argv = ['/usr/bin/valgrind', '--leak-check=full', '--show-leak-kinds=all',
                             '--track-fds=yes', '--trace-children=yes',
                             '--log-file='+str(saved/'memory/%p.log'), *argv]
-                wrapper.write_text('#!/bin/sh\nexec '+shlex.join(argv)+' "$@"\n')
+                overlay = row.get('environment_overlay', {})
+                assert not overlay or overlay == {'LESS_OSC8_OPEN_ANY': '', 'LESS_OSC8_OPEN_man': ''}
+                environment_setup = ''.join('export '+n+'='+shlex.quote(v)+'\n' for n, v in overlay.items())
+                wrapper.write_text('#!/bin/sh\n'+environment_setup+'exec '+shlex.join(argv)+' "$@"\n')
                 wrapper.chmod(0o755)
                 command = ['/usr/bin/perl', str(tool_dir/'runtest'), '-d', str(tool_dir),
                            '-l', str(wrapper), '-r', str(work/'run'), '-Od', str(source/row['path'])]
@@ -83,6 +86,7 @@ def run(row):
                 'streams': {n: {'path': str((saved/n).relative_to(ROOT)), 'sha256': fingerprint(saved/n)}
                             for n in ('stdout', 'stderr')}, 'memory': memory, 'memory_clean': clean if instrument else None}
     return {'name': row['name'], 'source_sha256': row['sha256'], 'frames': row['records']['frames'],
+            'environment_overlay': row.get('environment_overlay', {}),
             'assertions_pass': all(o['assertions_pass'] for o in outcomes.values()),
             'pass': all(o['assertions_pass'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean'],
             'outcomes': outcomes}

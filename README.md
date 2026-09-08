@@ -79,13 +79,16 @@ there where available.
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
 | Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 17 reviewed originals pass with clean Valgrind; broader acceptance open |
-| Less | 704 | Ten focused checks, one production terminal check and 17 original screen replays pass; hyperlink opener profile pending |
+| Less | 704 | Ten focused checks, one production terminal check and all 18 original screen replays pass across declared profiles |
 | Screen | 5.0.2 | Candidate passes five option comparisons and the descriptor-preservation contract |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
 | glibc | 2.43 | Both entries integrated; 50 focused checks, both getconf originals and three iconv buffer recipes pass |
 
-Less now passes **17 unchanged original screen replays**, covering **2,022
+Less now passes **all 18 original screen replays**, covering **2,245
 screen assertions**, in GNU's required `LESSTEST`/`USE_TERMCAP` configuration.
+Seventeen retain their original environment. The last retains its original
+input bytes, keystrokes and assertions with external hyperlink handlers
+disabled; external browser/man integration remains untested.
 The test-mode C2Rust entry is byte-identical to the original translation;
 a separate executable uses the existing generated Rust entry and namespaced
 GNU test helpers. The release-mode candidate passes ten focused comparisons
@@ -96,10 +99,12 @@ The original replays exposed a keyboard descriptor left open in both GNU and
 rboxc. The helper now tracks successful device opens separately from borrowed
 stdin/stderr fallbacks and closes owned handles through GNU's existing cleanup.
 Eighteen contracts cover standard descriptor numbers, reuse, reopening,
-borrowed fallbacks and errno preservation. `evidence/less-keyboard-validation.json`
-reparses **34 clean test-profile Less logs and 11 clean production Less logs**;
+borrowed fallbacks and errno preservation.
+`evidence/less-screen-combined-validation.json` verifies the combined evidence:
+**36 clean test-profile Less logs and 11 clean production Less logs**;
 the contract processes are counted separately. Initial failures and native
-GNU findings remain preserved. The hyperlink opener replay remains pending.
+GNU findings remain preserved. The final hyperlink replay executes no opener
+child and covers in-document behavior.
 
 The new 187-command candidate is **14,716,952 bytes**, 224 bytes larger, at
 `target/less-keyboard-candidate/release/rboxc`. An independent rebuild is
