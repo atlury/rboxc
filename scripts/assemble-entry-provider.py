@@ -9,11 +9,13 @@ from entry_provider_helpers import ENTRY_OBJECTS,PROVIDERS,fingerprint,native_in
 
 ROOT=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser(description=__doc__)
-parser.add_argument('provider',choices=sorted(set(ENTRY_OBJECTS)-{'bash'}))
+parser.add_argument('provider',choices=sorted(ENTRY_OBJECTS))
 name=parser.parse_args().provider
 provider=PROVIDERS[name]
 pin=json.loads((ROOT/'inventory/sources.json').read_text())[provider]
 commands=pin['commands'] if name==provider else [name]
+if name=='bash':commands=pin['commands']
+if name=='frcode':commands=[]
 entry=json.loads((ROOT/f'evidence/{name}-translation.json').read_text())
 assert entry['translated'] and fingerprint(ROOT/entry['rust_file'])==entry['rust_sha256']
 mapping=symbol_map(ROOT,name)
@@ -22,12 +24,17 @@ outputs,definitions=prepare_archives(ROOT,name,mapping)
 record=original_link(ROOT,name)
 local=local_libraries(ROOT,name)
 flags=[word for word in record['arguments'] if word.startswith(('-l','-L','-Wl,')) and word not in local]
-expected={'gawk':['-lreadline','-lm'],'patch':['-lattr'],'less':['-ltinfo'],
+expected={'frcode':[], 'gawk':['-lreadline','-lm'],'patch':['-lattr'],'less':['-ltinfo'],
     'wget':['-lpcre2-8','-lssl','-lcrypto','-lz'],'screen':['-lcrypt','-lcurses'],
     'dnsdomainname':['-lutil'],'logger':['-lutil'],'inetd':['-lutil'],
     'syslogd':['-lutil'],'tftpd':['-lutil'],'traceroute':['-lutil'],
-    'ping':[],'ping6':[],'ifconfig':[],'telnetd':['-ltermcap','-lutil','-lcrypt']}
-if provider=='glibc':
+    'ping':[],'ping6':[],'ifconfig':[],'telnetd':['-ltermcap','-lutil','-lcrypt'],
+    'tftp':['-lutil'],'ftpd':['-lcrypt'],'telnet':['-ltermcap','-lcrypt']}
+if provider=='bash':
+    assert [f for f in flags if not f.startswith('-L')]==['-ltermcap','-ldl']
+    assert all((Path(record['directory'])/f[2:]).resolve().is_relative_to(ROOT/'build/gnu-bash') for f in flags if f.startswith('-L'))
+    flags=[f for f in flags if not f.startswith('-L')]
+elif provider=='glibc':
     assert flags[-1:] == ['-lgcc']
     assert all(f.startswith('-Wl,') or f=='-lgcc' for f in flags)
     flags=[]
@@ -40,6 +47,7 @@ else:
 extra=[str(p) for p in outputs]+flags
 link_file=ROOT/'build/rust-link-inputs.txt';link=link_file.read_text().splitlines()
 report_path=ROOT/f'evidence/{name}-link.json'
+start=len(link)
 if report_path.exists():
     previous=json.loads(report_path.read_text())['link_inputs']
     if previous and previous[0] in link:
@@ -47,12 +55,15 @@ if report_path.exists():
         assert link[start:start+len(previous)]==previous
         del link[start:start+len(previous)]
 assert not any(p in link for p in map(str,outputs))
-link_file.write_text('\n'.join(link+extra)+'\n')
+link[start:start]=extra
+link_file.write_text('\n'.join(link)+'\n')
 registry=ROOT/'src/registry.rs';text=registry.read_text()
 module=f'#[path = "generated/applet_{name}.rs"]\nmod applet_{name};\n'
 if module not in text:text=module+text
+if name=='bash' and 'mod bash_dispatch;' not in text:text='mod bash_dispatch;\n'+text
 for command in commands:
-    row=f'    (b"{command}", applet_{name}::single_binary_main_{name}),\n'
+    entry_fn='bash_dispatch::main' if name=='bash' and command not in ('bash','sh','-bash','-sh') else f'applet_{name}::single_binary_main_{name}'
+    row=f'    (b"{command}", {entry_fn}),\n'
     if row not in text:
         assert text.endswith('];\n');text=text[:-3]+row+'];\n'
 head,body=text.split('static APPLETS: &[(&[u8], Entry)] = &[\n');assert body.endswith('];\n')

@@ -18,7 +18,7 @@ provider_commands = {name: data['commands'] for name, data in json.loads((ROOT/'
 parser = argparse.ArgumentParser(add_help=False)
 parser.add_argument('--providers', nargs='*', choices=sorted(provider_commands))
 parser.add_argument('--extra-commands', nargs='*', default=[],
-                    choices=sorted({command for commands in provider_commands.values() for command in commands}),
+                    choices=sorted({command for commands in provider_commands.values() for command in commands} | {command for data in json.loads((ROOT/'inventory/sources.json').read_text()).values() if isinstance(data,dict) for command in data.get('pending_commands',[])}),
                     help='Explicit commands from partially integrated providers, in addition to the selected full providers')
 selection, remaining = parser.parse_known_args()
 sys.argv = [sys.argv[0], *remaining]

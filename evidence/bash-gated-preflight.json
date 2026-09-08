@@ -1,0 +1,175 @@
+{
+  "scope": "Initial native GNU, separately lowered C and translated Rust entry comparison on eight valid shell scripts; no memory instrumentation in this preflight.",
+  "passed": 8,
+  "total": 8,
+  "results": [
+    {
+      "script": "printf \"hello\\n\"",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "68656c6c6f0a",
+          "stderr": ""
+        },
+        "gated-c": {
+          "status": 0,
+          "stdout": "68656c6c6f0a",
+          "stderr": ""
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "68656c6c6f0a",
+          "stderr": ""
+        }
+      },
+      "pass": true
+    },
+    {
+      "script": "x=4; printf \"%s\\n\" \"$((x+3))\"",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "370a",
+          "stderr": ""
+        },
+        "gated-c": {
+          "status": 0,
+          "stdout": "370a",
+          "stderr": ""
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "370a",
+          "stderr": ""
+        }
+      },
+      "pass": true
+    },
+    {
+      "script": "set -e; false; echo wrong",
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        "gated-c": {
+          "status": 1,
+          "stdout": "",
+          "stderr": ""
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      "pass": true
+    },
+    {
+      "script": "f(){ return 7; }; f; printf \"status:%s\\n\" \"$?\"",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7374617475733a370a",
+          "stderr": ""
+        },
+        "gated-c": {
+          "status": 0,
+          "stdout": "7374617475733a370a",
+          "stderr": ""
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7374617475733a370a",
+          "stderr": ""
+        }
+      },
+      "pass": true
+    },
+    {
+      "script": "(printf \"subshell\\n\"); printf \"parent\\n\"",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7375627368656c6c0a706172656e740a",
+          "stderr": ""
+        },
+        "gated-c": {
+          "status": 0,
+          "stdout": "7375627368656c6c0a706172656e740a",
+          "stderr": ""
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7375627368656c6c0a706172656e740a",
+          "stderr": ""
+        }
+      },
+      "pass": true
+    },
+    {
+      "script": "trap \"printf exit\\\\n\" EXIT; true",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "657869746e",
+          "stderr": ""
+        },
+        "gated-c": {
+          "status": 0,
+          "stdout": "657869746e",
+          "stderr": ""
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "657869746e",
+          "stderr": ""
+        }
+      },
+      "pass": true
+    },
+    {
+      "script": "trap \"printf int\\\\n\" INT; kill -s INT $$; printf \"after\\n\"",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "696e746e61667465720a",
+          "stderr": ""
+        },
+        "gated-c": {
+          "status": 0,
+          "stdout": "696e746e61667465720a",
+          "stderr": ""
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "696e746e61667465720a",
+          "stderr": ""
+        }
+      },
+      "pass": true
+    },
+    {
+      "script": "./plain alpha",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a616c7068610a",
+          "stderr": ""
+        },
+        "gated-c": {
+          "status": 0,
+          "stdout": "706c61696e3a616c7068610a",
+          "stderr": ""
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a616c7068610a",
+          "stderr": ""
+        }
+      },
+      "pass": true
+    }
+  ]
+}

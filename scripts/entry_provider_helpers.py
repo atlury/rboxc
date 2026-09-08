@@ -5,19 +5,19 @@ import json
 import re
 import subprocess
 
-ENTRY_OBJECTS = {'gawk':'main.o','bash':'shell.o','patch':'src/patch.o',
+ENTRY_OBJECTS = {'frcode':'locate/frcode.o','gawk':'main.o','bash':'shell.o','patch':'src/patch.o',
     'less':'main.o','screen':'screen.o','wget':'src/main.o',
     'getconf':'posix/getconf.o','iconv':'iconv/iconv_prog.o',
     'ar':'binutils/not-ranlib.o','readelf':'binutils/readelf.o','strings':'binutils/strings.o',
     'dnsdomainname':'src/dnsdomainname.o','logger':'src/logger.o','inetd':'src/inetd.o',
     'syslogd':'src/syslogd.o','tftpd':'src/tftpd.o','traceroute':'src/traceroute.o',
     'ping':'ping/ping.o','ping6':'ping/ping6.o','ifconfig':'ifconfig/ifconfig.o',
-    'telnetd':'telnetd/telnetd.o'}
-PROVIDERS = {n: ('glibc' if n in ('getconf','iconv') else 'binutils' if n in ('ar','readelf','strings') else
+    'telnetd':'telnetd/telnetd.o','tftp':'src/tftp.o','ftpd':'ftpd/ftpd.o','telnet':'telnet/main.o'}
+PROVIDERS = {n: ('findutils' if n=='frcode' else 'glibc' if n in ('getconf','iconv') else 'binutils' if n in ('ar','readelf','strings') else
                  n if n in ('gawk','bash','patch','less','screen','wget') else 'inetutils') for n in ENTRY_OBJECTS}
 
 def binary_path(root,command):
-    relative={'gawk':'gawk','bash':'bash','ar':'binutils/ar','less':'less','wget':'src/wget'}.get(command,ENTRY_OBJECTS[command][:-2])
+    relative={'gawk':'gawk','bash':'bash','ar':'binutils/ar','less':'less','wget':'src/wget','telnet':'telnet/telnet'}.get(command,ENTRY_OBJECTS[command][:-2])
     return root/f'build/gnu-{PROVIDERS[command]}'/relative
 
 def fingerprint(path):
@@ -26,7 +26,7 @@ def fingerprint(path):
 def original_link(root,provider):
     from pathlib import Path
     records=[json.loads(p.read_text()) for p in (root/f'build/{PROVIDERS[provider]}-cc-records').glob('*.json')]
-    records=[r for r in records if r['kind']=='link' and
+    records=[r for r in records if r.get('kind')=='link' and
              (Path(r['directory'])/r['output']).resolve()==binary_path(root,provider)]
     assert len(records)==1
     return records[0]
@@ -34,7 +34,7 @@ def original_link(root,provider):
 def local_libraries(root,command):
     from pathlib import Path
     record=original_link(root,command)
-    directories=[Path(w[2:]).resolve() for w in record['arguments'] if w.startswith('-L')]
+    directories=[(Path(record['directory'])/w[2:]).resolve() for w in record['arguments'] if w.startswith('-L')]
     result={}
     for word in record['arguments']:
         if word.startswith('-l'):
@@ -57,7 +57,12 @@ def native_inputs(root,provider):
         # The Rust toolchain supplies startup objects and the process libc.
         # Retain only GNU command helper modules, never CRT or libc archives.
         return [p for p in objects if p!=entry and p.parent==entry.parent]
-    return [p for p in objects if p!=entry]
+    result=[p for p in objects if p!=entry]
+    if provider in ('tftpd','tftp','ftpd','telnet','bash'):
+        extra=root/f'build/translation/{provider}/native-helpers.o'
+        assert extra.exists(), 'prepare the isolated command helper object before assembly'
+        result.append(extra)
+    return result
 
 def defined_symbols(paths):
     if not paths:return set()

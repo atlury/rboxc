@@ -51,6 +51,9 @@ pub unsafe extern "C" fn main(mut argc: c_int, mut argv: *mut *mut c_char) -> c_
     for (command, entry) in APPLETS {
         if name == *command { return entry(argc, argv); }
     }
+    // GNU updatedb's private encoder is callable by its symlink, but is not
+    // an additional public inventory command.
+    if name == b"frcode" { return applet_frcode::single_binary_main_frcode(argc, argv); }
     if !rbox_invocation {
         // GNU owns alternate executable names, including ginstall, prefixed
         // coreutils names, and the diagnostic for an unknown symlink name.

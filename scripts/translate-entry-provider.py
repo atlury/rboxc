@@ -11,7 +11,7 @@ from entry_provider_helpers import ENTRY_OBJECTS, PROVIDERS, defined_symbols, fi
 ROOT = Path(__file__).resolve().parents[1]
 import argparse
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('command', choices=sorted(set(ENTRY_OBJECTS)-{'bash'}))
+parser.add_argument('command', choices=sorted(ENTRY_OBJECTS))
 name = parser.parse_args().command
 provider = PROVIDERS[name]
 pin = json.loads((ROOT/'inventory/sources.json').read_text())[provider]
@@ -22,10 +22,16 @@ records = [json.loads(p.read_text()) for p in (ROOT/f'build/{provider}-cc-record
 entry_object = ROOT/f'build/gnu-{provider}'/ENTRY_OBJECTS[name]
 records = [r for r in records if r.get('file') and Path(r['file']) == source
            and (Path(r['directory'])/r['output']).resolve() == entry_object]
+# Legacy compile records omit kind; accept only otherwise identical duplicates.
+records = list({json.dumps({k:v for k,v in r.items() if k!='kind'},sort_keys=True):r for r in records}.values())
 assert len(records) == 1
 command = records[0]
 command.pop('kind', None)
 assert Path(command['file']) == source
+split_report = None
+if name in ('tftpd','tftp','ftpd','telnet','bash'):
+    from split_entry import prepare
+    command, split_report = prepare(ROOT,name,source,command)
 command['arguments'][0] = 'clang-21'
 command['arguments'] += ['-Wno-error', '-std=gnu17', '-include', 'stdbool.h', '-Dunreachable()=__builtin_unreachable()',
                          '-Dstatic_assert=_Static_assert', '-Dalignof=_Alignof', '-Dnullptr=((void*)0)', '-Dmain=single_binary_main_'+name]
@@ -110,18 +116,18 @@ def renamed_export(match):
     exports.append(symbol)
     return '#[export_name = "'+mapping[symbol]+'"]'
 text = re.sub(r'#\[export_name = "(?P<name>\w+)"\]', renamed_export, text)
-assert set(exports) == defined_symbols([ROOT/f'build/gnu-{provider}'/ENTRY_OBJECTS[name]]) - {'main'}
-if name == 'inetd':
-    anchor = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_inetd('
+assert set(exports) == (set() if split_report else defined_symbols([ROOT/f'build/gnu-{provider}'/ENTRY_OBJECTS[name]]) - {'main'})
+if name in ('inetd','ftpd','bash'):
+    anchor = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_'+name+'('
     assert text.count(anchor) == 1
-    text = text.replace(anchor, 'unsafe extern "C" fn rboxc_inetd_main_inner(')
+    text = text.replace(anchor, 'unsafe extern "C" fn rboxc_'+name+'_main_inner(')
     text += '''
 extern "C" { #[link_name = "environ"] static mut RBOXC_INETD_ENVIRON: *mut *mut ::core::ffi::c_char; }
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_inetd(argc: ::core::ffi::c_int, argv: *mut *mut ::core::ffi::c_char) -> ::core::ffi::c_int {
     rboxc_inetd_main_inner(argc, argv, RBOXC_INETD_ENVIRON)
 }
-'''
+'''.replace('inetd',name).replace('INETD',name.upper())
 if name == 'less':
     anchor = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_less('
     assert text.count(anchor) == 1
@@ -195,6 +201,8 @@ report = {'provider':provider,'version':pin['version'],'command':name,
           'rust_exports':{s:mapping[s] for s in sorted(exports)},
           'opaque_pointer_types':opaque,'log':str(log.relative_to(ROOT)),'log_sha256':fingerprint(log)}
 report['enum_bitfield_integer_delegation'] = enum_fields
+if split_report:
+    report['split_entry_report'] = {'path':f'evidence/{name}-split-entry.json','sha256':fingerprint(ROOT/f'evidence/{name}-split-entry.json')}
 if name == 'inetd': report['adaptations'].append('Pass the process environ as GNU main\'s third argument through a two-argument dispatcher adapter.')
 if name == 'less': report['adaptations'].append('Preserve Less const-qualified argv pointees through a dispatcher pointer-qualification adapter.')
 if provider == 'glibc': report['adaptations'].append('Bind libc invocation-name globals to the dispatched OS argv storage, reproducing standalone GNU startup.')

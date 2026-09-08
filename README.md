@@ -91,8 +91,47 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-The latest source checkpoint builds a 154-command candidate: 21 of the 54
-previously queued names now compile, with 33 still awaiting integration.
+The latest source checkpoint builds a **187-command candidate**: all **54 of 54**
+previously queued names now compile, with **zero integrations remaining** in that
+queue. This is integration coverage, not full acceptance. The candidate is
+14,708,680 bytes; its SHA-256 is
+`7bcdabbc9eb7507e7968be2edbd42c33971dd23dda42ac6400dabc2b0d5f2e34`.
+The final combined regression and adapter checks are in progress at this checkpoint.
+
+The last additions are the four Inetutils entries, all 28 Bash shell/builtin
+names, and Findutils `updatedb`. The four Inetutils entries pass 36 focused
+native/Valgrind comparisons on their 158-command candidate. Their actual Rust
+entry logic is retained; narrowly outlined nonlocal recovery loops stay in C.
+Bash's translated entry retains the configured GNU main decisions, with four
+recovery checkpoints and 89 C call boundaries returning explicit outcomes.
+Signals are deferred during Rust computation and restored to GNU's logical mask
+at each C call. All 32 initial Bash cases match original GNU and a separately
+lowered C executable, including recovery and no-shebang execution; 27 pass the
+strict memory/descriptor gate. The five open cases reproduce findings in original
+GNU too. Full Bash original suites, interactive job control, loadable builtins,
+and broader signal profiles remain open.
+
+Standalone Bash builtin adapters execute one `builtin NAME "$@"` in a fresh
+shell process; changes to cwd, variables and jobs belong to that process.
+The `[[` adapter accepts literal argv operands and explicit conditional operator
+tokens, with an optional final `]]`. Pattern and regex right operands retain GNU
+expansion semantics; operands are passed through positional parameters. Invalid
+adapter grammar returns status 2 with an adapter diagnostic. Full shell syntax
+remains available through `bash -c`. A command named `.` uses multicall dispatch,
+since a filesystem symlink cannot have that basename.
+
+`updatedb` embeds GNU Findutils 4.11.0's shell program, using ordinary GNU
+configure substitutions and the linked translated Bash interpreter. Its private
+`frcode` helper is a C2Rust translation and is excluded from the public command
+count. Private symlinks select this executable's find, sort, sed and other
+pipeline commands. Explicit GNU environment overrides remain supported. The
+default database is `/var/lib/rboxc/locatedb`; its parent must already exist.
+The user-switch helper `su` remains external and that profile is untested.
+No external updatedb executable is counted as a port. C helpers own adapter
+arguments and remove the private command directory on the owning process's normal
+exit; forked children cannot remove their parent's directory.
+
+The previously validated source checkpoint built a 154-command candidate.
 The installed release remains at 133 commands pending activation. The previous combined
 152-command build passes 428 Coreutils smoke checks, 107 instrumented help
 checks, all 318 native/instrumented behavior comparisons and 11 dispatcher
