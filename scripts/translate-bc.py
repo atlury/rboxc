@@ -80,6 +80,33 @@ def renamed_export(match):
     return '#[export_name = "'+mapping[symbol]+'"]'
 text = re.sub(r'#\[export_name = "(?P<name>\w+)"\]', renamed_export, text)
 assert set(exports) == defined_symbols([ROOT/'build/gnu-bc'/name/('main.o' if name == 'bc' else 'dc.o')]) - {'main'}
+if name == 'bc':
+    # GNU's scanner exits directly after a failed directory read. Retain the
+    # FILE ownership established by new_yy_file until normal switching or exit.
+    anchor = '    let mut env_value: *mut ::core::ffi::c_char ='
+    assert text.count(anchor) == 1
+    text = text.replace(anchor, '''    if libc::atexit(rboxc_release_bc_input) != 0 {
+        bc_exit(1);
+    }
+'''+anchor)
+    anchor = '    yyin = file;'
+    assert text.count(anchor) == 1
+    text = text.replace(anchor, anchor+'''
+    RBOXC_OWNED_BC_INPUT = if file == stdin { ::core::ptr::null_mut() } else { file };
+''')
+    text += '''
+// Own only explicitly opened calculator files, never inherited stdin.
+static mut RBOXC_OWNED_BC_INPUT: *mut FILE = ::core::ptr::null_mut();
+extern "C" fn rboxc_release_bc_input() {
+    unsafe {
+        let saved_errno = *libc::__errno_location();
+        let input = RBOXC_OWNED_BC_INPUT;
+        RBOXC_OWNED_BC_INPUT = ::core::ptr::null_mut();
+        if !input.is_null() { fclose(input); }
+        *libc::__errno_location() = saved_errno;
+    }
+}
+'''
 notice = re.match(r'\s*(/\*.*?\*/)', source.read_text(), re.S)[1]
 target = ROOT/f'src/generated/applet_{name}.rs'
 target.write_text('// Generated from pinned GNU BC '+pin['version']+' by scripts/translate-bc.py.\n'
@@ -94,7 +121,8 @@ report = {'provider': 'bc', 'version': pin['version'], 'command': name,
           'rust_exports': {symbol: mapping[symbol] for symbol in sorted(exports)},
           'adaptations': ['GNU17 parser adaptation maps C23 nullptr to a null pointer constant.',
                           'Use pinned-nightly VaList and exposed-provenance API spellings.',
-                          'Namespace native helpers and Rust-owned state together.'],
+                          'Namespace native helpers and Rust-owned state together.'] +
+                         (['Register exit cleanup for owned BC scanner input, preserving errno and inherited stdin.'] if name == 'bc' else []),
           'opaque_pointer_types': opaque, 'log': str(log.relative_to(ROOT)), 'log_sha256': fingerprint(log)}
 (ROOT/f'evidence/bc-{name}-translation.json').write_text(json.dumps(report, indent=2)+'\n')
 print('Translated GNU BC', name, 'with', len(imports), 'helper imports and', len(exports), 'Rust exports')

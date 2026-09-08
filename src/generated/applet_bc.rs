@@ -352,6 +352,9 @@ pub unsafe extern "C" fn single_binary_main_bc(
     mut argc: ::core::ffi::c_int,
     mut argv: *mut *mut ::core::ffi::c_char,
 ) -> ::core::ffi::c_int {
+    if libc::atexit(rboxc_release_bc_input) != 0 {
+        bc_exit(1);
+    }
     let mut env_value: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
     let mut env_argv: [*mut ::core::ffi::c_char; 30] =
         [::core::ptr::null_mut::<::core::ffi::c_char>(); 30];
@@ -476,6 +479,8 @@ pub unsafe extern "C" fn new_yy_file(mut file: *mut FILE) {
         fclose(yyin);
     }
     yyin = file;
+    RBOXC_OWNED_BC_INPUT = if file == stdin { ::core::ptr::null_mut() } else { file };
+
     first_file = FALSE as ::core::ffi::c_char;
 }
 #[export_name = "rboxc_bc_bc_use_quit"]
@@ -487,4 +492,16 @@ pub unsafe extern "C" fn use_quit(mut sig: ::core::ffi::c_int) {
         26 as size_t,
     );
     bc_exit(0 as ::core::ffi::c_int);
+}
+
+// Own only explicitly opened calculator files, never inherited stdin.
+static mut RBOXC_OWNED_BC_INPUT: *mut FILE = ::core::ptr::null_mut();
+extern "C" fn rboxc_release_bc_input() {
+    unsafe {
+        let saved_errno = *libc::__errno_location();
+        let input = RBOXC_OWNED_BC_INPUT;
+        RBOXC_OWNED_BC_INPUT = ::core::ptr::null_mut();
+        if !input.is_null() { fclose(input); }
+        *libc::__errno_location() = saved_errno;
+    }
 }

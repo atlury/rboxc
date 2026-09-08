@@ -194,8 +194,12 @@ entries compile in a separate 124-command candidate. Each calculator retains
 its own native arithmetic helper copy and symbol namespace (283 private
 symbols total), because their standalone sources define overlapping helper
 names. Optional Readline/libedit support is disabled in the recorded native
-profile. Original Test inputs are inventoried; the distribution registers no
-automated runtime suite. Behavioral and Valgrind validation are pending.
+profile. All 44 focused calculator comparisons now match GNU with clean
+Valgrind results. Exit cleanup closes BC's owned scanner input on fatal read
+errors and explicit quit, while preserving inherited stdin. The initial
+41/42 memory-clean result is retained. The distribution registers no automated
+runtime suite; its reviewed historical arithmetic inputs are being compared
+against the pinned native calculator, with separate Valgrind observations.
 
 ## Status
 
