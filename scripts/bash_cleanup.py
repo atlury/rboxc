@@ -11,11 +11,12 @@ def prepare(root):
  outputs={};reports=[]
  def replace(text,old,new):
   assert text.count(old)==1,(old,text.count(old));return text.replace(old,new)
- for name in ['make_cmd.c','dispose_cmd.c','unwind_prot.c','variables.c','execute_cmd.c','subst.c','trap.c','builtins/evalstring.c','native-helpers.c']:
+ for name in ['make_cmd.c','dispose_cmd.c','unwind_prot.c','variables.c','execute_cmd.c','subst.c','trap.c','expr.c','redir.c','builtins/evalstring.c','native-helpers.c']:
   original=(root/'build/translation/bash'/name) if name=='native-helpers.c' else source/name
   if name!='native-helpers.c':assert fingerprint(original)==pin['source_and_header_sha256'][name]
   text=original.read_text()
   if name=='make_cmd.c':
+   text=replace(text,'      free (init);\n      free (test);\n      free (step);','      dispose_words (init);\n      dispose_words (test);\n      dispose_words (step);\n      dispose_words (exprs);\n      dispose_command (action);')
    for cache,ty,size in [('wdcache','WORD_DESC','WDCACHESIZE'),('wlcache','WORD_LIST','WLCACHESIZE')]:
     anchor=f'  ocache_create ({cache}, {ty}, {size});'
     text=replace(text,anchor,f'  ocache_flush ({cache}, {ty});\n  ocache_destroy ({cache});\n'+anchor)
@@ -106,6 +107,47 @@ rboxc_close_pipeline_fd (int fd)
    # The new interpreter no longer inherits trap commands from the old one.
    # This GNU helper preserves dispositions explicitly set to ignore.
    text=replace(text,'  reset_parser ();\n  initialize_subshell ();','  reset_parser ();\n  free_trap_strings ();\n  initialize_subshell ();')
+  elif name=='expr.c':
+   anchor='static procenv_t evalbuf;'
+   text=replace(text,anchor,anchor+'''
+/* Assignment strings outlive recursive arithmetic parsing, but not a failed
+   evaluation. Each evalexp invocation records its own cleanup boundary. */
+struct rboxc_expr_string { char *value; struct rboxc_expr_string *next; };
+static struct rboxc_expr_string *rboxc_expr_strings;
+static char *rboxc_expr_hold (char *value)
+{
+  struct rboxc_expr_string *item = xmalloc (sizeof *item);
+  item->value = value; item->next = rboxc_expr_strings;
+  rboxc_expr_strings = item;
+  return value;
+}
+static void rboxc_expr_release (char *value)
+{
+  struct rboxc_expr_string **slot, *item;
+  for (slot = &rboxc_expr_strings; (item = *slot); slot = &item->next)
+    if (item->value == value) {
+      *slot = item->next; free (value); free (item); return;
+    }
+  abort (); /* Every caller releases an explicitly registered owned string. */
+}
+static void rboxc_expr_release_to (struct rboxc_expr_string *mark)
+{
+  while (rboxc_expr_strings != mark)
+    rboxc_expr_release (rboxc_expr_strings->value);
+}
+''')
+   text=replace(text,'  procenv_t oevalbuf;','  procenv_t oevalbuf;\n  struct rboxc_expr_string *const owned_mark = rboxc_expr_strings;')
+   text=replace(text,'  if (c)\n    {\n      FREE (tokstr);','  if (c)\n    {\n      rboxc_expr_release_to (owned_mark);\n      FREE (tokstr);')
+   start=text.index('expassign (void)\n{');end=text.index('/* Conditional expression',start)
+   segment=text[start:end]
+   segment=replace(segment,'lhs = savestring (tokstr);','lhs = rboxc_expr_hold (savestring (tokstr));')
+   segment=replace(segment,'rhs = itos (value);','rhs = rboxc_expr_hold (itos (value));')
+   assert segment.count('free (lhs);')==2 and segment.count('free (rhs);')==1
+   segment=segment.replace('free (lhs);','rboxc_expr_release (lhs);').replace('free (rhs);','rboxc_expr_release (rhs);')
+   text=text[:start]+segment+text[end:]
+  elif name=='redir.c':
+   text=replace(text,'static int add_undo_redirect (int, enum r_instruction, int);','static int add_undo_redirect (int, enum r_instruction, int);\nextern void rboxc_bash_track_backup (int);')
+   text=replace(text,'  clexec_flag = fcntl (fd, F_GETFD, 0);','  rboxc_bash_track_backup (new_fd);\n  clexec_flag = fcntl (fd, F_GETFD, 0);')
   elif name=='trap.c':
    text=replace(text,'      sigmodes[EXIT_TRAP] &= ~SIG_TRAPPED;\t/* XXX - SIG_INPROGRESS? */\n','')
    anchor='\t  trap_list[EXIT_TRAP] = (char *)NULL;\n\t}\n    }'
@@ -208,5 +250,5 @@ static void rboxc_script_cleanup (void)
  archive=stage/'libbuiltins.a';shutil.copyfile(root/'build/gnu-bash/builtins/libbuiltins.a',archive)
  subprocess.run(['ar','r',str(archive),str(outputs.pop('evalstring.o'))],check=True)
  subprocess.run(['ranlib',str(archive)],check=True);outputs[archive.name]=archive
- (root/'evidence/bash-native-cleanup.json').write_text(json.dumps({'scope':'Release Bash object caches, dynamic associative snapshots, owned argv and discarded unwind payloads on interpreter restart; release discarded trap strings; avoid duplicate closes of pipeline descriptors; finalize owned script input on normal exit. Standard descriptor remaps are tracked by the shell runtime helper.','driver_sha256':fingerprint(Path(__file__)),'files':reports,'adapted_builtin_archive_sha256':fingerprint(archive)},indent=2)+'\n')
+ (root/'evidence/bash-native-cleanup.json').write_text(json.dumps({'scope':'Release Bash restart caches, snapshots, argument vectors, unwind payloads, expansion buffers and discarded trap strings. Dispose rejected arithmetic-for trees and failed arithmetic assignment strings. Track owned standard remaps and redirection backups, forget normal backup closes, and finalize abandoned descriptors at normal exit.','driver_sha256':fingerprint(Path(__file__)),'files':reports,'adapted_builtin_archive_sha256':fingerprint(archive)},indent=2)+'\n')
  return outputs

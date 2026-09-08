@@ -110,3 +110,60 @@ int rboxc_bash_owned_dup2(int from, int to) {
   errno = saved;
   return result;
 }
+
+/* Redirection backup descriptors survive fork but belong to the shell that
+   created them. Forget normal closes and finalize backups abandoned by a
+   command-substitution child. Never restore its parent's redirections. */
+struct bash_backup {
+  int fd;
+  struct stat identity;
+  struct bash_backup *next;
+};
+static struct bash_backup *bash_backups;
+static int bash_backup_cleanup_registered;
+static void release_bash_backups(void) {
+  int saved = errno;
+  while (bash_backups) {
+    struct bash_backup *item = bash_backups;
+    struct stat current;
+    bash_backups = item->next;
+    if (fstat(item->fd, &current) == 0 &&
+        current.st_dev == item->identity.st_dev &&
+        current.st_ino == item->identity.st_ino &&
+        current.st_rdev == item->identity.st_rdev)
+      close(item->fd);
+    free(item);
+  }
+  errno = saved;
+}
+static void forget_bash_backup(int fd) {
+  struct bash_backup **slot = &bash_backups;
+  while (*slot) {
+    struct bash_backup *item = *slot;
+    if (item->fd == fd) { *slot = item->next; free(item); }
+    else slot = &item->next;
+  }
+}
+void rboxc_bash_track_backup(int fd) {
+  int saved = errno;
+  struct stat identity;
+  if (fstat(fd, &identity) == 0) {
+    forget_bash_backup(fd);
+    struct bash_backup *item = malloc(sizeof *item);
+    if (!item) _exit(2);
+    item->fd = fd; item->identity = identity; item->next = bash_backups;
+    bash_backups = item;
+    if (!bash_backup_cleanup_registered) {
+      if (atexit(release_bash_backups)) _exit(2);
+      bash_backup_cleanup_registered = 1;
+    }
+  }
+  errno = saved;
+}
+int rboxc_bash_owned_close(int fd) {
+  int result = close(fd), saved = errno;
+  /* On this Linux target EINTR also releases the descriptor. */
+  if (result == 0 || saved == EINTR || saved == EBADF) forget_bash_backup(fd);
+  errno = saved;
+  return result;
+}

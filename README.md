@@ -75,7 +75,7 @@ there where available.
 | Patch | 2.8 | Candidate passes 23 focused comparisons and eight reviewed originals |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
-| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; five originals match expected output, broader acceptance open |
+| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; five originals pass with clean Valgrind, broader acceptance open |
 | Less | 704 | Candidate passes ten focused comparisons; original suite pending |
 | Screen | 5.0.2 | Candidate passes five option comparisons and the descriptor-preservation contract |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and four reviewed originals |
@@ -91,7 +91,24 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-The Bash restart-cleanup checkpoint remains a **187-command candidate** and now
+The next Bash original-suite cleanup checkpoint passes all **five reviewed
+original scripts**, including strict Valgrind checks for the complete candidate
+process trees. It releases rejected arithmetic-for syntax trees and assignment
+strings abandoned by arithmetic error recovery, and tracks redirection backup
+descriptors so command-substitution children close their own copies at exit.
+Normal closes remove ownership records. The test driver now selects integrated
+sed/grep helpers for the candidate and pinned native GNU helpers for the oracle;
+the earlier native-helper findings remain preserved.
+
+This 187-command candidate is 14,713,248 bytes, with SHA-256
+`c307e24a374127a40faf4a2e3f0d6fdd15708207b84ae50bda063c6892214ab6`.
+It also passes all 44 focused Bash checks, 69 shell-adapter/updatedb checks,
+428 Coreutils smoke comparisons and 11 dispatcher checks. An independent rebuild
+is byte-identical. `evidence/bash-original-cleanup-validation.json` records the
+exact source and raw-evidence hashes. The other Bash originals and broader GNU
+acceptance remain open; none of the deferred commands has been reassigned.
+
+The preceding Bash restart-cleanup checkpoint remains a **187-command candidate** and now
 passes **44/44 Bash comparisons** with clean per-process Valgrind results, plus
 **69/69 shell-adapter comparisons**, including all eight updatedb cases. Its
 14,711,648-byte executable has SHA-256
