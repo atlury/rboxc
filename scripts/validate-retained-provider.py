@@ -10,7 +10,7 @@ import subprocess
 
 ROOT=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--provider',required=True,choices=['hello','time','diffutils','gzip','sed','bc'])
+parser.add_argument('--provider',required=True,choices=['hello','time','diffutils','gzip','sed','bc','ed'])
 parser.add_argument('--candidate',type=Path,required=True)
 parser.add_argument('--focused-report',type=Path,required=True)
 parser.add_argument('--baseline-proof',type=Path,required=True)

@@ -298,9 +298,20 @@ All 66 supplemental original selections pass their assertions; 62 pass strict
 checks for every traced process. Two retain system-shell file descriptors,
 one exposed final execdir-batch ownership, and one reached a host NSS module
 that probes an invalid descriptor. The execdir and early-output-file cleanup
-fixes pass an expanded 83/83 focused profile. The original NSS case is being
-rechecked with a private local-files configuration, and 105 additional
-POSIX/System V selections are running. Earlier observations remain unchanged.
+fixes pass an expanded 83/83 focused profile. The original NSS case now passes with a private local-files configuration.
+Fresh final-candidate batches cover 123 GNU-category and 105 POSIX/System V
+selections: all assertions and 955 Findutils process memory checks pass.
+Two GNU-category selections retain eight system-shell descriptor findings,
+so their strict all-process status remains open. Three original permission
+selections also pass, with 15 clean applet processes. The final two large-exec
+selections are running separately; the first attempt reached its 180-second
+harness deadline and is not counted as a pass. Earlier observations remain
+unchanged. All combined regressions pass on the final 128-command candidate:
+428 help/version comparisons, 107 Valgrind help checks, 318 behavior and
+instrumented-equivalence checks, 11 dispatcher checks, all prior-provider
+focused profiles, and four BC terminal profiles. Previous provider originals
+retain their actual binary hashes, supported by unchanged-input validation
+and those fresh focused profiles.
 
 GNU Tar 1.35 is pinned from its signature-verified GNU archive. The native
 reference builds with SELinux disabled and ACL/xattr support retained. C2Rust
