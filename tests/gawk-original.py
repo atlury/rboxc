@@ -26,7 +26,7 @@ assert fingerprint(source/'test/Makefile.am')==manifest['registration_sha256']
 makefile=ROOT/'build/gnu-gawk/test/Makefile'
 helpers={'cmp':ROOT/'build/gnu-diffutils/src/cmp',
          'sed':ROOT/'build/gnu-sed/sed/sed',
-         'rm':ROOT/'build/gnu-coreutils/src/coreutils','echo':ROOT/'build/gnu-coreutils/src/coreutils'}
+         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('rm','echo','od','tr')}}
 inputs={p:fingerprint(p) for p in {makefile,source/'test/Makefile.am',source/'test/Makefile.in',
     Path(__file__),Path('/usr/bin/make'),Path('/bin/sh').resolve(),*helpers.values(),profile.oracle}}
 for row in selected:
