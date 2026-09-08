@@ -71,12 +71,16 @@ def defined_symbols(paths):
 
 def symbol_map(root,provider):
     symbols=defined_symbols(native_inputs(root,provider))
+    if provider=='bash':symbols.add('add_unwind_protect_owned')
     assert 'main' not in symbols
     symbols |= defined_symbols([root/f'build/gnu-{PROVIDERS[provider]}'/ENTRY_OBJECTS[provider]])-{'main'}
     return {s:f'rboxc_{provider}_'+s for s in sorted(symbols)}
 
 def prepare_archives(root,provider,mapping):
     adapted={}
+    if provider=='bash':
+        from bash_cleanup import prepare
+        adapted=prepare(root)
     if provider=='gawk':
         from gawk_cleanup import prepare
         adapted=prepare(root)
@@ -96,8 +100,10 @@ def prepare_archives(root,provider,mapping):
     for index,source in enumerate(native_inputs(root,provider)):
         target=root/'build/helpers'/f'{provider}-{index:03}-{source.name}'
         temporary=target.with_name(target.name+'.tmp')
-        subprocess.run(['objcopy','--redefine-syms='+str(definitions),adapted.get(source.name,source),temporary],check=True)
+        subprocess.run(['objcopy','--redefine-syms='+str(definitions),*(['--redefine-sym=dup2=rboxc_bash_owned_dup2'] if provider=='bash' else []),adapted.get(source.name,source),temporary],check=True)
         if source.suffix=='.a':subprocess.run(['ranlib',temporary],check=True)
         temporary.replace(target);outputs.append(target)
-    assert defined_symbols(outputs)=={mapping[s] for s in defined_symbols(native_inputs(root,provider))}
+    expected=defined_symbols(native_inputs(root,provider))
+    if provider=='bash':expected.add('add_unwind_protect_owned')
+    assert defined_symbols(outputs)=={mapping[s] for s in expected}
     return outputs,definitions

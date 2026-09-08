@@ -73,3 +73,40 @@ int rboxc_updatedb_environment(void) {
   if (!getenv("SHELL") && setenv("SHELL", path, 1)) return -1;
   return 0;
 }
+
+#include <errno.h>
+#include <sys/stat.h>
+/* Only Bash helper references bind to this wrapper. A successful replacement
+   becomes Bash-owned; inherited standards and later unrelated files are kept. */
+static unsigned char bash_owned_standard[3];
+static struct stat bash_standard_identity[3];
+static int bash_standard_cleanup_registered;
+static void release_bash_standard(void) {
+  int saved = errno;
+  FILE *streams[3] = {stdin, stdout, stderr};
+  for (int fd = 0; fd < 3; ++fd) {
+    struct stat current;
+    if (bash_owned_standard[fd] && fstat(fd, &current) == 0 &&
+        current.st_dev == bash_standard_identity[fd].st_dev &&
+        current.st_ino == bash_standard_identity[fd].st_ino &&
+        current.st_rdev == bash_standard_identity[fd].st_rdev) {
+      if (fileno(streams[fd]) == fd) fclose(streams[fd]);
+      else close(fd);
+    }
+    bash_owned_standard[fd] = 0;
+  }
+  errno = saved;
+}
+int rboxc_bash_owned_dup2(int from, int to) {
+  int result = dup2(from, to), saved = errno;
+  if (result >= 0 && from != to && to >= 0 && to < 3 &&
+      fstat(to, &bash_standard_identity[to]) == 0) {
+    bash_owned_standard[to] = 1;
+    if (!bash_standard_cleanup_registered) {
+      if (atexit(release_bash_standard)) _exit(2);
+      bash_standard_cleanup_registered = 1;
+    }
+  }
+  errno = saved;
+  return result;
+}

@@ -75,7 +75,7 @@ there where available.
 | Patch | 2.8 | Candidate passes 23 focused comparisons and eight reviewed originals |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
-| Bash | 5.3 | All 28 shell/builtin names integrated; focused behavior matches GNU; strict findings remain open |
+| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; five originals match expected output, broader acceptance open |
 | Less | 704 | Candidate passes ten focused comparisons; original suite pending |
 | Screen | 5.0.2 | Candidate passes five option comparisons and the descriptor-preservation contract |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and four reviewed originals |
@@ -91,7 +91,39 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-The latest source checkpoint builds a **187-command candidate**: all **54 of 54**
+The Bash restart-cleanup checkpoint remains a **187-command candidate** and now
+passes **44/44 Bash comparisons** with clean per-process Valgrind results, plus
+**69/69 shell-adapter comparisons**, including all eight updatedb cases. Its
+14,711,648-byte executable has SHA-256
+`40d34f468100d784c800ad761e3add7297b2a7bd1d75653f356503ad5bc5b31f`;
+an independent rebuild is byte-identical. Coreutils smoke checks pass 428/428
+and dispatcher checks pass 11/11 with the complete candidate provider list.
+The first dispatcher run used the installed 133-command expectation and is
+preserved as a 9/11 configuration mismatch.
+
+Bash's C2Rust entry is unchanged. Adapted GNU helpers now release restart caches,
+dynamic associative snapshots, owned argument vectors, discarded unwind payloads
+and expansion buffers. Normal unwind callbacks retain their original behavior;
+exec restart releases specified payloads before the nonlocal transfer without
+restoring abandoned frames. Trap-string disposal preserves ignored signal
+dispositions. Owned script inputs and standard-descriptor replacements are
+finalized on normal exit, and redundant pipeline closes retain GNU's errno and
+return value. The assembly driver records adapted source/object hashes and can
+recover missing configured object compile records without relinking the oracle.
+
+The first five reviewed Bash originals (`arith-for`, `casemod`, `invert`,
+`precedence`, `strip`) all match their original expected output natively and under
+Valgrind. Two pass the strict whole-process memory/descriptor gate. The remaining
+findings include arithmetic/parser cleanup, inherited redirection backups in
+command substitutions, and native GNU sed/grep helper allocations. The initial
+reports retain these findings. `inventory/bash-tests.json` inventories 88
+original top-level recipes; 83 remain unreviewed, and nested standalone inputs
+and interactive profiles remain open. This is acceptance progress, not full
+Bash or GNU-provider completion. `evidence/bash-restart-cleanup-validation.json`
+binds the build, source changes and raw validation evidence. The installed
+133-command release and deferred-provider assignments remain unchanged.
+
+The preceding source checkpoint built a **187-command candidate**: all **54 of 54**
 previously queued names now compile, with **zero integrations remaining** in that
 queue. This is integration coverage, not full acceptance. The candidate is
 14,708,688 bytes (14.03 MiB); its SHA-256 is

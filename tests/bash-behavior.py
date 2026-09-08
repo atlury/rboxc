@@ -8,7 +8,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tests/gnu'))
 spec=importlib.util.spec_from_file_location('reviewed',ROOT/'tests/gnu/reviewed-original.py')
 runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner)
-profile=ComparisonProfile('bash-behavior')
+profile=ComparisonProfile('bash-behavior',selections=True)
 oracles={'gnu':ROOT/'build/gnu-bash/bash','gated-c':ROOT/'build/translation/bash/gated-bash','rboxc':profile.binary}
 inputs={str(p):fingerprint(p) for p in [*oracles.values(),Path(__file__).resolve()]}
 cases=[]
@@ -37,9 +37,11 @@ scripts=[
  ('syntax-error','if then'),
  ('return-outside-function','return 3; printf "after:%s\\n" "$?"'),
  ('shift','set -- one two three; shift; printf "%s:%s\\n" "$#" "$1"')]
+scripts.extend([('exec-plain-direct', 'exec ./plain direct'), ('exec-plain-function', 'f(){ local item=inner; ./plain "$item"; }; f; printf "outer\\n"'), ('exec-plain-loop', 'for item in one two; do ./plain "$item"; done'), ('exec-plain-pipeline', 'printf input | ./plain piped'), ('exec-plain-comsub', 'item=$(./plain substituted); printf "%s\\n" "$item"'), ('exec-plain-environment', 'VALUE=test ./plain environment; printf "%s\\n" "${VALUE-unset}"'), ('exec-plain-eval', 'eval \'./plain evaluated; printf "after\\n"\''), ('exec-plain-two', './plain first; ./plain second'), ('exec-plain-trap', 'trap \'printf "exit-trap\\n"\' EXIT; ./plain trapped'), ('dynamic-assoc-restart', 'alias sample="printf sample"; hash -p /bin/true sample; declare -p BASH_ALIASES BASH_CMDS; ./plain dynamic'), ('pipeline-three', 'printf "alpha\\nbeta\\n" | while read -r x; do printf "%s\\n" "$x"; done | while read -r x; do printf "last:%s\\n" "$x"; done'), ('pipeline-lastpipe', 'shopt -s lastpipe; printf "one\\n" | read -r item; printf "%s\\n" "$item"')])
 files={'input':(b'printf "sourced:%s:%s\\n" "$1" "$2"\nreturn 4\n',0o640),
        'plain':(b'printf "plain:%s\\n" "$1"\n',0o755)}
 for name,script in scripts:cases.append((name,'bash',['-c',script],b'',files))
+if profile.options.commands:cases=[c for c in cases if c[0] in profile.options.commands]
 results=[]
 for index,(name,command,args,data,files) in enumerate(cases):
  outcomes={}

@@ -1,0 +1,1300 @@
+{
+  "runtime_helpers": {
+    "/root/rboxc/target/bash-owned-unwind-candidate/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174",
+    "/root/rboxc/build/gnu-coreutils/src/libstdbuf.so": "ab0f38c3557ced06f914416c765a68c1ebf00c6cdacbe24c9ab9ec60e49a6ea4"
+  },
+  "binary": "/root/rboxc/target/bash-owned-unwind-candidate/release/rboxc",
+  "binary_sha256": "65a9fc6a7d75b3ccabf087086db89ed6ab70f145d0c85899760a4b3bfeee3951",
+  "gnu_binary_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+  "inputs": {
+    "/root/rboxc/build/gnu-bash/bash": "bd47035bca2886f8d61f564ae38ca9c807a8b0b98e914d28f909fb7b1bb1366f",
+    "/root/rboxc/build/translation/bash/gated-bash": "eeef446baff15e45c153749799fe3d8d37c108603ef74e76253cdc41bcf3cbae",
+    "/root/rboxc/target/bash-owned-unwind-candidate/release/rboxc": "65a9fc6a7d75b3ccabf087086db89ed6ab70f145d0c85899760a4b3bfeee3951",
+    "/root/rboxc/tests/bash-behavior.py": "71f99652d1f0b8c666a158fc84e2ada6ed2a3959bfc2fb77b92f324f92aa267b"
+  },
+  "scope": "Original GNU, separately lowered C, and Rust Bash entries on bounded shell fixtures, with per-process Valgrind logs including forked children. Complete parent and child summaries are required; native GNU findings remain baseline observations. Full Bash original suites, interactive job control, and loadable builtins remain open.",
+  "complete": true,
+  "planned_total": 6,
+  "passed": 4,
+  "total": 6,
+  "results": [
+    {
+      "name": "exec-no-shebang-subshell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "(exec ./plain beta); printf \"parent\\n\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a626574610a706172656e740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a626574610a706172656e740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a626574610a706172656e740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a626574610a706172656e740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/0-gnu-valgrind/process-337389.log",
+              "sha256": "83b0b3dae3f1466e7141e4372a1969d4a6016574e68b909daedd88346498c2de",
+              "pid": "337389",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 45945
+              }
+            },
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/0-gnu-valgrind/process-337390.log",
+              "sha256": "f94533dcebe9146b8c4f059c80eb2c61c94d4d0afd94384dc09de66add981b3b",
+              "pid": "337390",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 8,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3144,
+                "indirectly lost": 18139,
+                "possibly lost": 0,
+                "still reachable": 48403
+              }
+            }
+          ]
+        },
+        "gated-c": {
+          "status": 0,
+          "stdout": "706c61696e3a626574610a706172656e740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a626574610a706172656e740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gated-c-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a626574610a706172656e740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a626574610a706172656e740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/0-gated-c-valgrind/process-337393.log",
+              "sha256": "c9042875bc030f5daad5b2df6b299938ce5a165805b99535a8c0837896e21726",
+              "pid": "337393",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 45945
+              }
+            },
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/0-gated-c-valgrind/process-337396.log",
+              "sha256": "b452dfd4726728c9b51e0772cde4e2a5f567ac4b972150da8767f3cb0055faad",
+              "pid": "337396",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 8,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3144,
+                "indirectly lost": 18139,
+                "possibly lost": 0,
+                "still reachable": 48403
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a626574610a706172656e740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a626574610a706172656e740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a626574610a706172656e740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a626574610a706172656e740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/0-rboxc-valgrind/process-337399.log",
+              "sha256": "9a95e4587b488daed97f381194c04b12f2ffe6aa78c58e5d422848a8eff28864",
+              "pid": "337399",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46153
+              }
+            },
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/0-rboxc-valgrind/process-337401.log",
+              "sha256": "a55b7afb9acd74bde1157548872e5f1b8ad47678ef2da979f1e5b5f61f9c3770",
+              "pid": "337401",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48410
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "exec-plain-direct",
+      "command": "bash",
+      "args": [
+        "-c",
+        "exec ./plain direct"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a6469726563740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a6469726563740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a6469726563740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a6469726563740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/1-gnu-valgrind/process-337403.log",
+              "sha256": "31fd96194f05c7b1ae9fceb18a714ea675902eacf2cb576cbe6c5d810ff49d01",
+              "pid": "337403",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 8,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3144,
+                "indirectly lost": 17728,
+                "possibly lost": 0,
+                "still reachable": 48379
+              }
+            }
+          ]
+        },
+        "gated-c": {
+          "status": 0,
+          "stdout": "706c61696e3a6469726563740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a6469726563740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gated-c-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a6469726563740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a6469726563740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/1-gated-c-valgrind/process-337405.log",
+              "sha256": "ada3263c2b4c0268bce517c19c12c28c30ad458a6150e5c0e5f9c0d37d2d4010",
+              "pid": "337405",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 8,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3144,
+                "indirectly lost": 17728,
+                "possibly lost": 0,
+                "still reachable": 48379
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a6469726563740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a6469726563740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a6469726563740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a6469726563740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/1-rboxc-valgrind/process-337407.log",
+              "sha256": "74c6d4350502d1a97b5da97f99b51e17e1ff74051b8901c82a7b7b0b799f5bff",
+              "pid": "337407",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48386
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "exec-plain-function",
+      "command": "bash",
+      "args": [
+        "-c",
+        "f(){ local item=inner; ./plain \"$item\"; }; f; printf \"outer\\n\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a696e6e65720a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a696e6e65720a6f757465720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a696e6e65720a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a696e6e65720a6f757465720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/2-gnu-valgrind/process-337410.log",
+              "sha256": "0b1406ae3ca1d7f35666b443a4f8cdd5e9853d6539994486af30e54071250d49",
+              "pid": "337410",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49145
+              }
+            },
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/2-gnu-valgrind/process-337411.log",
+              "sha256": "aefbd8d5dd530e380442503db4d68f7929ac4aa0186be42651c4e93cb71c6d1e",
+              "pid": "337411",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 8,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3156,
+                "indirectly lost": 20275,
+                "possibly lost": 0,
+                "still reachable": 48776
+              }
+            }
+          ]
+        },
+        "gated-c": {
+          "status": 0,
+          "stdout": "706c61696e3a696e6e65720a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a696e6e65720a6f757465720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gated-c-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a696e6e65720a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a696e6e65720a6f757465720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/2-gated-c-valgrind/process-337414.log",
+              "sha256": "2f4bd52fc0eb8219b2b809f2e5a7b5fd46d9fd832b0e344e2171b527bc748767",
+              "pid": "337414",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49145
+              }
+            },
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/2-gated-c-valgrind/process-337415.log",
+              "sha256": "f0d0ab7016ff40c45f4664d7f77e1b0c2808fc1ea1de7b87e9992383ff247576",
+              "pid": "337415",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 8,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3156,
+                "indirectly lost": 20275,
+                "possibly lost": 0,
+                "still reachable": 48776
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a696e6e65720a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a696e6e65720a6f757465720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a696e6e65720a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a696e6e65720a6f757465720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/2-rboxc-valgrind/process-337418.log",
+              "sha256": "8f48ad9c3c4e6322a3730e0ba2b4f8883221c3092992d824f9064c969a6b1607",
+              "pid": "337418",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49617
+              }
+            },
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/2-rboxc-valgrind/process-337419.log",
+              "sha256": "05232921a9c78ee84d68a159835e66fcc7019abd03a16c741f48bfbe6d856559",
+              "pid": "337419",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48778
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "exec-plain-comsub",
+      "command": "bash",
+      "args": [
+        "-c",
+        "item=$(./plain substituted); printf \"%s\\n\" \"$item\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": false,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a73756273746974757465640a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a73756273746974757465640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a73756273746974757465640a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a73756273746974757465640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/3-gnu-valgrind/process-337422.log",
+              "sha256": "e928a04cd7ca797798c639862bb46617a6e2cd6ae5bfdaa1f1d12465ec531004",
+              "pid": "337422",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47490
+              }
+            },
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/3-gnu-valgrind/process-337423.log",
+              "sha256": "c1f3dc2fbbc16e47c7f39c2b33bc622118fcf9cd65366e6830c16a89dbd844a2",
+              "pid": "337423",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 12,
+              "non_inherited_descriptors": 2,
+              "heap_bytes": {
+                "definitely lost": 3295,
+                "indirectly lost": 19222,
+                "possibly lost": 51,
+                "still reachable": 48397
+              }
+            }
+          ]
+        },
+        "gated-c": {
+          "status": 0,
+          "stdout": "706c61696e3a73756273746974757465640a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a73756273746974757465640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gated-c-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a73756273746974757465640a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a73756273746974757465640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/3-gated-c-valgrind/process-337426.log",
+              "sha256": "251e6d7a539bcd3a36b736a66f9879bc2a71f9e37035accfb04c1c4a85c7b113",
+              "pid": "337426",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47490
+              }
+            },
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/3-gated-c-valgrind/process-337427.log",
+              "sha256": "cc7d21ee78b04cf9e8fa3ffdee93155e6fa83be794c5a5a5247931a098cefa61",
+              "pid": "337427",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 12,
+              "non_inherited_descriptors": 2,
+              "heap_bytes": {
+                "definitely lost": 3295,
+                "indirectly lost": 19222,
+                "possibly lost": 51,
+                "still reachable": 48397
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a73756273746974757465640a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a73756273746974757465640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a73756273746974757465640a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a73756273746974757465640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/3-rboxc-valgrind/process-337430.log",
+              "sha256": "9bc21908545fdb75c018da5e6012535dce14f418680353dc80b8d104f0ba5646",
+              "pid": "337430",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47810
+              }
+            },
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/3-rboxc-valgrind/process-337431.log",
+              "sha256": "2b0b478f975372d6ef32ee983ced1cd08cbd2fcb6508b3802c8a477c25d2f404",
+              "pid": "337431",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 135,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48404
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "exec-plain-eval",
+      "command": "bash",
+      "args": [
+        "-c",
+        "eval './plain evaluated; printf \"after\\n\"'"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a6576616c75617465640a61667465720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a6576616c75617465640a61667465720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a6576616c75617465640a61667465720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a6576616c75617465640a61667465720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/4-gnu-valgrind/process-337434.log",
+              "sha256": "4ddd66e3a3c9cfb5b3eb45f2f3696cd4f60a9887fbe8a4581ad560eafea208f0",
+              "pid": "337434",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48055
+              }
+            },
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/4-gnu-valgrind/process-337435.log",
+              "sha256": "1fcf2ec2d20765589642b762eaa157b1384ff859d914ce51b65b4e293f69e5b9",
+              "pid": "337435",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 9,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3158,
+                "indirectly lost": 19371,
+                "possibly lost": 43,
+                "still reachable": 48367
+              }
+            }
+          ]
+        },
+        "gated-c": {
+          "status": 0,
+          "stdout": "706c61696e3a6576616c75617465640a61667465720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a6576616c75617465640a61667465720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gated-c-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a6576616c75617465640a61667465720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a6576616c75617465640a61667465720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/4-gated-c-valgrind/process-337438.log",
+              "sha256": "c8cd9fe805f079ca5544d8d375273b52abc5d2777ca48f883eb664268f7bc0f9",
+              "pid": "337438",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48055
+              }
+            },
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/4-gated-c-valgrind/process-337439.log",
+              "sha256": "37d3303b0c609d8c92fbf64e2eef226079fd9e706c1fe0fb7a36feffb2af88cb",
+              "pid": "337439",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 9,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3158,
+                "indirectly lost": 19371,
+                "possibly lost": 43,
+                "still reachable": 48367
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a6576616c75617465640a61667465720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a6576616c75617465640a61667465720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a6576616c75617465640a61667465720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a6576616c75617465640a61667465720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/4-rboxc-valgrind/process-337442.log",
+              "sha256": "4fee413230b9236d16b1de120118dacdc5e3383da9bfd1f726c2860885e359e5",
+              "pid": "337442",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48503
+              }
+            },
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/4-rboxc-valgrind/process-337443.log",
+              "sha256": "1f14a5f1bd48b87c7808016914a3a7abbfa4a69e5ad7c84a0bf0fe4d0c251edf",
+              "pid": "337443",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48374
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "exec-plain-trap",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap 'printf \"exit-trap\\n\"' EXIT; ./plain trapped"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": false,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a747261707065640a657869742d747261700a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a747261707065640a657869742d747261700a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a747261707065640a657869742d747261700a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a747261707065640a657869742d747261700a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/5-gnu-valgrind/process-337446.log",
+              "sha256": "6fd573f5002cd8cb36b35e472d0c7c8b425c7782c4b12a2b0291e1a7aa550ac8",
+              "pid": "337446",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47583
+              }
+            },
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/5-gnu-valgrind/process-337447.log",
+              "sha256": "b016da13b5cd2681eed7b22e2a238b6970efb306b645c1d01cd085647824af7a",
+              "pid": "337447",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 9,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3177,
+                "indirectly lost": 18091,
+                "possibly lost": 0,
+                "still reachable": 48309
+              }
+            }
+          ]
+        },
+        "gated-c": {
+          "status": 0,
+          "stdout": "706c61696e3a747261707065640a657869742d747261700a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a747261707065640a657869742d747261700a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gated-c-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a747261707065640a657869742d747261700a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a747261707065640a657869742d747261700a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/5-gated-c-valgrind/process-337450.log",
+              "sha256": "b6a5b838a92a22b9f33f37dfe8ab0f894d27c66159c237f1cbea4cbf8123c3f2",
+              "pid": "337450",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47583
+              }
+            },
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/5-gated-c-valgrind/process-337451.log",
+              "sha256": "4ace1a19d09d03737a9e28568050a908b7a949085c23564944dc58a8ca82c37e",
+              "pid": "337451",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 9,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3177,
+                "indirectly lost": 18091,
+                "possibly lost": 0,
+                "still reachable": 48309
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a747261707065640a657869742d747261700a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a747261707065640a657869742d747261700a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a747261707065640a657869742d747261700a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a747261707065640a657869742d747261700a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/5-rboxc-valgrind/process-337454.log",
+              "sha256": "687ca8d4791538b59afe8770606615417400636cb811397fb9d4cc416b630394",
+              "pid": "337454",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47927
+              }
+            },
+            {
+              "log": "evidence/raw/bash-owned-unwind-behavior/run-hi933b6d/5-rboxc-valgrind/process-337455.log",
+              "sha256": "4b151c0846dfc4f88aff74b265c073882afe8627e914214668d78b82a7970341",
+              "pid": "337455",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 21,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48316
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
