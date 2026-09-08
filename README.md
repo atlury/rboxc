@@ -409,10 +409,12 @@ for boolean and static-assert constructs detected by the native C23 build.
 
 ## Status
 
-Of the 553 observed names, 189 currently have GNU provider assignments. There
-are 61 GNU-assigned names still to install: Tar is a candidate and 60 others
-await implementation. Another 364 names remain deferred for provider review.
-These are implementation counts; full compatibility validation remains separate.
+Of the 553 observed names, 189 currently have GNU provider assignments, including
+the excluded SELinux commands `chcon` and `runcon`. After those exclusions,
+59 GNU-assigned names remain to install: Tar is a candidate and 58 others await
+implementation. Another 354 names remain deferred for provider review, and
+12 SELinux commands in total are excluded. These are implementation counts;
+full compatibility validation remains separate.
 
 The installed executable registers 128 commands: 107 Coreutils entries, GNU Hello,
 GNU Time, GNU Which, four GNU Diffutils commands, three GNU Grep commands, four GNU Gzip commands, GNU Sed, GNU bc/dc, GNU Ed, and Findutils (`find`, `xargs`, `locate`),
