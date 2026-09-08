@@ -146,6 +146,57 @@ make_name (const char *file_name)''')
 	unconsumed_option_push (elt);
       else
         free (elt);''')
+            anchor = 'static int\nhandle_option (const char *str, struct name_elt const *ent)'
+            replace(anchor, '''struct rboxc_file_options
+{
+  struct wordsplit words;
+  struct rboxc_file_options *next;
+};
+static struct rboxc_file_options *rboxc_owned_file_options;
+static bool rboxc_file_options_cleanup_registered;
+static void
+rboxc_release_file_options (void)
+{
+  int saved_errno = errno;
+  while (rboxc_owned_file_options)
+    {
+      struct rboxc_file_options *p = rboxc_owned_file_options;
+      rboxc_owned_file_options = p->next;
+      wordsplit_free (&p->words);
+      wordsplit_clearerr (&p->words);
+      free (p);
+    }
+  errno = saved_errno;
+}
+
+'''+anchor)
+            start = text.index(anchor)
+            end = text.index('\nstatic int\nread_next_name', start)
+            part = text[start:end]
+            assert part.count('  struct wordsplit ws;') == 1
+            part = part.replace('  struct wordsplit ws;', '  struct wordsplit *ws;')
+            before = '  ws.ws_offs = 1;'
+            assert part.count(before) == 1
+            part = part.replace(before, '''  if (!rboxc_file_options_cleanup_registered)
+    {
+      if (atexit (rboxc_release_file_options))
+        xalloc_die ();
+      rboxc_file_options_cleanup_registered = true;
+    }
+  struct rboxc_file_options *owned = xzalloc (sizeof (*owned));
+  owned->next = rboxc_owned_file_options;
+  rboxc_owned_file_options = owned;
+  ws = &owned->words;
+  ws.ws_offs = 1;''')
+            before = '''  for (i = 0; i < ws.ws_wordc+ws.ws_offs; i++)
+    ws.ws_wordv[i] = NULL;
+
+  wordsplit_free (&ws);'''
+            assert part.count(before) == 1
+            part = part.replace(before, '  /* GNU option state borrows these words until command completion. */')
+            part = part.replace('  int i;\n', '')
+            part = part.replace('ws.', 'ws->').replace('&ws', 'ws')
+            text = text[:start]+part+text[end:]
         adapted = stage/(name+'.c')
         adapted.write_text(text)
         matching = [r for r in records if Path(r['file']) == original]
@@ -170,7 +221,7 @@ make_name (const char *file_name)''')
     subprocess.run(['ar', 'r', archive, outputs.pop('wordsplit.o')], check=True)
     subprocess.run(['ranlib', archive], check=True)
     outputs['libtar.a'] = archive
-    report = {'scope': 'Keep GNU selection and directory behavior, while tracking live name allocations independently of discarded selection cursors, releasing consumed directory/option records, closing/freeing owned working-directory state, retaining/freeing the aligned comparison allocation, and freeing consumed wordsplit nodes after copying their output. Native oracle objects remain unchanged.',
+    report = {'scope': 'Keep GNU selection and directory behavior, while tracking live name allocations independently of discarded selection cursors, releasing consumed directory/option records, closing/freeing owned working-directory state, retaining/freeing the aligned comparison allocation, freeing consumed wordsplit nodes after copying their output, and retaining/freeing option-file words after GNU finishes borrowing them. Native oracle objects remain unchanged.',
               'driver_sha256': fingerprint(Path(__file__)), 'adaptations': evidence}
     (root/'evidence/tar-native-cleanup.json').write_text(json.dumps(report, indent=2)+'\n')
     return outputs

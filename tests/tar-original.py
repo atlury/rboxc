@@ -28,14 +28,29 @@ selections.update({
     'positional01': (23, 'positional01.at'), 'positional02': (24, 'positional02.at'),
     'positional03': (25, 'positional03.at'),
 })
+selections.update({
+    'add-file': (26, 'add-file.at'), 'xform02': (57, 'xform02.at'), 'xform03': (58, 'xform03.at'),
+    'exclude01': (60, 'exclude01.at'), 'exclude02': (61, 'exclude02.at'),
+    'exclude03': (62, 'exclude03.at'), 'exclude04': (63, 'exclude04.at'),
+    'update': (183, 'update.at'),
+})
+selections.update({
+    'T-mult': (27, 'T-mult.at'), 'T-nest': (28, 'T-nest.at'), 'T-cd': (32, 'T-cd.at'),
+    'T-zfile': (36, 'T-zfile.at'), 'T-nonl': (37, 'T-nonl.at'),
+})
 selected = profile.options.commands or list(selections)
 assert set(selected) <= set(selections)
 helpers = {n: ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','mkdir','chmod','touch','sort','echo','basename','cp','ln','true','false','sleep','ls','mv','mktemp','cut','id','date','printf','dd','rmdir','expr','tr','wc','head','tail','uname','cksum')}
 helpers.update({n: ROOT/'build/gnu-diffutils/src'/n for n in ('cmp', 'diff')})
 helpers['sed'] = ROOT/'build/gnu-sed/sed/sed'
 helpers['grep'] = ROOT/'build/gnu-grep/src/grep'
+helpers['genfile'] = ROOT/'build/gnu-tar/tests/genfile'
+helpers['find'] = ROOT/'build/gnu-findutils/find/find'
 inputs = {p: fingerprint(p) for p in {*helpers.values(), profile.oracle, source/'tests/testsuite', source/'tests/testsuite.at',
     ROOT/'build/gnu-tar/tests/atconfig', ROOT/'build/gnu-tar/tests/atlocal', Path('/bin/bash'), Path('/bin/sh').resolve(), Path('/usr/bin/awk').resolve(), Path(__file__)}}
+for filename in ('genfile.c', 'argcv.c', 'argcv.h', 'Makefile.am'):
+    path = source/'tests'/filename
+    inputs[path] = fingerprint(path)
 for name in selected:
     path = source/'tests'/selections[name][1]
     inputs[path] = fingerprint(path)

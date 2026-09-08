@@ -354,7 +354,12 @@ reference. Its observation and an interrupted follow-up batch are retained
 and unassessed; it is excluded from further execution. Eight additional reviewed
 option/positional original tests also pass. The 11 completed original
 selections contain 53 clean instrumented Tar processes in total; broader
-original coverage remains open. A 30-case
+original coverage remains open. The next eight originals pass their assertions;
+seven pass strict checks and the add-file selection exposes borrowed option
+strings read from file lists. Keeping those words until exit fixes that
+selection while retaining 44/44 focused passes. A fresh 24-selection original
+batch, including five more ordinary file-list tests, is now running on that
+candidate. Earlier candidate results keep their actual binary hashes. A 30-case
 archive-operation harness matches GNU Tar against itself in every comparison;
 only 9/30 native control cases are strict memory-clean, with the other GNU
 findings preserved as baseline observations. This control is not Rust port
