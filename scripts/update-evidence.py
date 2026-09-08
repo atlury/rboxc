@@ -360,7 +360,8 @@ findutils_reports = [ROOT/'evidence/findutils-original.json', ROOT/'evidence/fin
 if all(path.exists() for path in findutils_reports):
     original, focused, audit = [json.loads(path.read_text()) for path in findutils_reports]
     linked = read('evidence/findutils-link.json'); manifest = read('inventory/findutils-tests.json')
-    current = all(r['binary_sha256'] == binary_sha256 for r in (original, focused, audit))
+    current = (originals_supported('findutils', original, focused)
+               and audit['binary_sha256'] == original['binary_sha256'])
     listed = subprocess.check_output([binary, '--list'], text=True).splitlines()
     active_entries = 0
     for command in ('find', 'xargs', 'locate'):
@@ -395,6 +396,71 @@ if all(path.exists() for path in findutils_reports):
         'external_child_findings':len(audit['external_child_findings']),
         'behavior_passed':focused['passed'], 'behavior_total':focused['total'],
         'complete':False, 'completion_scope':row['completion_scope']}
+tar_reports = [ROOT/'evidence/tar-original.json', ROOT/'evidence/tar-behavior.json']
+if all(path.exists() for path in tar_reports):
+    original, focused = [json.loads(path.read_text()) for path in tar_reports]
+    entry = read('evidence/tar-translation.json'); linked = read('evidence/tar-link.json')
+    manifest = read('inventory/tar-tests.json')
+    expected = {row['path']:row['sha256'] for row in manifest['inputs']}
+    assert len(original['results']) == original['total'] > 0
+    assert all(expected[r['source']] == r['source_sha256'] for r in original['results'])
+    current = all(r['binary_sha256'] == binary_sha256 for r in (original, focused))
+    source_current = entry['rust_sha256'] == linked['rust_source_sha256'] == hashlib.sha256((ROOT/entry['rust_file']).read_bytes()).hexdigest()
+    active = current and source_current and entry['translated'] and not linked['native_command_entries']
+    active = active and 'tar' in subprocess.check_output([binary,'--list'],text=True).splitlines()
+    help_checks = [r for r in focused['results'] if r['name'] in ('help','version')]
+    assert len(help_checks) == 2
+    row = next(r for r in inventory if r['name'] == 'tar')
+    row.update(translated=entry['translated'],compiles=active,active_rust=active,provider_confirmed=True,
+        state='reviewed-originals-validated' if active else 'queued',
+        help_version_pass=active and all(r['pass'] for r in help_checks),
+        valgrind_help_pass=active and all(r['memory_clean'] for r in help_checks),
+        behavior_fixture_count=focused['total'],behavior_fixture_pass=active and focused['passed']==focused['total'],
+        valgrind_fixture_pass=active and all(r['memory_clean'] for r in focused['results']),
+        original_selections_executed=original['total'],original_inputs_inventoried=len(manifest['inputs']),
+        original_applet_assertions_and_memory_passed=active and original['passed']==original['total'],
+        gnu_tests_pass=False,valgrind_pass=False,complete=False,
+        completion_scope='GNU Tar 1.35 Linux/glibc: reviewed unchanged originals and focused archive checks. Broader original coverage remains open; no full-provider certification.')
+    extra_providers['tar'] = {'active_rust_entries':int(active),'original_selections_executed':original['total'],
+        'original_selections_passed':original['passed'],'original_inputs_inventoried':len(manifest['inputs']),
+        'applet_processes':original['candidate_processes'],'applet_processes_clean':original['candidate_processes_clean'],
+        'behavior_passed':focused['passed'],'behavior_total':focused['total'],
+        'complete':False,'completion_scope':row['completion_scope']}
+sharutils_reports = [ROOT/'evidence/sharutils-original.json', ROOT/'evidence/sharutils-behavior.json',
+                    ROOT/'evidence/sharutils-memory-audit.json']
+if all(path.exists() for path in sharutils_reports):
+    original, focused, audit = [json.loads(path.read_text()) for path in sharutils_reports]
+    linked = read('evidence/sharutils-link.json'); manifest = read('inventory/sharutils-tests.json')
+    assigned = {r['path']:r['sha256'] for r in manifest['inputs'] if r['state']!='outside-assigned-command-scope'}
+    assert assigned == {r['path']:r['sha256'] for r in original['results']}
+    current = all(r['binary_sha256']==binary_sha256 for r in (original,focused,audit))
+    current = current and original['complete'] and focused['complete'] and audit['passed']==audit['total']>0
+    listed = subprocess.check_output([binary,'--list'],text=True).splitlines(); active_entries = 0
+    for command in ('uuencode','uudecode'):
+        entry = read(f'evidence/sharutils-{command}-translation.json')
+        source_current = entry['rust_sha256']==linked['rust_source_sha256'][command]==hashlib.sha256((ROOT/entry['rust_file']).read_bytes()).hexdigest()
+        source_current = source_current and entry['ownership_adapter_sha256']==hashlib.sha256((ROOT/'src/bridges/sharutils-owned.rs').read_bytes()).hexdigest()
+        active = current and source_current and entry['translated'] and command in listed and not linked['native_command_entries']
+        checks = [r for r in focused['results'] if r['command']==command]
+        help_checks = [r for r in checks if r['name'] in (command+'-help',command+'-version')]
+        assert len(help_checks)==2
+        row = next(r for r in inventory if r['name']==command)
+        row.update(translated=entry['translated'],compiles=active,active_rust=active,provider_confirmed=True,
+            state='original-suite-validated' if active else 'queued',
+            help_version_pass=active and all(r['pass'] for r in help_checks),
+            valgrind_help_pass=active and all(r['memory_clean'] for r in help_checks),
+            behavior_fixture_count=len(checks),behavior_fixture_pass=active and all(r['pass'] for r in checks),
+            valgrind_fixture_pass=active and all(r['memory_clean'] for r in checks),
+            original_selections_executed=original['total'],original_selections_registered=len(assigned),
+            gnu_tests_pass=active and original['passed']==original['total']==len(assigned),
+            valgrind_pass=active and original['passed']==original['total'] and all(r['memory_clean'] for r in checks),
+            complete=False,completion_scope='Both assigned GNU Sharutils 4.15.2 original scripts and focused Linux/glibc comparisons pass. This certifies that test scope; broader compatibility is not claimed.')
+        active_entries += int(active)
+    extra_providers['sharutils'] = {'active_rust_entries':active_entries,'original_scripts_executed':original['total'],
+        'original_scripts_passed':original['passed'],'assigned_original_scripts':len(assigned),
+        'applet_processes':audit['total'],'applet_processes_clean':audit['passed'],
+        'behavior_passed':focused['passed'],'behavior_total':focused['total'],
+        'complete':False,'completion_scope':row['completion_scope']}
 for provider, data in extra_providers.items():
     path=ROOT/f'evidence/{provider}-original.json'
     if path.exists():

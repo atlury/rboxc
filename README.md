@@ -433,6 +433,18 @@ GNU error diagnostics. Its 72-case focused run was interrupted: the saved
 report records 47 passes, but only 21 rows retain intact supporting logs after
 filesystem damage. That run requires repetition before certification.
 
+The completed recovery rerun passes all 72 Sharutils focused cases. A further
+run uses a private full-device fixture because decoding applies output modes;
+it also passes 72/72. The combined audit verifies both unchanged originals and
+all 86 candidate process logs. Coreutils checks pass 428/428 for help/version,
+107/107 for Valgrind help, and 318/318 for both behavior and instrumented
+equivalence. All eleven other provider focused batches pass on this same
+131-command candidate, together with 11 dispatcher checks and four calculator
+terminal profiles. Retaining the prior Findutils originals now verifies their
+separate memory audit as well as unchanged source/helper inputs; a fresh audit
+again checks its 982 clean applet processes and retains 488 native child
+findings. Tar's 84 reviewed originals are being rerun before installation.
+
 On 2026-09-08, recovery preserved the damaged Git directory, working sources,
 and raw evidence under `/root/backups/rboxc-recovery-20260908T064111Z`.
 Six empty file objects and three directory-tree objects were reconstructed with

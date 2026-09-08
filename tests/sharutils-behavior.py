@@ -3,8 +3,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 import importlib.util
 import json
+import os
 from pathlib import Path
 import re
+import stat
 import shutil
 import subprocess
 import sys
@@ -46,7 +48,7 @@ for size in (0, 1, 2, 3, 44, 45, 46, 57, 58, 4096):
             case(f'decode-file-{mode}', 'uudecode', ['input'], fixture=encoded)
             case(f'decode-stdout-{mode}', 'uudecode', ['-o', '-'], encoded)
             case(f'decode-override-{mode}', 'uudecode', ['-o', 'override'], encoded)
-            case(f'decode-output-error-{mode}', 'uudecode', ['-o', '/dev/full'], encoded)
+            case(f'decode-output-error-{mode}', 'uudecode', ['-o', 'full-device'], encoded)
             case(f'decode-missing-parent-{mode}', 'uudecode', ['-o', 'absent/output'], encoded)
             case(f'encode-multicall-{mode}', 'uuencode', args, data, multicall=True)
             case(f'decode-multicall-{mode}', 'uudecode', [], encoded, multicall=True)
@@ -61,6 +63,10 @@ for index, (name, command, args, data, fixture, multicall) in enumerate(cases):
             key = implementation+('-valgrind' if instrument else '')
             with tempfile.TemporaryDirectory(prefix='rboxc-sharutils-') as directory:
                 work = Path(directory); (work/'exec').mkdir(); (work/'files').mkdir()
+                if name.startswith('decode-output-error-'):
+                    # uudecode applies the archive mode to its output. Use a
+                    # private full-device node so the host /dev/full is untouched.
+                    os.mknod(work/'files/full-device', stat.S_IFCHR | 0o666, os.makedev(1, 7))
                 if fixture is not None:
                     (work/'files/input').write_bytes(fixture)
                     (work/'files/input').chmod(0o640)
@@ -79,6 +85,11 @@ for index, (name, command, args, data, fixture, multicall) in enumerate(cases):
                                       umask=0o022, timeout=45)
                 tree = {str(p.relative_to(work/'files')): {'sha256':fingerprint(p), 'bytes':p.stat().st_size,
                          'mode':p.stat().st_mode & 0o7777} for p in sorted((work/'files').rglob('*')) if p.is_file()}
+                full = work/'files/full-device'
+                if full.exists():
+                    info = full.stat()
+                    assert stat.S_ISCHR(info.st_mode) and info.st_rdev == os.makedev(1, 7)
+                    tree['full-device'] = {'type':'character','major':1,'minor':7,'mode':info.st_mode & 0o7777}
                 row = {'status':done.returncode, 'raw_stdout':done.stdout.hex(), 'raw_stderr':done.stderr.hex(),
                        'fixture':directory, 'stdout':done.stdout.replace(directory.encode(), b'<fixture>').hex(),
                        'stderr':done.stderr.replace(directory.encode(), b'<fixture>').hex(), 'tree':tree}
