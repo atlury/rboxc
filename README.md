@@ -381,7 +381,10 @@ cases. Ten unchanged permission and directory-metadata originals also pass as
 uid/gid 65534 using byte-verified private executable copies. Earlier originals
 are being revalidated against these new bytes before consolidation. The prior
 candidate additionally passes 107/107 Coreutils Valgrind help checks and
-318/318 behavior checks; those reports retain its earlier binary hash. A 30-case
+318/318 behavior checks; those reports retain its earlier binary hash. Fresh
+checks on the corrected candidate now also pass 428/428 Coreutils help/version
+comparisons, 107/107 Valgrind help checks, 318/318 behavior checks, 318/318
+instrumented equivalence assessments, and 11/11 dispatcher checks. A 30-case
 archive-operation harness matches GNU Tar against itself in every comparison;
 only 9/30 native control cases are strict memory-clean, with the other GNU
 findings preserved as baseline observations. This control is not Rust port
