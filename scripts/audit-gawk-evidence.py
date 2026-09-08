@@ -26,10 +26,11 @@ focused = json.loads(options.focused.read_text())
 original = json.loads(options.original.read_text())
 assert focused['binary_sha256'] == original['binary_sha256'] == fingerprint(Path(focused['binary']))
 assert focused['complete'] and focused['passed'] == focused['total'] == focused['planned_total'] == 85
-assert original['complete'] and original['passed'] == original['total'] == original['planned_total'] == 11
+assert original['complete'] and original['passed'] == original['total'] == original['planned_total'] == 26
 assert focused['driver_sha256'] == fingerprint(ROOT/'tests/gawk-behavior.py')
 assert original['inputs'][str(ROOT/'tests/gawk-original.py')] == fingerprint(ROOT/'tests/gawk-original.py')
-assert {r['selection'] for r in original['results']} == {'addcomma','anchor','arrayref','aasort','aasorti','concat1','math','nfset','splitarr','substr','litoct'}
+assert {r['selection'] for r in original['results']} == {'addcomma','anchor','arrayref','aasort','aasorti','concat1','math','nfset','splitarr','substr','litoct',
+    'nonl','backbigs1','backw','backsmalls1','profile0','rri1','equiv','mmap8k','assignnumfield','strfieldnum','hex2','uninitialized','minusstr','tradanch','range1'}
 inputs = {}
 for data in (focused, original):
     inputs.update(data.get('inputs', {})); inputs.update(data['runtime_helpers'])
@@ -69,12 +70,12 @@ for row in original['results']:
             audit(log['log'],log['sha256'],log,key=='rboxc-valgrind',row['source'])
 original_processes=sum(len(r['outcomes']['rboxc-valgrind']['memory']) for r in original['results'])
 assert original_processes>0 and len(processes)==85+original_processes
-report = {'scope':'All 85 focused comparisons and eleven reviewed unchanged GNU original selections pass. Every input and raw log is hash-checked and every candidate process summary is reparsed. GNU native findings remain baseline observations.',
+report = {'scope':'All 85 focused comparisons and 26 reviewed unchanged GNU original selections pass. Every input and raw log is hash-checked and every candidate process summary is reparsed. GNU native findings remain baseline observations.',
           'binary':focused['binary'],'binary_sha256':focused['binary_sha256'],
           'runtime_helpers':focused['runtime_helpers'],'inputs':inputs,
           'focused_report':{'path':str(options.focused),'sha256':fingerprint(options.focused)},
           'original_report':{'path':str(options.original),'sha256':fingerprint(options.original)},
-          'passed':len(processes),'total':len(processes),'focused_cases':85,'original_selections':11,'original_processes':original_processes,
+          'passed':len(processes),'total':len(processes),'focused_cases':85,'original_selections':26,'original_processes':original_processes,
           'driver_sha256':fingerprint(Path(__file__)),'results':processes}
 target.write_text(json.dumps(report,indent=2)+'\n')
-print('Audited 85 focused cases, 11 GNU original selections, and',len(processes),'clean candidate processes')
+print('Audited 85 focused cases, 26 GNU original selections, and',len(processes),'clean candidate processes')

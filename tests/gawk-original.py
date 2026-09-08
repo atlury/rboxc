@@ -21,9 +21,10 @@ profile=ComparisonProfile('gawk-original',oracle=ROOT/'build/gnu-gawk/gawk')
 source=Path(json.loads((ROOT/'inventory/sources.json').read_text())['gawk']['source'])
 manifest=json.loads((ROOT/'inventory/gawk-tests.json').read_text())
 selected=[r for r in manifest['inputs'] if r['reviewed']]
-assert len(selected)==11
+assert len(selected)==26
 makefile=ROOT/'build/gnu-gawk/test/Makefile'
 helpers={'cmp':ROOT/'build/gnu-diffutils/src/cmp',
+         'sed':ROOT/'build/gnu-sed/sed/sed',
          'rm':ROOT/'build/gnu-coreutils/src/coreutils','echo':ROOT/'build/gnu-coreutils/src/coreutils'}
 inputs={p:fingerprint(p) for p in {makefile,source/'test/Makefile.am',source/'test/Makefile.in',
     Path(__file__),Path('/usr/bin/make'),Path('/bin/sh').resolve(),*helpers.values(),profile.oracle}}
@@ -49,7 +50,7 @@ for row in selected:
                 wrapper.write_text('#!/bin/sh\nexec '+shlex.join(argv)+' "$@"\n');wrapper.chmod(0o755)
                 command=['/usr/bin/make','--no-print-directory','-f',str(makefile),
                     'top_builddir='+str(ROOT/'build/gnu-gawk'),'top_srcdir='+str(source),
-                    'srcdir='+str(source/'test'),'AWK='+str(wrapper),'CMP='+str(helpers['cmp']),name]
+                    'srcdir='+str(source/'test'),'AWKPROG='+str(wrapper),'CMP='+str(helpers['cmp']),name]
                 env={'PATH':str(work/'exec')+':'+str(work/'deps')+':/usr/bin:/bin','HOME':directory,
                      'TMPDIR':directory,'LC_ALL':'C','LANGUAGE':'C','TZ':'UTC0'}
                 done=subprocess.run(command,cwd=work,env=env,stdin=subprocess.DEVNULL,
@@ -79,7 +80,7 @@ for row in selected:
     results.append({'selection':name,'source':row['path'],'source_sha256':row['sha256'],
                     'pass':passed,'outcomes':outcomes})
     assert all(fingerprint(p)==h for p,h in inputs.items())
-    report={**profile.metadata(),'scope':'Eleven reviewed unchanged GNU Make recipes compare original supplied programs and input against GNU expected output in private directories. Every selected Gawk invocation is instrumented; native findings are preserved.',
+    report={**profile.metadata(),'scope':'Twenty-six reviewed unchanged GNU Make recipes compare original supplied programs and input against GNU expected output in private directories. Every selected Gawk invocation is instrumented; native findings are preserved.',
         'inputs':{str(p):h for p,h in inputs.items()},'driver_sha256':fingerprint(Path(__file__)),
         'planned_total':len(selected),'complete':len(results)==len(selected),
         'passed':sum(r['pass'] for r in results),'total':len(results),'results':results}

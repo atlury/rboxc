@@ -71,7 +71,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 11 reviewed originals pass |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 26 reviewed originals pass |
 | Patch | 2.8 | Candidate passes 23 focused comparisons and eight reviewed originals |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -90,6 +90,16 @@ comparisons and eleven reviewed original Make targets pass, including strict
 candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
+
+Gawk now passes **26 reviewed original Make recipes** and all 85 focused
+comparisons on the current candidate. The additional originals cover field and
+numeric conversions, regular expressions, Unicode whitespace, lint diagnostics,
+8 KiB text input and profiling. The runner overrides GNU's `AWKPROG` variable,
+retaining the original recipe's locale setup. The initial wrapper failure is
+preserved in `evidence/gawk-expanded-original.json`; the corrected run and its
+111 clean candidate process logs are verified in
+`evidence/gawk-locale-memory-audit.json`. Other original Gawk inputs and extension
+profiles remain open.
 
 Cpio's original-suite coverage now includes valid symlink archive round-trips,
 long target names and `--to-stdout` extraction. All **13 reviewed original
