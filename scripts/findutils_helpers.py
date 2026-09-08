@@ -32,6 +32,8 @@ def symbol_map(root, command):
 
 
 def prepare_archives(root,command,mapping):
+    from findutils_cleanup import prepare
+    cleaned_find = prepare(root)
     stage=root/'build/translation/findutils'/command;stage.mkdir(parents=True,exist_ok=True)
     definitions=stage/'helper-symbol-map'
     definitions.write_text(''.join(f'{old} {new}\n' for old,new in mapping.items()))
@@ -39,7 +41,8 @@ def prepare_archives(root,command,mapping):
     for original in native_inputs(root,command):
         target=root/'build/helpers'/('findutils-'+command+'-'+original.name)
         temporary=target.with_name(target.name+'.tmp')
-        subprocess.run(['objcopy','--redefine-syms='+str(definitions),original,temporary],check=True)
+        selected = cleaned_find.get(original.name, original)
+        subprocess.run(['objcopy','--redefine-syms='+str(definitions),selected,temporary],check=True)
         if original.suffix=='.a':subprocess.run(['ranlib',temporary],check=True)
         temporary.replace(target);outputs.append(target)
     assert defined_symbols(outputs)=={mapping[s] for s in defined_symbols(native_inputs(root,command))}

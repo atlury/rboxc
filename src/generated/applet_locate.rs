@@ -1990,19 +1990,7 @@ unsafe extern "C" fn search_one_database(
     let mut pathpart: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
     let mut argn: ::core::ffi::c_int = 0;
     let mut nread: ::core::ffi::c_int = 0;
-    let mut procdata: process_data = process_data {
-        c: 0,
-        count: 0,
-        len: 0,
-        original_filename: ::core::ptr::null_mut::<::core::ffi::c_char>(),
-        pathsize: 0,
-        munged_filename: ::core::ptr::null_mut::<::core::ffi::c_char>(),
-        fp: ::core::ptr::null_mut::<FILE>(),
-        dbfile: ::core::ptr::null::<::core::ffi::c_char>(),
-        endian_state: GetwordEndianState::GetwordEndianStateInitial,
-        bigram1: [0; 128],
-        bigram2: [0; 128],
-    };
+    rboxc_release_locate_path();
     let mut slocate_seclevel: ::core::ffi::c_int = 0;
     let mut oldformat: ::core::ffi::c_int = 0;
     let mut slocatedb_format: ::core::ffi::c_int = 0;
@@ -2014,27 +2002,27 @@ unsafe extern "C" fn search_one_database(
         regex_options = (regex_options as ::core::ffi::c_ulong | RE_ICASE) as ::core::ffi::c_int;
     }
     oldformat = 0 as ::core::ffi::c_int;
-    procdata.endian_state = GetwordEndianState::GetwordEndianStateInitial;
-    procdata.count = 0 as ::core::ffi::c_int;
-    procdata.len = procdata.count;
-    procdata.dbfile = dbfile;
-    procdata.fp = fp;
+    RBOXC_PROCDATA.endian_state = GetwordEndianState::GetwordEndianStateInitial;
+    RBOXC_PROCDATA.count = 0 as ::core::ffi::c_int;
+    RBOXC_PROCDATA.len = RBOXC_PROCDATA.count;
+    RBOXC_PROCDATA.dbfile = dbfile;
+    RBOXC_PROCDATA.fp = fp;
     inspectors = ::core::ptr::null_mut::<visitor>();
     lastinspector = ::core::ptr::null_mut::<visitor>();
     past_pat_inspector = ::core::ptr::null_mut::<visitor>();
     results_were_filtered = r#false != 0;
-    procdata.pathsize = 128 as size_t;
-    procdata.original_filename = xmalloc(procdata.pathsize) as *mut ::core::ffi::c_char;
+    RBOXC_PROCDATA.pathsize = 128 as size_t;
+    RBOXC_PROCDATA.original_filename = xmalloc(RBOXC_PROCDATA.pathsize) as *mut ::core::ffi::c_char;
     nread = fread(
-        procdata.original_filename as *mut ::core::ffi::c_void,
+        RBOXC_PROCDATA.original_filename as *mut ::core::ffi::c_void,
         1 as size_t,
         SLOCATE_DB_MAGIC_LEN as size_t,
-        procdata.fp,
+        RBOXC_PROCDATA.fp,
     ) as ::core::ffi::c_int;
     slocate_seclevel = 0 as ::core::ffi::c_int;
     if looking_at_slocate_locatedb(
-        procdata.dbfile,
-        procdata.original_filename,
+        RBOXC_PROCDATA.dbfile,
+        RBOXC_PROCDATA.original_filename,
         nread as size_t,
         &raw mut slocate_seclevel,
     ) != 0
@@ -2053,7 +2041,7 @@ unsafe extern "C" fn search_one_database(
                     quotearg_n_style(
                         0 as ::core::ffi::c_int,
                         quoting_style::locale_quoting_style,
-                        procdata.dbfile,
+                        RBOXC_PROCDATA.dbfile,
                     ),
                     slocate_seclevel,
                 );
@@ -2076,7 +2064,7 @@ unsafe extern "C" fn search_one_database(
                         quotearg_n_style(
                             0 as ::core::ffi::c_int,
                             quoting_style::locale_quoting_style,
-                            procdata.dbfile,
+                            RBOXC_PROCDATA.dbfile,
                         ),
                         slocate_seclevel,
                     );
@@ -2141,7 +2129,7 @@ unsafe extern "C" fn search_one_database(
                             quotearg_n_style(
                                 0 as ::core::ffi::c_int,
                                 quoting_style::locale_quoting_style,
-                                procdata.dbfile,
+                                RBOXC_PROCDATA.dbfile,
                             ),
                         );
                         if 0 as ::core::ffi::c_int != 0 as ::core::ffi::c_int {
@@ -2164,7 +2152,7 @@ unsafe extern "C" fn search_one_database(
                                 quotearg_n_style(
                                     0 as ::core::ffi::c_int,
                                     quoting_style::locale_quoting_style,
-                                    procdata.dbfile,
+                                    RBOXC_PROCDATA.dbfile,
                                 ),
                             );
                             if __errstatus != 0 as ::core::ffi::c_int {
@@ -2193,17 +2181,17 @@ unsafe extern "C" fn search_one_database(
         let mut nread2: ::core::ffi::c_int = 0;
         slocatedb_format = 0 as ::core::ffi::c_int;
         extend(
-            &raw mut procdata,
+            &raw mut RBOXC_PROCDATA,
             ::core::mem::size_of::<[::core::ffi::c_char; 10]>(),
             0 as size_t,
         );
         nread2 = fread(
-            procdata.original_filename.offset(nread as isize) as *mut ::core::ffi::c_void,
+            RBOXC_PROCDATA.original_filename.offset(nread as isize) as *mut ::core::ffi::c_void,
             1 as size_t,
             ::core::mem::size_of::<[::core::ffi::c_char; 10]>().wrapping_sub(nread as size_t),
-            procdata.fp,
+            RBOXC_PROCDATA.fp,
         ) as ::core::ffi::c_int;
-        if looking_at_gnu_locatedb(procdata.original_filename, (nread + nread2) as size_t) != 0 {
+        if looking_at_gnu_locatedb(RBOXC_PROCDATA.original_filename, (nread + nread2) as size_t) != 0 {
             add_visitor(
                 Some(
                     visit_locate02_format
@@ -2218,13 +2206,13 @@ unsafe extern "C" fn search_one_database(
         } else {
             let mut i: ::core::ffi::c_int = 0;
             nread += nread2;
-            extend(&raw mut procdata, 256 as size_t, 0 as size_t);
+            extend(&raw mut RBOXC_PROCDATA, 256 as size_t, 0 as size_t);
             if nread < 256 as ::core::ffi::c_int {
                 let mut more_read: ::core::ffi::c_int = fread(
-                    procdata.original_filename.offset(nread as isize) as *mut ::core::ffi::c_void,
+                    RBOXC_PROCDATA.original_filename.offset(nread as isize) as *mut ::core::ffi::c_void,
                     1 as size_t,
                     (256 as ::core::ffi::c_int - nread) as size_t,
-                    procdata.fp,
+                    RBOXC_PROCDATA.fp,
                 ) as ::core::ffi::c_int;
                 if more_read + nread != 256 as ::core::ffi::c_int {
                     if 0 != 0 {
@@ -2276,10 +2264,10 @@ unsafe extern "C" fn search_one_database(
             }
             i = 0 as ::core::ffi::c_int;
             while i < 128 as ::core::ffi::c_int {
-                procdata.bigram1[i as usize] = *procdata
+                RBOXC_PROCDATA.bigram1[i as usize] = *RBOXC_PROCDATA
                     .original_filename
                     .offset((i << 1 as ::core::ffi::c_int) as isize);
-                procdata.bigram2[i as usize] = *procdata
+                RBOXC_PROCDATA.bigram2[i as usize] = *RBOXC_PROCDATA
                     .original_filename
                     .offset(((i << 1 as ::core::ffi::c_int) + 1 as ::core::ffi::c_int) as isize);
                 i += 1;
@@ -2587,18 +2575,18 @@ unsafe extern "C" fn search_one_database(
                 b"Database %s is in the %s format.\n\0".as_ptr() as *const ::core::ffi::c_char,
                 LC_MESSAGES,
             ),
-            procdata.dbfile,
+            RBOXC_PROCDATA.dbfile,
             format_name,
         );
     }
-    procdata.c = getc(procdata.fp);
-    if slocatedb_format != 0 && procdata.c != EOF {
-        ungetc(procdata.c, procdata.fp);
-        procdata.c = 0 as ::core::ffi::c_int;
+    RBOXC_PROCDATA.c = getc(RBOXC_PROCDATA.fp);
+    if slocatedb_format != 0 && RBOXC_PROCDATA.c != EOF {
+        ungetc(RBOXC_PROCDATA.c, RBOXC_PROCDATA.fp);
+        RBOXC_PROCDATA.c = 0 as ::core::ffi::c_int;
     }
-    while procdata.c != EOF
+    while RBOXC_PROCDATA.c != EOF
         && visit_result::VISIT_ABORT.0 as ::core::ffi::c_int
-            != mainprocessor.expect("non-null function pointer")(&raw mut procdata)
+            != mainprocessor.expect("non-null function pointer")(&raw mut RBOXC_PROCDATA)
     {}
     if stats != 0 {
         if oldformat != 0 {
@@ -2615,12 +2603,12 @@ unsafe extern "C" fn search_one_database(
                     as *const ::core::ffi::c_char,
                 LC_MESSAGES,
             );
-            if GetwordEndianState::GetwordEndianStateNative.0 == procdata.endian_state.0 {
+            if GetwordEndianState::GetwordEndianStateNative.0 == RBOXC_PROCDATA.endian_state.0 {
                 printf(
                     b"%s\0".as_ptr() as *const ::core::ffi::c_char,
                     if host_little_endian != 0 { little } else { big },
                 );
-            } else if GetwordEndianState::GetwordEndianStateSwab.0 == procdata.endian_state.0 {
+            } else if GetwordEndianState::GetwordEndianStateSwab.0 == RBOXC_PROCDATA.endian_state.0 {
                 printf(
                     b"%s\0".as_ptr() as *const ::core::ffi::c_char,
                     if host_little_endian != 0 { big } else { little },
@@ -2638,7 +2626,7 @@ unsafe extern "C" fn search_one_database(
             print_stats(argc, filesize as size_t, database_mtime);
         }
     }
-    if ferror(procdata.fp) != 0 {
+    if ferror(RBOXC_PROCDATA.fp) != 0 {
         if 0 != 0 {
             error(
                 0 as ::core::ffi::c_int,
@@ -2647,7 +2635,7 @@ unsafe extern "C" fn search_one_database(
                 quotearg_n_style(
                     0 as ::core::ffi::c_int,
                     quoting_style::locale_quoting_style,
-                    procdata.dbfile,
+                    RBOXC_PROCDATA.dbfile,
                 ),
             );
             if 0 as ::core::ffi::c_int != 0 as ::core::ffi::c_int {
@@ -2664,7 +2652,7 @@ unsafe extern "C" fn search_one_database(
                     quotearg_n_style(
                         0 as ::core::ffi::c_int,
                         quoting_style::locale_quoting_style,
-                        procdata.dbfile,
+                        RBOXC_PROCDATA.dbfile,
                     ),
                 );
                 if __errstatus != 0 as ::core::ffi::c_int {
@@ -2948,7 +2936,6 @@ unsafe extern "C" fn dolocate(
     mut argv: *mut *mut ::core::ffi::c_char,
     mut secure_db_fd: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
-    let mut path_element: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
     let mut path_element_pos: size_t = 0;
     let mut path_element_len: size_t = 0;
     let mut user_selected_locate_path: *const ::core::ffi::c_char =
@@ -3014,6 +3001,7 @@ unsafe extern "C" fn dolocate(
             });
         };
     }
+    if libc::atexit(rboxc_release_locate_resources) != 0 { return 1; }
     limits.limit = 0 as uintmax_t;
     limits.items_accepted = 0 as uintmax_t;
     print_quoted_filename = r#true != 0;
@@ -3286,11 +3274,11 @@ unsafe extern "C" fn dolocate(
                 {
                     db_name = LOCATE_DB.as_ptr();
                 } else {
-                    path_element = strndup(
+                    RBOXC_DBPATH = strndup(
                         user_selected_locate_path.offset(path_element_pos as isize),
                         path_element_len,
                     );
-                    db_name = path_element;
+                    db_name = RBOXC_DBPATH;
                 }
                 fd = opendb(db_name);
                 if fd < 0 as ::core::ffi::c_int {
@@ -3590,9 +3578,9 @@ unsafe extern "C" fn dolocate(
             };
             return 0 as ::core::ffi::c_int;
         }
-        if !path_element.is_null() {
-            free(path_element as *mut ::core::ffi::c_void);
-            path_element = ::core::ptr::null_mut::<::core::ffi::c_char>();
+        if !RBOXC_DBPATH.is_null() {
+            free(RBOXC_DBPATH as *mut ::core::ffi::c_void);
+            RBOXC_DBPATH = ::core::ptr::null_mut::<::core::ffi::c_char>();
         }
         if user_selected_locate_path.is_null() {
             break;
@@ -3635,8 +3623,7 @@ unsafe extern "C" fn open_secure_db() -> ::core::ffi::c_int {
     }
     return -1 as ::core::ffi::c_int;
 }
-#[no_mangle]
-pub unsafe extern "C" fn single_binary_main_locate(
+unsafe extern "C" fn rboxc_findutils_main_inner(
     mut argc: ::core::ffi::c_int,
     mut argv: *mut *mut ::core::ffi::c_char,
 ) -> ::core::ffi::c_int {
@@ -3657,3 +3644,58 @@ pub const LOCALEDIR: [::core::ffi::c_char; 48] = unsafe {
 pub const __LONG_MAX__: ::core::ffi::c_long = 9223372036854775807 as ::core::ffi::c_long;
 pub const PACKAGE: [::core::ffi::c_char; 10] =
     unsafe { ::core::mem::transmute::<[u8; 10], [::core::ffi::c_char; 10]>(*b"findutils\0") };
+
+extern "C" {
+    static mut error_print_progname: Option<unsafe extern "C" fn()>;
+}
+static mut RBOXC_INVOCATION: *const ::core::ffi::c_char = ::core::ptr::null();
+unsafe extern "C" fn rboxc_findutils_error_prefix() {
+    libc::fprintf(stderr.cast(), b"%s: \0".as_ptr().cast(), RBOXC_INVOCATION);
+}
+
+static mut RBOXC_PROCDATA: process_data = process_data {
+        c: 0,
+        count: 0,
+        len: 0,
+        original_filename: ::core::ptr::null_mut::<::core::ffi::c_char>(),
+        pathsize: 0,
+        munged_filename: ::core::ptr::null_mut::<::core::ffi::c_char>(),
+        fp: ::core::ptr::null_mut::<FILE>(),
+        dbfile: ::core::ptr::null::<::core::ffi::c_char>(),
+        endian_state: GetwordEndianState::GetwordEndianStateInitial,
+        bigram1: [0; 128],
+        bigram2: [0; 128],
+    };
+extern "C" fn rboxc_release_locate_path() {
+    unsafe {
+        let saved_errno = *libc::__errno_location();
+        libc::free(RBOXC_PROCDATA.original_filename.cast());
+        RBOXC_PROCDATA.original_filename = ::core::ptr::null_mut();
+        *libc::__errno_location() = saved_errno;
+    }
+}
+
+static mut RBOXC_DBPATH: *mut ::core::ffi::c_char = ::core::ptr::null_mut();
+extern "C" fn rboxc_release_locate_resources() {
+    rboxc_release_locate_path();
+    unsafe {
+        let saved_errno = *libc::__errno_location();
+        libc::free(RBOXC_DBPATH.cast());
+        RBOXC_DBPATH = ::core::ptr::null_mut();
+        *libc::__errno_location() = saved_errno;
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn single_binary_main_locate(
+    argc: ::core::ffi::c_int, argv: *mut *mut ::core::ffi::c_char,
+) -> ::core::ffi::c_int {
+    RBOXC_INVOCATION = if argv.is_null() || (*argv).is_null() {
+        b"locate\0".as_ptr().cast()
+    } else { *argv };
+    if error_print_progname.is_none() {
+        error_print_progname = Some(rboxc_findutils_error_prefix);
+    }
+    if libc::atexit(rboxc_release_locate_resources) != 0 { return 1; }
+    rboxc_findutils_main_inner(argc, argv)
+}

@@ -1866,8 +1866,7 @@ unsafe extern "C" fn process_all_startpoints(
     }
     return ok;
 }
-#[no_mangle]
-pub unsafe extern "C" fn single_binary_main_find(
+unsafe extern "C" fn rboxc_findutils_main_inner(
     mut argc: ::core::ffi::c_int,
     mut argv: *mut *mut ::core::ffi::c_char,
 ) -> ::core::ffi::c_int {
@@ -1962,6 +1961,7 @@ pub unsafe extern "C" fn single_binary_main_find(
             });
         };
     }
+    if libc::atexit(rboxc_release_initial_wd) != 0 { return 1; }
     end_of_leading_options = process_leading_options(argc, argv);
     if options.debug_options & DebugOption::DebugStat.0 as ::core::ffi::c_ulong != 0 {
         options.xstat = Some(
@@ -2005,3 +2005,44 @@ pub const LOCALEDIR: [::core::ffi::c_char; 48] = unsafe {
 pub const __INT_MAX__: ::core::ffi::c_int = 2147483647 as ::core::ffi::c_int;
 pub const PACKAGE: [::core::ffi::c_char; 10] =
     unsafe { ::core::mem::transmute::<[u8; 10], [::core::ffi::c_char; 10]>(*b"findutils\0") };
+
+extern "C" {
+    static mut error_print_progname: Option<unsafe extern "C" fn()>;
+}
+static mut RBOXC_INVOCATION: *const ::core::ffi::c_char = ::core::ptr::null();
+unsafe extern "C" fn rboxc_findutils_error_prefix() {
+    libc::fprintf(stderr.cast(), b"%s: \0".as_ptr().cast(), RBOXC_INVOCATION);
+}
+
+extern "C" {
+    #[link_name = "rboxc_findutils_find_initial_wd"]
+    static mut rboxc_initial_wd: *mut ::core::ffi::c_void;
+    #[link_name = "rboxc_findutils_find_free_cwd"]
+    fn rboxc_free_cwd(directory: *mut ::core::ffi::c_void);
+}
+extern "C" fn rboxc_release_initial_wd() {
+    unsafe {
+        let saved_errno = *libc::__errno_location();
+        let directory = rboxc_initial_wd;
+        if !directory.is_null() {
+            rboxc_initial_wd = ::core::ptr::null_mut();
+            rboxc_free_cwd(directory);
+            libc::free(directory);
+        }
+        *libc::__errno_location() = saved_errno;
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn single_binary_main_find(
+    argc: ::core::ffi::c_int, argv: *mut *mut ::core::ffi::c_char,
+) -> ::core::ffi::c_int {
+    RBOXC_INVOCATION = if argv.is_null() || (*argv).is_null() {
+        b"find\0".as_ptr().cast()
+    } else { *argv };
+    if error_print_progname.is_none() {
+        error_print_progname = Some(rboxc_findutils_error_prefix);
+    }
+    if libc::atexit(rboxc_release_initial_wd) != 0 { return 1; }
+    rboxc_findutils_main_inner(argc, argv)
+}

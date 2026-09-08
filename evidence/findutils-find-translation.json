@@ -8,7 +8,7 @@
   "translated": true,
   "scope": "C2Rust entry translation with namespaced native helper imports; compilation and suite validation are separate.",
   "rust_file": "src/generated/applet_find.rs",
-  "rust_sha256": "6a866d6f220d32ac2a25e97c8907b28ec093df19345849681c50347491fa5d76",
+  "rust_sha256": "8f7d3aa347fe63d5d956ed916e7ad1c9d4596267533a814d78fe0b7c19cf83b3",
   "raw_translation_sha256": "471ec26e54749631854c23bbd0d60b16d5441f588619c10fe60305ff2948646f",
   "compile_database_sha256": "eaaaa4a707259af2d8eab3bdbd1ef5673190a1e8af28f96642938467db402268",
   "helper_imports": {
@@ -26,7 +26,9 @@
     "digest_mode": "rboxc_findutils_find_digest_mode",
     "dup_cloexec": "rboxc_findutils_find_dup_cloexec",
     "fd_leak_check_is_enabled": "rboxc_findutils_find_fd_leak_check_is_enabled",
+    "free_cwd": "rboxc_findutils_find_free_cwd",
     "get_eval_tree": "rboxc_findutils_find_get_eval_tree",
+    "initial_wd": "rboxc_findutils_find_initial_wd",
     "looks_like_expression": "rboxc_findutils_find_looks_like_expression",
     "nonfatal_target_file_error": "rboxc_findutils_find_nonfatal_target_file_error",
     "options": "rboxc_findutils_find_options",
@@ -53,7 +55,10 @@
   "adaptations": [
     "GNU17 parser adaptation maps C23 nullptr to a null pointer constant.",
     "Use pinned-nightly VaList and exposed-provenance API spellings.",
-    "Namespace native helpers and Rust-owned state together."
+    "Namespace native helpers and Rust-owned state together.",
+    "Preserve full argv[0] diagnostics through GNU error_print_progname.",
+    "Release any remaining saved initial working directory on exit; normal GNU cleanup already clears it.",
+    "Register idempotent saved-directory cleanup again after close_stdout so write-error exits release it first."
   ],
   "opaque_pointer_types": [
     "_IO_wide_data",

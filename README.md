@@ -238,9 +238,19 @@ SELinux disabled. The translated find, xargs, and locate entries compile in a
 separate 128-command candidate. Their native helpers have separate command
 namespaces (1,465 symbols), and their C entry objects are excluded. The native
 build retains GNU's libm linkage. The original shell/DejaGNU inventory contains
-240 test and harness inputs awaiting individual review. DejaGNU is installed
+240 test and harness inputs under individual review. DejaGNU is installed
 as a test prerequisite. updatedb and its private frcode encoder remain separate
 porting work; Findutils is not installed yet.
+
+The Findutils candidate passes 68/68 focused behavior and Valgrind checks.
+The preserved baseline matched behavior but passed only 23/68 strict checks;
+cleanup now releases saved directories, samefile references, execdir storage,
+xargs input files and replacement lengths, and locate search buffers and
+names. Diagnostics preserve GNU's full invocation pathname. A separate helper
+comparison verifies unchanged descriptor callbacks, O_PATH handling, early
+return, and errno while avoiding polls of known closed descriptors. The first
+nine unchanged DejaGNU selections pass (22 original assertions in all four
+GNU/Rust/native/Valgrind profiles); expanded original tests are in progress.
 
 ## Status
 

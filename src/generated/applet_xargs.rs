@@ -1282,8 +1282,7 @@ unsafe extern "C" fn warn_mutually_exclusive(
         });
     };
 }
-#[no_mangle]
-pub unsafe extern "C" fn single_binary_main_xargs(
+unsafe extern "C" fn rboxc_findutils_main_inner(
     mut argc: ::core::ffi::c_int,
     mut argv: *mut *mut ::core::ffi::c_char,
 ) -> ::core::ffi::c_int {
@@ -1350,6 +1349,7 @@ pub unsafe extern "C" fn single_binary_main_xargs(
             });
         };
     }
+    if libc::atexit(rboxc_release_xargs_input) != 0 { return 1; }
     bcstatus = bc_init_controlinfo(
         &raw mut bc_ctl,
         C2Rust_Unnamed_12::XARGS_POSIX_HEADROOM.0 as ::core::ffi::c_int as size_t,
@@ -2053,11 +2053,11 @@ pub unsafe extern "C" fn single_binary_main_xargs(
     } else {
         let mut i: ::core::ffi::c_int = 0;
         let mut args: ::core::ffi::c_int = 0;
-        let mut arglen: *mut size_t =
+        RBOXC_ARGLEN =
             xmalloc(::core::mem::size_of::<size_t>().wrapping_mul(argc as size_t)) as *mut size_t;
         i = optind;
         while i < argc {
-            *arglen.offset(i as isize) = strlen(*argv.offset(i as isize));
+            *RBOXC_ARGLEN.offset(i as isize) = strlen(*argv.offset(i as isize));
             i += 1;
         }
         bc_ctl.rplen = strlen(bc_ctl.replace_pat);
@@ -2074,7 +2074,7 @@ pub unsafe extern "C" fn single_binary_main_xargs(
                 &raw mut bc_ctl,
                 &raw mut bc_state,
                 *argv.offset(optind as isize),
-                (*arglen.offset(optind as isize)).wrapping_add(1 as size_t),
+                (*RBOXC_ARGLEN.offset(optind as isize)).wrapping_add(1 as size_t),
                 ::core::ptr::null::<::core::ffi::c_char>(),
                 0 as size_t,
                 initial_args as ::core::ffi::c_int,
@@ -2087,7 +2087,7 @@ pub unsafe extern "C" fn single_binary_main_xargs(
                     &raw mut bc_ctl,
                     &raw mut bc_state,
                     *argv.offset(i as isize),
-                    *arglen.offset(i as isize),
+                    *RBOXC_ARGLEN.offset(i as isize),
                     ::core::ptr::null::<::core::ffi::c_char>(),
                     0 as size_t,
                     linebuf,
@@ -3151,6 +3151,8 @@ unsafe extern "C" fn xargs_do_exec(
                     });
                 };
             }
+            // Only the failed-exec child owns this replacement for stdin.
+            if keep_stdin == 0 || open_tty { libc::close(0); }
             _exit(if saved_errno == ENOENT {
                 XargsStatusValues::XARGS_EXIT_COMMAND_NOT_FOUND.0 as ::core::ffi::c_int
             } else {
@@ -3907,3 +3909,39 @@ pub const __SCHAR_MAX__: ::core::ffi::c_int = 127 as ::core::ffi::c_int;
 pub const __LONG_MAX__: ::core::ffi::c_long = 9223372036854775807 as ::core::ffi::c_long;
 pub const PACKAGE: [::core::ffi::c_char; 10] =
     unsafe { ::core::mem::transmute::<[u8; 10], [::core::ffi::c_char; 10]>(*b"findutils\0") };
+
+extern "C" {
+    static mut error_print_progname: Option<unsafe extern "C" fn()>;
+}
+static mut RBOXC_INVOCATION: *const ::core::ffi::c_char = ::core::ptr::null();
+unsafe extern "C" fn rboxc_findutils_error_prefix() {
+    libc::fprintf(stderr.cast(), b"%s: \0".as_ptr().cast(), RBOXC_INVOCATION);
+}
+
+static mut RBOXC_ARGLEN: *mut size_t = ::core::ptr::null_mut();
+extern "C" fn rboxc_release_xargs_input() {
+    unsafe {
+        let saved_errno = *libc::__errno_location();
+        libc::free(RBOXC_ARGLEN.cast());
+        RBOXC_ARGLEN = ::core::ptr::null_mut();
+        if !input_stream.is_null() && input_stream != stdin {
+            let owned = input_stream;
+            input_stream = ::core::ptr::null_mut();
+            libc::fclose(owned.cast());
+        }
+        *libc::__errno_location() = saved_errno;
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn single_binary_main_xargs(
+    argc: ::core::ffi::c_int, argv: *mut *mut ::core::ffi::c_char,
+) -> ::core::ffi::c_int {
+    RBOXC_INVOCATION = if argv.is_null() || (*argv).is_null() {
+        b"xargs\0".as_ptr().cast()
+    } else { *argv };
+    if error_print_progname.is_none() {
+        error_print_progname = Some(rboxc_findutils_error_prefix);
+    }
+    rboxc_findutils_main_inner(argc, argv)
+}
