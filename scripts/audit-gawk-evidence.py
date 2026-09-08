@@ -27,6 +27,10 @@ original = json.loads(options.original.read_text())
 assert focused['binary_sha256'] == original['binary_sha256'] == fingerprint(Path(focused['binary']))
 assert focused['complete'] and focused['passed'] == focused['total'] == focused['planned_total'] == 85
 reviewed_rows={r['target']:r for r in json.loads((ROOT/'inventory/gawk-tests.json').read_text())['inputs'] if r['reviewed']}
+requested=original.get('selected_targets',[])
+if requested:
+    assert len(set(requested))==len(requested) and set(requested)<=set(reviewed_rows)
+    reviewed_rows={n:reviewed_rows[n] for n in requested}
 reviewed=set(reviewed_rows)
 baselines={n:r for n,r in reviewed_rows.items() if r.get('expected_baseline_output')}
 assert reviewed
@@ -93,6 +97,13 @@ for row in original['results']:
     else:
         assert not row['baseline_failure_matches']
     assert row['locale_profile']==reviewed_rows[row['selection']].get('locale_profile')
+    extension=reviewed_rows[row['selection']].get('extension_profile')
+    assert row.get('extension_profile')==extension
+    if extension:
+        for path,h in extension['inputs'].items():assert original['inputs'][path]==h
+        for library,entry in extension['libraries'].items():
+            assert Path(entry['path']).name==library
+            assert original['inputs'][entry['path']]==entry['sha256']
     if row['locale_profile']:
         locale=json.loads((ROOT/row['locale_profile']).read_text())
         for path,h in locale['inputs'].items():assert fingerprint(Path(path))==h
@@ -129,5 +140,7 @@ report = {'scope':'All 85 focused comparisons pass. Original assertion passes an
           'original_report':{'path':str(options.original),'sha256':fingerprint(options.original)},
           'passed':len(processes),'total':len(processes),'focused_cases':85,'original_selections':len(reviewed),'original_processes':original_processes,
           'original_assertion_passes':original['passed'],'baseline_failures_matched':len(baselines),'baseline_selections':sorted(baselines),'baseline_evidence':baseline_evidence,'driver_sha256':fingerprint(Path(__file__)),'results':processes}
+report['selected_targets']=requested
+report['extension_selections']=[n for n,r in reviewed_rows.items() if r.get('extension_profile')]
 target.write_text(json.dumps(report,indent=2)+'\n')
 print('Audited 85 focused cases,',len(reviewed),'GNU original selections, and',len(processes),'clean candidate processes')

@@ -18,10 +18,13 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tests/gnu'))
 spec=importlib.util.spec_from_file_location('reviewed',ROOT/'tests/gnu/reviewed-original.py')
 runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner)
-profile=ComparisonProfile('gawk-original',oracle=ROOT/'build/gnu-gawk/gawk')
+profile=ComparisonProfile('gawk-original',oracle=ROOT/'build/gnu-gawk/gawk',selections=True)
 source=Path(json.loads((ROOT/'inventory/sources.json').read_text())['gawk']['source'])
 manifest=json.loads((ROOT/'inventory/gawk-tests.json').read_text())
 selected=[r for r in manifest['inputs'] if r['reviewed']]
+requested=set(profile.options.commands)
+assert requested<={r['target'] for r in selected}
+if requested:selected=[r for r in selected if r['target'] in requested]
 assert selected and len({r['target'] for r in selected})==len(selected)
 assert fingerprint(source/'test/Makefile.am')==manifest['registration_sha256']
 makefile=ROOT/'build/gnu-gawk/test/Makefile'
@@ -35,6 +38,10 @@ inputs={p:fingerprint(p) for p in {makefile,source/'test/Makefile.am',source/'te
 for row in selected:
     inputs[source/row['path']]=row['sha256']
     inputs.update({source/'test'/n:h for n,h in row['fixtures'].items()})
+    extension=row.get('extension_profile')
+    if extension:
+        inputs.update({Path(p):h for p,h in extension['inputs'].items()})
+        inputs.update({Path(v['path']):v['sha256'] for v in extension['libraries'].values()})
 locale_profiles={}
 for row in selected:
     if row.get('locale_profile'):
@@ -55,6 +62,13 @@ def run_selection(row):
             saved=profile.logs/(name+'-'+key);saved.mkdir()
             with tempfile.TemporaryDirectory(prefix='rboxc-gawk-original-') as directory:
                 work=Path(directory)
+                if row.get('extension_profile'):
+                    # Preserve GNU's relative AWKLIBPATH=../extension/.libs.
+                    libraries=work/'extension/.libs';libraries.mkdir(parents=True)
+                    for library,entry in row['extension_profile']['libraries'].items():
+                        assert re.fullmatch(r'[a-z0-9_]+\.so',library)
+                        (libraries/library).symlink_to(entry['path'])
+                    work=work/'test';work.mkdir()
                 for n in ('exec','deps','memory'): (work/n).mkdir()
                 for n,p in helpers.items():(work/'deps'/n).symlink_to(p)
                 (work/'exec/gawk').symlink_to(profile.oracle if implementation=='gnu' else profile.binary)
@@ -97,7 +111,7 @@ def run_selection(row):
                     'memory':logs,'memory_clean':clean if instrument else None}
     passed=all(o['assertions_pass'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
     baseline_matches=bool(row.get('expected_baseline_output')) and all(o['baseline_failure_matches'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
-    return {'baseline_failure_matches':baseline_matches,'locale_profile':row.get('locale_profile'),'selection':name,'source':row['path'],'source_sha256':row['sha256'],
+    return {'baseline_failure_matches':baseline_matches,'locale_profile':row.get('locale_profile'),'extension_profile':row.get('extension_profile'),'selection':name,'source':row['path'],'source_sha256':row['sha256'],
             'pass':passed,'outcomes':outcomes}
 
 results=[]
@@ -107,6 +121,7 @@ with ThreadPoolExecutor(max_workers=4) as pool:
         assert all(fingerprint(p)==h for p,h in inputs.items())
         report={**profile.metadata(),'scope':'Reviewed unchanged GNU Make recipes compare original supplied programs and input against GNU expected output in private directories. Every selected Gawk invocation is instrumented; native findings are preserved.',
             'inputs':{str(p):h for p,h in inputs.items()},'driver_sha256':fingerprint(Path(__file__)),
+            'selected_targets':sorted(requested),
             'baseline_failures_matched':sum(r['baseline_failure_matches'] for r in results),'matched':sum(r['pass'] or r['baseline_failure_matches'] for r in results),'parallel_selections':4,'planned_total':len(selected),'complete':len(results)==len(selected),
             'passed':sum(r['pass'] for r in results),'total':len(results),'results':results}
         profile.report.write_text(json.dumps(report,indent=2)+'\n')

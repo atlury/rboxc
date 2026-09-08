@@ -124,7 +124,20 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-Gawk now passes **400 reviewed original Make recipes**. The expanded language
+Four additional Gawk originals now pass using the pinned native `ordchr`,
+`revoutput`, `readfile` and `filefuncs` extension libraries. Their unchanged
+recipes resolve libraries through a private directory preserving GNU's relative
+`AWKLIBPATH`. `evidence/gawk-extension-initial-memory-audit.json` verifies four
+clean extension invocations plus the 85 retained focused comparisons. These
+native extension helpers are separate from the translated Gawk entry and are
+not counted as new Rust applets or bundled release libraries.
+
+Original Gawk runs can select named, reviewed targets. A separate regression
+check verifies ordinary execution, the private locale and an exact retained GNU
+baseline failure under this selection mode. Previous broader reports retain
+their original scopes; the 85 shared focused cases are not additional coverage.
+
+Gawk's preceding language checkpoint passes **400 reviewed original Make recipes**. The expanded language
 batch covers arrays, field splitting, multibyte diagnostics, date formatting,
 regular expressions, numeric conversions and pretty-printing. All 403 reviewed
 outcomes are accounted for by `evidence/gawk-language-expanded-memory-audit.json`,
