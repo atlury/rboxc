@@ -27,7 +27,9 @@ original = json.loads(options.original.read_text())
 assert focused['binary_sha256'] == original['binary_sha256'] == fingerprint(Path(focused['binary']))
 assert focused['complete'] and focused['passed'] == focused['total'] == focused['planned_total'] == 14
 manifest=json.loads((ROOT/'inventory/wget-tests.json').read_text())
-reviewed={r['target'] for r in manifest['inputs'] if r['reviewed']}
+reviewed_rows={r['target']:r for r in manifest['inputs'] if r['reviewed']}
+reviewed=set(reviewed_rows)
+source=Path(json.loads((ROOT/'inventory/sources.json').read_text())['wget']['source'])
 expected_skips={r['target']:r['expected_feature_skip'] for r in manifest['inputs'] if r['reviewed'] and r.get('expected_feature_skip')}
 assert original['complete'] and original['passed'] == original['total'] == original['planned_total'] == len(reviewed)
 assert focused['driver_sha256'] == fingerprint(ROOT/'tests/entry-behavior.py')
@@ -64,10 +66,30 @@ for row in focused_rows:
             audit(outcome['log'],outcome['log_sha256'],outcome['memory'],key=='rboxc-valgrind',row['name'])
 for row in original['results']:
     assert row['pass']
+    fixture=reviewed_rows[row['selection']].get('fixture_profile')
+    assert row.get('fixture_profile')==fixture
     expected_skip=expected_skips.get(row['selection'])
     assert row['expected_feature_skip']==expected_skip
     for key,outcome in row['outcomes'].items():
-        assert outcome['expectation_matches']
+        assert outcome['expectation_matches'] and not outcome.get('timed_out',False)
+        private=outcome.get('private_inputs',{})
+        raw=outcome.get('fixture_raw',{})
+        for path,expected in raw.items():assert fingerprint(ROOT/path)==expected
+        if fixture=='private-tls-log':
+            expected_files={str(p.relative_to(source/'tests')) for p in (source/'tests').glob('*.pm')}
+            expected_files.update(str(p.relative_to(source/'tests')) for p in (source/'tests/certs').rglob('*') if p.is_file())
+            assert set(private)==expected_files
+            helper_paths=[ROOT/p for p in raw if Path(p).name=='SSLServer.pm']
+            assert len(helper_paths)==1 and fingerprint(helper_paths[0])==private['SSLServer.pm']
+            adapted=helper_paths[0].read_text()
+            paths=re.findall(r'/tmp/rboxc-wget-original-[A-Za-z0-9_]+/server\.log',adapted)
+            assert len(paths)==1
+            pristine=(source/'tests/SSLServer.pm').read_text()
+            assert pristine.count('/tmp/wgetserver.log')==1
+            assert adapted==pristine.replace('/tmp/wgetserver.log',paths[0])
+            for name,expected in private.items():
+                if name!='SSLServer.pm':assert inputs[str(source/'tests'/name)]==expected
+        else:assert not private and not raw
         output=(ROOT/outcome['driver_log']).read_bytes()
         if expected_skip:
             assert outcome['status']==77 and outcome['feature_skip_matches'] and not outcome['assertions_pass']

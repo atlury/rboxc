@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import re
 import shlex
+import signal
 import shutil
 import subprocess
 import sys
@@ -25,6 +26,9 @@ assert selected and len({r['target'] for r in selected})==len(selected)
 helpers={}
 inputs={p:fingerprint(p) for p in {source/'tests/Makefile.am',Path(__file__),Path('/usr/bin/perl'),Path('/bin/sh').resolve(),profile.oracle,*list((source/'tests').glob('*.pm'))}}
 for row in selected:inputs[source/row['path']]=row['sha256']
+if any(r.get('fixture_profile')=='private-tls-log' for r in selected):
+    for p in (source/'tests/certs').rglob('*'):
+        if p.is_file():inputs[p]=fingerprint(p)
 assert all(fingerprint(p)==h for p,h in inputs.items())
 results=[]
 for row in selected:
@@ -47,14 +51,39 @@ for row in selected:
                 env={'PATH':str(work/'exec')+':'+str(work/'deps')+':/usr/bin:/bin','HOME':directory,
                      'TMPDIR':directory,'LC_ALL':'C','LANGUAGE':'C','TZ':'UTC0',
                      'srcdir':str(source/'tests'),'WGET_PATH':str(wrapper),'VALGRIND_TESTS':'0'}
-                done=subprocess.run(command,cwd=work,env=env,stdin=subprocess.DEVNULL,
-                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=90)
+                private_inputs={}
+                if row.get('fixture_profile')=='private-tls-log':
+                    copies=work/'source';copies.mkdir()
+                    for p in (source/'tests').glob('*.pm'):shutil.copy2(p,copies/p.name)
+                    shutil.copytree(source/'tests/certs',copies/'certs')
+                    helper=copies/'SSLServer.pm';text=helper.read_text()
+                    assert text.count('/tmp/wgetserver.log')==1
+                    helper.write_text(text.replace('/tmp/wgetserver.log',str(work/'server.log')))
+                    for p in copies.rglob('*'):
+                        if p.is_file():private_inputs[str(p.relative_to(copies))]=fingerprint(p)
+                    command[1]='-I'+str(copies);env['srcdir']=str(copies)
+                    shutil.copy2(helper,saved/'SSLServer.pm')
+                timed_out=False
+                process=subprocess.Popen(command,cwd=work,env=env,stdin=subprocess.DEVNULL,
+                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT,start_new_session=True)
+                try:
+                    output,_=process.communicate(timeout=90)
+                except subprocess.TimeoutExpired:
+                    timed_out=True
+                    os.killpg(process.pid,signal.SIGTERM)
+                    try:output,_=process.communicate(timeout=5)
+                    except subprocess.TimeoutExpired:
+                        os.killpg(process.pid,signal.SIGKILL);output,_=process.communicate()
+                done=subprocess.CompletedProcess(command,process.returncode,output)
+                if (work/'server.log').exists():shutil.copy2(work/'server.log',saved/'server.log')
+                for name_,expected in private_inputs.items():assert fingerprint(copies/name_)==expected
+
                 (saved/'driver.log').write_bytes(done.stdout)
                 successful=done.stdout.count(b'Test successful.')
                 counts=[(successful,successful,0)]
                 expected_skip=row.get('expected_feature_skip')
                 skip_matches=bool(expected_skip) and done.returncode==77 and successful==0 and ("Skipped test: Wget misses feature '"+expected_skip+"'").encode() in done.stdout and re.search(rb'^\s+'+expected_skip.encode()+rb'=0$',done.stdout,re.M) is not None
-                passed=(skip_matches if expected_skip else done.returncode==0 and successful==1 and b'Test failed:' not in done.stdout)
+                passed=not timed_out and (skip_matches if expected_skip else done.returncode==0 and successful==1 and b'Test failed:' not in done.stdout)
                 shutil.copytree(work/'memory',saved/'memory')
                 logs=[]
                 for p in sorted((saved/'memory').glob('*.log')):
@@ -65,14 +94,14 @@ for row in selected:
                 clean=bool(logs) and all(m['complete_exec_log'] and m['errors']==0
                     and m['non_inherited_descriptors']==0 and not any(m['heap_bytes'].get(k,0)
                     for k in ('definitely lost','indirectly lost','possibly lost')) for m in logs)
-                outcomes[key]={'status':done.returncode,'assertions_pass':passed and not expected_skip,'expectation_matches':passed,'feature_skip_matches':skip_matches,'assertion_counts':[[int(n) for n in row] for row in counts],
+                outcomes[key]={'status':done.returncode,'timed_out':timed_out,'private_inputs':private_inputs,'fixture_raw':{str(p.relative_to(ROOT)):fingerprint(p) for p in (saved/'SSLServer.pm',saved/'server.log') if p.exists()},'assertions_pass':passed and not expected_skip,'expectation_matches':passed,'feature_skip_matches':skip_matches,'assertion_counts':[[int(n) for n in row] for row in counts],
                     'driver_log':str((saved/'driver.log').relative_to(ROOT)),'driver_log_sha256':fingerprint(saved/'driver.log'),
                     'memory':logs,'memory_clean':clean if instrument else None}
     passed=all(o['expectation_matches'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
-    results.append({'selection':name,'expected_feature_skip':row.get('expected_feature_skip'),'source':row['path'],'source_sha256':row['sha256'],
+    results.append({'selection':name,'expected_feature_skip':row.get('expected_feature_skip'),'fixture_profile':row.get('fixture_profile'),'source':row['path'],'source_sha256':row['sha256'],
                     'pass':passed,'outcomes':outcomes})
     assert all(fingerprint(p)==h for p,h in inputs.items())
-    report={**profile.metadata(),'scope':'Reviewed unchanged GNU Wget Perl scripts serve fixed HTTP responses or FTP file listings/content on their own localhost server and verify status, resumed content and downloaded filenames. Local input/output error cases preserve the original assertions. GNU feature-gate skips are recorded separately and do not count as tested optional behavior. All Wget processes, including feature probes, are instrumented without upstream suppressions; server helpers are not instrumented.',
+    report={**profile.metadata(),'scope':'Reviewed unchanged GNU Wget Perl scripts serve fixed HTTP responses or FTP file listings/content on their own localhost server and verify status, resumed content and downloaded filenames. Local input/output error cases preserve the original assertions. HTTPS fixtures copy the original modules and certificates, changing only the helper log path to a private location. GNU feature-gate skips are recorded separately and do not count as tested optional behavior. All Wget processes, including feature probes, are instrumented without upstream suppressions; server helpers are not instrumented.',
         'inputs':{str(p):h for p,h in inputs.items()},'driver_sha256':fingerprint(Path(__file__)),
         'ordinary_passed':sum(r['pass'] and not r['expected_feature_skip'] for r in results),
         'feature_skips_matched':sum(r['pass'] and bool(r['expected_feature_skip']) for r in results),
