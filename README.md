@@ -153,8 +153,14 @@ getconf tests pass in all four modes. The strict audit reparses 242 clean
 candidate process logs. Thirteen iconv interface structures also match pinned
 GNU C sizes, alignments and field offsets. These results cover the host glibc
 2.43 profile; iconv originals, charmaps and other profiles remain open. The
-initial diagnostic and allocation findings are retained. Combined regression
-on this 154-command build is tracked separately in `evidence/gnu154-*.json`.
+initial diagnostic and allocation findings are retained. All 20 selected
+combined-regression jobs now pass on this 154-command build: 428 Coreutils
+smoke checks, 107 instrumented help checks, 318 native and instrumented
+behavior comparisons, 11 dispatcher checks, 137 newer-entry comparisons, and
+the focused checks for every installed additional provider and Gawk.
+`evidence/gnu154-regression-summary.json` verifies the completed report counts
+and exact candidate hashes. Earlier original-suite results retain their actual
+candidate hashes; they are not represented as reruns on the new binary.
 
 For a later upstream fix, identify its upstream commit or patch and the release
 baseline in this table. Record the affected commands, upstream reference, local
