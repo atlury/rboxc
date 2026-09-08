@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Execute reviewed original GNU Gawk Make targets without changing recipes."""
 # SPDX-License-Identifier: GPL-3.0-or-later
+from concurrent.futures import ThreadPoolExecutor
 import importlib.util
 import json
 import os
@@ -33,13 +34,19 @@ inputs={p:fingerprint(p) for p in {makefile,source/'test/Makefile.am',source/'te
 for row in selected:
     inputs[source/row['path']]=row['sha256']
     inputs.update({source/'test'/n:h for n,h in row['fixtures'].items()})
+locale_profiles={}
+for row in selected:
+    if row.get('locale_profile'):
+        path=ROOT/row['locale_profile'];data=json.loads(path.read_text());inputs[path]=fingerprint(path)
+        base=Path(data['runtime_path'])
+        for name,h in data['files'].items():inputs[base/data['name']/name]=h
+        locale_profiles[row['target']]=str(base)
 assert all(fingerprint(p)==h for p,h in inputs.items())
 for row in selected:
     if row.get('configured_recipe_sha256'):
         recipe=re.search('^'+re.escape(row['target'])+r':.*?(?=\n\S|\Z)',makefile.read_text(),re.M|re.S)[0]
         assert __import__('hashlib').sha256(recipe.encode()).hexdigest()==row['configured_recipe_sha256']
-results=[]
-for row in selected:
+def run_selection(row):
     name=row['target'];outcomes={}
     for implementation in ('gnu','rboxc'):
         for instrument in (False,True):
@@ -60,6 +67,7 @@ for row in selected:
                     'srcdir='+str(source/'test'),'AWKPROG='+str(wrapper),'CMP='+str(helpers['cmp']),name]
                 env={'PATH':str(work/'exec')+':'+str(work/'deps')+':/usr/bin:/bin','HOME':directory,
                      'TMPDIR':directory,'LC_ALL':'C','LANGUAGE':'C','TZ':'UTC0'}
+                if name in locale_profiles:env['LOCPATH']=locale_profiles[name]
                 done=subprocess.run(command,cwd=work,env=env,stdin=subprocess.DEVNULL,
                     stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=90)
                 (saved/'driver.log').write_bytes(done.stdout)
@@ -70,6 +78,8 @@ for row in selected:
                 passed=(done.returncode==0 and not residual.exists()
                         and name in done.stdout.decode(errors='replace').splitlines()
                         and b'Error ' not in done.stdout)
+                baseline_output=row.get('expected_baseline_output')
+                baseline_matches=baseline_output is not None and not passed and done.returncode==0 and residual.exists() and residual.read_bytes()==baseline_output.encode() and fingerprint(saved/'driver.log')==row['expected_baseline_driver_sha256']
                 shutil.copytree(work/'memory',saved/'memory')
                 logs=[]
                 for p in sorted((saved/'memory').glob('*.log')):
@@ -81,16 +91,23 @@ for row in selected:
                     and m['non_inherited_descriptors']==0 and not any(m['heap_bytes'].get(k,0)
                     for k in ('definitely lost','indirectly lost','possibly lost')) for m in logs)
                 outcomes[key]={'status':done.returncode,'assertions_pass':passed,
+                    'baseline_failure_matches':baseline_matches,'actual_output':str((saved/'actual-output').relative_to(ROOT)) if residual.exists() else None,'actual_output_sha256':fingerprint(saved/'actual-output') if residual.exists() else None,
                     'driver_log':str((saved/'driver.log').relative_to(ROOT)),'driver_log_sha256':fingerprint(saved/'driver.log'),
                     'memory':logs,'memory_clean':clean if instrument else None}
     passed=all(o['assertions_pass'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
-    results.append({'selection':name,'source':row['path'],'source_sha256':row['sha256'],
-                    'pass':passed,'outcomes':outcomes})
-    assert all(fingerprint(p)==h for p,h in inputs.items())
-    report={**profile.metadata(),'scope':'Reviewed unchanged GNU Make recipes compare original supplied programs and input against GNU expected output in private directories. Every selected Gawk invocation is instrumented; native findings are preserved.',
-        'inputs':{str(p):h for p,h in inputs.items()},'driver_sha256':fingerprint(Path(__file__)),
-        'planned_total':len(selected),'complete':len(results)==len(selected),
-        'passed':sum(r['pass'] for r in results),'total':len(results),'results':results}
-    profile.report.write_text(json.dumps(report,indent=2)+'\n')
-    print('PASS' if passed else 'OPEN',name,flush=True)
-raise SystemExit(report['passed']!=report['total'])
+    baseline_matches=bool(row.get('expected_baseline_output')) and all(o['baseline_failure_matches'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
+    return {'baseline_failure_matches':baseline_matches,'locale_profile':row.get('locale_profile'),'selection':name,'source':row['path'],'source_sha256':row['sha256'],
+            'pass':passed,'outcomes':outcomes}
+
+results=[]
+with ThreadPoolExecutor(max_workers=4) as pool:
+    for result in pool.map(run_selection,selected):
+        results.append(result)
+        assert all(fingerprint(p)==h for p,h in inputs.items())
+        report={**profile.metadata(),'scope':'Reviewed unchanged GNU Make recipes compare original supplied programs and input against GNU expected output in private directories. Every selected Gawk invocation is instrumented; native findings are preserved.',
+            'inputs':{str(p):h for p,h in inputs.items()},'driver_sha256':fingerprint(Path(__file__)),
+            'baseline_failures_matched':sum(r['baseline_failure_matches'] for r in results),'matched':sum(r['pass'] or r['baseline_failure_matches'] for r in results),'parallel_selections':4,'planned_total':len(selected),'complete':len(results)==len(selected),
+            'passed':sum(r['pass'] for r in results),'total':len(results),'results':results}
+        profile.report.write_text(json.dumps(report,indent=2)+'\n')
+        print('PASS' if result['pass'] else 'BASELINE-FAILURE-MATCH' if result['baseline_failure_matches'] else 'OPEN',result['selection'],flush=True)
+raise SystemExit(report['matched']!=report['total'])

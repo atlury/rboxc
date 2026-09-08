@@ -71,7 +71,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 187 reviewed originals pass |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 266 reviewed originals pass; one original failure matches GNU |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -91,7 +91,23 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-Gawk now passes **187 reviewed original Make recipes**, including further CSV
+Gawk now passes **266 reviewed original Make recipes**; one additional original,
+`typeof7`, fails its supplied assertion identically in GNU and rboxc. Both print
+`test2 <0>` where the unchanged expected file says `test2 <>`. That result remains
+an explicit baseline failure, not a passing original or a registered GNU XFAIL.
+The new selections cover conversions, Unicode formatting, sorting, profiling,
+record handling and a 200 KB substitution fixture. The missing Russian UTF-8
+locale is built privately from pinned glibc data and selected only for its test;
+the system locale archive is unchanged. Independent original selections now run
+with four workers, each retaining a private working directory and raw logs.
+
+`evidence/gawk-locale-baseline-memory-audit.json` verifies all 267 reviewed
+selections against their recorded outcomes and **352 clean candidate process
+logs**, including the 85 retained focused comparisons. The initial conversion run
+and exact baseline output remain preserved. The other 367 program inputs and
+extension profiles remain open; full Gawk acceptance is not claimed.
+
+The preceding Gawk checkpoint passes **187 reviewed original Make recipes**, including further CSV
 and record handling, namespaces, array and parameter diagnostics, numeric
 formatting and profiling. The original programs, input files, expected output
 and recipes are unchanged. Together with the retained 85 focused comparisons

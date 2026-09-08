@@ -26,9 +26,13 @@ focused = json.loads(options.focused.read_text())
 original = json.loads(options.original.read_text())
 assert focused['binary_sha256'] == original['binary_sha256'] == fingerprint(Path(focused['binary']))
 assert focused['complete'] and focused['passed'] == focused['total'] == focused['planned_total'] == 85
-reviewed={r['target'] for r in json.loads((ROOT/'inventory/gawk-tests.json').read_text())['inputs'] if r['reviewed']}
+reviewed_rows={r['target']:r for r in json.loads((ROOT/'inventory/gawk-tests.json').read_text())['inputs'] if r['reviewed']}
+reviewed=set(reviewed_rows)
+baselines={n:r for n,r in reviewed_rows.items() if r.get('expected_baseline_output')}
 assert reviewed
-assert original['complete'] and original['passed'] == original['total'] == original['planned_total'] == len(reviewed)
+assert original['complete'] and original['matched'] == original['total'] == original['planned_total'] == len(reviewed)
+assert original['passed']==len(reviewed)-len(baselines)
+assert original['baseline_failures_matched']==len(baselines)
 assert focused['driver_sha256'] == fingerprint(ROOT/'tests/gawk-behavior.py')
 assert original['inputs'][str(ROOT/'tests/gawk-original.py')] == fingerprint(ROOT/'tests/gawk-original.py')
 assert {r['selection'] for r in original['results']} == reviewed
@@ -39,6 +43,22 @@ for item in focused['oracles'].values():
     inputs[item['path']] = item['sha256']
 for path, expected in inputs.items():
     assert fingerprint(Path(path)) == expected, 'recorded input changed: '+path
+baseline_evidence={}
+for recipe in baselines.values():
+    previous_path=ROOT/recipe['baseline_report'];previous=json.loads(previous_path.read_text())
+    assert previous['binary_sha256']==original['binary_sha256']
+    selection=next(r for r in previous['results'] if r['selection']==recipe['target'])
+    assert not selection['pass']
+    for outcome in selection['outcomes'].values():
+        assert not outcome['assertions_pass'] and outcome['driver_log_sha256']==recipe['expected_baseline_driver_sha256']
+        assert fingerprint(ROOT/outcome['driver_log'])==outcome['driver_log_sha256']
+        actual=(ROOT/outcome['driver_log']).parent/'actual-output'
+        assert actual.read_bytes()==recipe['expected_baseline_output'].encode()
+        baseline_evidence[str(actual.relative_to(ROOT))]=fingerprint(actual)
+    archive=ROOT/'evidence/raw/gawk-conversion-driver.py'
+    assert fingerprint(archive)==previous['driver_sha256']
+    baseline_evidence[str(archive.relative_to(ROOT))]=fingerprint(archive)
+    baseline_evidence[recipe['baseline_report']]=fingerprint(previous_path)
 processes = []
 def audit(log, expected_hash, recorded, candidate, case):
     path = ROOT/log
@@ -60,9 +80,30 @@ for row in focused['results']:
         if 'memory' in outcome:
             audit(outcome['log'],outcome['log_sha256'],outcome['memory'],key=='rboxc-valgrind',row['name'])
 for row in original['results']:
-    assert row['pass']
+    baseline=baselines.get(row['selection'])
+    assert row['pass']==(baseline is None)
+    assert row['baseline_failure_matches']==bool(baseline)
+    assert row['locale_profile']==reviewed_rows[row['selection']].get('locale_profile')
+    if row['locale_profile']:
+        locale=json.loads((ROOT/row['locale_profile']).read_text())
+        for path,h in locale['inputs'].items():assert fingerprint(Path(path))==h
+        assert locale['driver_sha256']==fingerprint(ROOT/'scripts/prepare-gawk-locales.py')
+        assert fingerprint(ROOT/locale['build_log'])==locale['build_log_sha256']
+        base=Path(locale['runtime_path'])
+        assert (base/locale['alias']).readlink()==Path(locale['name'])
+        for name,h in locale['files'].items():assert fingerprint(base/locale['name']/name)==h
+        assert locale['probe']=={'status':0,'stdout':'UTF-8\n','stderr':''}
     for key,outcome in row['outcomes'].items():
-        assert outcome['status']==0 and outcome['assertions_pass']
+        assert outcome['status']==0
+        if baseline:
+            assert not outcome['assertions_pass'] and outcome['baseline_failure_matches']
+            output=ROOT/outcome['actual_output']
+            assert fingerprint(output)==outcome['actual_output_sha256']
+            assert output.read_bytes()==baseline['expected_baseline_output'].encode()
+            assert outcome['driver_log_sha256']==baseline['expected_baseline_driver_sha256']
+        else:
+            assert outcome['assertions_pass'] and not outcome['baseline_failure_matches']
+            assert outcome['actual_output'] is None and outcome['actual_output_sha256'] is None
         assert fingerprint(ROOT/outcome['driver_log'])==outcome['driver_log_sha256']
         for log in outcome['memory']:
             contents=(ROOT/log['log']).read_text()
@@ -71,12 +112,12 @@ for row in original['results']:
             audit(log['log'],log['sha256'],log,key=='rboxc-valgrind',row['source'])
 original_processes=sum(len(r['outcomes']['rboxc-valgrind']['memory']) for r in original['results'])
 assert original_processes>0 and len(processes)==85+original_processes
-report = {'scope':'All 85 focused comparisons and all currently reviewed unchanged GNU original selections pass. Every input and raw log is hash-checked and every candidate process summary is reparsed. GNU native findings remain baseline observations.',
+report = {'scope':'All 85 focused comparisons pass. Original assertion passes and exact failures shared with the pinned native GNU baseline are counted separately; baseline matches do not count as passing original tests. Every input and raw log is hash-checked and every candidate process summary is reparsed. GNU native findings remain baseline observations.',
           'binary':focused['binary'],'binary_sha256':focused['binary_sha256'],
           'runtime_helpers':focused['runtime_helpers'],'inputs':inputs,
           'focused_report':{'path':str(options.focused),'sha256':fingerprint(options.focused)},
           'original_report':{'path':str(options.original),'sha256':fingerprint(options.original)},
           'passed':len(processes),'total':len(processes),'focused_cases':85,'original_selections':len(reviewed),'original_processes':original_processes,
-          'driver_sha256':fingerprint(Path(__file__)),'results':processes}
+          'original_assertion_passes':original['passed'],'baseline_failures_matched':len(baselines),'baseline_selections':sorted(baselines),'baseline_evidence':baseline_evidence,'driver_sha256':fingerprint(Path(__file__)),'results':processes}
 target.write_text(json.dumps(report,indent=2)+'\n')
 print('Audited 85 focused cases,',len(reviewed),'GNU original selections, and',len(processes),'clean candidate processes')
