@@ -78,7 +78,7 @@ there where available.
 | Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 17 reviewed originals pass with clean Valgrind; broader acceptance open |
 | Less | 704 | Candidate passes ten focused comparisons; original suite pending |
 | Screen | 5.0.2 | Candidate passes five option comparisons and the descriptor-preservation contract |
-| Wget | 1.25.0 | Candidate passes 14 focused comparisons and four reviewed originals |
+| Wget | 1.25.0 | Candidate passes 14 focused comparisons and 16 reviewed originals |
 | glibc | 2.43 | Both entries integrated; 50 focused checks, both getconf originals and three iconv buffer recipes pass |
 
 The next-provider work is preserved before release activation. Gawk's candidate
@@ -114,6 +114,13 @@ preserved in `evidence/gawk-expanded-original.json`; the corrected run and its
 111 clean candidate process logs are verified in
 `evidence/gawk-locale-memory-audit.json`. Other original Gawk inputs and extension
 profiles remain open.
+
+Wget now passes **16 reviewed original scripts** and all 14 focused comparisons
+on the latest candidate. New originals cover download resumption, byte ranges,
+uppercase output names, unavailable URLs, missing upload input and write errors.
+They retain GNU's original Perl assertions and fixed localhost servers.
+`evidence/wget-resume-memory-audit.json` verifies 30 clean candidate process logs.
+Other original Wget scripts and unit-test selections remain open.
 
 Patch's 49 registered original scripts are now accounted for: **38 pass, two
 match GNU's registered expected failures, and nine mixed reproduction scripts

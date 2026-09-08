@@ -21,10 +21,11 @@ profile=ComparisonProfile('wget-original',oracle=ROOT/'build/gnu-wget/src/wget')
 source=Path(json.loads((ROOT/'inventory/sources.json').read_text())['wget']['source'])
 manifest=json.loads((ROOT/'inventory/wget-tests.json').read_text())
 selected=[r for r in manifest['inputs'] if r['reviewed']]
-assert len(selected)==4
+assert selected and len({r['target'] for r in selected})==len(selected)
 helpers={}
 inputs={p:fingerprint(p) for p in {source/'tests/Makefile.am',Path(__file__),Path('/usr/bin/perl'),Path('/bin/sh').resolve(),profile.oracle,*list((source/'tests').glob('*.pm'))}}
 for row in selected:inputs[source/row['path']]=row['sha256']
+assert all(fingerprint(p)==h for p,h in inputs.items())
 results=[]
 for row in selected:
     name=row['target'];outcomes={}
@@ -69,7 +70,7 @@ for row in selected:
     results.append({'selection':name,'source':row['path'],'source_sha256':row['sha256'],
                     'pass':passed,'outcomes':outcomes})
     assert all(fingerprint(p)==h for p,h in inputs.items())
-    report={**profile.metadata(),'scope':'Four reviewed unchanged GNU Wget Perl scripts serve valid responses on their own localhost server and verify status and downloaded files. All Wget processes are instrumented without upstream suppressions; server helpers are not instrumented.',
+    report={**profile.metadata(),'scope':'Reviewed unchanged GNU Wget Perl scripts serve fixed valid responses on their own localhost server and verify status, resumed content and downloaded filenames. Local input/output error cases preserve the original assertions. All Wget processes are instrumented without upstream suppressions; server helpers are not instrumented.',
         'inputs':{str(p):h for p,h in inputs.items()},'driver_sha256':fingerprint(Path(__file__)),
         'planned_total':len(selected),'complete':len(results)==len(selected),
         'passed':sum(r['pass'] for r in results),'total':len(results),'results':results}

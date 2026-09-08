@@ -1,0 +1,1711 @@
+{
+  "runtime_helpers": {
+    "/root/rboxc/target/patch-merge-initialization-candidate/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174"
+  },
+  "binary": "/root/rboxc/target/patch-merge-initialization-candidate/release/rboxc",
+  "binary_sha256": "295eaaba668799233c9ba58117e704cd9500e15f096d9cc4c2b7ffa90d5e7ad3",
+  "gnu_binary_sha256": "ae814509aa45bed3f1478aad1d2ace52d9944e65d2ae829697c4736672288ce1",
+  "scope": "Reviewed unchanged GNU Wget Perl scripts serve fixed valid responses on their own localhost server and verify status, resumed content and downloaded filenames. Local input/output error cases preserve the original assertions. All Wget processes are instrumented without upstream suppressions; server helpers are not instrumented.",
+  "inputs": {
+    "/opt/src/wget-1.25.0/tests/SSLServer.pm": "8da6d1092aa33bb5e44759b442935281827dd8c375f2db4697d73897a6f62f03",
+    "/opt/src/wget-1.25.0/tests/Makefile.am": "e2f3a27c7472e44468a0bd6f29f04cb745f6a05d66175209bde9f3df8e84f15b",
+    "/opt/src/wget-1.25.0/tests/SSLTest.pm": "7da15eb94c224689f62924426d915437f88595059f32958f33f833cae179e236",
+    "/opt/src/wget-1.25.0/tests/HTTPServer.pm": "b20f8dc735a582e59f9ff1b88422486ffc54d1932c72cbd506eea490a265a6e7",
+    "/opt/src/wget-1.25.0/tests/HTTPTest.pm": "6c832b78f90bc120d8ee6b48eb388aa7198246415961779e723db5751813c309",
+    "/root/rboxc/build/gnu-wget/src/wget": "ae814509aa45bed3f1478aad1d2ace52d9944e65d2ae829697c4736672288ce1",
+    "/root/rboxc/tests/wget-original.py": "2058121db9953376314d8c0399dbee92f20d3d7bba9339f850c60fe9e6c5836f",
+    "/opt/src/wget-1.25.0/tests/WgetFeature.pm": "342c770aa47705fab7bb3fd827c67bd56f8ad304cca67281df63a6342db71994",
+    "/opt/src/wget-1.25.0/tests/FTPServer.pm": "bb05b314ffc08cfaf445b89b71d26f931f3ada6a145e2c71e1fcf0aa1e8d8eb6",
+    "/usr/bin/perl": "50036d900bc669506ea0899f0ad5c117806d6815c606cba442f955cd1b2ee1cf",
+    "/usr/bin/dash": "c626229526bb58ec2d0f585f3c3ae1412e6f973b4353385042d11c38d8426917",
+    "/opt/src/wget-1.25.0/tests/FTPTest.pm": "75e4fae0efbae742421f010522eca9ec5a18d011e408915c734bcadd7d72fcc7",
+    "/opt/src/wget-1.25.0/tests/WgetTests.pm": "8f211da7c32926d468b5a5e805f4b9b8cec43bccfa7e6b33e22d62709d827413",
+    "/opt/src/wget-1.25.0/tests/Test--post-file.px": "d8f0b9f042aedebf15cc799c22efa74756b7d20e2d13f5195eca00f36a273a86",
+    "/opt/src/wget-1.25.0/tests/Test--start-pos--continue.px": "af5c35b4f6412b509ed4ff6b478375fe3640a49310ec71d8e65f4ba3621389e7",
+    "/opt/src/wget-1.25.0/tests/Test--start-pos.px": "643d9c76655c363fb0c2efab5f1f6edbe0c865cd9854dd234d7b97e0ab106104",
+    "/opt/src/wget-1.25.0/tests/Test-204.px": "b322a2f78530a06d2c57bc7f0d4e5b6fac6160230d8eec951e987421217d9a9d",
+    "/opt/src/wget-1.25.0/tests/Test-O-nc.px": "8521fcade0305edf92ca4d0f24b27ec5bf94edb620f146e8e2ab732094596cb8",
+    "/opt/src/wget-1.25.0/tests/Test-O-nonexisting.px": "0ec41c6d97584950cab2dce6d8b1aa83fd7967a613a5f84b7df35222d0e22a70",
+    "/opt/src/wget-1.25.0/tests/Test-O.px": "d350d35a96639738b2efe7eb25d681bb11bd2e30efaeb0a782e0770e00267099",
+    "/opt/src/wget-1.25.0/tests/Test-Restrict-Lowercase.px": "90bc4e5a1451472ef598333e48ac93d3ef03edd760b2646fdf0f9a872bb365ee",
+    "/opt/src/wget-1.25.0/tests/Test-Restrict-Uppercase.px": "df74c1b2f783402c68d217da6ca8790f999cb0daf272833db12a0b46152be5b7",
+    "/opt/src/wget-1.25.0/tests/Test-c-full.px": "4ef4602510ebc4d617f6e27dd7596afc4f12e3099ddd3acc37cd9fae7774998d",
+    "/opt/src/wget-1.25.0/tests/Test-c-partial.px": "a4912dbf601770cfc793559c2c9d26e21b8f1bf1412727a309a8f52a48cc018b",
+    "/opt/src/wget-1.25.0/tests/Test-c-shorter.px": "098ce1906df80c70d4d63d57dc8563ca36ce01849bad44745ad9786973b433ac",
+    "/opt/src/wget-1.25.0/tests/Test-c.px": "77626b35061cef9a843bb94d88a6d4b9700e75a6fc848f86c40523bf19381fca",
+    "/opt/src/wget-1.25.0/tests/Test-nonexisting-quiet.px": "d499946a02a9fc0791676aa58e3699ef9c86e02046d1bf8e611f6b2601362069",
+    "/opt/src/wget-1.25.0/tests/Test-noop.px": "efbf6266352cda9d41a59512d51867fe9a7f277fd8e325b6537bddce851513ca",
+    "/opt/src/wget-1.25.0/tests/Test-stdouterr.px": "4f11c86ce82704fdb27998377e5cfbae3ce95ca6119828adc2d5c379cfca9775"
+  },
+  "driver_sha256": "2058121db9953376314d8c0399dbee92f20d3d7bba9339f850c60fe9e6c5836f",
+  "planned_total": 16,
+  "complete": true,
+  "passed": 16,
+  "total": 16,
+  "results": [
+    {
+      "selection": "Test--post-file.px",
+      "source": "tests/Test--post-file.px",
+      "source_sha256": "d8f0b9f042aedebf15cc799c22efa74756b7d20e2d13f5195eca00f36a273a86",
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test--post-file.px-gnu/driver.log",
+          "driver_log_sha256": "2f05e9813b9048b6f971383e1f4902b1e573c22805a5b05b0eb0e669c0ce358b",
+          "memory": [],
+          "memory_clean": null
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test--post-file.px-gnu-valgrind/driver.log",
+          "driver_log_sha256": "2103151ec23031a998328b7e19ecac02b95ba753206ad58b39a5c4acc752fb68",
+          "memory": [
+            {
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 418
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436348"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test--post-file.px-gnu-valgrind/memory/436348.log",
+              "sha256": "99f9676324c40413eaee41bb2297d360ad1819fedebdda3a74c9621fa8a05c7b"
+            }
+          ],
+          "memory_clean": true
+        },
+        "rboxc": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test--post-file.px-rboxc/driver.log",
+          "driver_log_sha256": "bea80345e02662f02ec1449f355c4c82cae3b155f4a30126eb90ff1c5eb40298",
+          "memory": [],
+          "memory_clean": null
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test--post-file.px-rboxc-valgrind/driver.log",
+          "driver_log_sha256": "a5d73a916faf9096250ff0083a5c184ce46577fa8d3fb34c36ab4173ce788471",
+          "memory": [
+            {
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 418
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436354"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test--post-file.px-rboxc-valgrind/memory/436354.log",
+              "sha256": "1f003fafe02a2cac79a8e65b47b04841bfe6d02c7ef1288ac9df51526a5ec0ab"
+            }
+          ],
+          "memory_clean": true
+        }
+      }
+    },
+    {
+      "selection": "Test--start-pos--continue.px",
+      "source": "tests/Test--start-pos--continue.px",
+      "source_sha256": "af5c35b4f6412b509ed4ff6b478375fe3640a49310ec71d8e65f4ba3621389e7",
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test--start-pos--continue.px-gnu/driver.log",
+          "driver_log_sha256": "43a86685e66e29c13e88dfdfd4bea7984015293b335cfdce66e7fae170375a07",
+          "memory": [],
+          "memory_clean": null
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test--start-pos--continue.px-gnu-valgrind/driver.log",
+          "driver_log_sha256": "37758228fd7caba6d969fb8ab29ccf8aae101b745647bbbfbf53500f79435fae",
+          "memory": [
+            {
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1623
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436370"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test--start-pos--continue.px-gnu-valgrind/memory/436370.log",
+              "sha256": "572e2d7cd9c63761d40456dbd7e91741e56cc0d247150ffe27a7da8ab0d6469e"
+            }
+          ],
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test--start-pos--continue.px-rboxc/driver.log",
+          "driver_log_sha256": "b42a128b062fca02b27170fda5044595c9cab7a1bc610ba8782f0be82611de37",
+          "memory": [],
+          "memory_clean": null
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test--start-pos--continue.px-rboxc-valgrind/driver.log",
+          "driver_log_sha256": "3942b7771e1e1c5406c59ebc0a7c070c54817d97b793296cfb4908711d55ccda",
+          "memory": [
+            {
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1613
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436397"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test--start-pos--continue.px-rboxc-valgrind/memory/436397.log",
+              "sha256": "714c997ace920d8db3444993641519f0d7db07e28d0ec2b7c5c62a3969e77270"
+            }
+          ],
+          "memory_clean": true
+        }
+      }
+    },
+    {
+      "selection": "Test--start-pos.px",
+      "source": "tests/Test--start-pos.px",
+      "source_sha256": "643d9c76655c363fb0c2efab5f1f6edbe0c865cd9854dd234d7b97e0ab106104",
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test--start-pos.px-gnu/driver.log",
+          "driver_log_sha256": "2da8a673ff716d0c1d191f149efc8ecea91fa5e3708fcee84dab544f15612a43",
+          "memory": [],
+          "memory_clean": null
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test--start-pos.px-gnu-valgrind/driver.log",
+          "driver_log_sha256": "94f7e7ac4603cab8080f0e9373b7dabe3458974a6caf483f40c7db33e80dcbee",
+          "memory": [
+            {
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1574
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436405"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test--start-pos.px-gnu-valgrind/memory/436405.log",
+              "sha256": "2262af2c9e8de5174f7ed813321eb216f069ca2c2938e52d057d71c05ab7a163"
+            }
+          ],
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test--start-pos.px-rboxc/driver.log",
+          "driver_log_sha256": "bfe2277e2bcff5d0966fb164586883fb69541bd00d4ae596278cef67d79c5d3e",
+          "memory": [],
+          "memory_clean": null
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test--start-pos.px-rboxc-valgrind/driver.log",
+          "driver_log_sha256": "40c0b87b0ed6aacd55bdf9108775583a11e5fa0984ad07e1d5a1f531646874ea",
+          "memory": [
+            {
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1564
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436415"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test--start-pos.px-rboxc-valgrind/memory/436415.log",
+              "sha256": "636df8b188b82edb05bfb882abee2286105c6a9f7ead7b44f0660a5b423480a6"
+            }
+          ],
+          "memory_clean": true
+        }
+      }
+    },
+    {
+      "selection": "Test-204.px",
+      "source": "tests/Test-204.px",
+      "source_sha256": "b322a2f78530a06d2c57bc7f0d4e5b6fac6160230d8eec951e987421217d9a9d",
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-204.px-gnu/driver.log",
+          "driver_log_sha256": "3674f9a79304a19c3dd2b42a7fba70a58710b5b6356a2b1bfb454862f80262dc",
+          "memory": [],
+          "memory_clean": null
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-204.px-gnu-valgrind/driver.log",
+          "driver_log_sha256": "1d3a2dc0e0464fe55877e50b7422ab0b0596cda139460a79ecd32ef879b5c712",
+          "memory": [
+            {
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1533
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436425"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-204.px-gnu-valgrind/memory/436425.log",
+              "sha256": "c9eb160d76307fca95b9fe400b1be9d8c510732ef08cb394f2068c62ca145a02"
+            }
+          ],
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-204.px-rboxc/driver.log",
+          "driver_log_sha256": "e04be364aa655c7dd41e94e64d907fe6259d74908ae3774d9820dfc0fcd5c628",
+          "memory": [],
+          "memory_clean": null
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-204.px-rboxc-valgrind/driver.log",
+          "driver_log_sha256": "6475fe43aa3e0bfa754c45c00503da0afacdf7df357eead829e9093eba76f9e7",
+          "memory": [
+            {
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1523
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436433"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-204.px-rboxc-valgrind/memory/436433.log",
+              "sha256": "4b05ad6be66180cb9f80f8b6345305f7203b504920b0c459674dad1866954975"
+            }
+          ],
+          "memory_clean": true
+        }
+      }
+    },
+    {
+      "selection": "Test-O-nc.px",
+      "source": "tests/Test-O-nc.px",
+      "source_sha256": "8521fcade0305edf92ca4d0f24b27ec5bf94edb620f146e8e2ab732094596cb8",
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-O-nc.px-gnu/driver.log",
+          "driver_log_sha256": "65efb5c54909b3787c307f0eb7fb752154262729ee2aa6a830434dae962c23bb",
+          "memory": [],
+          "memory_clean": null
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-O-nc.px-gnu-valgrind/driver.log",
+          "driver_log_sha256": "c22049a338decfcd392455a50746d8da54ded663659fd9fb9cd74068f58266e7",
+          "memory": [
+            {
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1563
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436441"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-O-nc.px-gnu-valgrind/memory/436441.log",
+              "sha256": "c12bb63f5c75a224ddd0dcf383dc0d9c68d5909473a35169f4c80e864638481f"
+            }
+          ],
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-O-nc.px-rboxc/driver.log",
+          "driver_log_sha256": "59b791bf60371906fec52f19192b97b1ddc1d4e5cf7aec30e31e1c9c4d5f4c8a",
+          "memory": [],
+          "memory_clean": null
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-O-nc.px-rboxc-valgrind/driver.log",
+          "driver_log_sha256": "f3e68971a4bfc7633113f4b7298569768cb130c7bb86781bfaf2c6ce6e64c603",
+          "memory": [
+            {
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1553
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436451"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-O-nc.px-rboxc-valgrind/memory/436451.log",
+              "sha256": "2a3bd923a45627822d2becfff2280fdfa929fc1c7fe72d121c83d70d2465b4d5"
+            }
+          ],
+          "memory_clean": true
+        }
+      }
+    },
+    {
+      "selection": "Test-O-nonexisting.px",
+      "source": "tests/Test-O-nonexisting.px",
+      "source_sha256": "0ec41c6d97584950cab2dce6d8b1aa83fd7967a613a5f84b7df35222d0e22a70",
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-O-nonexisting.px-gnu/driver.log",
+          "driver_log_sha256": "9b307ba699c3a07509174ad76ee2dfae0b0a79134a46accc01967023228046d9",
+          "memory": [],
+          "memory_clean": null
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-O-nonexisting.px-gnu-valgrind/driver.log",
+          "driver_log_sha256": "c5124f3cefb499d7184acfd52f864d8b0cf6d752f224a3bd26c61a844b2013b4",
+          "memory": [
+            {
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 747
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436461"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-O-nonexisting.px-gnu-valgrind/memory/436461.log",
+              "sha256": "e5269f5ca5f075a36083763ed8bca0bc91f9ad423283f7dd7a84f3fdb1e1fab8"
+            }
+          ],
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-O-nonexisting.px-rboxc/driver.log",
+          "driver_log_sha256": "213c1cb9cbf0f065577f7140e554e2cfb0dfabb7f5c859b63b26ca1799f65076",
+          "memory": [],
+          "memory_clean": null
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-O-nonexisting.px-rboxc-valgrind/driver.log",
+          "driver_log_sha256": "78c83680b79f47fbe526a4c0b8e1a4fa3150b302627642cd3a299cde00717ced",
+          "memory": [
+            {
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 737
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436470"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-O-nonexisting.px-rboxc-valgrind/memory/436470.log",
+              "sha256": "e8803ff55a6bc14680bc4a650c082c013040a2939494a7c6c72189de51f5a2d5"
+            }
+          ],
+          "memory_clean": true
+        }
+      }
+    },
+    {
+      "selection": "Test-O.px",
+      "source": "tests/Test-O.px",
+      "source_sha256": "d350d35a96639738b2efe7eb25d681bb11bd2e30efaeb0a782e0770e00267099",
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-O.px-gnu/driver.log",
+          "driver_log_sha256": "7fa5d145ad2ccacc9c23f940bc61ae046f3113e4374802fb1448d64dd3a7036f",
+          "memory": [],
+          "memory_clean": null
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-O.px-gnu-valgrind/driver.log",
+          "driver_log_sha256": "26b0e9186b4cecf1b98a28de28dc309ce9b192599edbe53b77a7cc6709b7905b",
+          "memory": [
+            {
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1556
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436478"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-O.px-gnu-valgrind/memory/436478.log",
+              "sha256": "0748d48ea4439e07440995f03028f58fdaed2ca0a2fa5c5a762066c239780d63"
+            }
+          ],
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-O.px-rboxc/driver.log",
+          "driver_log_sha256": "cc1bd9f6e7bc94d30640429ff5239fb3943a24d2551a7afa8003b3b6e788c263",
+          "memory": [],
+          "memory_clean": null
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-O.px-rboxc-valgrind/driver.log",
+          "driver_log_sha256": "b8081cce2d8130195f915acc45156360480ffb5ee6451780724639b736673854",
+          "memory": [
+            {
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1546
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436488"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-O.px-rboxc-valgrind/memory/436488.log",
+              "sha256": "21bb723fd57240fe90f39fec7dff2ba7ce490ed94585c75821249add81d2f99c"
+            }
+          ],
+          "memory_clean": true
+        }
+      }
+    },
+    {
+      "selection": "Test-Restrict-Lowercase.px",
+      "source": "tests/Test-Restrict-Lowercase.px",
+      "source_sha256": "90bc4e5a1451472ef598333e48ac93d3ef03edd760b2646fdf0f9a872bb365ee",
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-Restrict-Lowercase.px-gnu/driver.log",
+          "driver_log_sha256": "2a6bc626f101c0b16d9abfe287381e2574db7b20fd3578cc4473df4ce358e850",
+          "memory": [],
+          "memory_clean": null
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-Restrict-Lowercase.px-gnu-valgrind/driver.log",
+          "driver_log_sha256": "f6ca0450a209a7ce231ed78f0ab60b012253e4ec267cd6a6c7e90f0855134edc",
+          "memory": [
+            {
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1878
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436496"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-Restrict-Lowercase.px-gnu-valgrind/memory/436496.log",
+              "sha256": "8b6f70b237f57012bd11663635be16ecce2e64b1ab532d2b4cc7786a56bdd76d"
+            }
+          ],
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-Restrict-Lowercase.px-rboxc/driver.log",
+          "driver_log_sha256": "6e0e3df32587d5e07c8948e2af358a3e393487c83a8ef28b1a4f69d6698ec103",
+          "memory": [],
+          "memory_clean": null
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-Restrict-Lowercase.px-rboxc-valgrind/driver.log",
+          "driver_log_sha256": "845915d1fbb2e6d1752340d1e74135e6ecaf6cdd56684fd65d0424be9a6161c3",
+          "memory": [
+            {
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1868
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436504"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-Restrict-Lowercase.px-rboxc-valgrind/memory/436504.log",
+              "sha256": "c0d5b97d9dff9d2cc5afbee1f678fffaab1ba4788ff24961a704d6e7eac8d96f"
+            }
+          ],
+          "memory_clean": true
+        }
+      }
+    },
+    {
+      "selection": "Test-Restrict-Uppercase.px",
+      "source": "tests/Test-Restrict-Uppercase.px",
+      "source_sha256": "df74c1b2f783402c68d217da6ca8790f999cb0daf272833db12a0b46152be5b7",
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-Restrict-Uppercase.px-gnu/driver.log",
+          "driver_log_sha256": "16c9bbfa231c01bd76d083388a800eca614515914c04837b22c1e822fd13ce17",
+          "memory": [],
+          "memory_clean": null
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-Restrict-Uppercase.px-gnu-valgrind/driver.log",
+          "driver_log_sha256": "c073cf81ad6811dfd301061cbf26ca5f6540566859559889ee3941ff0e387210",
+          "memory": [
+            {
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1878
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436514"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-Restrict-Uppercase.px-gnu-valgrind/memory/436514.log",
+              "sha256": "a19ac35be01f222189c140d95ec8923983da9b77b4afe2c0a45569c6497fb80a"
+            }
+          ],
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-Restrict-Uppercase.px-rboxc/driver.log",
+          "driver_log_sha256": "4f090d46e9043251e816f2ad239ce20b2490126dd4063d4415af2b7f1d7dfcc8",
+          "memory": [],
+          "memory_clean": null
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-Restrict-Uppercase.px-rboxc-valgrind/driver.log",
+          "driver_log_sha256": "1d59586942598e2318cb0077b66fe3c4c942408bf1c38df0599901f53634e1bb",
+          "memory": [
+            {
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1868
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436522"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-Restrict-Uppercase.px-rboxc-valgrind/memory/436522.log",
+              "sha256": "e875a70d59a1f0b90ebfbcde783a3373c882ac9cc2f98ad33f2e4826af2cddeb"
+            }
+          ],
+          "memory_clean": true
+        }
+      }
+    },
+    {
+      "selection": "Test-c-full.px",
+      "source": "tests/Test-c-full.px",
+      "source_sha256": "4ef4602510ebc4d617f6e27dd7596afc4f12e3099ddd3acc37cd9fae7774998d",
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c-full.px-gnu/driver.log",
+          "driver_log_sha256": "10e534b8a406e56b33b253b1993a21e6301716b062f7d284413b6c0e013ef8e5",
+          "memory": [],
+          "memory_clean": null
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c-full.px-gnu-valgrind/driver.log",
+          "driver_log_sha256": "3261ca6600083e27ea3a2cb9060a44f68af2f7740f6093492573be1d1d3a5df5",
+          "memory": [
+            {
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1581
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436530"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c-full.px-gnu-valgrind/memory/436530.log",
+              "sha256": "722acac53d3ba2398ce80b73d6e8ca1b36f0d75f75c6bb505df8ae21cf26e432"
+            }
+          ],
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c-full.px-rboxc/driver.log",
+          "driver_log_sha256": "f9135df5ffec4c1cee8c1b181e7274a54810085203be9b46b18fbf76da5488f9",
+          "memory": [],
+          "memory_clean": null
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c-full.px-rboxc-valgrind/driver.log",
+          "driver_log_sha256": "a101132a463a8e93ff7e64b7be8707a12050858fc660c12d678c8d9f2c529cf7",
+          "memory": [
+            {
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1571
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436538"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c-full.px-rboxc-valgrind/memory/436538.log",
+              "sha256": "ad62eddecd518c826735eebc39a99500e0cf0c09df137717be90e0ef47115f19"
+            }
+          ],
+          "memory_clean": true
+        }
+      }
+    },
+    {
+      "selection": "Test-c-partial.px",
+      "source": "tests/Test-c-partial.px",
+      "source_sha256": "a4912dbf601770cfc793559c2c9d26e21b8f1bf1412727a309a8f52a48cc018b",
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c-partial.px-gnu/driver.log",
+          "driver_log_sha256": "1eea74b2d5127af9627c21bf1c5712ef08e9fa98b84e0ae91876fe356e5f23ce",
+          "memory": [],
+          "memory_clean": null
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c-partial.px-gnu-valgrind/driver.log",
+          "driver_log_sha256": "ab05ef480798db9ab2bd967eed8c05e4c08f658840cb7c864e7a94dbacdcf88a",
+          "memory": [
+            {
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1581
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436547"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c-partial.px-gnu-valgrind/memory/436547.log",
+              "sha256": "d6e345f8e0c0658ae7464dcd0f3570a7f0c5fa361fd3591c10dc9d1cbd819815"
+            }
+          ],
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c-partial.px-rboxc/driver.log",
+          "driver_log_sha256": "dd86d8971c6b21e119a59c7654a3490c971a0fbfedd907a541298af78d964cdb",
+          "memory": [],
+          "memory_clean": null
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c-partial.px-rboxc-valgrind/driver.log",
+          "driver_log_sha256": "aef5f3510bd50743327254c6b97fd11accedc7ccff865a2d1837026c57dedd2a",
+          "memory": [
+            {
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1571
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436556"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c-partial.px-rboxc-valgrind/memory/436556.log",
+              "sha256": "59ed4ffc327de54f0fef36587c0cb045e6d5ac46f6066697670a0131528a7df0"
+            }
+          ],
+          "memory_clean": true
+        }
+      }
+    },
+    {
+      "selection": "Test-c-shorter.px",
+      "source": "tests/Test-c-shorter.px",
+      "source_sha256": "098ce1906df80c70d4d63d57dc8563ca36ce01849bad44745ad9786973b433ac",
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c-shorter.px-gnu/driver.log",
+          "driver_log_sha256": "6272d2bddf922b813fed87a04ecfda8ae18571f3498b20d65c3e55e1fa2ef83a",
+          "memory": [],
+          "memory_clean": null
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c-shorter.px-gnu-valgrind/driver.log",
+          "driver_log_sha256": "4f06e3d95df2bb90b63865a1e497b549979ffb18696b9716b9be6316533b12cc",
+          "memory": [
+            {
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1320
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436580"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c-shorter.px-gnu-valgrind/memory/436580.log",
+              "sha256": "8901fe81890ef5cd7919c190bcc4b9b06752cabba400941a616fa075db62548f"
+            }
+          ],
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c-shorter.px-rboxc/driver.log",
+          "driver_log_sha256": "9a68c59e105a635e290d01998623b189d6b93496e5fbdde8ab72bdacb1ebb885",
+          "memory": [],
+          "memory_clean": null
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c-shorter.px-rboxc-valgrind/driver.log",
+          "driver_log_sha256": "8e29e86a19813526c682b5f14cd6bd02912f74925b7a76a3eb20d8ab996d8c9f",
+          "memory": [
+            {
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1310
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436586"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c-shorter.px-rboxc-valgrind/memory/436586.log",
+              "sha256": "77483663e4c7d9fc1d1784b26218d6790a73ecdcbd57c043b204176746ce4d91"
+            }
+          ],
+          "memory_clean": true
+        }
+      }
+    },
+    {
+      "selection": "Test-c.px",
+      "source": "tests/Test-c.px",
+      "source_sha256": "77626b35061cef9a843bb94d88a6d4b9700e75a6fc848f86c40523bf19381fca",
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c.px-gnu/driver.log",
+          "driver_log_sha256": "97dbb6eeb8f1041b298c56cdb09d880f5acb0a0ed8a753c8bd4776baf206fe5a",
+          "memory": [],
+          "memory_clean": null
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c.px-gnu-valgrind/driver.log",
+          "driver_log_sha256": "98a0d980cd808d32ca6c14a10db65593f44ec85063a738b5ca1949b30282601f",
+          "memory": [
+            {
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1581
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436596"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c.px-gnu-valgrind/memory/436596.log",
+              "sha256": "6dc6a56533934877fc75134adcaca6d7c8066eb8383b8d1d588f632207943acb"
+            }
+          ],
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c.px-rboxc/driver.log",
+          "driver_log_sha256": "410bb673a79de72e99040d9229e68b7bbe12c916b55654b5414c60cd65566df9",
+          "memory": [],
+          "memory_clean": null
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c.px-rboxc-valgrind/driver.log",
+          "driver_log_sha256": "fcff3c0911c724fd4e5fe80860152118ee8885fbb86b582ef5c151048de1714d",
+          "memory": [
+            {
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1571
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436619"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-c.px-rboxc-valgrind/memory/436619.log",
+              "sha256": "4ff3772d2899220dd4b3b12d36a190ed26d373181c4bb447b4fa101488a302b8"
+            }
+          ],
+          "memory_clean": true
+        }
+      }
+    },
+    {
+      "selection": "Test-nonexisting-quiet.px",
+      "source": "tests/Test-nonexisting-quiet.px",
+      "source_sha256": "d499946a02a9fc0791676aa58e3699ef9c86e02046d1bf8e611f6b2601362069",
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-nonexisting-quiet.px-gnu/driver.log",
+          "driver_log_sha256": "472e2c91e40c083ef2951ea12010b90002ddce894dfed704d2d430be5c689b59",
+          "memory": [],
+          "memory_clean": null
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-nonexisting-quiet.px-gnu-valgrind/driver.log",
+          "driver_log_sha256": "4ee8be4a19793b98afbe74386d4513efc8d54348f5721e2abba79d3845c73111",
+          "memory": [
+            {
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 730
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436625"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-nonexisting-quiet.px-gnu-valgrind/memory/436625.log",
+              "sha256": "6d61c09469546103c504664de8bece8e4cbe332f893eced2e74133296a7ccd3b"
+            }
+          ],
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-nonexisting-quiet.px-rboxc/driver.log",
+          "driver_log_sha256": "fa96fdef6a404941369ba1f0b6bc4793eee23f94322fcacf9cbe9d83a7d6aee1",
+          "memory": [],
+          "memory_clean": null
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-nonexisting-quiet.px-rboxc-valgrind/driver.log",
+          "driver_log_sha256": "bbe22e8a035163505627e0fda4a80db9c4d1868c30cda953a730b6dd6bcf71ba",
+          "memory": [
+            {
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 720
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436631"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-nonexisting-quiet.px-rboxc-valgrind/memory/436631.log",
+              "sha256": "6de848e5d3c1d75c297bf1e31ed39934a1253afee0fcc5ef31d5ecd3a7ec7ca7"
+            }
+          ],
+          "memory_clean": true
+        }
+      }
+    },
+    {
+      "selection": "Test-noop.px",
+      "source": "tests/Test-noop.px",
+      "source_sha256": "efbf6266352cda9d41a59512d51867fe9a7f277fd8e325b6537bddce851513ca",
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-noop.px-gnu/driver.log",
+          "driver_log_sha256": "e74f67a6cc112db867fbe7a2cf8aa05d705e14550ff1a565dd8c20c5d1066ec1",
+          "memory": [],
+          "memory_clean": null
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-noop.px-gnu-valgrind/driver.log",
+          "driver_log_sha256": "f14f1160210dba331c28d5e6f5db51bffd7f323af64a37124e7db6a297350505",
+          "memory": [
+            {
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1792
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436637"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-noop.px-gnu-valgrind/memory/436637.log",
+              "sha256": "2206d0f807aefac8940413291b56efa0d2e7caa838bbbdac6efee9b6a5052181"
+            }
+          ],
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-noop.px-rboxc/driver.log",
+          "driver_log_sha256": "0f9e4c482e01ffafbe9e32f959a5f5fa4397685981944cf91d3a61338dfb0932",
+          "memory": [],
+          "memory_clean": null
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-noop.px-rboxc-valgrind/driver.log",
+          "driver_log_sha256": "2e901493acd4bb35b973433aa93c81757345359328a3f53dad04a0d026c95366",
+          "memory": [
+            {
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 1782
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436643"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-noop.px-rboxc-valgrind/memory/436643.log",
+              "sha256": "f96042cff40e57b2e82a666023acc55c48929925025574d4717509745f2f7c5c"
+            }
+          ],
+          "memory_clean": true
+        }
+      }
+    },
+    {
+      "selection": "Test-stdouterr.px",
+      "source": "tests/Test-stdouterr.px",
+      "source_sha256": "4f11c86ce82704fdb27998377e5cfbae3ce95ca6119828adc2d5c379cfca9775",
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-stdouterr.px-gnu/driver.log",
+          "driver_log_sha256": "66729edef27d49adb2e2ba28ed69d17a221d9b06207114590f2b82325d01ce38",
+          "memory": [],
+          "memory_clean": null
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-stdouterr.px-gnu-valgrind/driver.log",
+          "driver_log_sha256": "d8d566f9378a8baeec649e7aa58e344ae2b291202386bc7b3a129ccc7b597b6a",
+          "memory": [
+            {
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 745
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436649"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-stdouterr.px-gnu-valgrind/memory/436649.log",
+              "sha256": "50acdd8c92996e737015fc677392f52cd80d299afcfbd7b4cc087c01245fefab"
+            }
+          ],
+          "memory_clean": true
+        },
+        "rboxc": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-stdouterr.px-rboxc/driver.log",
+          "driver_log_sha256": "50b2eb8ad3beba0752a39c1175121458fdfe9e5395acf0c85693942b1ff5e583",
+          "memory": [],
+          "memory_clean": null
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "assertions_pass": true,
+          "assertion_counts": [
+            [
+              1,
+              1,
+              0
+            ]
+          ],
+          "driver_log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-stdouterr.px-rboxc-valgrind/driver.log",
+          "driver_log_sha256": "c25b3e8c1a771cad98a49703b125fb7f3899e455b8ec54834b54d4fa7325bbbc",
+          "memory": [
+            {
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 745
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "436655"
+              ],
+              "complete_exec_log": true,
+              "log": "evidence/raw/wget-resume-original/run-5nsq8b06/Test-stdouterr.px-rboxc-valgrind/memory/436655.log",
+              "sha256": "4d70f55c9a33627fd4a1f46ab009f8d77d92cfe44bef5121347390b6540c079f"
+            }
+          ],
+          "memory_clean": true
+        }
+      }
+    }
+  ]
+}
