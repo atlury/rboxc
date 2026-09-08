@@ -84,7 +84,17 @@ there where available.
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
 | glibc | 2.43 | Both entries integrated; 50 focused checks, both getconf originals and three iconv buffer recipes pass |
 
-Sed's current 187-command candidate now completes all **66 previously reviewed
+One additional Sed original, `bug80573.sh`, now passes in a dedicated profile
+that retains its own `valgrind --quiet` command. XML logs provide complete
+memory and descriptor findings. `evidence/sed-intrinsic-memory-audit.json`
+verifies three clean candidate-profile processes and six XML parser checks;
+the ASAN prerequisite's uninstrumented Sed call is outside that memory count.
+The initial fork/XML formatting failure and native GNU findings are preserved.
+The standard runner excludes this profile to prevent nested instrumentation.
+This brings the recorded Sed originals to 66 passes and one platform skip
+across the two profiles. The stdin fixture review and seven exclusions remain.
+
+Sed's preceding standard profile completes all **66 previously reviewed
 original scripts** with integrated Coreutils helpers: **65 pass** and
 `obinary.sh` retains its unchanged platform skip. The original Perl suites,
 BSD compatibility tests and 2 GiB substitution test are included. Four private

@@ -20,7 +20,7 @@ names=profile.options.commands or ['sed-original-prerequisite-final','sed-origin
 manifest=json.loads((ROOT/'inventory/sed-tests.json').read_text())
 source=Path(json.loads((ROOT/'inventory/sources.json').read_text())['sed']['source'])
 assert fingerprint(source/manifest['registration']['path'])==manifest['registration']['sha256']
-expected={r['script']:r for r in manifest['scripts'] if r['reviewed']}
+expected={r['script']:r for r in manifest['scripts'] if r['reviewed'] and r.get('execution_profile','standard')=='standard'}
 rows={};sources=[];audit=[]
 for name in names:
     assert re.fullmatch(r'[a-z0-9-]+',name)
@@ -69,7 +69,7 @@ for name in names:
             'sed_process_logs':len(candidate),'external_child_logs':len(children),
             'external_child_findings':[r for r in children if not r['pass']]}
 assert set(rows)==set(expected),(set(expected)-set(rows),set(rows)-set(expected))
-results=[rows[r['script']] for r in manifest['scripts'] if r['reviewed']]
+results=[rows[r['script']] for r in manifest['scripts'] if r['script'] in expected]
 report={'scope':'Reviewed original selections on one immutable binary. Strict all-process results are retained; Sed process memory and external child findings are also reported separately. Platform skips and unreviewed selections are not passes.',
         **profile.metadata(),'driver_sha256':fingerprint(Path(__file__)),'source_reports':sources,
         'passed':sum(r['pass'] for r in results),'total':len(results),
@@ -78,6 +78,7 @@ report={'scope':'Reviewed original selections on one immutable binary. Strict al
         'state_counts':{s:sum(r['state']==s for r in results) for s in sorted({r['state'] for r in results})},
         'registered_original_scripts':len(manifest['scripts']),'reviewed_scripts':len(expected),
         'remaining':[r for r in manifest['scripts'] if not r['reviewed']],'results':results}
+report['other_execution_profiles']=[r for r in manifest['scripts'] if r['reviewed'] and r['script'] not in expected]
 profile.report.write_text(json.dumps(report,indent=2)+'\n')
 audit_path.write_text(json.dumps({'scope':'Reparsed final-exec logs, retaining strict checks for every process and attributing known native dependencies explicitly.',
     'binary_sha256':profile.binary_sha256,'original_report':str(profile.report.relative_to(ROOT)),'original_report_sha256':fingerprint(profile.report),

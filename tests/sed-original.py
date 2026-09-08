@@ -40,11 +40,12 @@ if helper_mode=='1':
     prerequisites['native_coreutils']=prerequisites['coreutils']
     prerequisites['coreutils']=coreutils
 selected=set(profile.options.commands)
-assert selected<={Path(r['script']).name for r in manifest['scripts'] if r['reviewed']}
+eligible={r['script'] for r in manifest['scripts'] if r['reviewed'] and r.get('execution_profile','standard')=='standard'}
+assert selected<={Path(n).name for n in eligible}, 'selection requires its dedicated execution-profile driver'
 results=[]
 for index,row in enumerate(manifest['scripts']):
     script=source/row['script'];assert fingerprint(script)==row['source_sha256']
-    if not row['reviewed'] or (selected and script.name not in selected):continue
+    if row['script'] not in eligible or (selected and script.name not in selected):continue
     for name,expected in row.get('fixture_sha256',{}).items():
         assert fingerprint(source/'testsuite'/name)==expected
     if script.suffix=='.pl':
@@ -114,5 +115,6 @@ for index,row in enumerate(manifest['scripts']):
     assert fingerprint(Path(__file__))==driver_sha256
     assert prepare()==native_dependencies
     report['prerequisites']=prerequisites
+    report['other_execution_profiles']=[r for r in manifest['scripts'] if r['reviewed'] and r['script'] not in eligible]
     profile.report.write_text(json.dumps(report,indent=2)+'\n')
 raise SystemExit(any(not r['pass'] for r in results))

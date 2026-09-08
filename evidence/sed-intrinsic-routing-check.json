@@ -1,0 +1,24 @@
+{
+  "scope": "The standard Sed driver rejects an intrinsic-Valgrind original before executing it, preventing nested instrumentation.",
+  "command": [
+    "python3",
+    "tests/sed-original.py",
+    "--candidate",
+    "target/gawk-source-ownership-candidate/release/rboxc",
+    "--report-name",
+    "sed-intrinsic-route-rejected",
+    "bug80573.sh"
+  ],
+  "status": 1,
+  "stderr": "Traceback (most recent call last):\n  File \"/root/rboxc/tests/sed-original.py\", line 44, in <module>\n    assert selected<={Path(n).name for n in eligible}, 'selection requires its dedicated execution-profile driver'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: selection requires its dedicated execution-profile driver\n",
+  "no_original_execution": true,
+  "driver_sha256": "9cefd4c5f66c4f3652bbc3d7824dddec16cd18c0e99340b9a300454df46290e0",
+  "pass": true,
+  "standard_profile": {
+    "path": "evidence/sed-profile-routing-original.json",
+    "sha256": "26c0c35c4362e9d20bd19f5b20bd06f0fe75d320144e3353352b0a0395532084",
+    "passed": 1,
+    "total": 1,
+    "clean_candidate_processes": 25
+  }
+}
