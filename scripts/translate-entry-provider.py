@@ -214,6 +214,7 @@ if provider == 'glibc' or name == 'frcode': report['adaptations'].append('Bind l
 if provider == 'glibc' or name == 'frcode': report['adaptations'].append('Use GNU error_print_progname to preserve the full invocation path in libc utility diagnostics while retaining the shared GNU error formatter.')
 if name == 'iconv': report['adaptations'].append('Register the namespaced GNU version callback with the process libc argp parser before entering the translated command.')
 if name == 'iconv': report['adaptations'].append('Close successful encoding probes immediately; close the owned conversion handle, release its output buffer and destroy borrowed-key print-list nodes at process exit, preserving errno.')
+if name == 'iconv': report['adaptations'].append('Close the abandoned anonymous output spool on the original conversion-error return without flushing or replacing overlapping input; preserve errno.')
 if name == 'patch': report['adaptations'].append('Close the unused per-file temporary descriptor when -o sends output to a separately owned stream, after the original final use.')
 (ROOT/f'evidence/{name}-translation.json').write_text(json.dumps(report,indent=2)+'\n')
 print('Translated GNU',name,'with',len(imports),'helper imports and',len(exports),'Rust exports')

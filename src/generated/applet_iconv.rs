@@ -1842,6 +1842,14 @@ unsafe extern "C" fn close_output_file(mut cd: __gconv_t, mut status: ::core::ff
         && (output_using_temporary_file as ::core::ffi::c_int != 0
             || output_fd < 0 as ::core::ffi::c_int)
     {
+        // GNU intentionally skips the flush to preserve overlapping input.
+        // The anonymous spool has no remaining consumer on this return path.
+        if output_fd >= 0 {
+            let saved = *__errno_location();
+            close(output_fd);
+            output_fd = -1;
+            *__errno_location() = saved;
+        }
         return;
     }
     let mut n: size_t = iconv(

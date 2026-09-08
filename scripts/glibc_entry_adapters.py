@@ -3,6 +3,24 @@
 import re
 
 def iconv_cleanup(text):
+    anchor='''unsafe extern "C" fn close_output_file(mut cd: __gconv_t, mut status: ::core::ffi::c_int) {
+    if status != EXIT_SUCCESS
+        && omit_invalid == 0
+        && (output_using_temporary_file as ::core::ffi::c_int != 0
+            || output_fd < 0 as ::core::ffi::c_int)
+    {
+        return;
+    }'''
+    assert text.count(anchor)==1
+    text=text.replace(anchor,anchor.replace('        return;', '''        // GNU intentionally skips the flush to preserve overlapping input.
+        // The anonymous spool has no remaining consumer on this return path.
+        if output_fd >= 0 {
+            let saved = *__errno_location();
+            close(output_fd);
+            output_fd = -1;
+            *__errno_location() = saved;
+        }
+        return;'''))
     anchor='        __gconv_destroy_spec(&raw mut conv_spec);'
     assert text.count(anchor)==1
     text=text.replace(anchor,anchor+'''

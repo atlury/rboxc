@@ -79,7 +79,7 @@ there where available.
 | Less | 704 | Candidate passes ten focused comparisons; original suite pending |
 | Screen | 5.0.2 | Candidate passes five option comparisons and the descriptor-preservation contract |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and four reviewed originals |
-| glibc | 2.43 | Both entries in a candidate; 50 focused checks and both original getconf tests pass |
+| glibc | 2.43 | Both entries integrated; 50 focused checks, both getconf originals and three iconv buffer recipes pass |
 
 The next-provider work is preserved before release activation. Gawk's candidate
 uses GNU's `MEMDEBUG` per-object allocation mode; the earlier pooled native and
@@ -90,6 +90,23 @@ comparisons and eleven reviewed original Make targets pass, including strict
 candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
+
+The latest candidate closes an abandoned `iconv` temporary spool when GNU's
+conversion-error branch skips output flushing to preserve overlapping input.
+All three unchanged GNU 2.43 buffer recipes pass: default, one-byte buffer,
+and the original large-file mode with 22 input-size doublings. Each recipe
+executes 59 conversions in each native/Valgrind mode. The 50 focused glibc
+utility checks, 428 smoke checks and 11 dispatcher checks also pass.
+`scripts/audit-iconv-original.py` verifies 227 clean candidate process logs,
+original inputs and raw evidence in `evidence/iconv-spool-validation.json`.
+The initial failures remain in `evidence/iconv-buffer-reviewed-original.json`.
+
+This 187-command candidate is `/root/rboxc/target/iconv-spool-candidate/release/rboxc`,
+14,714,024 bytes, SHA-256
+`5b48b3ff8338534e81a8357cff156f3ef1149851a2e9a13e57eb8db4467993d2`.
+An independent rebuild is byte-identical. The installed 133-command release
+and 354 deferred commands remain unchanged. Other iconv inputs, charmaps,
+provider originals and platform profiles remain open.
 
 Two more complete Bash originals, `herestr` and `rhs-exp`, pass against GNU's
 expected output with clean Valgrind process trees on the same ownership
