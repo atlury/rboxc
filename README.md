@@ -211,6 +211,9 @@ default-scale invocation and earlier observations are retained. The original
 definition-only testfn input has a declared bounded invocation. The timing
 wrapper's ten input files are covered individually; the wrapper itself is not
 counted as another test. Combined validation of the 124-command candidate continues.
+Four controlling-terminal profiles also pass with clean Valgrind results: BC/DC
+arithmetic, bounded BC_ENV_ARGS math options, and BC's SIGINT handler after an
+observed output marker.
 
 GNU Ed 1.22.6 is pinned from its verified signed archive. Its Rust command
 entry compiles in a separate 125-command candidate with 89 private helper/state
@@ -219,9 +222,13 @@ All 44 initial focused observations match GNU, with their original memory and
 descriptor findings retained. Parser storage now remains valid through exit,
 and cleanup invokes GNU's parser and initialized scratch-buffer destructors.
 All 44 focused checks pass with clean Valgrind results after cleanup. The full
-original check script and all 90 editing/diagnostic input files have been reviewed;
-the complete suite is running with pinned native test dependencies. Ed is not
-installed yet.
+original check script and all 90 editing/diagnostic input files have been reviewed.
+Every assertion passes on native GNU and the candidate, both normally and under
+Valgrind. The full run exposed a temporary filter-command allocation retained
+after use; freeing it after write_file returns leaves all 242 Ed process logs
+clean. Thirteen external child findings remain explicit: native GNU cat/sort
+allocations and shell descriptor observations during redirection. The earlier
+241/242 editor-memory result is preserved. Ed is not installed yet.
 
 ## Status
 
