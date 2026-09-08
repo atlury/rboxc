@@ -38,6 +38,13 @@ selections.update({
     'T-mult': (27, 'T-mult.at'), 'T-nest': (28, 'T-nest.at'), 'T-cd': (32, 'T-cd.at'),
     'T-zfile': (36, 'T-zfile.at'), 'T-nonl': (37, 'T-nonl.at'),
 })
+selections.update({
+    'delete02': (79, 'delete02.at'), 'delete03': (80, 'delete03.at'),
+    'extrac01': (84, 'extrac01.at'), 'extrac02': (85, 'extrac02.at'),
+    'extrac04': (87, 'extrac04.at'), 'extrac17': (100, 'extrac17.at'),
+    'extrac18': (101, 'extrac18.at'), 'extrac19': (102, 'extrac19.at'),
+    'extrac20': (103, 'extrac20.at'), 'extrac24': (107, 'extrac24.at'),
+})
 selected = profile.options.commands or list(selections)
 assert set(selected) <= set(selections)
 helpers = {n: ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','mkdir','chmod','touch','sort','echo','basename','cp','ln','true','false','sleep','ls','mv','mktemp','cut','id','date','printf','dd','rmdir','expr','tr','wc','head','tail','uname','cksum')}

@@ -360,8 +360,13 @@ strings read from file lists. Keeping those words until exit fixes that
 selection while retaining 44/44 focused passes. A fresh 24-selection original
 batch, including five more ordinary file-list tests, now passes on that
 candidate. The consolidated report `evidence/tar-original-file-options-audited.json`
-verifies 275 clean Tar process logs. All 44 focused checks and 11 dispatcher
-checks pass on these same bytes. This candidate is 4,448,560 bytes (4.24 MiB)
+verifies 275 clean Tar process logs. Ten more unchanged originals now pass,
+covering deletion, matching, extraction overwrite choices, directory symlinks,
+and standard-output extraction. The combined 34-selection audit in
+`evidence/tar-original-extraction-audited.json` verifies 474 clean Tar processes,
+using preserved driver bytes to validate earlier observations. All 44 focused
+checks, 11 dispatcher checks, and 428 Coreutils help/version comparisons pass
+on these same bytes. This candidate is 4,448,560 bytes (4.24 MiB)
 and remains separate from the installed release; broader original and combined
 provider coverage are still open. Earlier candidate results keep their actual
 binary hashes. A 30-case

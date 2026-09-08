@@ -19,7 +19,13 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('reports', nargs='+', type=Path)
 parser.add_argument('--expected-selections', type=int, required=True)
 parser.add_argument('--report-name', required=True)
+parser.add_argument('--archived-driver', type=Path, action='append', default=[],
+                    help='Preserved original driver bytes for reports predating allowlist expansion')
 options = parser.parse_args()
+archived_drivers = {}
+for path in options.archived_driver:
+    path = path.resolve(strict=True)
+    archived_drivers[fingerprint(path)] = path
 assert re.fullmatch(r'[a-z0-9-]+', options.report_name)
 target = ROOT/'evidence'/(options.report_name+'.json')
 assert not target.exists(), 'preserve existing observations'
@@ -40,7 +46,16 @@ for path in options.reports:
     origin = {'path': str(path.relative_to(ROOT)), 'sha256': fingerprint(path), 'scope': data['scope']}
     provenance.append(origin)
     for name, expected in {**data['inputs'], **data['runtime_helpers']}.items():
-        assert fingerprint(Path(name)) == expected, 'recorded input changed: '+name
+        actual = Path(name)
+        if name == str(ROOT/'tests/tar-original.py') and fingerprint(actual) != expected:
+            assert expected in archived_drivers, 'preserved original driver required'
+            actual = archived_drivers[expected]
+            origin.setdefault('archived_inputs', []).append({
+                'original_path': name, 'preserved_path': str(actual.relative_to(ROOT)),
+                'sha256': expected,
+            })
+        assert fingerprint(actual) == expected, 'recorded input changed: '+name
+        name = str(actual)
         assert name not in inputs or inputs[name] == expected
         inputs[name] = expected
     for row in data['results']:
