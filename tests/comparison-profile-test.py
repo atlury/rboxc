@@ -48,6 +48,23 @@ class ProfileTests(unittest.TestCase):
         with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
             self.make(['--candidate', str(self.candidate)])
 
+    def test_existing_named_report_preserves_evidence_and_logs(self):
+        previous = self.named()
+        previous.report.write_bytes(b'previous verified evidence\n')
+        log = previous.logs/'original.log'
+        log.write_bytes(b'original process log\n')
+        before = {p.relative_to(self.root): p.read_bytes()
+                  for p in (self.root/'evidence').rglob('*') if p.is_file()}
+        directories = {p.relative_to(self.root) for p in (self.root/'evidence').rglob('*') if p.is_dir()}
+        diagnostic = io.StringIO()
+        with contextlib.redirect_stderr(diagnostic), self.assertRaises(SystemExit) as stopped:
+            self.named()
+        self.assertEqual(stopped.exception.code, 2)
+        self.assertIn('named comparison report already exists', diagnostic.getvalue())
+        self.assertEqual(before, {p.relative_to(self.root): p.read_bytes()
+                                 for p in (self.root/'evidence').rglob('*') if p.is_file()})
+        self.assertEqual(directories, {p.relative_to(self.root) for p in (self.root/'evidence').rglob('*') if p.is_dir()})
+
     def test_canonical_and_path_names_rejected(self):
         for name in ('behavior', 'smoke', 'valgrind', 'dispatcher', 'valgrind-equivalence', '../other'):
             with self.subTest(name=name), contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
