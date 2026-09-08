@@ -74,7 +74,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 408 reviewed originals pass; three original failures match GNU |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 421 reviewed originals pass; three original failures match GNU |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -145,13 +145,24 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-Eight additional Gawk extension originals now pass, including filename matching,
+Thirteen further Gawk originals pass: twelve language recipes cover array
+indexing and sorting, array arguments, CSV and pattern splitting, typed regex
+semantics, formatting and diagnostics. The thirteenth retains GNU's time
+extension, fixed date assertions and original 1.3-second sleep tolerance.
+`evidence/gawk-language-time-memory-audit.json` verifies all thirteen clean
+candidate logs alongside the existing 85 focused comparisons; those focused
+logs are shared evidence and are not counted again. Across the profiles,
+**421 originals pass and three unchanged failures match GNU**. Nine reviewed
+historical crash or memory reproductions are excluded, and 201 inventoried
+inputs still await review, including helper fixtures and optional profiles.
+
+Eight preceding Gawk extension originals pass, including filename matching,
 file metadata, function-table dispatch and six fixed wrong-argument diagnostics.
 `evidence/gawk-extension-expanded-memory-audit.json` verifies 13 clean original
 invocations plus the retained 85 focused comparisons on the same candidate.
 The extension libraries remain pinned native GNU helpers. Alongside the preceding
 language checkpoint, this records 408 passing original recipes and three shared
-GNU assertion failures across separate scopes; full Gawk acceptance remains open.
+GNU assertion failures across those preceding scopes; full Gawk acceptance remains open.
 
 The preceding four extension originals pass using the pinned native `ordchr`,
 `revoutput`, `readfile` and `filefuncs` extension libraries. Their unchanged
