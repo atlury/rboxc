@@ -1,3 +1,7 @@
+#[path = "generated/applet_uudecode.rs"]
+mod applet_uudecode;
+#[path = "generated/applet_uuencode.rs"]
+mod applet_uuencode;
 #[path = "generated/applet_tar.rs"]
 mod applet_tar;
 #[path = "generated/applet_locate.rs"]
@@ -370,6 +374,8 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"unlink", applet_unlink::single_binary_main_unlink),
     (b"uptime", applet_uptime::single_binary_main_uptime),
     (b"users", applet_users::single_binary_main_users),
+    (b"uudecode", applet_uudecode::single_binary_main_uudecode),
+    (b"uuencode", applet_uuencode::single_binary_main_uuencode),
     (b"vdir", applet_vdir::single_binary_main_vdir),
     (b"wc", applet_wc::single_binary_main_wc),
     (b"which", applet_which::single_binary_main_which),

@@ -69,6 +69,7 @@ there where available.
 | Ed | 1.22.6 | `ed` installed |
 | Findutils | 4.11.0 | `find`, `xargs`, `locate` installed; `updatedb` pending |
 | Tar | 1.35 | `tar` linked in a 129-command candidate; validation in progress |
+| Sharutils | 4.15.2 | `uuencode`, `uudecode` translated; candidate validation in progress |
 
 For a later upstream fix, identify its upstream commit or patch and the release
 baseline in this table. Record the affected commands, upstream reference, local
