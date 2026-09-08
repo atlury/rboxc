@@ -358,8 +358,13 @@ original coverage remains open. The next eight originals pass their assertions;
 seven pass strict checks and the add-file selection exposes borrowed option
 strings read from file lists. Keeping those words until exit fixes that
 selection while retaining 44/44 focused passes. A fresh 24-selection original
-batch, including five more ordinary file-list tests, is now running on that
-candidate. Earlier candidate results keep their actual binary hashes. A 30-case
+batch, including five more ordinary file-list tests, now passes on that
+candidate. The consolidated report `evidence/tar-original-file-options-audited.json`
+verifies 275 clean Tar process logs. All 44 focused checks and 11 dispatcher
+checks pass on these same bytes. This candidate is 4,448,560 bytes (4.24 MiB)
+and remains separate from the installed release; broader original and combined
+provider coverage are still open. Earlier candidate results keep their actual
+binary hashes. A 30-case
 archive-operation harness matches GNU Tar against itself in every comparison;
 only 9/30 native control cases are strict memory-clean, with the other GNU
 findings preserved as baseline observations. This control is not Rust port
