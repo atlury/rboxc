@@ -394,10 +394,25 @@ findings preserved as baseline observations. This control is not Rust port
 evidence. Recursive discovery now inventories all 237 original `.at` inputs,
 including the checkpoint and Star subdirectories previously absent from the
 inventory. Existing reviews are preserved; eleven further selections have
-source reviews recorded but remain unexecuted. The parser explicitly supplies the C17 spellings
+source reviews recorded at that stage. Those eleven subsequently match GNU
+assertions; nine are strictly clean and two expose an incremental-snapshot
+obstack and an index-file stream left open. The `tar-snapshot-index-cleanup`
+candidate releases the snapshot parser workspace after its copied records are
+no longer needed and finalizes its owned index stream at exit, preserving GNU
+output-error status behavior. It passes 57/57 focused comparisons, including
+five index-file normal/error cases, 11/11 dispatcher checks, and 17/17 unchanged
+originals covering checkpoints, output routing, and all exclusion-tag variants.
+The new original audit verifies 76 clean Tar processes. Earlier originals are
+being checked against these new bytes; their prior reports remain unchanged.
+This candidate is 4,449,352 bytes (4.24 MiB) and is not installed. The parser explicitly supplies the C17 spellings
 for boolean and static-assert constructs detected by the native C23 build.
 
 ## Status
+
+Of the 553 observed names, 189 currently have GNU provider assignments. There
+are 61 GNU-assigned names still to install: Tar is a candidate and 60 others
+await implementation. Another 364 names remain deferred for provider review.
+These are implementation counts; full compatibility validation remains separate.
 
 The installed executable registers 128 commands: 107 Coreutils entries, GNU Hello,
 GNU Time, GNU Which, four GNU Diffutils commands, three GNU Grep commands, four GNU Gzip commands, GNU Sed, GNU bc/dc, GNU Ed, and Findutils (`find`, `xargs`, `locate`),

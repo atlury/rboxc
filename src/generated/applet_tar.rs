@@ -7574,6 +7574,7 @@ unsafe extern "C" fn decode_options(
             index_file_name,
             b"w\0".as_ptr() as *const ::core::ffi::c_char,
         ) as *mut FILE;
+        RBOXC_INDEX_FILE = stdlis;
         if stdlis.is_null() {
             open_fatal(index_file_name);
         }
@@ -7940,6 +7941,7 @@ extern "C" {
     fn rboxc_wordsplit_clearerr(ws: *mut wordsplit);
 }
 static mut RBOXC_OWNED_ARGS: Vec<*mut ::core::ffi::c_void> = Vec::new();
+static mut RBOXC_INDEX_FILE: *mut FILE = ::core::ptr::null_mut();
 static mut RBOXC_STDOPEN_OWNED: [bool; 3] = [false; 3];
 unsafe fn rboxc_tar_stdopen_owned() -> ::core::ffi::c_int {
     let saved_errno = *libc::__errno_location();
@@ -7964,6 +7966,11 @@ unsafe fn rboxc_tar_own_argument(pointer: *mut ::core::ffi::c_void) {
 extern "C" fn rboxc_tar_release_arguments() {
     unsafe {
         let saved_errno = *libc::__errno_location();
+        let index = RBOXC_INDEX_FILE;
+        RBOXC_INDEX_FILE = ::core::ptr::null_mut();
+        if !index.is_null() {
+            libc::fclose(index.cast());
+        }
         wordsplit_free(&raw mut RBOXC_DEFAULT_WORDS);
         rboxc_wordsplit_clearerr(&raw mut RBOXC_DEFAULT_WORDS);
         for pointer in ::core::mem::take(&mut *(&raw mut RBOXC_OWNED_ARGS)) {

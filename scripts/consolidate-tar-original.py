@@ -43,6 +43,9 @@ for path in options.reports:
     assert current == metadata, 'different executable/helper profiles'
     assert fingerprint(Path(data['binary'])) == data['binary_sha256']
     assert data['passed'] == data['total'] == len(data['results']) > 0
+    if 'complete' in data:
+        assert data['complete'] and data['planned_total'] == data['total'], 'original batch is incomplete'
+        assert data['selected'] == [row['selection'] for row in data['results']]
     origin = {'path': str(path.relative_to(ROOT)), 'sha256': fingerprint(path), 'scope': data['scope']}
     provenance.append(origin)
     for name, expected in {**data['inputs'], **data['runtime_helpers']}.items():

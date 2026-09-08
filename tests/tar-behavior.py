@@ -71,6 +71,13 @@ cases += [
     ('closed-stderr-unknown-option', ['--not-an-option']),
 ]
 closed_streams = {'stdin': 0, 'stdout': 1, 'stderr': 2}
+cases += [
+    ('index-create', ['--format=ustar', '--index-file=index.txt', '-cvf', 'result.tar', '-C', 'tree', '.']),
+    ('index-stdout', ['--format=ustar', '--index-file=index.txt', '-cvf', '-', '-C', 'tree', '.']),
+    ('index-missing-member', ['--index-file=index.txt', '-tvf', 'archive.tar', 'absent']),
+    ('index-output-error', ['--index-file=/dev/full', '-tvf', 'archive.tar']),
+    ('index-open-error', ['--index-file=absent/index.txt', '-tvf', 'archive.tar']),
+]
 case_environment = {
     'env-format': {'TAR_OPTIONS': '-H ustar'},
     'env-empty': {'TAR_OPTIONS': ''},

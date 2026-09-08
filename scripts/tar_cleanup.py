@@ -14,7 +14,7 @@ def prepare(root):
     records = [json.loads(p.read_text()) for p in (root/'build/tar-cc-records').glob('*.json')]
     outputs = {}
     evidence = []
-    for name in ('misc', 'names', 'compare', 'wordsplit'):
+    for name in ('misc', 'names', 'compare', 'wordsplit', 'incremen'):
         relative = ('lib/' if name == 'wordsplit' else 'src/')+name+'.c'
         original = Path(pin['source'])/relative
         expected = pin['native_cleanup_source_sha256'][relative] if name == 'wordsplit' else pin['helper_source_sha256'][relative]
@@ -95,6 +95,51 @@ rboxc_release_diff_buffer (void)
     }
   rboxc_release_diff_buffer ();
   diff_buffer = page_aligned_alloc (&rboxc_diff_allocation, record_size);''')
+        elif name == 'incremen':
+            anchor = 'static void\nread_incr_db_2 (void)'
+            replace(anchor, '''static struct obstack rboxc_snapshot_obstack;
+static bool rboxc_snapshot_active;
+static bool rboxc_snapshot_cleanup_registered;
+static void
+rboxc_release_snapshot_obstack (void)
+{
+  int saved_errno = errno;
+  if (rboxc_snapshot_active)
+    {
+      obstack_free (&rboxc_snapshot_obstack, NULL);
+      rboxc_snapshot_active = false;
+    }
+  errno = saved_errno;
+}
+
+'''+anchor)
+            start = text.index(anchor)
+            end = text.index('\n/* Display (to stdout)', start)
+            part = text[start:end]
+            assert part.count('  struct obstack stk;') == 1
+            part = part.replace('  struct obstack stk;',
+                                '  struct obstack *stk = &rboxc_snapshot_obstack;')
+            part = part.replace('&stk', 'stk')
+            before = '  obstack_init (stk);'
+            assert part.count(before) == 1
+            part = part.replace(before, '''  if (!rboxc_snapshot_cleanup_registered)
+    {
+      if (atexit (rboxc_release_snapshot_obstack))
+        xalloc_die ();
+      rboxc_snapshot_cleanup_registered = true;
+    }
+  rboxc_release_snapshot_obstack ();
+  obstack_init (stk);
+  rboxc_snapshot_active = true;''')
+            before = '\treturn; /* Normal return */'
+            assert part.count(before) == 1
+            # note_directory copies both the name and dump contents. Release
+            # the complete workspace only once all records have been read.
+            part = part.replace(before, '''        {
+          rboxc_release_snapshot_obstack ();
+          return; /* Normal return */
+        }''')
+            text = text[:start]+part+text[end:]
         else:
             replace('static struct name *\nmake_name (const char *file_name)', '''/* Keep ownership independent of GNU's selection-list cursors. */
 struct rboxc_owned_name
@@ -221,7 +266,7 @@ rboxc_release_file_options (void)
     subprocess.run(['ar', 'r', archive, outputs.pop('wordsplit.o')], check=True)
     subprocess.run(['ranlib', archive], check=True)
     outputs['libtar.a'] = archive
-    report = {'scope': 'Keep GNU selection and directory behavior, while tracking live name allocations independently of discarded selection cursors, releasing consumed directory/option records, closing/freeing owned working-directory state, retaining/freeing the aligned comparison allocation, freeing consumed wordsplit nodes after copying their output, and retaining/freeing option-file words after GNU finishes borrowing them. Native oracle objects remain unchanged.',
+    report = {'scope': 'Keep GNU selection and directory behavior, while tracking live name allocations independently of discarded selection cursors, releasing consumed directory/option records, closing/freeing owned working-directory state, retaining/freeing the aligned comparison allocation, freeing consumed wordsplit nodes after copying their output, retaining/freeing option-file words after GNU finishes borrowing them, and releasing the incremental snapshot parser obstack on return or process exit. Native oracle objects remain unchanged.',
               'driver_sha256': fingerprint(Path(__file__)), 'adaptations': evidence}
     (root/'evidence/tar-native-cleanup.json').write_text(json.dumps(report, indent=2)+'\n')
     return outputs

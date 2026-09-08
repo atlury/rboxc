@@ -137,6 +137,7 @@ extern "C" {
     fn rboxc_wordsplit_clearerr(ws: *mut wordsplit);
 }
 static mut RBOXC_OWNED_ARGS: Vec<*mut ::core::ffi::c_void> = Vec::new();
+static mut RBOXC_INDEX_FILE: *mut FILE = ::core::ptr::null_mut();
 static mut RBOXC_STDOPEN_OWNED: [bool; 3] = [false; 3];
 unsafe fn rboxc_tar_stdopen_owned() -> ::core::ffi::c_int {
     let saved_errno = *libc::__errno_location();
@@ -161,6 +162,11 @@ unsafe fn rboxc_tar_own_argument(pointer: *mut ::core::ffi::c_void) {
 extern "C" fn rboxc_tar_release_arguments() {
     unsafe {
         let saved_errno = *libc::__errno_location();
+        let index = RBOXC_INDEX_FILE;
+        RBOXC_INDEX_FILE = ::core::ptr::null_mut();
+        if !index.is_null() {
+            libc::fclose(index.cast());
+        }
         wordsplit_free(&raw mut RBOXC_DEFAULT_WORDS);
         rboxc_wordsplit_clearerr(&raw mut RBOXC_DEFAULT_WORDS);
         for pointer in ::core::mem::take(&mut *(&raw mut RBOXC_OWNED_ARGS)) {
@@ -188,6 +194,9 @@ extern "C" fn rboxc_tar_release_arguments() {
 anchor = '    if stdopen() != 0 {'
 assert text.count(anchor) == 1
 text = text.replace(anchor, '    if rboxc_tar_stdopen_owned() != 0 {')
+anchor = '        if stdlis.is_null() {\n            open_fatal(index_file_name);'
+assert text.count(anchor) == 1
+text = text.replace(anchor, '        RBOXC_INDEX_FILE = stdlis;\n'+anchor)
 start = text.index('unsafe extern "C" fn decode_options(')
 end = text.index('unsafe extern "C" fn ', start+1)
 part = text[start:end]
@@ -217,7 +226,8 @@ report = {'provider': 'tar', 'version': pin['version'], 'command': name,
           'adaptations': ['Preserve full argv[0] diagnostics through GNU error_print_progname.',
                           'Free the default-settings help string after copying it into the obstack.',
                           'Retain environment option words and owned old-style arguments until exit, then release them.',
-                          'Close only standard-descriptor replacements opened by GNU stdopen at exit, preserving errno.'],
+                          'Close only standard-descriptor replacements opened by GNU stdopen at exit, preserving errno.',
+                          'Retain and finalize the owned index FILE at exit without changing GNU output-error status policy.'],
           'helper_imports': {s: mapping[s] for s in sorted(imports)},
           'rust_exports': {s: mapping[s] for s in sorted(exports)},
           'opaque_pointer_types': opaque, 'log': str(log.relative_to(ROOT)), 'log_sha256': fingerprint(log)}

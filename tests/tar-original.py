@@ -63,6 +63,24 @@ permission_selections = {
     'extrac22': (105, 'extrac22.at'), 'extrac23': (106, 'extrac23.at'),
 }
 selections.update(permission_selections)
+selections.update({
+    'checkpoint-defaults': (12, 'checkpoint/defaults.at'),
+    'checkpoint-dot-compat': (15, 'checkpoint/dot-compat.at'),
+    'checkpoint-dot-int': (16, 'checkpoint/dot-int.at'),
+    'checkpoint-dot': (14, 'checkpoint/dot.at'),
+    'checkpoint-interval': (13, 'checkpoint/interval.at'),
+    'exclude08': (67, 'exclude08.at'),
+    'exclude10': (69, 'exclude10.at'),
+    'exclude12': (71, 'exclude12.at'),
+    'indexfile': (40, 'indexfile.at'),
+    'pipe': (2, 'pipe.at'),
+    'verbose': (41, 'verbose.at'),
+})
+selections.update({
+    'exclude09': (68, 'exclude09.at'), 'exclude11': (70, 'exclude11.at'),
+    'exclude13': (72, 'exclude13.at'), 'exclude14': (73, 'exclude14.at'),
+    'exclude15': (74, 'exclude15.at'), 'exclude16': (75, 'exclude16.at'),
+})
 selected = profile.options.commands or list(selections)
 assert set(selected) <= set(selections)
 helpers = {n: ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','mkdir','chmod','touch','sort','echo','basename','cp','ln','true','false','sleep','ls','mv','mktemp','cut','id','date','printf','dd','rmdir','expr','tr','wc','head','tail','uname','cksum')}
@@ -157,6 +175,7 @@ for name in selected:
     assert all(fingerprint(p) == expected for p, expected in inputs.items())
     report = {'scope': 'Unchanged reviewed GNU Tar Autotest selections, including every archive format registered by each selected original. Native atlocal is copied unchanged; atconfig build paths point into private fixtures. AUTOTEST_PATH selects a wrapper preserving argv[0]=tar and instruments every Tar invocation with child tracing. Permission selections run as uid/gid 65534 with no supplementary groups using byte-verified private executable copies. Test helpers are native dependencies, not ports.',
               **profile.metadata(), 'inputs': {str(p): value for p, value in inputs.items()},
+              'selected': selected, 'planned_total': len(selected), 'complete': len(results) == len(selected),
               'passed': sum(r['pass'] for r in results), 'total': len(results), 'results': results}
     profile.report.write_text(json.dumps(report, indent=2)+'\n')
     print('PASS' if row['pass'] else 'OPEN', name, flush=True)
