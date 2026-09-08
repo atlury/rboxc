@@ -30,9 +30,12 @@ reviewed_rows={r['target']:r for r in json.loads((ROOT/'inventory/gawk-tests.jso
 reviewed=set(reviewed_rows)
 baselines={n:r for n,r in reviewed_rows.items() if r.get('expected_baseline_output')}
 assert reviewed
-assert original['complete'] and original['matched'] == original['total'] == original['planned_total'] == len(reviewed)
+assert original['complete'] and original['total'] == original['planned_total'] == len(reviewed)
 assert original['passed']==len(reviewed)-len(baselines)
-assert original['baseline_failures_matched']==len(baselines)
+assert original['passed']==sum(r['pass'] for r in original['results'])
+assert original['baseline_failures_matched']==sum(r['baseline_failure_matches'] for r in original['results'])
+assert original['matched']==original['passed']+original['baseline_failures_matched']
+assert original['baseline_failures_matched']<=len(baselines)
 assert focused['driver_sha256'] == fingerprint(ROOT/'tests/gawk-behavior.py')
 assert original['inputs'][str(ROOT/'tests/gawk-original.py')] == fingerprint(ROOT/'tests/gawk-original.py')
 assert {r['selection'] for r in original['results']} == reviewed
@@ -82,7 +85,13 @@ for row in focused['results']:
 for row in original['results']:
     baseline=baselines.get(row['selection'])
     assert row['pass']==(baseline is None)
-    assert row['baseline_failure_matches']==bool(baseline)
+    if baseline:
+        # A discovery run records an ordinary assertion failure before its
+        # identical GNU baseline is reviewed. Audit its original bytes here;
+        # do not rewrite the report or rerun unchanged programs just to relabel it.
+        assert row['baseline_failure_matches'] or (ROOT/baseline['baseline_report']).resolve()==options.original.resolve()
+    else:
+        assert not row['baseline_failure_matches']
     assert row['locale_profile']==reviewed_rows[row['selection']].get('locale_profile')
     if row['locale_profile']:
         locale=json.loads((ROOT/row['locale_profile']).read_text())
@@ -96,7 +105,8 @@ for row in original['results']:
     for key,outcome in row['outcomes'].items():
         assert outcome['status']==0
         if baseline:
-            assert not outcome['assertions_pass'] and outcome['baseline_failure_matches']
+            assert not outcome['assertions_pass']
+            assert outcome['baseline_failure_matches']==row['baseline_failure_matches']
             output=ROOT/outcome['actual_output']
             assert fingerprint(output)==outcome['actual_output_sha256']
             assert output.read_bytes()==baseline['expected_baseline_output'].encode()

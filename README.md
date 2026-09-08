@@ -74,7 +74,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 328 reviewed originals pass; two original failures match GNU |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 400 reviewed originals pass; three original failures match GNU |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -94,7 +94,23 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-Gawk now passes **328 reviewed original Make recipes**. Two further originals,
+Gawk now passes **400 reviewed original Make recipes**. The expanded language
+batch covers arrays, field splitting, multibyte diagnostics, date formatting,
+regular expressions, numeric conversions and pretty-printing. All 403 reviewed
+outcomes are accounted for by `evidence/gawk-language-expanded-memory-audit.json`,
+which verifies **493 clean candidate process logs**: 408 original-program
+invocations plus the 85 focused comparisons. Multi-invocation recipes retain
+separate process logs.
+
+Three original assertions fail identically in pinned GNU and rboxc: `typeof7`,
+`elemnew2` and `matchuninitialized`. They remain failures, with their exact
+original expected files and all four native/instrumented outputs preserved.
+The independent audit can verify a newly discovered shared failure directly
+from its original logs without rewriting its report or rerunning unchanged
+programs. The other 231 program inputs and extension profiles remain open;
+full GNU acceptance is still unfinished.
+
+The preceding Gawk checkpoint passes **328 reviewed original Make recipes**. Two further originals,
 `typeof7` and `elemnew2`, fail their unchanged assertions identically in pinned
 GNU 5.4.1 and rboxc, with and without Valgrind. The latter prints `0` where its
 expected file has an empty final line. Both failures remain separate from passes;
