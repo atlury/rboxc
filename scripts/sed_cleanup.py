@@ -83,6 +83,7 @@ release_owned_streams (void)
   struct owned_replacement *next;
 };
 static struct owned_replacement *owned_replacements;
+static idx_t *owned_transliteration_lengths;
 
 static void
 setup_replacement (''')
@@ -91,12 +92,18 @@ setup_replacement (''')
   owned_replacements = owner;
   base = MEMDUP (text, length, char);
   owner->value = base;''')
+            anchor = '                idx_t *src_lens = XNMALLOC (len, idx_t);'
+            text = replace_once(text, anchor, anchor+'\n                owned_transliteration_lengths = src_lens;')
+            text = replace_once(text, '                IF_LINT (free (src_lens));',
+                                '                free (src_lens);\n                owned_transliteration_lengths = NULL;')
             text += '''
 /* Replacement nodes borrow slices.  Retain each allocation base, including
    malloc(0) results for empty replacements, until command execution ends. */
 void
 release_owned_replacements (void)
 {
+  free (owned_transliteration_lengths);
+  owned_transliteration_lengths = NULL;
   while (owned_replacements)
     {
       struct owned_replacement *owner = owned_replacements;
@@ -124,6 +131,6 @@ release_owned_replacements (void)
                           'object_sha256': fingerprint(output), 'compiler_arguments': arguments,
                           'log': str(log.relative_to(root)), 'log_sha256': fingerprint(log)}
     (root/'evidence/sed-native-cleanup.json').write_text(json.dumps({
-        'scope': 'Track regex and replacement allocation bases through compilation/execution and invoke GNU regex destructors at exit; close remaining owned streams after diagnostics.',
+        'scope': 'Track regex and replacement allocation bases, release temporary multibyte transliteration lengths on completion or diagnostics, invoke GNU regex destructors, and close remaining owned streams at exit.',
         'driver_sha256': fingerprint(Path(__file__)), 'helpers': evidence}, indent=2)+'\n')
     return outputs

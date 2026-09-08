@@ -29,6 +29,8 @@ results=[]
 for index,row in enumerate(manifest['scripts']):
     script=source/row['script'];assert fingerprint(script)==row['source_sha256']
     if not row['reviewed'] or (selected and script.name not in selected):continue
+    for name,expected in row.get('fixture_sha256',{}).items():
+        assert fingerprint(source/'testsuite'/name)==expected
     if script.suffix=='.pl':
         assert row.get('full_suite') and row.get('expected_case_count')
     outcomes={}
@@ -65,6 +67,7 @@ for index,row in enumerate(manifest['scripts']):
                 done=subprocess.run(command,
                     cwd=work,stdin=subprocess.DEVNULL,capture_output=True,timeout=row.get('timeout_seconds',300),
                     env={**prerequisite_environment,'RBOXC_FULL_SUITE':'1' if row.get('full_suite') else '',
+                         'RUN_VERY_EXPENSIVE_TESTS':'yes' if row.get('requires_very_expensive_tests') else 'no',
                          'RBOXC_APPROVED_CASES':'','PATH':str(work/'sed')+':'+str(work/'testsuite')+':/usr/bin:/bin','HOME':directory,'TMPDIR':directory,
                          'LC_ALL':'C','LANGUAGE':'C','TZ':'UTC0','srcdir':str(source),
                          'top_srcdir':str(source),'abs_top_srcdir':str(source),'abs_srcdir':str(source),

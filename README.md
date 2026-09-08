@@ -178,9 +178,16 @@ candidate are retained. The first seventeen originals pass natively and under Va
 empty replacement allocations, and one O_TEXT platform skip. A further
 cleanup tracks every replacement allocation base, including zero-byte
 allocations: all four affected originals now pass with clean Valgrind results.
-All 56 focused checks also pass on that candidate. Fresh original batches,
-including the 57-case miscellaneous and 198-case debug Perl suites, continue
-with seven isolated locales and pinned native locale probes.
+The next cleanup releases temporary multibyte transliteration lengths. All 56
+focused checks pass on that candidate, as do the three affected locale originals
+and the original 2 GiB substitution test. Both full Perl suites (57 miscellaneous
+and 198 debug cases) passed on the retained preceding candidate. Original tests
+use seven isolated locales and pinned native locale probes. Native GNU cat,
+touch, sleep, and dd replace host test dependencies whose dispatch failed under
+traced Valgrind execution. Six prerequisite checks now pass their assertions;
+five have clean all-process memory results. The sixth retains a 262,144-byte
+allocation finding in the native GNU cat child, recorded separately from Sed.
+The remaining reviewed originals are being rerun on the multibyte candidate.
 
 GNU BC 1.08.2 is pinned from its verified signed archive. Both `bc` and `dc`
 entries compile in a separate 124-command candidate. Each calculator retains

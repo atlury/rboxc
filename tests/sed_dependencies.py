@@ -20,10 +20,17 @@ def prepare():
         assert all((collection/n).readlink()==Path(locale['name']) for n in locale['aliases'])
     for helper in report['helpers'].values():
         assert fingerprint(Path(helper['path']))==helper['sha256']
+    core=ROOT/'build/gnu-coreutils/src/coreutils'
+    core_hash=json.loads((ROOT/'evidence/smoke.json').read_text())['gnu_binary_sha256']
+    assert fingerprint(core)==core_hash
+    helpers=report['helpers'].copy()
+    for name in ('cat','touch','sleep','dd'):
+        helpers[name]={'path':str(core),'sha256':core_hash,'scope':'Pinned native GNU test dependency'}
     config=ROOT/'build/gnu-sed/config.h'
     assert fingerprint(config)==report['config_header_sha256']
     environment={'LOCPATH':str(collection),'LOCALE_FR':'fr_FR.ISO-8859-1',
                  'LOCALE_FR_UTF8':'fr_FR.UTF-8','LOCALE_JA':'ja_JP.EUC-JP',
                  'CONFIG_HEADER':str(config)}
-    return report['helpers'],environment,{'path':str(path.relative_to(ROOT)),
-            'sha256':fingerprint(path),'environment':environment,'adapter_sha256':fingerprint(Path(__file__))}
+    return helpers,environment,{'path':str(path.relative_to(ROOT)),
+            'sha256':fingerprint(path),'environment':environment,'adapter_sha256':fingerprint(Path(__file__)),
+            'coreutils':{'path':str(core),'sha256':core_hash,'commands':['cat','touch','sleep','dd']}}
