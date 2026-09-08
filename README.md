@@ -334,7 +334,10 @@ open in that preserved baseline; the 128-command installed release is unchanged.
 The next candidate preserves full invocation-path diagnostics and frees the
 default-settings help string after copying it into the obstack. All 30 focused
 behaviors now match GNU, with 11/30 strict checks passing. Remaining findings
-concern native helper ownership of directory handles and file-selection records. A 30-case
+concern native helper ownership of directory handles and file-selection records.
+The following ownership candidate releases those resources while preserving
+all 30 behaviors; 28/30 strict checks pass. The two remaining comparisons
+retain the allocation base of GNU Tar's page-aligned comparison buffer. A 30-case
 archive-operation harness matches GNU Tar against itself in every comparison;
 only 9/30 native control cases are strict memory-clean, with the other GNU
 findings preserved as baseline observations. This control is not Rust port

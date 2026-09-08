@@ -22,12 +22,15 @@ def symbol_map(root,name='tar'):
  symbols|=defined_symbols([root/'build/gnu-tar/src/tar.o'])-{'main'}
  return {symbol:'rboxc_tar_'+symbol for symbol in sorted(symbols)}
 def prepare_archives(root,command,mapping):
+ from tar_cleanup import prepare
+ adapted=prepare(root)
  stage=root/'build/translation/tar';stage.mkdir(parents=True,exist_ok=True)
  definitions=stage/'helper-symbol-map';definitions.write_text(''.join(f'{old} {new}\n' for old,new in mapping.items()))
  outputs=[]
  for original in native_inputs(root):
   target=root/'build/helpers'/('tar-'+original.name);temporary=target.with_name(target.name+'.tmp')
-  subprocess.run(['objcopy','--redefine-syms='+str(definitions),original,temporary],check=True)
+  source=adapted.get(original.name,original)
+  subprocess.run(['objcopy','--redefine-syms='+str(definitions),source,temporary],check=True)
   if original.suffix=='.a':subprocess.run(['ranlib',temporary],check=True)
   temporary.replace(target);outputs.append(target)
  assert defined_symbols(outputs)=={mapping[s] for s in defined_symbols(native_inputs(root))}
