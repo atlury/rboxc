@@ -187,7 +187,12 @@ touch, sleep, and dd replace host test dependencies whose dispatch failed under
 traced Valgrind execution. Six prerequisite checks now pass their assertions;
 five have clean all-process memory results. The sixth retains a 262,144-byte
 allocation finding in the native GNU cat child, recorded separately from Sed.
-The remaining reviewed originals are being rerun on the multibyte candidate.
+All 66 reviewed original selections are now consolidated on the multibyte
+candidate: 64 strict all-process passes, the native-cat child finding above,
+and one Linux O_TEXT platform skip. Sed itself has clean memory results in all
+65 assertion-passing selections. The audit retains every traced process finding
+and command image. Two originals still need dedicated fixture/instrumentation
+profiles; seven are excluded. The 124-command candidate is undergoing a fresh run.
 
 GNU BC 1.08.2 is pinned from its verified signed archive. Both `bc` and `dc`
 entries compile in a separate 124-command candidate. Each calculator retains
@@ -210,9 +215,13 @@ counted as another test. Combined validation of the 124-command candidate contin
 GNU Ed 1.22.6 is pinned from its verified signed archive. Its Rust command
 entry compiles in a separate 125-command candidate with 89 private helper/state
 symbols. A small wrapper adapts dispatcher arguments to Ed's const argv type.
-All 44 initial focused observations match GNU; all retain memory or descriptor
-findings awaiting cleanup. The original check script and 90 editing/diagnostic
-input files are inventoried for individual review. Ed is not installed yet.
+All 44 initial focused observations match GNU, with their original memory and
+descriptor findings retained. Parser storage now remains valid through exit,
+and cleanup invokes GNU's parser and initialized scratch-buffer destructors.
+All 44 focused checks pass with clean Valgrind results after cleanup. The full
+original check script and all 90 editing/diagnostic input files have been reviewed;
+the complete suite is running with pinned native test dependencies. Ed is not
+installed yet.
 
 ## Status
 
