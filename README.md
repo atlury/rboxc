@@ -426,6 +426,22 @@ The completed audit now verifies all 84 selected originals and 905 clean Tar
 processes on these bytes. Coreutils help/version checks pass 428/428. This
 candidate is not installed or fully certified.
 
+The subsequent 131-command Sharutils candidate passes both assigned GNU
+original scripts, with 14 clean instrumented command processes. It tracks and
+closes reopened input/output streams and preserves full invocation names in
+GNU error diagnostics. Its 72-case focused run was interrupted: the saved
+report records 47 passes, but only 21 rows retain intact supporting logs after
+filesystem damage. That run requires repetition before certification.
+
+On 2026-09-08, recovery preserved the damaged Git directory, working sources,
+and raw evidence under `/root/backups/rboxc-recovery-20260908T064111Z`.
+Six empty file objects and three directory-tree objects were reconstructed with
+their exact hashes. The empty final commit object was replaced by a recovery
+commit retaining the recovered staged tree and all readable parent history.
+Git's full integrity check then passed. The Tar and Sharutils original-suite
+inputs and logs remain intact; damaged partial evidence is retained separately.
+See `evidence/git-recovery-20260908.json` for the recovery record and limitations.
+
 ## Status
 
 Of the 553 observed names, 189 currently have GNU provider assignments, including
@@ -1248,5 +1264,7 @@ Rust `va_list` and pointer APIs, and GNU's portable arithmetic fallback for
 helper. Build warnings concerning generated ABI declarations and pointer
 comparisons remain visible; compilation is not a safety proof.
 
-This repository has local incremental commits and no configured remote. The old
-Rbox remote is not used as an implicit publication destination for this project.
+The upstream repository is [atlury/rboxc](https://github.com/atlury/rboxc).
+Incremental commits preserve implementation and evidence separately from
+installed-release certification. Native build trees and raw test logs remain
+local and require separate backups.

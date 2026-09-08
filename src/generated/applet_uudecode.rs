@@ -817,7 +817,7 @@ unsafe extern "C" fn reopen_output(
             return uudecode_exit_code_t::UUDECODE_EXIT_NO_OUTPUT;
         }
     }
-    let mut fp: *mut FILE = freopen(
+    let mut fp: *mut FILE = rboxc_sharutils_freopen(
         outname,
         b"w\0".as_ptr() as *const ::core::ffi::c_char,
         stdout,
@@ -17496,7 +17496,7 @@ unsafe extern "C" fn decode(mut inname: *const ::core::ffi::c_char) -> uudecode_
     }
     return rval;
 }
-unsafe extern "C" fn rboxc_uudecode_main_inner(
+unsafe extern "C" fn rboxc_sharutils_main_inner(
     mut argc: ::core::ffi::c_int,
     mut argv: *const *const ::core::ffi::c_char,
 ) -> ::core::ffi::c_int {
@@ -17545,7 +17545,7 @@ unsafe extern "C" fn rboxc_uudecode_main_inner(
             let c2rust_fresh4 = argv;
             argv = argv.offset(1);
             let mut f: *const ::core::ffi::c_char = *c2rust_fresh4;
-            if !freopen(f, b"r\0".as_ptr() as *const ::core::ffi::c_char, stdin).is_null() {
+            if !rboxc_sharutils_freopen(f, b"r\0".as_ptr() as *const ::core::ffi::c_char, stdin).is_null() {
                 exit_status = uudecode_exit_code_t(exit_status.0 | decode(f).0);
             } else {
                 error(
@@ -17572,9 +17572,11 @@ pub const PACKAGE: [::core::ffi::c_char; 10] =
 pub const r#true: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
 pub const r#false: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
 
+include!("../bridges/sharutils-owned.rs");
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_uudecode(
     argc: ::core::ffi::c_int, argv: *mut *mut ::core::ffi::c_char,
 ) -> ::core::ffi::c_int {
-    rboxc_uudecode_main_inner(argc, argv.cast())
+    rboxc_sharutils_setup(argv);
+    rboxc_sharutils_main_inner(argc, argv.cast())
 }

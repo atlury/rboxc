@@ -775,7 +775,7 @@ unsafe extern "C" fn process_opts(
                 __glibc_reserved: [0; 3],
             };
             let mut fp: *mut FILE =
-                freopen(*argv, b"r\0".as_ptr() as *const ::core::ffi::c_char, stdin);
+                rboxc_sharutils_freopen(*argv, b"r\0".as_ptr() as *const ::core::ffi::c_char, stdin);
             input_name = *argv;
             if fp != stdin {
                 fserr(
@@ -834,8 +834,7 @@ unsafe extern "C" fn process_opts(
         output_name = p;
     }
 }
-#[no_mangle]
-pub unsafe extern "C" fn single_binary_main_uuencode(
+unsafe extern "C" fn rboxc_sharutils_main_inner(
     mut argc: ::core::ffi::c_int,
     mut argv: *mut *mut ::core::ffi::c_char,
 ) -> ::core::ffi::c_int {
@@ -919,3 +918,12 @@ pub const LOCALEDIR: [::core::ffi::c_char; 48] = unsafe {
 };
 pub const PACKAGE: [::core::ffi::c_char; 10] =
     unsafe { ::core::mem::transmute::<[u8; 10], [::core::ffi::c_char; 10]>(*b"sharutils\0") };
+
+include!("../bridges/sharutils-owned.rs");
+#[no_mangle]
+pub unsafe extern "C" fn single_binary_main_uuencode(
+    argc: ::core::ffi::c_int, argv: *mut *mut ::core::ffi::c_char,
+) -> ::core::ffi::c_int {
+    rboxc_sharutils_setup(argv);
+    rboxc_sharutils_main_inner(argc, argv.cast())
+}

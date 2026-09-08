@@ -4,6 +4,7 @@
 import importlib.util
 import json
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -83,7 +84,10 @@ for index, (name, command, args, data, fixture, multicall) in enumerate(cases):
                        'stderr':done.stderr.replace(directory.encode(), b'<fixture>').hex(), 'tree':tree}
                 if instrument:
                     saved = profile.logs/f'{index:03}-{key}.log'; shutil.copy2(log, saved)
-                    row.update(memory=runner.parse_memory_log(saved.read_text(), saved.stem),
+                    contents = saved.read_text()
+                    pids = set(re.findall(r'^==([0-9]+)==', contents, re.M))
+                    assert len(pids) == 1
+                    row.update(memory=runner.parse_memory_log(contents, pids.pop(), exec_only=True),
                                log=str(saved.relative_to(ROOT)), log_sha256=fingerprint(saved))
                 outcomes[key] = row
     reference = outcomes['gnu']

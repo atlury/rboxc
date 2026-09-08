@@ -87,16 +87,18 @@ assert len(re.findall(pattern, text)) == 1
 text = re.sub(pattern, 'extern "C" {\n    #[link_name = "'+mapping['program_name']+'"]\n    static program_name: *const ::core::ffi::c_char;\n}', text)
 exports.remove('program_name')
 imports.append('program_name')
-if name == 'uudecode':
-    anchor = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_uudecode('
-    assert text.count(anchor) == 1
-    text = text.replace(anchor, 'unsafe extern "C" fn rboxc_uudecode_main_inner(')
-    text += '''
-#[no_mangle]
-pub unsafe extern "C" fn single_binary_main_uudecode(
+anchor = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_'+name+'('
+assert text.count(anchor) == 1
+text = text.replace(anchor, 'unsafe extern "C" fn rboxc_sharutils_main_inner(')
+# The pinned entries only reopen stdin (both) and stdout (decoder).
+assert len(re.findall(r'(?<!fn )\bfreopen\(', text)) == (1 if name == 'uuencode' else 2)
+text = re.sub(r'(?<!fn )\bfreopen\(', 'rboxc_sharutils_freopen(', text)
+text += '\ninclude!("../bridges/sharutils-owned.rs");\n'
+text += '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_'+name+'''(
     argc: ::core::ffi::c_int, argv: *mut *mut ::core::ffi::c_char,
 ) -> ::core::ffi::c_int {
-    rboxc_uudecode_main_inner(argc, argv.cast())
+    rboxc_sharutils_setup(argv);
+    rboxc_sharutils_main_inner(argc, argv.cast())
 }
 '''
 # Retain both the GNU and Berkeley license notices from the C entry.
@@ -109,6 +111,7 @@ report = {'provider': 'sharutils', 'version': pin['version'], 'command': name,
           'source_sha256': expected, 'translated': True,
           'scope': 'C2Rust entry with private AutoOpts and Gnulib helpers. Compilation and validation remain separate.',
           'rust_file': str(target.relative_to(ROOT)), 'rust_sha256': fingerprint(target),
+          'ownership_adapter_sha256': fingerprint(ROOT/'src/bridges/sharutils-owned.rs'),
           'raw_translation_sha256': fingerprint(outputs[0]), 'compile_database_sha256': fingerprint(database),
           'adaptations': ['Pinned nightly VaList and pointer API spellings.',
                           'Retain the initialized native options definition of program_name; the C entry only declares a common symbol.',
