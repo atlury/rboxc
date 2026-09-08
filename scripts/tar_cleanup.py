@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 import json
 from pathlib import Path
+import shutil
 import subprocess
 from tar_helpers import fingerprint
 
@@ -13,9 +14,11 @@ def prepare(root):
     records = [json.loads(p.read_text()) for p in (root/'build/tar-cc-records').glob('*.json')]
     outputs = {}
     evidence = []
-    for name in ('misc', 'names', 'compare'):
-        original = Path(pin['source'])/'src'/(name+'.c')
-        assert fingerprint(original) == pin['helper_source_sha256']['src/'+name+'.c']
+    for name in ('misc', 'names', 'compare', 'wordsplit'):
+        relative = ('lib/' if name == 'wordsplit' else 'src/')+name+'.c'
+        original = Path(pin['source'])/relative
+        expected = pin['native_cleanup_source_sha256'][relative] if name == 'wordsplit' else pin['helper_source_sha256'][relative]
+        assert fingerprint(original) == expected
         text = original.read_text()
 
         def replace(before, after, count=1):
@@ -65,6 +68,11 @@ rboxc_release_working_directories (void)
             names_source = Path(pin['source'])/'src/names.c'
             assert fingerprint(names_source) == pin['helper_source_sha256']['src/names.c']
             assert names_source.read_text().count('chdir_arg (xstrdup (ep->v.name))') == 3
+        elif name == 'wordsplit':
+            # The completed word has already been copied into WS_WORDV.
+            replace('      wsnode_remove (wsp, wsp->ws_head);', '''      struct wordsplit_node *completed = wsp->ws_head;
+      wsnode_remove (wsp, completed);
+      wsnode_free (completed);''')
         elif name == 'compare':
             replace('static char *diff_buffer;', '''static char *diff_buffer;
 static void *rboxc_diff_allocation;
@@ -156,7 +164,13 @@ make_name (const char *file_name)''')
                          'adapted_source': str(adapted.relative_to(root)), 'adapted_source_sha256': fingerprint(adapted),
                          'object': str(output.relative_to(root)), 'object_sha256': fingerprint(output),
                          'compiler_arguments': arguments, 'log': str(log.relative_to(root)), 'log_sha256': fingerprint(log)})
-    report = {'scope': 'Keep GNU selection and directory behavior, while tracking live name allocations independently of discarded selection cursors, releasing consumed directory/option records, closing/freeing owned working-directory state, and retaining/freeing the allocation base of the aligned comparison buffer at exit. Native oracle objects remain unchanged.',
+    archive = stage/'libtar.a'
+    shutil.copy2(root/'build/gnu-tar/lib/libtar.a', archive)
+    assert subprocess.check_output(['ar', 't', archive], text=True).splitlines().count('wordsplit.o') == 1
+    subprocess.run(['ar', 'r', archive, outputs.pop('wordsplit.o')], check=True)
+    subprocess.run(['ranlib', archive], check=True)
+    outputs['libtar.a'] = archive
+    report = {'scope': 'Keep GNU selection and directory behavior, while tracking live name allocations independently of discarded selection cursors, releasing consumed directory/option records, closing/freeing owned working-directory state, retaining/freeing the aligned comparison allocation, and freeing consumed wordsplit nodes after copying their output. Native oracle objects remain unchanged.',
               'driver_sha256': fingerprint(Path(__file__)), 'adaptations': evidence}
     (root/'evidence/tar-native-cleanup.json').write_text(json.dumps(report, indent=2)+'\n')
     return outputs

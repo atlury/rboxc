@@ -6264,37 +6264,7 @@ pub unsafe extern "C" fn more_options(
 unsafe extern "C" fn parse_default_options(mut args: *mut tar_args) {
     let mut opts: *mut ::core::ffi::c_char =
         getenv(b"TAR_OPTIONS\0".as_ptr() as *const ::core::ffi::c_char);
-    let mut ws: wordsplit = wordsplit {
-        ws_wordc: 0,
-        ws_wordv: ::core::ptr::null_mut::<*mut ::core::ffi::c_char>(),
-        ws_offs: 0,
-        ws_wordn: 0,
-        ws_flags: 0,
-        ws_options: 0,
-        ws_maxwords: 0,
-        ws_wordi: 0,
-        ws_delim: ::core::ptr::null::<::core::ffi::c_char>(),
-        ws_comment: ::core::ptr::null::<::core::ffi::c_char>(),
-        ws_escape: [::core::ptr::null::<::core::ffi::c_char>(); 2],
-        ws_alloc_die: None,
-        ws_error: None,
-        ws_debug: None,
-        ws_env: ::core::ptr::null_mut::<*const ::core::ffi::c_char>(),
-        ws_envbuf: ::core::ptr::null_mut::<*mut ::core::ffi::c_char>(),
-        ws_envidx: 0,
-        ws_envsiz: 0,
-        ws_getvar: None,
-        ws_closure: ::core::ptr::null_mut::<::core::ffi::c_void>(),
-        ws_command: None,
-        ws_input: ::core::ptr::null::<::core::ffi::c_char>(),
-        ws_len: 0,
-        ws_endp: 0,
-        ws_errno: 0,
-        ws_usererr: ::core::ptr::null_mut::<::core::ffi::c_char>(),
-        ws_head: ::core::ptr::null_mut::<wordsplit_node>(),
-        ws_tail: ::core::ptr::null_mut::<wordsplit_node>(),
-        ws_lvl: 0,
-    };
+
     let mut loc: option_locus = option_locus {
         source: option_source::OPTS_ENVIRON,
         name: b"TAR_OPTIONS\0".as_ptr() as *const ::core::ffi::c_char,
@@ -6305,10 +6275,10 @@ unsafe extern "C" fn parse_default_options(mut args: *mut tar_args) {
     if opts.is_null() {
         return;
     }
-    ws.ws_offs = 1 as size_t;
+    RBOXC_DEFAULT_WORDS.ws_offs = 1 as size_t;
     if wordsplit(
         opts,
-        &raw mut ws,
+        &raw mut RBOXC_DEFAULT_WORDS,
         (WRDSF_DEFFLAGS | WRDSF_DOOFFS) as ::core::ffi::c_uint,
     ) != 0
     {
@@ -6324,7 +6294,7 @@ unsafe extern "C" fn parse_default_options(mut args: *mut tar_args) {
                     b"cannot split TAR_OPTIONS: %s\0".as_ptr() as *const ::core::ffi::c_char,
                     5 as ::core::ffi::c_int,
                 ),
-                wordsplit_strerror(&raw mut ws),
+                wordsplit_strerror(&raw mut RBOXC_DEFAULT_WORDS),
             );
             if 0 as ::core::ffi::c_int != 0 as ::core::ffi::c_int {
                 unreachable!();
@@ -6341,7 +6311,7 @@ unsafe extern "C" fn parse_default_options(mut args: *mut tar_args) {
                         b"cannot split TAR_OPTIONS: %s\0".as_ptr() as *const ::core::ffi::c_char,
                         5 as ::core::ffi::c_int,
                     ),
-                    wordsplit_strerror(&raw mut ws),
+                    wordsplit_strerror(&raw mut RBOXC_DEFAULT_WORDS),
                 );
                 if __errstatus != 0 as ::core::ffi::c_int {
                     unreachable!();
@@ -6351,15 +6321,15 @@ unsafe extern "C" fn parse_default_options(mut args: *mut tar_args) {
         };
         fatal_exit();
     }
-    if ws.ws_wordc != 0 {
+    if RBOXC_DEFAULT_WORDS.ws_wordc != 0 {
         let mut idx: ::core::ffi::c_int = 0;
-        *ws.ws_wordv.offset(0isize) = program_name as *mut ::core::ffi::c_char;
+        *RBOXC_DEFAULT_WORDS.ws_wordv.offset(0isize) = program_name as *mut ::core::ffi::c_char;
         save_loc_ptr = (*args).loc;
         (*args).loc = &raw mut loc;
         if argp_parse(
             &raw mut argp,
-            ws.ws_offs.wrapping_add(ws.ws_wordc) as ::core::ffi::c_int,
-            ws.ws_wordv,
+            RBOXC_DEFAULT_WORDS.ws_offs.wrapping_add(RBOXC_DEFAULT_WORDS.ws_wordc) as ::core::ffi::c_int,
+            RBOXC_DEFAULT_WORDS.ws_wordv,
             (ARGP_IN_ORDER | ARGP_NO_EXIT) as ::core::ffi::c_uint,
             &raw mut idx,
             args as *mut ::core::ffi::c_void,
@@ -6408,9 +6378,9 @@ unsafe extern "C" fn parse_default_options(mut args: *mut tar_args) {
             };
             usage(PAXEXIT_FAILURE);
         }
-        ws.ws_wordc = 0 as size_t;
+
     }
-    wordsplit_free(&raw mut ws);
+
 }
 unsafe extern "C" fn decode_options(
     mut argc: ::core::ffi::c_int,
@@ -6504,6 +6474,7 @@ unsafe extern "C" fn decode_options(
             ((new_argc + 1 as ::core::ffi::c_int) as size_t)
                 .wrapping_mul(::core::mem::size_of::<*mut ::core::ffi::c_char>()),
         ) as *mut *mut ::core::ffi::c_char;
+        rboxc_tar_own_argument(new_argv.cast());
         r#in = argv;
         out = new_argv;
         let c2rust_fresh7 = r#in;
@@ -6520,6 +6491,7 @@ unsafe extern "C" fn decode_options(
             let c2rust_fresh10 = out;
             out = out.offset(1);
             *c2rust_fresh10 = xstrdup(&raw mut buffer as *mut ::core::ffi::c_char);
+            rboxc_tar_own_argument((*c2rust_fresh10).cast());
             opt = find_argp_option(&raw mut argp, *letter as ::core::ffi::c_int);
             if !opt.is_null() && !(*opt).arg.is_null() {
                 if r#in < argv.offset(argc as isize) as *const *mut ::core::ffi::c_char {
@@ -7925,5 +7897,60 @@ pub unsafe extern "C" fn single_binary_main_tar(
     if error_print_progname.is_none() {
         error_print_progname = Some(rboxc_tar_error_prefix);
     }
+    if libc::atexit(rboxc_tar_release_arguments) != 0 {
+        libc::_exit(2);
+    }
     rboxc_tar_main_inner(argc, argv)
+}
+
+static mut RBOXC_DEFAULT_WORDS: wordsplit = wordsplit {
+        ws_wordc: 0,
+        ws_wordv: ::core::ptr::null_mut::<*mut ::core::ffi::c_char>(),
+        ws_offs: 0,
+        ws_wordn: 0,
+        ws_flags: 0,
+        ws_options: 0,
+        ws_maxwords: 0,
+        ws_wordi: 0,
+        ws_delim: ::core::ptr::null::<::core::ffi::c_char>(),
+        ws_comment: ::core::ptr::null::<::core::ffi::c_char>(),
+        ws_escape: [::core::ptr::null::<::core::ffi::c_char>(); 2],
+        ws_alloc_die: None,
+        ws_error: None,
+        ws_debug: None,
+        ws_env: ::core::ptr::null_mut::<*const ::core::ffi::c_char>(),
+        ws_envbuf: ::core::ptr::null_mut::<*mut ::core::ffi::c_char>(),
+        ws_envidx: 0,
+        ws_envsiz: 0,
+        ws_getvar: None,
+        ws_closure: ::core::ptr::null_mut::<::core::ffi::c_void>(),
+        ws_command: None,
+        ws_input: ::core::ptr::null::<::core::ffi::c_char>(),
+        ws_len: 0,
+        ws_endp: 0,
+        ws_errno: 0,
+        ws_usererr: ::core::ptr::null_mut::<::core::ffi::c_char>(),
+        ws_head: ::core::ptr::null_mut::<wordsplit_node>(),
+        ws_tail: ::core::ptr::null_mut::<wordsplit_node>(),
+        ws_lvl: 0,
+    };
+
+extern "C" {
+    #[link_name = "rboxc_tar_wordsplit_clearerr"]
+    fn rboxc_wordsplit_clearerr(ws: *mut wordsplit);
+}
+static mut RBOXC_OWNED_ARGS: Vec<*mut ::core::ffi::c_void> = Vec::new();
+unsafe fn rboxc_tar_own_argument(pointer: *mut ::core::ffi::c_void) {
+    RBOXC_OWNED_ARGS.push(pointer);
+}
+extern "C" fn rboxc_tar_release_arguments() {
+    unsafe {
+        let saved_errno = *libc::__errno_location();
+        wordsplit_free(&raw mut RBOXC_DEFAULT_WORDS);
+        rboxc_wordsplit_clearerr(&raw mut RBOXC_DEFAULT_WORDS);
+        for pointer in ::core::mem::take(&mut *(&raw mut RBOXC_OWNED_ARGS)) {
+            free(pointer);
+        }
+        *libc::__errno_location() = saved_errno;
+    }
 }

@@ -113,6 +113,61 @@ anchor = '            (*__o_2).next_free = (*__o_2).next_free.offset(__len_2 as 
 assert part.count(anchor) == 1 and part.count('s = format_default_settings();') == 1
 part = part.replace(anchor, anchor+'\n            free(s.cast());')
 text = text[:start]+part+text[end:]
+# Environment option strings remain borrowed by GNU option state until exit.
+# Retain the whole initialized wordsplit workspace for normal and fatal exits.
+start = text.index('unsafe extern "C" fn parse_default_options(')
+end = text.index('unsafe extern "C" fn decode_options(', start)
+part = text[start:end]
+initializer = re.search(r'    let mut ws: wordsplit = wordsplit \{.*?\n    \};', part, re.S)
+assert initializer
+global_ws = initializer[0].replace('    let mut ws:', 'static mut RBOXC_DEFAULT_WORDS:', 1)
+part = part.replace(initializer[0], '')
+assert part.count('        ws.ws_wordc = 0 as size_t;') == 1
+part = part.replace('        ws.ws_wordc = 0 as size_t;', '')
+assert part.count('    wordsplit_free(&raw mut ws);') == 1
+part = part.replace('    wordsplit_free(&raw mut ws);', '')
+part = re.sub(r'\bws\b', 'RBOXC_DEFAULT_WORDS', part)
+text = text[:start]+part+text[end:]
+text += '\n'+global_ws+'\n'
+assert mapping['wordsplit_clearerr'] == 'rboxc_tar_wordsplit_clearerr'
+imports.append('wordsplit_clearerr')
+text += '''
+extern "C" {
+    #[link_name = "rboxc_tar_wordsplit_clearerr"]
+    fn rboxc_wordsplit_clearerr(ws: *mut wordsplit);
+}
+static mut RBOXC_OWNED_ARGS: Vec<*mut ::core::ffi::c_void> = Vec::new();
+unsafe fn rboxc_tar_own_argument(pointer: *mut ::core::ffi::c_void) {
+    RBOXC_OWNED_ARGS.push(pointer);
+}
+extern "C" fn rboxc_tar_release_arguments() {
+    unsafe {
+        let saved_errno = *libc::__errno_location();
+        wordsplit_free(&raw mut RBOXC_DEFAULT_WORDS);
+        rboxc_wordsplit_clearerr(&raw mut RBOXC_DEFAULT_WORDS);
+        for pointer in ::core::mem::take(&mut *(&raw mut RBOXC_OWNED_ARGS)) {
+            free(pointer);
+        }
+        *libc::__errno_location() = saved_errno;
+    }
+}
+'''
+start = text.index('unsafe extern "C" fn decode_options(')
+end = text.index('unsafe extern "C" fn ', start+1)
+part = text[start:end]
+anchor = '        r#in = argv;'
+assert part.count(anchor) == 1
+part = part.replace(anchor, '        rboxc_tar_own_argument(new_argv.cast());\n'+anchor)
+anchor = '            *c2rust_fresh10 = xstrdup(&raw mut buffer as *mut ::core::ffi::c_char);'
+assert part.count(anchor) == 1
+part = part.replace(anchor, anchor+'\n            rboxc_tar_own_argument((*c2rust_fresh10).cast());')
+text = text[:start]+part+text[end:]
+anchor = '    rboxc_tar_main_inner(argc, argv)'
+assert text.count(anchor) == 1
+text = text.replace(anchor, '''    if libc::atexit(rboxc_tar_release_arguments) != 0 {
+        libc::_exit(2);
+    }
+'''+anchor)
 notice = re.match(r'\s*(/\*.*?\*/)', source.read_text(), re.S)[1]
 target = ROOT/f'src/generated/applet_{name}.rs'
 target.write_text('// Generated from pinned GNU Tar '+pin['version']+' by scripts/translate-tar.py.\n'
@@ -124,7 +179,8 @@ report = {'provider': 'tar', 'version': pin['version'], 'command': name,
           'rust_file': str(target.relative_to(ROOT)), 'rust_sha256': fingerprint(target),
           'raw_translation_sha256': fingerprint(outputs[0]), 'compile_database_sha256': fingerprint(database),
           'adaptations': ['Preserve full argv[0] diagnostics through GNU error_print_progname.',
-                          'Free the default-settings help string after copying it into the obstack.'],
+                          'Free the default-settings help string after copying it into the obstack.',
+                          'Retain environment option words and owned old-style arguments until exit, then release them.'],
           'helper_imports': {s: mapping[s] for s in sorted(imports)},
           'rust_exports': {s: mapping[s] for s in sorted(exports)},
           'opaque_pointer_types': opaque, 'log': str(log.relative_to(ROOT)), 'log_sha256': fingerprint(log)}

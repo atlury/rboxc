@@ -21,6 +21,13 @@ spec.loader.exec_module(runner)
 profile = ComparisonProfile('tar-original', oracle=ROOT/'build/gnu-tar/src/tar', selections=True)
 source = Path(json.loads((ROOT/'inventory/sources.json').read_text())['tar']['source'])
 selections = {'version': (1, 'version.at'), 'append': (49, 'append.at'), 'exclude': (59, 'exclude.at')}
+selections.update({
+    'options02': (4, 'options02.at'),
+    'opcomp01': (6, 'opcomp01.at'), 'opcomp02': (7, 'opcomp02.at'),
+    'opcomp03': (8, 'opcomp03.at'), 'opcomp05': (10, 'opcomp05.at'),
+    'positional01': (23, 'positional01.at'), 'positional02': (24, 'positional02.at'),
+    'positional03': (25, 'positional03.at'),
+})
 selected = profile.options.commands or list(selections)
 assert set(selected) <= set(selections)
 helpers = {n: ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','mkdir','chmod','touch','sort','echo','basename','cp','ln','true','false','sleep','ls','mv','mktemp','cut','id','date','printf','dd','rmdir','expr','tr','wc','head','tail','uname','cksum')}

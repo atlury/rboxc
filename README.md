@@ -343,7 +343,18 @@ The first three unchanged Autotest selections pass their assertions, including
 all five archive formats in the append test. Version passes Valgrind; append
 and exclusion tests expose additional ownership work in old-style arguments
 and TAR_OPTIONS processing. These original findings remain open in
-`evidence/tar-original-reviewed.json`. A 30-case
+`evidence/tar-original-reviewed.json`. The option-ownership candidate now passes
+44/44 focused checks and all three initial originals, with 31 clean
+instrumented Tar processes. Old-style argument allocations and environment
+option strings are retained until exit; consumed wordsplit nodes are freed
+after their text is copied. These are local adaptations against GNU Tar 1.35,
+including its bundled `lib/wordsplit.c`, whose source hash is pinned separately.
+One additional environment-option fixture unexpectedly aborted in the native
+reference. Its observation and an interrupted follow-up batch are retained
+and unassessed; it is excluded from further execution. Eight additional reviewed
+option/positional original tests also pass. The 11 completed original
+selections contain 53 clean instrumented Tar processes in total; broader
+original coverage remains open. A 30-case
 archive-operation harness matches GNU Tar against itself in every comparison;
 only 9/30 native control cases are strict memory-clean, with the other GNU
 findings preserved as baseline observations. This control is not Rust port
