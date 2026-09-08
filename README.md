@@ -45,8 +45,46 @@ An external GNU executable used as an oracle is never counted as a port.
 GNU providers, and their current state. Rbox's `APPLET_COUNT` constant says 554,
 but its actual dispatcher and full binary list agree on 553 distinct commands;
 the one-name discrepancy remains recorded in `inventory/sources.json`.
-GNU Hello, Time, Which, Diffutils, Grep, Gzip, Sed, BC, and Ed are also source-pinned. Remaining
+GNU Hello, Time, Which, Diffutils, Grep, Gzip, Sed, BC, Ed, Findutils, and Tar are also source-pinned. Remaining
 provider assignments require source/version confirmation before implementation.
+
+The upstream release baselines below are the versions used for translation
+and matching native test oracles. They are not claims about the latest upstream
+release or full compatibility. [inventory/sources.json](inventory/sources.json)
+is the authoritative machine-readable pin, including each release archive's
+SHA-256; additional entry/helper hashes and signature records are recorded
+there where available.
+
+| GNU provider | Upstream baseline | Port scope at this baseline |
+| --- | --- | --- |
+| Coreutils | 9.11 | 107 installed command entries |
+| Hello | 2.12.3 | `hello` installed |
+| Time | 1.10 | `time` installed |
+| Which | 2.25 | `which` installed |
+| Diffutils | 3.12 | `cmp`, `diff`, `diff3`, `sdiff` installed |
+| Grep | 3.12 | `grep`, `egrep`, `fgrep` installed |
+| Gzip | 1.14 | `gzip`, `gunzip`, `uncompress`, `zcat` installed |
+| Sed | 4.10 | `sed` installed |
+| BC | 1.08.2 | `bc`, `dc` installed |
+| Ed | 1.22.6 | `ed` installed |
+| Findutils | 4.11.0 | `find`, `xargs`, `locate` in candidate testing; `updatedb` pending |
+| Tar | 1.35 | Entry translated; linking and runtime validation pending |
+
+For a later upstream fix, identify its upstream commit or patch and the release
+baseline in this table. Record the affected commands, upstream reference, local
+commit, and validation evidence in this README when applying it. Keep the
+baseline version unchanged for a backport, and record that backport explicitly.
+For a release upgrade, update the version and archive pin together, rebuild the
+matching native oracle, regenerate the translation, and rerun the affected
+original and compatibility tests. Preserve the previous evidence with its
+actual source and binary hashes.
+
+Existing local translation and ownership adaptations live in the provider
+`scripts/translate-*.py` scripts and shared/provider `scripts/*cleanup.py`
+helpers, with incremental Git commits and evidence recording their changes.
+They must be reviewed when rebasing onto a newer GNU release; the version table
+alone does not imply an unmodified upstream implementation. GNU ACL and Attr
+have not yet been source-pinned or incorporated as providers.
 
 GNU Hello 2.12.3 is pinned from the [official GNU release archive](https://ftp.gnu.org/gnu/hello/).
 Its signature verifies against the GNU-published keyring; archive, signature,
