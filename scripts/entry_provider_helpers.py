@@ -75,6 +75,9 @@ def prepare_archives(root,provider,mapping):
     if provider=='ifconfig':
         from ifconfig_cleanup import prepare
         adapted=prepare(root)
+    if provider in ('screen','wget'):
+        from terminal_http_cleanup import prepare
+        adapted=prepare(root,provider)
     stage=root/f'build/translation/{provider}';stage.mkdir(parents=True,exist_ok=True)
     definitions=stage/'helper-symbol-map'
     definitions.write_text(''.join(f'{old} {new}\n' for old,new in mapping.items()))

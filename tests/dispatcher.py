@@ -17,6 +17,9 @@ provider_commands = {name: data['commands'] for name, data in json.loads((ROOT/'
                      if name != 'coreutils' and isinstance(data, dict) and 'commands' in data}
 parser = argparse.ArgumentParser(add_help=False)
 parser.add_argument('--providers', nargs='*', choices=sorted(provider_commands))
+parser.add_argument('--extra-commands', nargs='*', default=[],
+                    choices=sorted({command for commands in provider_commands.values() for command in commands}),
+                    help='Explicit commands from partially integrated providers, in addition to the selected full providers')
 selection, remaining = parser.parse_known_args()
 sys.argv = [sys.argv[0], *remaining]
 expected_providers = selection.providers
@@ -68,6 +71,9 @@ def main():
         names = sorted(r['name'] for r in json.loads((ROOT/'evidence/translation.json').read_text()))
         for provider in expected_providers:
             names = sorted([*names, *provider_commands[provider]])
+        assert not set(names) & set(selection.extra_commands), 'duplicate full-provider and partial-command selection'
+        assert len(selection.extra_commands) == len(set(selection.extra_commands))
+        names = sorted([*names, *selection.extra_commands])
         for alias in ('rboxc', 'rbox'):
             listed = execute([str(run/alias), '--list'])
             unknown = execute([str(run/alias), 'unknown-command'])
@@ -76,6 +82,7 @@ def main():
                 and unknown == {'status': 127, 'stdout': '', 'stderr': b'rboxc: unknown program\n'.hex()})
             results.append({'alias': alias, 'scope': 'rbox command selection', 'pass': passed})
     report = {**PROFILE.metadata(), 'expected_providers': expected_providers,
+              'expected_extra_commands': selection.extra_commands,
               'driver_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
               'passed': sum(r['pass'] for r in results), 'total': len(results), 'results': results}
     PROFILE.report.write_text(json.dumps(report, indent=2)+'\n')

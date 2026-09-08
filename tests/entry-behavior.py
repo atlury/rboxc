@@ -77,10 +77,11 @@ if 'wget' in oracles:
     import http.server
     import threading
     class FixtureHandler(http.server.BaseHTTPRequestHandler):
+        protocol_version='HTTP/1.1'
         def log_message(self,*args):pass
         def do_GET(self):
             if self.path=='/redirect':
-                self.send_response(302);self.send_header('Location','/data');self.end_headers();return
+                self.send_response(302);self.send_header('Location','/data');self.send_header('Content-Length','0');self.end_headers();return
             status=404 if self.path=='/missing' else 200
             body=b'not found\n' if status==404 else b'rboxc GNU wget fixture\n'
             self.send_response(status);self.send_header('Content-Length',str(len(body)));self.end_headers()
@@ -90,6 +91,7 @@ if 'wget' in oracles:
     url='http://127.0.0.1:'+str(server.server_port)
     for label,path,args in [('stdout','/data',['-O','-']),('file','/data',['-O','output']),('redirect','/redirect',['-O','output']),('not-found','/missing',['-O','output'])]:
         case('wget-http-'+label,'wget',['--no-config','--no-proxy','-q',*args,url+path])
+    case('wget-http-reuse','wget',['--no-config','--no-proxy','-q','-O','output',url+'/data',url+'/second'])
 # Network-service commands are limited here to option parsing: no listener,
 # packet transmission, external endpoint, host log write, or configuration change.
 results = []

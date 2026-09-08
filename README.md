@@ -76,9 +76,9 @@ there where available.
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | Nine entries compile; option checks and read-only interface listing pass; four entries pending |
 | Bash | 5.3 | Native oracle built; Rust control-flow adaptation pending |
-| Less | 704 | Rust entry compiles; runtime validation in progress |
-| Screen | 5.0.2 | Rust entry compiles; runtime validation in progress |
-| Wget | 1.25.0 | Rust entry compiles; runtime validation in progress |
+| Less | 704 | Candidate passes ten focused comparisons; original suite pending |
+| Screen | 5.0.2 | Candidate passes five option comparisons and the descriptor-preservation contract |
+| Wget | 1.25.0 | Candidate passes 14 focused comparisons and four reviewed originals |
 | glibc | 2.43 | `getconf`, `iconv` source-pinned; entry builds pending |
 
 The next-provider work is preserved before release activation. Gawk's candidate
@@ -93,8 +93,12 @@ GNU's readline dependency.
 
 The latest source checkpoint builds a 152-command candidate: 19 of the 54
 previously queued names now compile, with 35 still awaiting integration.
-The installed release remains at 133 commands pending combined regression and
-activation. `evidence/gnu-assigned-progress.json` records these separate states.
+The installed release remains at 133 commands pending activation. The combined
+152-command build passes 428 Coreutils smoke checks, 107 instrumented help
+checks, all 318 native/instrumented behavior comparisons and 11 dispatcher
+checks. Focused regressions for every installed additional provider and Gawk
+also pass, along with all 137 selected newer-entry comparisons. Gawk and Patch
+reviewed originals pass again on this exact candidate. `evidence/gnu-assigned-progress.json` records these separate states.
 No new full-provider completion is claimed. The 149-command intermediate
 candidate passes all 108 selected native/Valgrind comparisons. Binutils tests
 use valid compiler-produced ELF objects and fixed input mtimes. Archive-index
@@ -116,6 +120,16 @@ Screen uses GNU's `--disable-pam` configuration because PAM headers are absent;
 PAM integration is untested. Its build date is fixed through
 `SOURCE_DATE_EPOCH=1700000000`. Wget uses GNU's OpenSSL configuration and its
 native fallback cookie checks; GnuTLS and libpsl are absent from this profile.
+The 152-command candidate is 12,675,832 bytes (12.09 MiB), and a separate
+build is byte-identical. Screen now skips descriptors already known to be
+closed before GNU's poll probe; its five focused option checks are clean, and
+an isolated contract verifies ten GNU/adapted outcomes for preserved standard
+and exception descriptors. Wget closes its owned persistent HTTP connection at
+exit, retaining reuse during normal operation. Its 14 focused cases include
+private HTTP/1.1 reuse, and four unchanged GNU Perl tests pass; the strict audit
+reparses all 18 clean candidate process logs. Full Screen, Less and Wget suites
+remain open. Earlier findings and candidate binaries are preserved.
+
 The glibc baseline matches the host's 2.43 release and is a fixed port baseline,
 not a claim about the latest available upstream version.
 
