@@ -164,3 +164,6 @@ if all((ROOT/f'evidence/bc-{name}-translation.json').exists() for name in ('bc',
 
 if (ROOT/'evidence/ed-translation.json').exists():
     subprocess.run([sys.executable, str(ROOT/'scripts/assemble-ed.py')], check=True)
+
+if all((ROOT/f'evidence/findutils-{name}-translation.json').exists() for name in ('find', 'xargs', 'locate')):
+    subprocess.run([sys.executable, str(ROOT/'scripts/assemble-findutils.py')], check=True)

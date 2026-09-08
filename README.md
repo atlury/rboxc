@@ -233,6 +233,15 @@ allocations and shell descriptor observations during redirection. The earlier
 241/242 editor-memory result is preserved. The combined checks pass;
 `evidence/ed-activation.json` records activation and retained artifacts.
 
+GNU Findutils 4.11.0 is pinned from its verified signed archive and built with
+SELinux disabled. The translated find, xargs, and locate entries compile in a
+separate 128-command candidate. Their native helpers have separate command
+namespaces (1,465 symbols), and their C entry objects are excluded. The native
+build retains GNU's libm linkage. The original shell/DejaGNU inventory contains
+240 test and harness inputs awaiting individual review. DejaGNU is installed
+as a test prerequisite. updatedb and its private frcode encoder remain separate
+porting work; Findutils is not installed yet.
+
 ## Status
 
 The installed executable registers 125 commands: 107 Coreutils entries, GNU Hello,

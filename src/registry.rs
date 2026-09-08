@@ -1,3 +1,9 @@
+#[path = "generated/applet_locate.rs"]
+mod applet_locate;
+#[path = "generated/applet_xargs.rs"]
+mod applet_xargs;
+#[path = "generated/applet_find.rs"]
+mod applet_find;
 #[path = "generated/applet_ed.rs"]
 mod applet_ed;
 #[path = "generated/applet_dc.rs"]
@@ -280,6 +286,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"factor", applet_factor::single_binary_main_factor),
     (b"false", applet_false::single_binary_main_false),
     (b"fgrep", applet_grep::single_binary_main_fgrep),
+    (b"find", applet_find::single_binary_main_find),
     (b"fmt", applet_fmt::single_binary_main_fmt),
     (b"fold", applet_fold::single_binary_main_fold),
     (b"grep", applet_grep::single_binary_main_grep),
@@ -296,6 +303,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"kill", applet_kill::single_binary_main_kill),
     (b"link", applet_link::single_binary_main_link),
     (b"ln", applet_ln::single_binary_main_ln),
+    (b"locate", applet_locate::single_binary_main_locate),
     (b"logname", applet_logname::single_binary_main_logname),
     (b"ls", applet_ls::single_binary_main_ls),
     (b"md5sum", applet_md5sum::single_binary_main_md5sum),
@@ -364,6 +372,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"which", applet_which::single_binary_main_which),
     (b"who", applet_who::single_binary_main_who),
     (b"whoami", applet_whoami::single_binary_main_whoami),
+    (b"xargs", applet_xargs::single_binary_main_xargs),
     (b"yes", applet_yes::single_binary_main_yes),
     (b"zcat", applet_gzip::single_binary_main_zcat),
 ];
