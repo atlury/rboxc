@@ -4,7 +4,7 @@
     "path": "testsuite/local.mk",
     "sha256": "311af1e0af635033e7651c6e5120467a918ea3cec8543ad2258bddb97ca0f4dc"
   },
-  "scope": "All 75 registered originals inventoried. The standard integrated-helper profile records 65 original passes and one O_BINARY platform skip. One separate intrinsic-Valgrind original passes. Seven exclusions and the stdin fixture-profile review remain separate; full Sed acceptance is not claimed.",
+  "scope": "All 75 registered originals inventoried: 65 standard passes, one separate intrinsic-Valgrind pass, one private-fixture-adapted pass, one O_BINARY platform skip and seven exclusions. The unchanged stdin original reads a missing fixture and is not counted as a valid-input pass. Full GNU acceptance is not claimed.",
   "scripts": [
     {
       "script": "testsuite/misc.pl",
@@ -937,8 +937,12 @@
     {
       "script": "testsuite/stdin.sh",
       "source_sha256": "30b64f4e2abfc7fe3197a73ac4e2033ffa7b747516dc4c7839e3a80530f08b62",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-private-fixture-pass",
+      "execution_profile": "private-stdin-fixture",
+      "review_scope": "Complete ordinary stdin consumption and pipe assertions. Original missing stdin fixture baseline retained; a private framework alias stdin -> stdin-in supplies the original inline bytes without changing the test script or assertions.",
+      "evidence": "evidence/sed-stdin-fixture-original.json",
+      "audit": "evidence/sed-stdin-memory-audit.json"
     },
     {
       "script": "testsuite/utf8-ru.sh",

@@ -67,14 +67,14 @@ there where available.
 | Diffutils | 3.12 | `cmp`, `diff`, `diff3`, `sdiff` installed |
 | Grep | 3.12 | `grep`, `egrep`, `fgrep` installed |
 | Gzip | 1.14 | `gzip`, `gunzip`, `uncompress`, `zcat` installed |
-| Sed | 4.10 | `sed` installed; current candidate passes 65 reviewed originals and 56 focused comparisons; one platform skip |
+| Sed | 4.10 | `sed` installed; current candidate passes 66 unchanged originals, one fixture-adapted original and 56 focused comparisons; one platform skip; seven exclusions |
 | BC | 1.08.2 | `bc`, `dc` installed |
 | Ed | 1.22.6 | `ed` installed |
 | Findutils | 4.11.0 | `find`, `xargs`, `locate` installed; `updatedb` and private `frcode` integrated in candidate |
 | Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 400 reviewed originals pass; three original failures match GNU |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 408 reviewed originals pass; three original failures match GNU |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -84,7 +84,18 @@ there where available.
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
 | glibc | 2.43 | Both entries integrated; 50 focused checks, both getconf originals and three iconv buffer recipes pass |
 
-One additional Sed original, `bug80573.sh`, now passes in a dedicated profile
+Sed's remaining stdin fixture review is complete. The unchanged `stdin.sh`
+creates `stdin-in` but later reads a missing `stdin`; both implementations exit
+zero with that diagnostic. A separate private framework alias supplies the
+original input bytes and the original assertions pass in both implementations.
+`evidence/sed-stdin-memory-audit.json` verifies six clean candidate Sed logs
+for the adapted fixture and six for the retained baseline. Helpers are outside
+this profile's memory count. All 75 Sed registrations are now accounted for:
+**66 unchanged passes, one fixture-adapted pass, one platform skip and seven
+exclusions**. This closes the ordinary Sed review queue; full GNU acceptance
+and release activation remain open.
+
+One additional Sed original, `bug80573.sh`, passes in a dedicated profile
 that retains its own `valgrind --quiet` command. XML logs provide complete
 memory and descriptor findings. `evidence/sed-intrinsic-memory-audit.json`
 verifies three clean candidate-profile processes and six XML parser checks;
@@ -92,7 +103,7 @@ the ASAN prerequisite's uninstrumented Sed call is outside that memory count.
 The initial fork/XML formatting failure and native GNU findings are preserved.
 The standard runner excludes this profile to prevent nested instrumentation.
 This brings the recorded Sed originals to 66 passes and one platform skip
-across the two profiles. The stdin fixture review and seven exclusions remain.
+across the standard and intrinsic profiles; the fixture-adapted pass is separate.
 
 Sed's preceding standard profile completes all **66 previously reviewed
 original scripts** with integrated Coreutils helpers: **65 pass** and
@@ -104,8 +115,8 @@ batches retain the original programs, fixtures and assertions.
 process logs**, including 972 Sed invocations. Together with the 56 focused
 comparisons, `evidence/sed-multicall-validation.json` records **1,048 clean
 process logs** on the same candidate. Native GNU findings remain preserved.
-Of 75 registered scripts, seven exclusions and two test-profile reviews remain
-outside this completed reviewed suite. Full GNU acceptance and release
+Seven exclusions and the two separately recorded test profiles are outside
+this standard suite. Full GNU acceptance and release
 activation are still pending.
 
 The preceding Sed checkpoint passes all **56 focused comparisons** and
