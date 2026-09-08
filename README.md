@@ -71,6 +71,23 @@ there where available.
 | Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; ten reviewed originals validated; tape-device operations untested |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 11 reviewed originals pass |
+| Patch | 2.8 | Rust entry and candidate compile; runtime validation pending |
+| Binutils | 2.47 | Native oracle built; three entry translations in progress |
+| Inetutils | 2.8 | Native oracles built; entry translations in progress |
+| Bash | 5.3 | Native oracle built; Rust control-flow adaptation pending |
+
+The next-provider work is preserved before release activation. Gawk's candidate
+uses GNU's `MEMDEBUG` per-object allocation mode; the earlier pooled native and
+Rust binaries and their Valgrind observations remain available locally. A narrow
+cleanup adapter closes only standard descriptors that GNU replaced with
+`/dev/null` and that still identify the same replacement at exit. All 85 focused
+comparisons and eleven reviewed original Make targets pass, including strict
+candidate memory and descriptor checks. The remaining original inputs are
+inventoried for review; Gawk is not certified complete. This configuration adds
+GNU's readline dependency. Patch and the other new translations have separate
+compilation and runtime-validation states and do not change the installed
+133-command release or its completion claims.
 
 For a later upstream fix, identify its upstream commit or patch and the release
 baseline in this table. Record the affected commands, upstream reference, local

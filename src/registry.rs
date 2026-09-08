@@ -1,3 +1,7 @@
+#[path = "generated/applet_patch.rs"]
+mod applet_patch;
+#[path = "generated/applet_gawk.rs"]
+mod applet_gawk;
 #[path = "generated/applet_mt.rs"]
 mod applet_mt;
 #[path = "generated/applet_cpio.rs"]
@@ -259,6 +263,7 @@ type Entry = unsafe extern "C" fn(c_int, *mut *mut c_char) -> c_int;
 static APPLETS: &[(&[u8], Entry)] = &[
     (b"[", applet__::single_binary_main__),
     (b"arch", applet_arch::single_binary_main_arch),
+    (b"awk", applet_gawk::single_binary_main_gawk),
     (b"b2sum", applet_b2sum::single_binary_main_b2sum),
     (b"base32", applet_base32::single_binary_main_base32),
     (b"base64", applet_base64::single_binary_main_base64),
@@ -300,6 +305,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"find", applet_find::single_binary_main_find),
     (b"fmt", applet_fmt::single_binary_main_fmt),
     (b"fold", applet_fold::single_binary_main_fold),
+    (b"gawk", applet_gawk::single_binary_main_gawk),
     (b"grep", applet_grep::single_binary_main_grep),
     (b"groups", applet_groups::single_binary_main_groups),
     (b"gunzip", applet_gzip::single_binary_main_gunzip),
@@ -324,6 +330,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"mktemp", applet_mktemp::single_binary_main_mktemp),
     (b"mt", applet_mt::single_binary_main_mt),
     (b"mv", applet_mv::single_binary_main_mv),
+    (b"nawk", applet_gawk::single_binary_main_gawk),
     (b"nice", applet_nice::single_binary_main_nice),
     (b"nl", applet_nl::single_binary_main_nl),
     (b"nohup", applet_nohup::single_binary_main_nohup),
@@ -331,6 +338,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"numfmt", applet_numfmt::single_binary_main_numfmt),
     (b"od", applet_od::single_binary_main_od),
     (b"paste", applet_paste::single_binary_main_paste),
+    (b"patch", applet_patch::single_binary_main_patch),
     (b"pathchk", applet_pathchk::single_binary_main_pathchk),
     (b"pinky", applet_pinky::single_binary_main_pinky),
     (b"pr", applet_pr::single_binary_main_pr),
