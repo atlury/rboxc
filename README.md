@@ -67,7 +67,7 @@ there where available.
 | Diffutils | 3.12 | `cmp`, `diff`, `diff3`, `sdiff` installed |
 | Grep | 3.12 | `grep`, `egrep`, `fgrep` installed |
 | Gzip | 1.14 | `gzip`, `gunzip`, `uncompress`, `zcat` installed |
-| Sed | 4.10 | `sed` installed; current candidate passes 66 unchanged originals, one fixture-adapted original and 56 focused comparisons; one platform skip; seven exclusions |
+| Sed | 4.10 | `sed` installed; recorded candidate passes 66 unchanged originals, one fixture-adapted original and 56 focused comparisons; one platform skip; seven exclusions |
 | BC | 1.08.2 | `bc`, `dc` installed |
 | Ed | 1.22.6 | `ed` installed |
 | Findutils | 4.11.0 | `find`, `xargs`, `locate` installed; `updatedb` and private `frcode` integrated in candidate |
@@ -79,10 +79,34 @@ there where available.
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
 | Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 17 reviewed originals pass with clean Valgrind; broader acceptance open |
-| Less | 704 | Candidate passes ten focused comparisons; original suite pending |
+| Less | 704 | Ten focused checks, one production terminal check and 17 original screen replays pass; hyperlink opener profile pending |
 | Screen | 5.0.2 | Candidate passes five option comparisons and the descriptor-preservation contract |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
 | glibc | 2.43 | Both entries integrated; 50 focused checks, both getconf originals and three iconv buffer recipes pass |
+
+Less now passes **17 unchanged original screen replays**, covering **2,022
+screen assertions**, in GNU's required `LESSTEST`/`USE_TERMCAP` configuration.
+The test-mode C2Rust entry is byte-identical to the original translation;
+a separate executable uses the existing generated Rust entry and namespaced
+GNU test helpers. The release-mode candidate passes ten focused comparisons
+and a private controlling-terminal check, including exact display output and
+terminal-mode restoration.
+
+The original replays exposed a keyboard descriptor left open in both GNU and
+rboxc. The helper now tracks successful device opens separately from borrowed
+stdin/stderr fallbacks and closes owned handles through GNU's existing cleanup.
+Eighteen contracts cover standard descriptor numbers, reuse, reopening,
+borrowed fallbacks and errno preservation. `evidence/less-keyboard-validation.json`
+reparses **34 clean test-profile Less logs and 11 clean production Less logs**;
+the contract processes are counted separately. Initial failures and native
+GNU findings remain preserved. The hyperlink opener replay remains pending.
+
+The new 187-command candidate is **14,716,952 bytes**, 224 bytes larger, at
+`target/less-keyboard-candidate/release/rboxc`. An independent rebuild is
+byte-identical. All 428 Coreutils smoke checks and 11 dispatcher checks pass.
+Only the namespaced Less keyboard helper changed; earlier provider evidence
+retains its actual binary hashes. The installed 133-command release remains
+unchanged, and full GNU acceptance remains open.
 
 Sed's remaining stdin fixture review is complete. The unchanged `stdin.sh`
 creates `stdin-in` but later reads a missing `stdin`; both implementations exit
