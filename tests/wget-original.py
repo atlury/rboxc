@@ -70,7 +70,7 @@ for row in selected:
     results.append({'selection':name,'source':row['path'],'source_sha256':row['sha256'],
                     'pass':passed,'outcomes':outcomes})
     assert all(fingerprint(p)==h for p,h in inputs.items())
-    report={**profile.metadata(),'scope':'Reviewed unchanged GNU Wget Perl scripts serve fixed valid responses on their own localhost server and verify status, resumed content and downloaded filenames. Local input/output error cases preserve the original assertions. All Wget processes are instrumented without upstream suppressions; server helpers are not instrumented.',
+    report={**profile.metadata(),'scope':'Reviewed unchanged GNU Wget Perl scripts serve fixed HTTP responses or FTP file listings/content on their own localhost server and verify status, resumed content and downloaded filenames. Local input/output error cases preserve the original assertions. All Wget processes are instrumented without upstream suppressions; server helpers are not instrumented.',
         'inputs':{str(p):h for p,h in inputs.items()},'driver_sha256':fingerprint(Path(__file__)),
         'planned_total':len(selected),'complete':len(results)==len(selected),
         'passed':sum(r['pass'] for r in results),'total':len(results),'results':results}

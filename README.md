@@ -78,7 +78,7 @@ there where available.
 | Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 17 reviewed originals pass with clean Valgrind; broader acceptance open |
 | Less | 704 | Candidate passes ten focused comparisons; original suite pending |
 | Screen | 5.0.2 | Candidate passes five option comparisons and the descriptor-preservation contract |
-| Wget | 1.25.0 | Candidate passes 14 focused comparisons and 47 reviewed originals |
+| Wget | 1.25.0 | Candidate passes 14 focused comparisons and 60 reviewed originals |
 | glibc | 2.43 | Both entries integrated; 50 focused checks, both getconf originals and three iconv buffer recipes pass |
 
 The next-provider work is preserved before release activation. Gawk's candidate
@@ -115,7 +115,14 @@ preserved in `evidence/gawk-expanded-original.json`; the corrected run and its
 `evidence/gawk-locale-memory-audit.json`. Other original Gawk inputs and extension
 profiles remain open.
 
-Wget now passes **47 reviewed original HTTP scripts** and all 14 focused
+Wget now passes **60 reviewed original HTTP/FTP scripts** and all 14 focused
+comparisons. The added FTP originals cover transfer resumption, nested directories,
+URL-list input, listing conventions, hidden files and interrupted passive setup
+using fixed localhost fixtures. `evidence/wget-ftp-memory-audit.json` verifies
+74 clean candidate process logs. One original privacy reproduction is held out;
+HTTPS, optional IRI and remaining original profiles are still open.
+
+The preceding Wget checkpoint passes **47 reviewed original HTTP scripts** and all 14 focused
 comparisons. Coverage includes timestamp updates, response filename policy,
 recursive downloads and link conversion, no-parent/nofollow rules, cookies,
 local proxy authentication and URL-list input. The fixed fixtures use only local
