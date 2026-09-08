@@ -7624,7 +7624,7 @@ unsafe extern "C" fn rboxc_tar_main_inner(
         b"stdout\0".as_ptr() as *const ::core::ffi::c_char,
         LC_MESSAGES,
     ));
-    if stdopen() != 0 {
+    if rboxc_tar_stdopen_owned() != 0 {
         if error_hook.is_some() {
             error_hook.expect("non-null function pointer")();
         }
@@ -7940,6 +7940,24 @@ extern "C" {
     fn rboxc_wordsplit_clearerr(ws: *mut wordsplit);
 }
 static mut RBOXC_OWNED_ARGS: Vec<*mut ::core::ffi::c_void> = Vec::new();
+static mut RBOXC_STDOPEN_OWNED: [bool; 3] = [false; 3];
+unsafe fn rboxc_tar_stdopen_owned() -> ::core::ffi::c_int {
+    let saved_errno = *libc::__errno_location();
+    let mut missing = [false; 3];
+    for fd in 0..3 {
+        missing[fd] = libc::fcntl(fd as i32, libc::F_GETFD) < 0
+            && *libc::__errno_location() == libc::EBADF;
+    }
+    *libc::__errno_location() = saved_errno;
+    let result = stdopen();
+    let result_errno = *libc::__errno_location();
+    for fd in 0..3 {
+        RBOXC_STDOPEN_OWNED[fd] = missing[fd]
+            && libc::fcntl(fd as i32, libc::F_GETFD) >= 0;
+    }
+    *libc::__errno_location() = result_errno;
+    result
+}
 unsafe fn rboxc_tar_own_argument(pointer: *mut ::core::ffi::c_void) {
     RBOXC_OWNED_ARGS.push(pointer);
 }
@@ -7950,6 +7968,19 @@ extern "C" fn rboxc_tar_release_arguments() {
         rboxc_wordsplit_clearerr(&raw mut RBOXC_DEFAULT_WORDS);
         for pointer in ::core::mem::take(&mut *(&raw mut RBOXC_OWNED_ARGS)) {
             free(pointer);
+        }
+        for fd in 0..3 {
+            if RBOXC_STDOPEN_OWNED[fd] && libc::fcntl(fd as i32, libc::F_GETFD) >= 0 {
+                // Detach a live standard FILE before libc's final flush. GNU
+                // may have buffered output even on its read-only replacement.
+                let stream = [stdin, stdout, stderr][fd];
+                if libc::fileno(stream.cast()) == fd as i32 {
+                    libc::fclose(stream.cast());
+                } else {
+                    libc::close(fd as i32);
+                }
+            }
+            RBOXC_STDOPEN_OWNED[fd] = false;
         }
         *libc::__errno_location() = saved_errno;
     }

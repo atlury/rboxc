@@ -137,6 +137,24 @@ extern "C" {
     fn rboxc_wordsplit_clearerr(ws: *mut wordsplit);
 }
 static mut RBOXC_OWNED_ARGS: Vec<*mut ::core::ffi::c_void> = Vec::new();
+static mut RBOXC_STDOPEN_OWNED: [bool; 3] = [false; 3];
+unsafe fn rboxc_tar_stdopen_owned() -> ::core::ffi::c_int {
+    let saved_errno = *libc::__errno_location();
+    let mut missing = [false; 3];
+    for fd in 0..3 {
+        missing[fd] = libc::fcntl(fd as i32, libc::F_GETFD) < 0
+            && *libc::__errno_location() == libc::EBADF;
+    }
+    *libc::__errno_location() = saved_errno;
+    let result = stdopen();
+    let result_errno = *libc::__errno_location();
+    for fd in 0..3 {
+        RBOXC_STDOPEN_OWNED[fd] = missing[fd]
+            && libc::fcntl(fd as i32, libc::F_GETFD) >= 0;
+    }
+    *libc::__errno_location() = result_errno;
+    result
+}
 unsafe fn rboxc_tar_own_argument(pointer: *mut ::core::ffi::c_void) {
     RBOXC_OWNED_ARGS.push(pointer);
 }
@@ -148,10 +166,28 @@ extern "C" fn rboxc_tar_release_arguments() {
         for pointer in ::core::mem::take(&mut *(&raw mut RBOXC_OWNED_ARGS)) {
             free(pointer);
         }
+        for fd in 0..3 {
+            if RBOXC_STDOPEN_OWNED[fd] && libc::fcntl(fd as i32, libc::F_GETFD) >= 0 {
+                // Detach a live standard FILE before libc's final flush. GNU
+                // may have buffered output even on its read-only replacement.
+                let stream = [stdin, stdout, stderr][fd];
+                if libc::fileno(stream.cast()) == fd as i32 {
+                    libc::fclose(stream.cast());
+                } else {
+                    libc::close(fd as i32);
+                }
+            }
+            RBOXC_STDOPEN_OWNED[fd] = false;
+        }
         *libc::__errno_location() = saved_errno;
     }
 }
 '''
+# Preserve GNU's standard-descriptor replacement policy. At exit, release only
+# replacements opened for descriptors that were closed immediately before it.
+anchor = '    if stdopen() != 0 {'
+assert text.count(anchor) == 1
+text = text.replace(anchor, '    if rboxc_tar_stdopen_owned() != 0 {')
 start = text.index('unsafe extern "C" fn decode_options(')
 end = text.index('unsafe extern "C" fn ', start+1)
 part = text[start:end]
@@ -180,7 +216,8 @@ report = {'provider': 'tar', 'version': pin['version'], 'command': name,
           'raw_translation_sha256': fingerprint(outputs[0]), 'compile_database_sha256': fingerprint(database),
           'adaptations': ['Preserve full argv[0] diagnostics through GNU error_print_progname.',
                           'Free the default-settings help string after copying it into the obstack.',
-                          'Retain environment option words and owned old-style arguments until exit, then release them.'],
+                          'Retain environment option words and owned old-style arguments until exit, then release them.',
+                          'Close only standard-descriptor replacements opened by GNU stdopen at exit, preserving errno.'],
           'helper_imports': {s: mapping[s] for s in sorted(imports)},
           'rust_exports': {s: mapping[s] for s in sorted(exports)},
           'opaque_pointer_types': opaque, 'log': str(log.relative_to(ROOT)), 'log_sha256': fingerprint(log)}

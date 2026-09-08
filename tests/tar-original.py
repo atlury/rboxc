@@ -45,6 +45,24 @@ selections.update({
     'extrac18': (101, 'extrac18.at'), 'extrac19': (102, 'extrac19.at'),
     'extrac20': (103, 'extrac20.at'), 'extrac24': (107, 'extrac24.at'),
 })
+selections.update({
+    'T-null': (34, 'T-null.at'), 'T-null2': (35, 'T-null2.at'),
+    'T-dir00': (38, 'T-dir00.at'), 'T-dir01': (39, 'T-dir01.at'),
+    'recurse': (43, 'recurse.at'), 'recurs02': (44, 'recurs02.at'),
+    'shortrec': (45, 'shortrec.at'), 'same-order01': (47, 'same-order01.at'),
+    'same-order02': (48, 'same-order02.at'), 'append03': (52, 'append03.at'),
+    'xform-h': (55, 'xform-h.at'), 'xform01': (56, 'xform01.at'),
+    'exclude07': (66, 'exclude07.at'), 'label01': (111, 'label01.at'),
+    'label03': (113, 'label03.at'),
+})
+permission_selections = {
+    'extrac06': (89, 'extrac06.at'), 'extrac07': (90, 'extrac07.at'),
+    'extrac08': (91, 'extrac08.at'), 'extrac10': (93, 'extrac10.at'),
+    'extrac12': (95, 'extrac12.at'), 'extrac15': (98, 'extrac15.at'),
+    'extrac16': (99, 'extrac16.at'), 'extrac21': (104, 'extrac21.at'),
+    'extrac22': (105, 'extrac22.at'), 'extrac23': (106, 'extrac23.at'),
+}
+selections.update(permission_selections)
 selected = profile.options.commands or list(selections)
 assert set(selected) <= set(selections)
 helpers = {n: ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','mkdir','chmod','touch','sort','echo','basename','cp','ln','true','false','sleep','ls','mv','mktemp','cut','id','date','printf','dd','rmdir','expr','tr','wc','head','tail','uname','cksum')}
@@ -64,6 +82,7 @@ for name in selected:
 results = []
 for name in selected:
     number, filename = selections[name]
+    unprivileged = name in permission_selections
     outcomes = {}
     for implementation in ('gnu', 'rboxc'):
         for instrument in (False, True):
@@ -72,11 +91,22 @@ for name in selected:
             saved.mkdir()
             with tempfile.TemporaryDirectory(prefix='rboxc-tar-original-') as directory:
                 work = Path(directory)
-                for sub in ('exec', 'real', 'deps', 'memory'):
+                for sub in ('exec', 'real', 'deps', 'memory', 'copies'):
                     (work/sub).mkdir()
+                copies = {}
+                def executable(binary):
+                    if not unprivileged:
+                        return binary
+                    if binary not in copies:
+                        copied = work/'copies'/str(len(copies))
+                        shutil.copy2(binary, copied)
+                        expected = fingerprint(binary)
+                        assert fingerprint(copied) == expected
+                        copies[binary] = (copied, expected)
+                    return copies[binary][0]
                 for command, binary in helpers.items():
-                    (work/'deps'/command).symlink_to(binary)
-                (work/'real/tar').symlink_to(profile.oracle if implementation == 'gnu' else profile.binary)
+                    (work/'deps'/command).symlink_to(executable(binary))
+                (work/'real/tar').symlink_to(executable(profile.oracle if implementation == 'gnu' else profile.binary))
                 invocation = ['tar']
                 if instrument:
                     invocation = ['/usr/bin/valgrind', '--leak-check=full', '--show-leak-kinds=all', '--track-fds=yes', '--trace-children=yes', '--log-file='+str(work/'memory/%p.log'), *invocation]
@@ -92,13 +122,21 @@ for name in selected:
                                'LC_ALL': 'C', 'LANGUAGE': 'C', 'TZ': 'UTC0', 'CONFIG_SHELL': '/bin/bash'}
                 command = ['/bin/bash', str(source/'tests/testsuite'), '--debug', str(number),
                            'AUTOTEST_PATH='+str(work/'exec')+':'+str(work/'deps')]
-                done = subprocess.run(command, cwd=work, env=environment, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=300)
+                credentials = {}
+                if unprivileged:
+                    assert os.geteuid() == 0, 'permission profile needs private uid/gid setup'
+                    for entry in [work, *work.rglob('*')]:
+                        if not entry.is_symlink():
+                            os.chown(entry, 65534, 65534)
+                    credentials = {'user': 65534, 'group': 65534, 'extra_groups': []}
+                done = subprocess.run(command, cwd=work, env=environment, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=300, **credentials)
+                assert all(fingerprint(copied) == expected for copied, expected in copies.values()), 'private executable changed'
                 (saved/'driver.log').write_bytes(done.stdout)
                 for file in ('atconfig', 'atlocal', 'testsuite.log'):
                     if (work/file).exists():
                         shutil.copy2(work/file, saved/file)
                 if (work/'testsuite.dir').exists():
-                    shutil.copytree(work/'testsuite.dir', saved/'suite')
+                    shutil.copytree(work/'testsuite.dir', saved/'suite', symlinks=True)
                 shutil.copytree(work/'memory', saved/'memory')
                 output = done.stdout.decode(errors='replace')
                 assertions = re.findall(r'^\s*(\d+):\s+.*?\s+(ok|FAILED|skipped|expected failure)\s*$', output, re.M)
@@ -106,6 +144,9 @@ for name in selected:
                 logs = [{**runner.parse_memory_log(p.read_text(), p.stem, exec_only=True), 'log': str(p.relative_to(ROOT)), 'sha256': fingerprint(p)} for p in sorted((saved/'memory').glob('*.log'))]
                 clean = bool(logs) and all(m['complete_exec_log'] and m['errors'] == 0 and m['non_inherited_descriptors'] == 0 and not any(m['heap_bytes'].get(k, 0) for k in ('definitely lost','indirectly lost','possibly lost')) for m in logs)
                 outcomes[key] = {'status': done.returncode, 'assertions': assertions, 'assertions_pass': passed,
+                                 'execution_uid': 65534 if unprivileged else os.geteuid(),
+                                 'execution_gid': 65534 if unprivileged else os.getegid(),
+                                 'copied_executables': [{'source': str(original), 'private_path': str(copied.relative_to(work)), 'sha256': expected} for original, (copied, expected) in copies.items()],
                                  'memory': logs, 'memory_clean': clean if instrument else None,
                                  'driver_log': str((saved/'driver.log').relative_to(ROOT)), 'driver_log_sha256': fingerprint(saved/'driver.log'),
                                  'private_atconfig_sha256': fingerprint(saved/'atconfig')}
@@ -114,7 +155,7 @@ for name in selected:
     row['pass'] = row['assertions_pass'] and outcomes['rboxc-valgrind']['memory_clean']
     results.append(row)
     assert all(fingerprint(p) == expected for p, expected in inputs.items())
-    report = {'scope': 'Unchanged reviewed GNU Tar Autotest selections, including every archive format registered by each selected original. Native atlocal is copied unchanged; atconfig build paths point into private fixtures. AUTOTEST_PATH selects a wrapper preserving argv[0]=tar and instruments every Tar invocation with child tracing. Test helpers are native dependencies, not ports.',
+    report = {'scope': 'Unchanged reviewed GNU Tar Autotest selections, including every archive format registered by each selected original. Native atlocal is copied unchanged; atconfig build paths point into private fixtures. AUTOTEST_PATH selects a wrapper preserving argv[0]=tar and instruments every Tar invocation with child tracing. Permission selections run as uid/gid 65534 with no supplementary groups using byte-verified private executable copies. Test helpers are native dependencies, not ports.',
               **profile.metadata(), 'inputs': {str(p): value for p, value in inputs.items()},
               'passed': sum(r['pass'] for r in results), 'total': len(results), 'results': results}
     profile.report.write_text(json.dumps(report, indent=2)+'\n')

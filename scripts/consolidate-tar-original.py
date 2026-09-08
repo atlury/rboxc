@@ -63,6 +63,14 @@ for path in options.reports:
         for outcome in row['outcomes'].values():
             assert outcome['assertions_pass'] and outcome['status'] == 0
             assert outcome['assertions'] == [[str(row['autotest_number']), 'ok']]
+            copies = outcome.get('copied_executables', [])
+            if copies:
+                assert outcome['execution_uid'] == outcome['execution_gid'] == 65534
+                known = {**data['inputs'], data['binary']: data['binary_sha256']}
+                assert len({copy['private_path'] for copy in copies}) == len(copies)
+                for copy in copies:
+                    assert known[copy['source']] == copy['sha256']
+                    assert fingerprint(Path(copy['source'])) == copy['sha256']
             assert fingerprint(ROOT/outcome['driver_log']) == outcome['driver_log_sha256']
             for log in outcome['memory']:
                 assert fingerprint(ROOT/log['log']) == log['sha256']

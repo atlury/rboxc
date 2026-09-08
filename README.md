@@ -369,7 +369,19 @@ checks, 11 dispatcher checks, and 428 Coreutils help/version comparisons pass
 on these same bytes. This candidate is 4,448,560 bytes (4.24 MiB)
 and remains separate from the installed release; broader original and combined
 provider coverage are still open. Earlier candidate results keep their actual
-binary hashes. A 30-case
+binary hashes. The following 15 originals all match GNU assertions; 14 are
+strictly clean, while the closed-input label test identifies a standard
+replacement descriptor left open. The new `tar-standard-stream-cleanup`
+candidate finalizes only the standard streams opened by GNU `stdopen`, retaining
+inherited streams and errno. A first raw-descriptor cleanup attempt exposed
+libc's later buffered-output flush; both that observation and the corrected
+stream finalization are retained. The resulting candidate is 4,449,392 bytes
+(4.24 MiB), with 52/52 focused comparisons clean, including eight closed-stream
+cases. Ten unchanged permission and directory-metadata originals also pass as
+uid/gid 65534 using byte-verified private executable copies. Earlier originals
+are being revalidated against these new bytes before consolidation. The prior
+candidate additionally passes 107/107 Coreutils Valgrind help checks and
+318/318 behavior checks; those reports retain its earlier binary hash. A 30-case
 archive-operation harness matches GNU Tar against itself in every comparison;
 only 9/30 native control cases are strict memory-clean, with the other GNU
 findings preserved as baseline observations. This control is not Rust port
