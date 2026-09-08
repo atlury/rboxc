@@ -67,7 +67,7 @@ there where available.
 | Diffutils | 3.12 | `cmp`, `diff`, `diff3`, `sdiff` installed |
 | Grep | 3.12 | `grep`, `egrep`, `fgrep` installed |
 | Gzip | 1.14 | `gzip`, `gunzip`, `uncompress`, `zcat` installed |
-| Sed | 4.10 | `sed` installed |
+| Sed | 4.10 | `sed` installed; current candidate passes 65 reviewed originals and 56 focused comparisons; one platform skip |
 | BC | 1.08.2 | `bc`, `dc` installed |
 | Ed | 1.22.6 | `ed` installed |
 | Findutils | 4.11.0 | `find`, `xargs`, `locate` installed; `updatedb` and private `frcode` integrated in candidate |
@@ -84,7 +84,21 @@ there where available.
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
 | glibc | 2.43 | Both entries integrated; 50 focused checks, both getconf originals and three iconv buffer recipes pass |
 
-Sed's current 187-command candidate passes all **56 focused comparisons** and
+Sed's current 187-command candidate now completes all **66 previously reviewed
+original scripts** with integrated Coreutils helpers: **65 pass** and
+`obinary.sh` retains its unchanged platform skip. The original Perl suites,
+BSD compatibility tests and 2 GiB substitution test are included. Four private
+batches retain the original programs, fixtures and assertions.
+
+`evidence/sed-multicall-suite-memory-audit.json` verifies **992 clean candidate
+process logs**, including 972 Sed invocations. Together with the 56 focused
+comparisons, `evidence/sed-multicall-validation.json` records **1,048 clean
+process logs** on the same candidate. Native GNU findings remain preserved.
+Of 75 registered scripts, seven exclusions and two test-profile reviews remain
+outside this completed reviewed suite. Full GNU acceptance and release
+activation are still pending.
+
+The preceding Sed checkpoint passes all **56 focused comparisons** and
 the unchanged `execute-tests.sh` original with integrated rboxc Coreutils helpers.
 That interoperation profile has **25 clean process logs**: 20 Sed invocations,
 four system-shell children and one translated `cat` invocation. The same

@@ -14,22 +14,39 @@ from comparison_profile import ComparisonProfile, fingerprint
 spec=importlib.util.spec_from_file_location('reviewed',ROOT/'tests/gnu/reviewed-original.py')
 runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner)
 profile=ComparisonProfile('sed-original',oracle=ROOT/'build/gnu-sed/sed/sed',selections=True)
+audit_path=profile.report.with_name(profile.report.stem+'-memory-audit.json')
+assert not audit_path.exists(), 'preserve prior memory audits'
 names=profile.options.commands or ['sed-original-prerequisite-final','sed-original-large-final','sed-original-remainder-final']
 manifest=json.loads((ROOT/'inventory/sed-tests.json').read_text())
+source=Path(json.loads((ROOT/'inventory/sources.json').read_text())['sed']['source'])
+assert fingerprint(source/manifest['registration']['path'])==manifest['registration']['sha256']
 expected={r['script']:r for r in manifest['scripts'] if r['reviewed']}
 rows={};sources=[];audit=[]
 for name in names:
     assert re.fullmatch(r'[a-z0-9-]+',name)
     path=ROOT/'evidence'/(name+'.json');report=json.loads(path.read_text())
     assert report['binary_sha256']==profile.binary_sha256 and report['gnu_binary_sha256']==profile.oracle_sha256
+    for helper,sha256 in report['runtime_helpers'].items():assert fingerprint(Path(helper))==sha256
+    core=report['prerequisites']['coreutils']
+    assert fingerprint(Path(core['path']))==core['sha256']
     if report['selected_scripts']:assert {Path(r['script']).name for r in report['results']}==set(report['selected_scripts'])
     sources.append({'path':str(path.relative_to(ROOT)),'sha256':fingerprint(path),'driver_sha256':report['driver_sha256'],'prerequisites':report['prerequisites']})
     for row in report['results']:
         assert row['script'] not in rows
         assert row['source_sha256']==expected[row['script']]['source_sha256']
+        assert fingerprint(source/row['script'])==row['source_sha256']
+        for fixture,sha256 in expected[row['script']].get('fixture_sha256',{}).items():
+            assert fingerprint(source/'testsuite'/fixture)==sha256
+        assert row['native_pass']==all(row['outcomes'][n]['status']==0 and row['outcomes'][n].get('case_count_pass',True) for n in ('gnu','rboxc'))
+        assert row['assertions_pass']==all(o['status']==0 and o.get('case_count_pass',True) for o in row['outcomes'].values())
+        assert row['skipped']==all(o['status']==77 for o in row['outcomes'].values())
         for outcome in row['outcomes'].values():
             assert fingerprint(ROOT/outcome['log'])==outcome['log_sha256']
-            for log in outcome.get('memory',[]):assert fingerprint(ROOT/log['log'])==log['sha256']
+            assert (ROOT/outcome['log']).read_bytes()==bytes.fromhex(outcome['stdout'])+bytes.fromhex(outcome['stderr'])
+            for log in outcome.get('memory',[]):
+                path=ROOT/log['log'];assert fingerprint(path)==log['sha256']
+                parsed=runner.parse_memory_log(path.read_text(),path.stem,exec_only=True)
+                assert all(log[k]==value for k,value in parsed.items())
         candidate=[];children=[]
         for log in row['outcomes']['rboxc-valgrind']['memory']:
             path=ROOT/log['log'];text=path.read_text()
@@ -62,8 +79,7 @@ report={'scope':'Reviewed original selections on one immutable binary. Strict al
         'registered_original_scripts':len(manifest['scripts']),'reviewed_scripts':len(expected),
         'remaining':[r for r in manifest['scripts'] if not r['reviewed']],'results':results}
 profile.report.write_text(json.dumps(report,indent=2)+'\n')
-path=profile.report.with_name(profile.report.stem+'-memory-audit.json')
-path.write_text(json.dumps({'scope':'Reparsed final-exec logs, retaining strict checks for every process and attributing known native dependencies explicitly.',
+audit_path.write_text(json.dumps({'scope':'Reparsed final-exec logs, retaining strict checks for every process and attributing known native dependencies explicitly.',
     'binary_sha256':profile.binary_sha256,'original_report':str(profile.report.relative_to(ROOT)),'original_report_sha256':fingerprint(profile.report),
     'passed':sum(r['pass'] for r in audit),'total':len(audit),'sed_processes':sum(r['sed_process'] for r in audit),
     'sed_processes_passed':sum(r['sed_process'] and r['pass'] for r in audit),'results':audit},indent=2)+'\n')
