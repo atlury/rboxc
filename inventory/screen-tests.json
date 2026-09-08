@@ -4,7 +4,7 @@
     "path": "Makefile.in",
     "sha256": "b36f4ad8889fc6a5325f0422be29bb1d0f57198e14a05f59503b18ae43b4fd5d"
   },
-  "scope": "All three registered check targets inventoried. Two native helper units have audited original assertions; the Rust entry terminal integration is accounted separately. Unit validation does not certify complete Screen behavior.",
+  "scope": "All three registered check targets reviewed. Two native helper units have audited original assertions in declared profiles. The original Rust-entry attach/detach assertions pass natively and under Valgrind; daemon memory and descriptor cleanup remains open. These states do not certify complete Screen acceptance.",
   "targets": [
     {
       "target": "tests/test-winmsgcond",
@@ -29,9 +29,10 @@
       "source": "tests/integration-detach.c",
       "sha256": "c29c60c4252cd9eaedceecd210d96bf286ea6a377429a046e88bd74bc5cc4169",
       "reviewed": true,
-      "state": "native-pass-instrumented-profile-open",
+      "state": "original-assertions-pass-daemon-cleanup-open",
       "review": "Private local Screen session with bounded sleep; util-linux script supplies terminal; observe Attached and Detached states and client exit; quit own session.",
-      "evidence": "evidence/screen-original-detach-bounded.json"
+      "evidence": "evidence/screen-key-validation.json",
+      "environment_profile": "Short private socket paths; descriptor limit 256; empty user configuration; reviewed system configuration; pinned GNU Coreutils sleep helper. Original test source and assertions unchanged."
     }
   ]
 }

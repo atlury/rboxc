@@ -1,0 +1,222 @@
+{
+  "scope": "Six original/adapted contract outcomes cover empty, one-argument and three-argument bindings with explicit ordinary string lengths, eight replacements and repeated cleanup. Actual GNU SaveAction, ClearAction and SaveStrn functions are used. The native GNU length-array leaks are retained; all three adapted Valgrind processes must be clean.",
+  "inputs": {
+    "/root/rboxc/tests/screen-key-contract.py": "692f51f5dd16e2934169d289e2ca963caf5c7ffc0aa555ba39c8d8dbfeafc47e",
+    "/opt/src/screen-5.0.2/process.c": "8ad5c4fc976a1420ede9ad28daf479fd69ef7ed975696a177e613aa90a65a2e3",
+    "/opt/src/screen-5.0.2/misc.c": "0c2053790bbceaddecf66f07ddcdac8d1f16eb5b324d6e22f095a5295f27c84e",
+    "/root/rboxc/build/screen-key-cleanup/process.c": "99f91d3be2df383f3549bc810ab02a9f696f54ed71d343f9af56c85e49780817",
+    "/root/rboxc/build/screen-key-contract-strings/gnu.c": "cf312ab7f9cf109cef3467bd87bb68cf72d60c0a6f17e583fff960d714cf45a5",
+    "/root/rboxc/build/screen-key-contract-strings/adapted.c": "422f48a7238c2f43ae8c9f389ce03023ff19ae1dc5bbbf55404aab6c0b92c5d4"
+  },
+  "builds": [
+    {
+      "argv": [
+        "gcc",
+        "-c",
+        "-iquote.",
+        "-DSCREENENCODINGS=\"/root/rboxc/build/oracle/screen/share/screen/utf8encodings\"",
+        "-DBUILD_DATE=\"2023-11-14 22:13:20\"",
+        "-g",
+        "-O2",
+        "-std=gnu17",
+        "-Wall",
+        "-Wextra",
+        "-iquote",
+        "/opt/src/screen-5.0.2",
+        "/opt/src/screen-5.0.2/misc.c",
+        "-o",
+        "/root/rboxc/build/screen-key-contract-strings/misc.o",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-iquote",
+        "/opt/src/screen-5.0.2"
+      ],
+      "log": "build/screen-key-contract-strings/misc.build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "gcc",
+        "-c",
+        "-iquote.",
+        "-DSCREENENCODINGS=\"/root/rboxc/build/oracle/screen/share/screen/utf8encodings\"",
+        "-DBUILD_DATE=\"2023-11-14 22:13:20\"",
+        "-g",
+        "-O2",
+        "-std=gnu17",
+        "-Wall",
+        "-Wextra",
+        "-iquote",
+        "/opt/src/screen-5.0.2",
+        "/root/rboxc/build/screen-key-contract-strings/gnu.c",
+        "-o",
+        "/root/rboxc/build/screen-key-contract-strings/gnu.o",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-iquote",
+        "/opt/src/screen-5.0.2"
+      ],
+      "log": "build/screen-key-contract-strings/gnu.build.log",
+      "sha256": "d037b30f5e61e8b086cbd6983b8ccb2ade28ad69277b5ecdd3be029a1f71d1f6"
+    },
+    {
+      "argv": [
+        "gcc",
+        "-c",
+        "-iquote.",
+        "-DSCREENENCODINGS=\"/root/rboxc/build/oracle/screen/share/screen/utf8encodings\"",
+        "-DBUILD_DATE=\"2023-11-14 22:13:20\"",
+        "-g",
+        "-O2",
+        "-std=gnu17",
+        "-Wall",
+        "-Wextra",
+        "-iquote",
+        "/opt/src/screen-5.0.2",
+        "/root/rboxc/build/screen-key-contract-strings/adapted.c",
+        "-o",
+        "/root/rboxc/build/screen-key-contract-strings/adapted.o",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-iquote",
+        "/opt/src/screen-5.0.2"
+      ],
+      "log": "build/screen-key-contract-strings/adapted.build.log",
+      "sha256": "e578161e887cd35a7312122e7b3e22861277066f1cc166b680674e8018173938"
+    }
+  ],
+  "passed": 6,
+  "total": 6,
+  "results": [
+    {
+      "implementation": "gnu",
+      "argument_count": 0,
+      "iterations": 8,
+      "pass": true,
+      "binary": "build/screen-key-contract-strings/gnu",
+      "binary_sha256": "53ba7b05cbcc7a88bafa358e4a8823cf2d035b8a82fae4921734ae9f4d532486",
+      "log": "build/screen-key-contract-strings/gnu-0.log",
+      "log_sha256": "2122d6a280f0fd22dcc620abc10ce57aa88ff5b846cdaff00d79c370354d9e22",
+      "memory": {
+        "errors": 0,
+        "non_inherited_descriptors": 0,
+        "heap_bytes": {},
+        "exec_images": 1,
+        "log_pids": [
+          "533356"
+        ],
+        "complete_exec_log": true
+      }
+    },
+    {
+      "implementation": "gnu",
+      "argument_count": 1,
+      "iterations": 8,
+      "pass": true,
+      "binary": "build/screen-key-contract-strings/gnu",
+      "binary_sha256": "53ba7b05cbcc7a88bafa358e4a8823cf2d035b8a82fae4921734ae9f4d532486",
+      "log": "build/screen-key-contract-strings/gnu-1.log",
+      "log_sha256": "9ad9567e7f0f71cab060782746dfc4af937cff682509f2cbfcedfc551ef2d66d",
+      "memory": {
+        "errors": 1,
+        "non_inherited_descriptors": 0,
+        "heap_bytes": {
+          "definitely lost": 32,
+          "indirectly lost": 0,
+          "possibly lost": 0,
+          "still reachable": 0
+        },
+        "exec_images": 1,
+        "log_pids": [
+          "533357"
+        ],
+        "complete_exec_log": true
+      }
+    },
+    {
+      "implementation": "gnu",
+      "argument_count": 3,
+      "iterations": 8,
+      "pass": true,
+      "binary": "build/screen-key-contract-strings/gnu",
+      "binary_sha256": "53ba7b05cbcc7a88bafa358e4a8823cf2d035b8a82fae4921734ae9f4d532486",
+      "log": "build/screen-key-contract-strings/gnu-3.log",
+      "log_sha256": "838dfc50106501864bc5f14a0b06f83c217362c4c8a4fef43e06d316b69156cf",
+      "memory": {
+        "errors": 1,
+        "non_inherited_descriptors": 0,
+        "heap_bytes": {
+          "definitely lost": 96,
+          "indirectly lost": 0,
+          "possibly lost": 0,
+          "still reachable": 0
+        },
+        "exec_images": 1,
+        "log_pids": [
+          "533358"
+        ],
+        "complete_exec_log": true
+      }
+    },
+    {
+      "implementation": "adapted",
+      "argument_count": 0,
+      "iterations": 8,
+      "pass": true,
+      "binary": "build/screen-key-contract-strings/adapted",
+      "binary_sha256": "596aca35f3d8f5070051280856940952a1e04f6ff03ba852a7f4775e47ef4dac",
+      "log": "build/screen-key-contract-strings/adapted-0.log",
+      "log_sha256": "95c3d2fb45efcba9d6b0c0abeddb8b599f3ea9ef1bf79317394b078f4004c316",
+      "memory": {
+        "errors": 0,
+        "non_inherited_descriptors": 0,
+        "heap_bytes": {},
+        "exec_images": 1,
+        "log_pids": [
+          "533365"
+        ],
+        "complete_exec_log": true
+      }
+    },
+    {
+      "implementation": "adapted",
+      "argument_count": 1,
+      "iterations": 8,
+      "pass": true,
+      "binary": "build/screen-key-contract-strings/adapted",
+      "binary_sha256": "596aca35f3d8f5070051280856940952a1e04f6ff03ba852a7f4775e47ef4dac",
+      "log": "build/screen-key-contract-strings/adapted-1.log",
+      "log_sha256": "0d55e7273ea68c1479fbb1104552293f31750acf4f687a06cdde1bdc08d87ecf",
+      "memory": {
+        "errors": 0,
+        "non_inherited_descriptors": 0,
+        "heap_bytes": {},
+        "exec_images": 1,
+        "log_pids": [
+          "533366"
+        ],
+        "complete_exec_log": true
+      }
+    },
+    {
+      "implementation": "adapted",
+      "argument_count": 3,
+      "iterations": 8,
+      "pass": true,
+      "binary": "build/screen-key-contract-strings/adapted",
+      "binary_sha256": "596aca35f3d8f5070051280856940952a1e04f6ff03ba852a7f4775e47ef4dac",
+      "log": "build/screen-key-contract-strings/adapted-3.log",
+      "log_sha256": "10ecb037f61328184a1a595e6436264d73c451a24d3d5ffcc7d169150b1043e8",
+      "memory": {
+        "errors": 0,
+        "non_inherited_descriptors": 0,
+        "heap_bytes": {},
+        "exec_images": 1,
+        "log_pids": [
+          "533367"
+        ],
+        "complete_exec_log": true
+      }
+    }
+  ]
+}

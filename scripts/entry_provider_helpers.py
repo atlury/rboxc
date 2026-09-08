@@ -93,6 +93,9 @@ def prepare_archives(root,provider,mapping):
     if provider in ('screen','wget'):
         from terminal_http_cleanup import prepare
         adapted=prepare(root,provider)
+    if provider=='screen':
+        from screen_key_cleanup import prepare
+        adapted.update(prepare(root))
     if provider=='less':
         from less_cleanup import prepare
         adapted=prepare(root)

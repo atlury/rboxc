@@ -80,9 +80,29 @@ there where available.
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
 | Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 17 reviewed originals pass with clean Valgrind; broader acceptance open |
 | Less | 704 | Ten focused checks, one production terminal check and all 18 original screen replays pass across declared profiles |
-| Screen | 5.0.2 | Five option checks, descriptor contract and both original helper units pass in recorded profiles; terminal validation in progress |
+| Screen | 5.0.2 | Five option checks, both helper units and original attach/detach assertions pass in recorded profiles; daemon cleanup remains open |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
 | glibc | 2.43 | Both entries integrated; 50 focused checks, both getconf originals and three iconv buffer recipes pass |
+
+Screen's original attach/detach test now passes natively and under Valgrind
+against both GNU and rboxc. Its private profile uses short Unix socket paths,
+a bounded descriptor limit and the pinned GNU sleep helper. The test exposed
+an owned argument-length array discarded by `ClearAction`; the helper now
+frees it with the argument strings. Six ownership contracts pass and the
+original terminal run confirms the eight leaked bytes are gone.
+
+Terminal acceptance remains open: the daemon retains four owned descriptors
+and 418 possibly-lost bytes in the terminal library. Seven Screen processes
+and two local test-dependency processes are clean in the final run.
+`evidence/screen-key-validation.json` audits those findings, the original
+assertions, source changes and preserved environment failures.
+
+The current 187-command candidate is **14,715,568 bytes**, at
+`target/screen-key-candidate/release/rboxc`, with a byte-identical independent
+rebuild. All 428 Coreutils smoke checks, 11 dispatcher checks and five Screen
+option comparisons pass. Only the namespaced Screen process helper changed;
+previous candidates and evidence retain their actual hashes. The installed
+133-command release remains unchanged and full GNU acceptance remains open.
 
 Screen's two original helper units now pass against both the native GNU and
 namespaced production helper objects. The private instrumented profile keeps
@@ -115,7 +135,7 @@ the contract processes are counted separately. Initial failures and native
 GNU findings remain preserved. The final hyperlink replay executes no opener
 child and covers in-document behavior.
 
-The new 187-command candidate is **14,716,952 bytes**, 224 bytes larger, at
+The preceding Less checkpoint candidate is **14,716,952 bytes**, 224 bytes larger, at
 `target/less-keyboard-candidate/release/rboxc`. An independent rebuild is
 byte-identical. All 428 Coreutils smoke checks and 11 dispatcher checks pass.
 Only the namespaced Less keyboard helper changed; earlier provider evidence
