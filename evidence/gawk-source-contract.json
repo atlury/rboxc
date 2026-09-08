@@ -1,0 +1,644 @@
+{
+  "runtime_helpers": {
+    "/root/rboxc/target/gawk-source-ownership-candidate/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174"
+  },
+  "binary": "/root/rboxc/target/gawk-source-ownership-candidate/release/rboxc",
+  "binary_sha256": "6eca6aac2d29295f2d01f1fd797206c278ee8a7a7fb64fdda5f0d0afd0e29a89",
+  "gnu_binary_sha256": "9bab2fb134e2092784cff86e875f3855cfd78edf083482b657a3f7b29933f17b",
+  "scope": "Seven normal, fatal and syntax-diagnostic source inputs compare exact status/stdout/stderr with pinned GNU. The debug one-line reader is included. Valgrind checks both parser-owned cleanup and preservation of inherited stdin and an unrelated open data descriptor. No suppressions.",
+  "driver_sha256": "171904646ffd2ee26d36b1549d5c128bb1a001a1fea3303924bcf94a587bb4fa",
+  "passed": 0,
+  "total": 7,
+  "results": [
+    {
+      "name": "normal-file",
+      "program": "BEGIN {print 42}\n",
+      "use_stdin": false,
+      "one_line": false,
+      "pass": false,
+      "equivalent": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "42\n",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-file-gnu/stdout": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-file-gnu/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "inherited_fd": 3
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "42\n",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-file-gnu-valgrind/stdout": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-file-gnu-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-file-gnu-valgrind/memory.log": "648be3bc072de300d23b44c788e381fd744767e957aef127cf4741901fdeed1f"
+          },
+          "inherited_fd": 3,
+          "memory": {
+            "errors": 4,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 58824
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "449697"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-source-contract/run-xe26q6af/normal-file-gnu-valgrind/memory.log",
+          "preserved_inherited": true,
+          "preserved_stdin": true,
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "42\n",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-file-rboxc/stdout": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-file-rboxc/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "inherited_fd": 3
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "42\n",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-file-rboxc-valgrind/stdout": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-file-rboxc-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-file-rboxc-valgrind/memory.log": "77c5158adfcdc997df56afdc780070f951f5832e0c46577e4d7be903ea9f27f5"
+          },
+          "inherited_fd": 3,
+          "memory": {
+            "errors": 4,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 58824
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "449712"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-source-contract/run-xe26q6af/normal-file-rboxc-valgrind/memory.log",
+          "preserved_inherited": true,
+          "preserved_stdin": true,
+          "memory_clean": false
+        }
+      }
+    },
+    {
+      "name": "fatal-file",
+      "program": "BEGIN {delete FUNCTAB}\n",
+      "use_stdin": false,
+      "one_line": false,
+      "pass": false,
+      "equivalent": true,
+      "outcomes": {
+        "gnu": {
+          "status": 2,
+          "stdout": "",
+          "stderr": "gawk: program.awk:1: fatal: `delete' is not allowed with FUNCTAB\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-file-gnu/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-file-gnu/stderr": "5dbcaf3993990634acfe27332bce57bf2794597b3497ddb470ee154d06fd3731"
+          },
+          "inherited_fd": 3
+        },
+        "gnu-valgrind": {
+          "status": 2,
+          "stdout": "",
+          "stderr": "gawk: program.awk:1: fatal: `delete' is not allowed with FUNCTAB\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-file-gnu-valgrind/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-file-gnu-valgrind/stderr": "5dbcaf3993990634acfe27332bce57bf2794597b3497ddb470ee154d06fd3731",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-file-gnu-valgrind/memory.log": "c53701561cf6265e786ee7b8f35e955bcaa41efd6f16536f92973d9c29cc2a3b"
+          },
+          "inherited_fd": 3,
+          "memory": {
+            "errors": 5,
+            "non_inherited_descriptors": 1,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 38147
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "449915"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-file-gnu-valgrind/memory.log",
+          "preserved_inherited": true,
+          "preserved_stdin": true,
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 2,
+          "stdout": "",
+          "stderr": "gawk: program.awk:1: fatal: `delete' is not allowed with FUNCTAB\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-file-rboxc/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-file-rboxc/stderr": "5dbcaf3993990634acfe27332bce57bf2794597b3497ddb470ee154d06fd3731"
+          },
+          "inherited_fd": 3
+        },
+        "rboxc-valgrind": {
+          "status": 2,
+          "stdout": "",
+          "stderr": "gawk: program.awk:1: fatal: `delete' is not allowed with FUNCTAB\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-file-rboxc-valgrind/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-file-rboxc-valgrind/stderr": "5dbcaf3993990634acfe27332bce57bf2794597b3497ddb470ee154d06fd3731",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-file-rboxc-valgrind/memory.log": "726c4b2fb8bf2ab2db494f7cbb716d54641ac5c3e7b36a501935bf365cd98842"
+          },
+          "inherited_fd": 3,
+          "memory": {
+            "errors": 4,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 38147
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "450457"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-file-rboxc-valgrind/memory.log",
+          "preserved_inherited": true,
+          "preserved_stdin": true,
+          "memory_clean": false
+        }
+      }
+    },
+    {
+      "name": "syntax-file",
+      "program": "function x(a, b, c , ,) {}\n",
+      "use_stdin": false,
+      "one_line": false,
+      "pass": false,
+      "equivalent": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "gawk: program.awk:1: function x(a, b, c , ,) {}\ngawk: program.awk:1:                      ^ syntax error\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-file-gnu/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-file-gnu/stderr": "251a60855499dc3819ac01a4e0e0bc17641f17a3757ecdaff7425216e4570822"
+          },
+          "inherited_fd": 3
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "gawk: program.awk:1: function x(a, b, c , ,) {}\ngawk: program.awk:1:                      ^ syntax error\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-file-gnu-valgrind/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-file-gnu-valgrind/stderr": "251a60855499dc3819ac01a4e0e0bc17641f17a3757ecdaff7425216e4570822",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-file-gnu-valgrind/memory.log": "cf306f5ec7625e09829f12f55d4b76cdb4388692ae669b205da190085ee014a9"
+          },
+          "inherited_fd": 3,
+          "memory": {
+            "errors": 5,
+            "non_inherited_descriptors": 1,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 38155
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "450647"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-file-gnu-valgrind/memory.log",
+          "preserved_inherited": true,
+          "preserved_stdin": true,
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "gawk: program.awk:1: function x(a, b, c , ,) {}\ngawk: program.awk:1:                      ^ syntax error\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-file-rboxc/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-file-rboxc/stderr": "251a60855499dc3819ac01a4e0e0bc17641f17a3757ecdaff7425216e4570822"
+          },
+          "inherited_fd": 3
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "gawk: program.awk:1: function x(a, b, c , ,) {}\ngawk: program.awk:1:                      ^ syntax error\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-file-rboxc-valgrind/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-file-rboxc-valgrind/stderr": "251a60855499dc3819ac01a4e0e0bc17641f17a3757ecdaff7425216e4570822",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-file-rboxc-valgrind/memory.log": "6f2e02cad68defcc6754c71fd19336b64cc571e2ebb8a294cd616f2933cf3dcd"
+          },
+          "inherited_fd": 3,
+          "memory": {
+            "errors": 4,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 38155
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "450656"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-file-rboxc-valgrind/memory.log",
+          "preserved_inherited": true,
+          "preserved_stdin": true,
+          "memory_clean": false
+        }
+      }
+    },
+    {
+      "name": "fatal-source-stdin",
+      "program": "BEGIN {delete FUNCTAB}\n",
+      "use_stdin": true,
+      "one_line": false,
+      "pass": false,
+      "equivalent": true,
+      "outcomes": {
+        "gnu": {
+          "status": 2,
+          "stdout": "",
+          "stderr": "gawk: -:1: fatal: `delete' is not allowed with FUNCTAB\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-source-stdin-gnu/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-source-stdin-gnu/stderr": "b8eb4c8611d7aaa29d9cbbb5d43c89226709772bc5abdab381552ab3a4ee237d"
+          },
+          "inherited_fd": 3
+        },
+        "gnu-valgrind": {
+          "status": 2,
+          "stdout": "",
+          "stderr": "gawk: -:1: fatal: `delete' is not allowed with FUNCTAB\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-source-stdin-gnu-valgrind/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-source-stdin-gnu-valgrind/stderr": "b8eb4c8611d7aaa29d9cbbb5d43c89226709772bc5abdab381552ab3a4ee237d",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-source-stdin-gnu-valgrind/memory.log": "103d330306c07e7dfc322e218bc56d956d959d0b5919be60247795dbe3aaaaa8"
+          },
+          "inherited_fd": 3,
+          "memory": {
+            "errors": 4,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 41957
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "450677"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-source-stdin-gnu-valgrind/memory.log",
+          "preserved_inherited": true,
+          "preserved_stdin": true,
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 2,
+          "stdout": "",
+          "stderr": "gawk: -:1: fatal: `delete' is not allowed with FUNCTAB\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-source-stdin-rboxc/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-source-stdin-rboxc/stderr": "b8eb4c8611d7aaa29d9cbbb5d43c89226709772bc5abdab381552ab3a4ee237d"
+          },
+          "inherited_fd": 3
+        },
+        "rboxc-valgrind": {
+          "status": 2,
+          "stdout": "",
+          "stderr": "gawk: -:1: fatal: `delete' is not allowed with FUNCTAB\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-source-stdin-rboxc-valgrind/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-source-stdin-rboxc-valgrind/stderr": "b8eb4c8611d7aaa29d9cbbb5d43c89226709772bc5abdab381552ab3a4ee237d",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-source-stdin-rboxc-valgrind/memory.log": "4da72b240525ecb7e61cd5cad1304704f97fba6b780d002a000162ee22e660e5"
+          },
+          "inherited_fd": 3,
+          "memory": {
+            "errors": 4,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 41957
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "450697"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-source-stdin-rboxc-valgrind/memory.log",
+          "preserved_inherited": true,
+          "preserved_stdin": true,
+          "memory_clean": false
+        }
+      }
+    },
+    {
+      "name": "normal-one-line",
+      "program": "BEGIN {print 42}\n",
+      "use_stdin": false,
+      "one_line": true,
+      "pass": false,
+      "equivalent": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "42\n",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-one-line-gnu/stdout": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-one-line-gnu/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "inherited_fd": 3
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "42\n",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-one-line-gnu-valgrind/stdout": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-one-line-gnu-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-one-line-gnu-valgrind/memory.log": "298ebfd83d621eb649a1387a4f83e6667c43c2cfdff030858a6b5d419a95b597"
+          },
+          "inherited_fd": 3,
+          "memory": {
+            "errors": 4,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 59062
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "450716"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-source-contract/run-xe26q6af/normal-one-line-gnu-valgrind/memory.log",
+          "preserved_inherited": true,
+          "preserved_stdin": true,
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "42\n",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-one-line-rboxc/stdout": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-one-line-rboxc/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "inherited_fd": 3
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "42\n",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-one-line-rboxc-valgrind/stdout": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-one-line-rboxc-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/normal-one-line-rboxc-valgrind/memory.log": "67d8aa29ece70c24b3ae121e7d60034b1286b0f8644d6a8134bc7e78bbd3e7bd"
+          },
+          "inherited_fd": 3,
+          "memory": {
+            "errors": 4,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 59062
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "450735"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-source-contract/run-xe26q6af/normal-one-line-rboxc-valgrind/memory.log",
+          "preserved_inherited": true,
+          "preserved_stdin": true,
+          "memory_clean": false
+        }
+      }
+    },
+    {
+      "name": "fatal-one-line",
+      "program": "BEGIN {delete FUNCTAB}\n",
+      "use_stdin": false,
+      "one_line": true,
+      "pass": false,
+      "equivalent": true,
+      "outcomes": {
+        "gnu": {
+          "status": 2,
+          "stdout": "",
+          "stderr": "gawk: program.awk:1: fatal: `delete' is not allowed with FUNCTAB\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-one-line-gnu/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-one-line-gnu/stderr": "5dbcaf3993990634acfe27332bce57bf2794597b3497ddb470ee154d06fd3731"
+          },
+          "inherited_fd": 3
+        },
+        "gnu-valgrind": {
+          "status": 2,
+          "stdout": "",
+          "stderr": "gawk: program.awk:1: fatal: `delete' is not allowed with FUNCTAB\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-one-line-gnu-valgrind/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-one-line-gnu-valgrind/stderr": "5dbcaf3993990634acfe27332bce57bf2794597b3497ddb470ee154d06fd3731",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-one-line-gnu-valgrind/memory.log": "03807592065249aa750fe11e037f46b7900ff1c2a7911c46cfe2b9534eb774ac"
+          },
+          "inherited_fd": 3,
+          "memory": {
+            "errors": 5,
+            "non_inherited_descriptors": 1,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 38857
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "450752"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-one-line-gnu-valgrind/memory.log",
+          "preserved_inherited": true,
+          "preserved_stdin": true,
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 2,
+          "stdout": "",
+          "stderr": "gawk: program.awk:1: fatal: `delete' is not allowed with FUNCTAB\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-one-line-rboxc/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-one-line-rboxc/stderr": "5dbcaf3993990634acfe27332bce57bf2794597b3497ddb470ee154d06fd3731"
+          },
+          "inherited_fd": 3
+        },
+        "rboxc-valgrind": {
+          "status": 2,
+          "stdout": "",
+          "stderr": "gawk: program.awk:1: fatal: `delete' is not allowed with FUNCTAB\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-one-line-rboxc-valgrind/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-one-line-rboxc-valgrind/stderr": "5dbcaf3993990634acfe27332bce57bf2794597b3497ddb470ee154d06fd3731",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-one-line-rboxc-valgrind/memory.log": "95005e6fad3ba881631ba72eb27650623ee99cd5bf383bf9d0a75515bcf95c40"
+          },
+          "inherited_fd": 3,
+          "memory": {
+            "errors": 4,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 38385
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "450771"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-source-contract/run-xe26q6af/fatal-one-line-rboxc-valgrind/memory.log",
+          "preserved_inherited": true,
+          "preserved_stdin": true,
+          "memory_clean": false
+        }
+      }
+    },
+    {
+      "name": "syntax-one-line",
+      "program": "function x(a, b, c , ,) {}\n",
+      "use_stdin": false,
+      "one_line": true,
+      "pass": false,
+      "equivalent": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "gawk: program.awk:1: function x(a, b, c , ,) {}\ngawk: program.awk:1:                      ^ syntax error\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-one-line-gnu/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-one-line-gnu/stderr": "251a60855499dc3819ac01a4e0e0bc17641f17a3757ecdaff7425216e4570822"
+          },
+          "inherited_fd": 3
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "gawk: program.awk:1: function x(a, b, c , ,) {}\ngawk: program.awk:1:                      ^ syntax error\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-one-line-gnu-valgrind/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-one-line-gnu-valgrind/stderr": "251a60855499dc3819ac01a4e0e0bc17641f17a3757ecdaff7425216e4570822",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-one-line-gnu-valgrind/memory.log": "162d9b0872821203ec6e89d71936ed3c3d9c31efeddbad535fc98f58bded16be"
+          },
+          "inherited_fd": 3,
+          "memory": {
+            "errors": 5,
+            "non_inherited_descriptors": 1,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 38865
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "450790"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-one-line-gnu-valgrind/memory.log",
+          "preserved_inherited": true,
+          "preserved_stdin": true,
+          "memory_clean": false
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "gawk: program.awk:1: function x(a, b, c , ,) {}\ngawk: program.awk:1:                      ^ syntax error\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-one-line-rboxc/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-one-line-rboxc/stderr": "251a60855499dc3819ac01a4e0e0bc17641f17a3757ecdaff7425216e4570822"
+          },
+          "inherited_fd": 3
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "gawk: program.awk:1: function x(a, b, c , ,) {}\ngawk: program.awk:1:                      ^ syntax error\n",
+          "raw": {
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-one-line-rboxc-valgrind/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-one-line-rboxc-valgrind/stderr": "251a60855499dc3819ac01a4e0e0bc17641f17a3757ecdaff7425216e4570822",
+            "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-one-line-rboxc-valgrind/memory.log": "42039b7b4d86f0c2a7e32321c1bca4b63faf44496240145f9ccb4b1b18ff12bd"
+          },
+          "inherited_fd": 3,
+          "memory": {
+            "errors": 4,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 38393
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "450826"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-source-contract/run-xe26q6af/syntax-one-line-rboxc-valgrind/memory.log",
+          "preserved_inherited": true,
+          "preserved_stdin": true,
+          "memory_clean": false
+        }
+      }
+    }
+  ]
+}

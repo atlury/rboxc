@@ -71,7 +71,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 71 reviewed originals pass |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 105 reviewed originals pass |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -91,7 +91,22 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-Gawk now passes **71 reviewed original Make recipes**, covering further fixed-width
+Gawk now passes **105 reviewed original Make recipes** and all 85 focused
+comparisons. Three added diagnostic cases exposed parser source descriptors left
+open on fatal exit. The reproducible native helper adapter now closes still-owned
+source inputs, including the one-line reader's stream, while preserving stdin.
+Seven additional contracts verify exact GNU diagnostics and inherited-descriptor
+preservation. `evidence/gawk-source-validation.json` audits 197 clean Gawk process
+logs and seven separate descriptor inspections; all 428 multicall smoke checks
+and 11 dispatcher checks pass. The initial findings remain recorded.
+
+The current 187-command candidate is **14,716,728 bytes**, SHA-256
+`6eca6aac2d29295f2d01f1fd797206c278ee8a7a7fb64fdda5f0d0afd0e29a89`.
+An independent rebuild is byte-identical. The installed 133-command release is
+unchanged. Original inputs beyond these 105 recipes and extension profiles remain
+open; the checkpoints below refer to their recorded candidate binaries.
+
+The preceding Gawk checkpoint passes **71 reviewed original Make recipes**, covering further fixed-width
 fields, substitutions, typed regular expressions, profiling and expected diagnostics.
 The original recipes and expected output remain unchanged. Together with 85
 focused comparisons on the same binary, `evidence/gawk-fieldwidth-memory-audit.json`
