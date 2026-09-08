@@ -198,8 +198,14 @@ profile. All 44 focused calculator comparisons now match GNU with clean
 Valgrind results. Exit cleanup closes BC's owned scanner input on fatal read
 errors and explicit quit, while preserving inherited stdin. The initial
 41/42 memory-clean result is retained. The distribution registers no automated
-runtime suite; its reviewed historical arithmetic inputs are being compared
-against the pinned native calculator, with separate Valgrind observations.
+runtime suite. All 19 reviewed historical arithmetic inputs now match the
+pinned native calculator with clean Valgrind results, including the original
+Signum integer-remainder assertions. Its initial math-library invocation changed
+the scale and failed those assertions on both implementations; the corrected
+default-scale invocation and earlier observations are retained. The original
+definition-only testfn input has a declared bounded invocation. The timing
+wrapper's ten input files are covered individually; the wrapper itself is not
+counted as another test. Combined validation of the 124-command candidate continues.
 
 ## Status
 
