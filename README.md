@@ -385,8 +385,10 @@ candidate additionally passes 107/107 Coreutils Valgrind help checks and
 archive-operation harness matches GNU Tar against itself in every comparison;
 only 9/30 native control cases are strict memory-clean, with the other GNU
 findings preserved as baseline observations. This control is not Rust port
-evidence. Its original Autotest inputs
-are inventoried for review. The parser explicitly supplies the C17 spellings
+evidence. Recursive discovery now inventories all 237 original `.at` inputs,
+including the checkpoint and Star subdirectories previously absent from the
+inventory. Existing reviews are preserved; eleven further selections have
+source reviews recorded but remain unexecuted. The parser explicitly supplies the C17 spellings
 for boolean and static-assert constructs detected by the native C23 build.
 
 ## Status
