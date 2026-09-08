@@ -74,7 +74,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 421 reviewed originals pass; three original failures match GNU |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 423 reviewed originals pass; three original failures match GNU |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -145,16 +145,27 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-Thirteen further Gawk originals pass: twelve language recipes cover array
+Gawk's argument and `BEGINFILE` originals also pass with their normal build
+fixtures supplied privately: pinned GNU `cp` copies the input, and a private
+copy of the configured GNU Makefile is read as data. Programs, recipes and
+assertions remain unchanged. `evidence/gawk-current-coverage.json` audits all
+four preserved checkpoints together: **423 distinct passing originals, three
+unchanged failures matching GNU, and 521 clean candidate process logs**.
+The memory count includes 436 original invocations and the shared 85 focused
+cases once. Historical driver archives and every raw log are hash-checked;
+native GNU findings remain recorded. Nine exclusions and 199 inventoried
+inputs awaiting review remain separate. Full GNU acceptance is still open.
+
+Thirteen preceding Gawk originals pass: twelve language recipes cover array
 indexing and sorting, array arguments, CSV and pattern splitting, typed regex
 semantics, formatting and diagnostics. The thirteenth retains GNU's time
 extension, fixed date assertions and original 1.3-second sleep tolerance.
 `evidence/gawk-language-time-memory-audit.json` verifies all thirteen clean
 candidate logs alongside the existing 85 focused comparisons; those focused
-logs are shared evidence and are not counted again. Across the profiles,
+logs are shared evidence and are not counted again. Across those preceding profiles,
 **421 originals pass and three unchanged failures match GNU**. Nine reviewed
-historical crash or memory reproductions are excluded, and 201 inventoried
-inputs still await review, including helper fixtures and optional profiles.
+historical crash or memory reproductions are excluded, and that checkpoint left 201 inventoried
+inputs for review, including helper fixtures and optional profiles.
 
 Eight preceding Gawk extension originals pass, including filename matching,
 file metadata, function-table dispatch and six fixed wrong-argument diagnostics.

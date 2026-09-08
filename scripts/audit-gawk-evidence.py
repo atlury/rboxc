@@ -97,6 +97,11 @@ for row in original['results']:
     else:
         assert not row['baseline_failure_matches']
     assert row['locale_profile']==reviewed_rows[row['selection']].get('locale_profile')
+    working_files=reviewed_rows[row['selection']].get('working_files',{})
+    assert row.get('working_files',{})==working_files
+    for filename,entry in working_files.items():
+        assert re.fullmatch(r'[A-Za-z0-9_][A-Za-z0-9_.-]*',filename)
+        assert original['inputs'][entry['path']]==entry['sha256']
     extension=reviewed_rows[row['selection']].get('extension_profile')
     assert row.get('extension_profile')==extension
     if extension:

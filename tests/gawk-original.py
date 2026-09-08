@@ -32,12 +32,13 @@ helpers={'cmp':ROOT/'build/gnu-diffutils/src/cmp',
          'grep':ROOT/'build/gnu-grep/src/grep',
          'egrep':ROOT/'build/gnu-grep/src/egrep',
          'sed':ROOT/'build/gnu-sed/sed/sed',
-         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('rm','echo','od','tr')}}
+         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('rm','echo','od','tr','cp')}}
 inputs={p:fingerprint(p) for p in {makefile,source/'test/Makefile.am',source/'test/Makefile.in',
     Path(__file__),Path('/usr/bin/make'),Path('/bin/bash').resolve(),Path('/bin/sh').resolve(),*helpers.values(),profile.oracle}}
 for row in selected:
     inputs[source/row['path']]=row['sha256']
     inputs.update({source/'test'/n:h for n,h in row['fixtures'].items()})
+    inputs.update({Path(v['path']):v['sha256'] for v in row.get('working_files',{}).values()})
     extension=row.get('extension_profile')
     if extension:
         inputs.update({Path(p):h for p,h in extension['inputs'].items()})
@@ -70,6 +71,10 @@ def run_selection(row):
                         (libraries/library).symlink_to(entry['path'])
                     work=work/'test';work.mkdir()
                 for n in ('exec','deps','memory'): (work/n).mkdir()
+                for filename,entry in row.get('working_files',{}).items():
+                    assert re.fullmatch(r'[A-Za-z0-9_][A-Za-z0-9_.-]*',filename)
+                    shutil.copy2(entry['path'],work/filename)
+                    assert fingerprint(work/filename)==entry['sha256']
                 for n,p in helpers.items():(work/'deps'/n).symlink_to(p)
                 (work/'exec/gawk').symlink_to(profile.oracle if implementation=='gnu' else profile.binary)
                 argv=['gawk']
@@ -111,7 +116,7 @@ def run_selection(row):
                     'memory':logs,'memory_clean':clean if instrument else None}
     passed=all(o['assertions_pass'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
     baseline_matches=bool(row.get('expected_baseline_output')) and all(o['baseline_failure_matches'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
-    return {'baseline_failure_matches':baseline_matches,'locale_profile':row.get('locale_profile'),'extension_profile':row.get('extension_profile'),'selection':name,'source':row['path'],'source_sha256':row['sha256'],
+    return {'baseline_failure_matches':baseline_matches,'locale_profile':row.get('locale_profile'),'extension_profile':row.get('extension_profile'),'working_files':row.get('working_files',{}),'selection':name,'source':row['path'],'source_sha256':row['sha256'],
             'pass':passed,'outcomes':outcomes}
 
 results=[]
