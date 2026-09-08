@@ -1,3 +1,7 @@
+#[path = "generated/applet_dc.rs"]
+mod applet_dc;
+#[path = "generated/applet_bc.rs"]
+mod applet_bc;
 #[path = "generated/applet_sed.rs"]
 mod applet_sed;
 #[path = "generated/applet_gzip.rs"]
@@ -242,6 +246,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"base64", applet_base64::single_binary_main_base64),
     (b"basename", applet_basename::single_binary_main_basename),
     (b"basenc", applet_basenc::single_binary_main_basenc),
+    (b"bc", applet_bc::single_binary_main_bc),
     (b"cat", applet_cat::single_binary_main_cat),
     (b"chgrp", applet_chgrp::single_binary_main_chgrp),
     (b"chmod", applet_chmod::single_binary_main_chmod),
@@ -255,6 +260,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"csplit", applet_csplit::single_binary_main_csplit),
     (b"cut", applet_cut::single_binary_main_cut),
     (b"date", applet_date::single_binary_main_date),
+    (b"dc", applet_dc::single_binary_main_dc),
     (b"dd", applet_dd::single_binary_main_dd),
     (b"df", applet_df::single_binary_main_df),
     (b"diff", applet_diff::single_binary_main_diff),

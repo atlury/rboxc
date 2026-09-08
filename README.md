@@ -182,6 +182,14 @@ All 56 focused checks also pass on that candidate. Fresh original batches,
 including the 57-case miscellaneous and 198-case debug Perl suites, continue
 with seven isolated locales and pinned native locale probes.
 
+GNU BC 1.08.2 is pinned from its verified signed archive. Both `bc` and `dc`
+entries compile in a separate 124-command candidate. Each calculator retains
+its own native arithmetic helper copy and symbol namespace (283 private
+symbols total), because their standalone sources define overlapping helper
+names. Optional Readline/libedit support is disabled in the recorded native
+profile. Original Test inputs are inventoried; the distribution registers no
+automated runtime suite. Behavioral and Valgrind validation are pending.
+
 ## Status
 
 The installed executable registers 121 commands: 107 Coreutils entries, GNU Hello,

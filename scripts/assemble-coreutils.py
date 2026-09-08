@@ -158,3 +158,6 @@ if (ROOT/'evidence/gzip-translation.json').exists():
 
 if (ROOT/'evidence/sed-translation.json').exists():
     subprocess.run([sys.executable, str(ROOT/'scripts/assemble-sed.py')], check=True)
+
+if all((ROOT/f'evidence/bc-{name}-translation.json').exists() for name in ('bc', 'dc')):
+    subprocess.run([sys.executable, str(ROOT/'scripts/assemble-bc.py')], check=True)
