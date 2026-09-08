@@ -70,7 +70,7 @@ there where available.
 | Findutils | 4.11.0 | `find`, `xargs`, `locate` installed; `updatedb` and private `frcode` integrated in candidate |
 | Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
-| Cpio | 2.15 | `cpio`, `mt` installed; ten reviewed originals validated; tape-device operations untested |
+| Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
 | Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 11 reviewed originals pass |
 | Patch | 2.8 | Candidate passes 23 focused comparisons and eight reviewed originals |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
@@ -90,6 +90,15 @@ comparisons and eleven reviewed original Make targets pass, including strict
 candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
+
+Cpio's original-suite coverage now includes valid symlink archive round-trips,
+long target names and `--to-stdout` extraction. All **13 reviewed original
+selections** and all 52 focused comparisons pass on the current 187-command
+candidate. `evidence/cpio-symlink-memory-audit.json` independently verifies 104
+clean candidate process logs. The 17 registered original selections are now
+accounted for as 13 passing and four explicit reproductions left unexecuted;
+none of those four is counted as passing. Tape-device and broader platform
+profiles remain open.
 
 The latest Bash cleanup checkpoint passes **all 17 reviewed complete original
 recipes**, with 606 clean candidate process logs. The original GNU expected

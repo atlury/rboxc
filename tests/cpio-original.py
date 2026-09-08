@@ -22,7 +22,9 @@ profile = ComparisonProfile('cpio-original', oracle=ROOT/'build/gnu-cpio/src/cpi
 source = Path(json.loads((ROOT/'inventory/sources.json').read_text())['cpio']['source'])
 selections = {'version':(1,'version.at'),'inout':(2,'inout.at'),'interdir':(7,'interdir.at'),
               **{f'setstat{i:02}':(7+i,f'setstat{i:02}.at') for i in range(1,6)},
-              'linktime':(16,'linktime.at'),'linktime01':(17,'linktime01.at')}
+              'linktime':(16,'linktime.at'),'linktime01':(17,'linktime01.at'),
+              'symlink':(3,'symlink.at'),'symlink-long':(5,'symlink-long.at'),
+              'symlink-to-stdout':(6,'symlink-to-stdout.at')}
 selected = profile.options.commands or list(selections)
 assert len(set(selected)) == len(selected) and set(selected) <= set(selections)
 helpers = {n: ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','mkdir','chmod','touch','sort','echo','basename','cp','ln','true','false','sleep','ls','mv','mktemp','cut','id','date','printf','dd','rmdir','expr','tr','wc','head','tail','uname','cksum')}

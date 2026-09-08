@@ -26,10 +26,10 @@ focused = json.loads(options.focused.read_text())
 original = json.loads(options.original.read_text())
 assert focused['binary_sha256'] == original['binary_sha256'] == fingerprint(Path(focused['binary']))
 assert focused['complete'] and focused['passed'] == focused['total'] == focused['planned_total'] == 52
-assert original['complete'] and original['passed'] == original['total'] == original['planned_total'] == 10
+assert original['complete'] and original['passed'] == original['total'] == original['planned_total'] == 13
 assert focused['driver_sha256'] == fingerprint(ROOT/'tests/cpio-behavior.py')
 assert original['inputs'][str(ROOT/'tests/cpio-original.py')] == fingerprint(ROOT/'tests/cpio-original.py')
-assert {r['selection'] for r in original['results']} == {'version','inout','interdir','linktime','linktime01',*[f'setstat{i:02}' for i in range(1,6)]}
+assert {r['selection'] for r in original['results']} == {'version','inout','interdir','linktime','linktime01','symlink','symlink-long','symlink-to-stdout',*[f'setstat{i:02}' for i in range(1,6)]}
 inputs = {}
 for data in (focused, original):
     inputs.update(data.get('inputs', {})); inputs.update(data['runtime_helpers'])
@@ -70,12 +70,12 @@ for row in original['results']:
             audit(log['log'],log['sha256'],log,key=='rboxc-valgrind',row['source'])
 original_processes=sum(len(r['outcomes']['rboxc-valgrind']['memory']) for r in original['results'])
 assert original_processes>0 and len(processes)==52+original_processes
-report = {'scope':'All 52 focused comparisons and ten reviewed unchanged GNU original selections pass. Every input and raw log is hash-checked and every candidate process summary is reparsed. GNU native findings remain baseline observations.',
+report = {'scope':'All 52 focused comparisons and 13 reviewed unchanged GNU original selections pass. Every input and raw log is hash-checked and every candidate process summary is reparsed. GNU native findings remain baseline observations.',
           'binary':focused['binary'],'binary_sha256':focused['binary_sha256'],
           'runtime_helpers':focused['runtime_helpers'],'inputs':inputs,
           'focused_report':{'path':str(options.focused),'sha256':fingerprint(options.focused)},
           'original_report':{'path':str(options.original),'sha256':fingerprint(options.original)},
-          'passed':len(processes),'total':len(processes),'focused_cases':52,'original_selections':10,'original_processes':original_processes,
+          'passed':len(processes),'total':len(processes),'focused_cases':52,'original_selections':13,'original_processes':original_processes,
           'driver_sha256':fingerprint(Path(__file__)),'results':processes}
 target.write_text(json.dumps(report,indent=2)+'\n')
-print('Audited 52 focused cases, 10 GNU original selections, and',len(processes),'clean candidate processes')
+print('Audited 52 focused cases, 13 GNU original selections, and',len(processes),'clean candidate processes')
