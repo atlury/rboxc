@@ -84,6 +84,22 @@ there where available.
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
 | glibc | 2.43 | Both entries integrated; 50 focused checks, both getconf originals and three iconv buffer recipes pass |
 
+Sed's current 187-command candidate passes all **56 focused comparisons** and
+the unchanged `execute-tests.sh` original with integrated rboxc Coreutils helpers.
+That interoperation profile has **25 clean process logs**: 20 Sed invocations,
+four system-shell children and one translated `cat` invocation. The same
+original with native GNU helpers retains GNU `cat`'s 262,144-byte allocation
+finding. Native GNU Sed findings also remain recorded. The original assertions
+and native binaries are unchanged.
+
+`evidence/sed-multicall-execution-audit.json` reparses 212 logs across both
+implementations and reports 105 clean candidate-profile processes plus the
+retained native-helper finding. `RBOXC_SED_MULTICALL_HELPERS=1` selects the
+additional helper profile for `tests/sed-original.py`; its report records the
+actual helper executable and hash. Earlier broader Sed original-suite results
+remain on their recorded binaries; this checkpoint does not claim full Sed
+acceptance or release activation.
+
 The next-provider work is preserved before release activation. Gawk's candidate
 uses GNU's `MEMDEBUG` per-object allocation mode; the earlier pooled native and
 Rust binaries and their Valgrind observations remain available locally. A narrow

@@ -22,7 +22,23 @@ pin=json.loads((ROOT/'inventory/sources.json').read_text())['sed'];source=Path(p
 manifest=json.loads((ROOT/'inventory/sed-tests.json').read_text())
 assert fingerprint(source/manifest['registration']['path'])==manifest['registration']['sha256']
 driver_sha256=fingerprint(Path(__file__))
-helpers,prerequisite_environment,prerequisites=prepare()
+native_dependencies=prepare()
+helpers,prerequisite_environment,prerequisites=native_dependencies
+helper_mode=os.environ.get('RBOXC_SED_MULTICALL_HELPERS','0')
+assert helper_mode in ('0','1')
+if helper_mode=='1':
+    # An additional interoperation profile uses the same translated Coreutils
+    # helpers for both Sed implementations. Keep the native-helper run separate.
+    helpers={**helpers}
+    prerequisite_environment={**prerequisite_environment}
+    prerequisites={**prerequisites}
+    coreutils={'path':str(profile.binary),'sha256':profile.binary_sha256,
+               'commands':['cat','touch','sleep','dd'],
+               'scope':'Integrated rboxc Coreutils test dependencies, shared by GNU and rboxc Sed'}
+    for name in coreutils['commands']:
+        helpers[name]={'path':coreutils['path'],'sha256':coreutils['sha256'],'scope':coreutils['scope']}
+    prerequisites['native_coreutils']=prerequisites['coreutils']
+    prerequisites['coreutils']=coreutils
 selected=set(profile.options.commands)
 assert selected<={Path(r['script']).name for r in manifest['scripts'] if r['reviewed']}
 results=[]
@@ -96,7 +112,7 @@ for index,row in enumerate(manifest['scripts']):
     print(state.upper(),row['script'],flush=True)
     report={'scope':'Individually reviewed unchanged original shell assertions on the pinned native GNU and Rust candidate, with strict final-exec Valgrind checks.',**profile.metadata(),'driver_sha256':driver_sha256,'passed':sum(r['pass'] for r in results),'native_passed':sum(r['native_pass'] for r in results),'total':len(results),'state_counts':{s:sum(r['state']==s for r in results) for s in sorted({r['state'] for r in results})},'selected_scripts':sorted(selected),'registered_original_scripts':len(manifest['scripts']),'remaining':[r for r in manifest['scripts'] if not r['reviewed']],'results':results}
     assert fingerprint(Path(__file__))==driver_sha256
-    assert prepare()==(helpers,prerequisite_environment,prerequisites)
+    assert prepare()==native_dependencies
     report['prerequisites']=prerequisites
     profile.report.write_text(json.dumps(report,indent=2)+'\n')
 raise SystemExit(any(not r['pass'] for r in results))
