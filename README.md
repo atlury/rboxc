@@ -75,7 +75,7 @@ there where available.
 | Patch | 2.8 | Candidate passes 23 focused comparisons and eight reviewed originals |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
-| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 14 originals pass with clean Valgrind; three reviewed originals and broader acceptance open |
+| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 17 reviewed originals pass with clean Valgrind; broader acceptance open |
 | Less | 704 | Candidate passes ten focused comparisons; original suite pending |
 | Screen | 5.0.2 | Candidate passes five option comparisons and the descriptor-preservation contract |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and four reviewed originals |
@@ -91,7 +91,32 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-The latest candidate closes an abandoned `iconv` temporary spool when GNU's
+The latest Bash cleanup checkpoint passes **all 17 reviewed complete original
+recipes**, with 606 clean candidate process logs. The original GNU expected
+outputs remain unchanged. All 44 focused Bash checks, 69 shell-adapter/updatedb
+checks, 428 smoke checks and 11 dispatcher checks pass too.
+`scripts/audit-bash-original.py` rechecks original outputs, reparses memory
+summaries and binds 2,401 raw files in
+`evidence/bash-unwind-ownership-validation.json`.
+
+The C2Rust Bash entry is unchanged. GNU helper adaptations now release function
+subshell payloads, expansion buffers and words abandoned during error handling,
+and command trees discarded by the parser. The four fixed tilde tables use
+static storage. Tilde testing uses glibc's file-based passwd provider for both
+implementations through `tests/bash-nss-files.c`; this test helper is absent from
+the product. Build it with
+`gcc -O2 -g -fPIC -shared -Wall -Wextra -Werror tests/bash-nss-files.c -o build/bash-test-helpers/nss-files.so`.
+The host SSSD finding and ineffective cache-disable attempt remain recorded in
+the earlier reports. The broader host-NSS profile remains open.
+
+The candidate is `/root/rboxc/target/bash-unwind-ownership-candidate/release/rboxc`,
+14,715,648 bytes, SHA-256
+`1715ea3348e9e5f6608d9e6a8e6581c00206e2ceb8b6445544f06db7649345cb`.
+Its independent rebuild is byte-identical. This closes the three reviewed Bash
+originals previously left open, but 71 other top-level recipes and broader GNU
+acceptance remain open. The installed release and deferred commands are unchanged.
+
+The preceding candidate closes an abandoned `iconv` temporary spool when GNU's
 conversion-error branch skips output flushing to preserve overlapping input.
 All three unchanged GNU 2.43 buffer recipes pass: default, one-byte buffer,
 and the original large-file mode with 22 input-size doublings. Each recipe
@@ -108,7 +133,7 @@ An independent rebuild is byte-identical. The installed 133-command release
 and 354 deferred commands remain unchanged. Other iconv inputs, charmaps,
 provider originals and platform profiles remain open.
 
-Four additional Bash originals (`appendop`, `ifs`, `nquote4`, `quote`) pass
+The preceding batch of four Bash originals (`appendop`, `ifs`, `nquote4`, `quote`) pass
 with clean candidate Valgrind process trees in
 `evidence/bash-quoting-original.json`. All six scripts in this batch match GNU
 expected output, but `braces` and `nquote1` expose further owned-memory cleanup

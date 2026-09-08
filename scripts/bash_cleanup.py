@@ -11,7 +11,7 @@ def prepare(root):
  outputs={};reports=[]
  def replace(text,old,new):
   assert text.count(old)==1,(old,text.count(old));return text.replace(old,new)
- for name in ['make_cmd.c','dispose_cmd.c','unwind_prot.c','variables.c','execute_cmd.c','subst.c','trap.c','expr.c','redir.c','eval.c','bashline.c','builtins/evalstring.c','native-helpers.c']:
+ for name in ['make_cmd.c','dispose_cmd.c','unwind_prot.c','variables.c','execute_cmd.c','subst.c','trap.c','expr.c','redir.c','eval.c','bashline.c','general.c','y.tab.c','builtins/evalstring.c','native-helpers.c']:
   original=(root/'build/translation/bash'/name) if name=='native-helpers.c' else source/name
   if name!='native-helpers.c':assert fingerprint(original)==pin['source_and_header_sha256'][name]
   text=original.read_text()
@@ -78,9 +78,25 @@ add_unwind_protect_owned (sh_uwfunc_t *cleanup, sh_uwfunc_t *discard, void *arg)
 #endif
 '''+anchor)
   elif name=='execute_cmd.c':
-   text=replace(text,'#include "shell.h"','#include "shell.h"\nextern void add_unwind_protect_owned (sh_uwfunc_t *, sh_uwfunc_t *, void *);')
+   text=replace(text,'#include "shell.h"','#include "shell.h"\nextern void add_unwind_protect_owned (sh_uwfunc_t *, sh_uwfunc_t *, void *);\nstatic void rboxc_keep_function_payload (void *p) { (void)p; }')
    for callback,arg in [('uw_maybe_restore_getopt_state','gs'),('uw_restore_funcarray_state','fa')]:
     text=replace(text,f'add_unwind_protect ({callback}, {arg});',f'add_unwind_protect_owned ({callback}, xfree, {arg});')
+   text=replace(text,'  gs = sh_getopt_save_istate ();','''  gs = sh_getopt_save_istate ();
+  if (subshell) {
+    begin_unwind_frame ("rboxc-function-heap");
+    add_unwind_protect (xfree, gs);
+    add_unwind_protect (uw_dispose_command, tc);
+  }''')
+   anchor='    add_unwind_protect_owned (uw_restore_funcarray_state, xfree, fa);'
+   text=replace(text,anchor,anchor+'''
+  else
+    add_unwind_protect_owned (rboxc_keep_function_payload, xfree, fa);''')
+   anchor='  function_misc_cleanup ();\n'
+   start=text.index('execute_function (SHELL_VAR *var, WORD_LIST *words, int flags, struct fd_bitmap *fds_to_close, int async, int subshell)\n{')
+   end=text.index('\nstatic ',start)
+   segment=text[start:end]
+   segment=replace(segment,anchor,'  if (subshell) run_unwind_frame ("rboxc-function-heap");\n'+anchor)
+   text=text[:start]+segment+text[end:]
    # Retain close's result/errno for already-closed pipes without issuing a
    # second close syscall. Valid descriptors still follow GNU's close path.
    anchor='static int\nexecute_pipeline (COMMAND *command, int asynchronous, int pipe_in, int pipe_out, struct fd_bitmap *fds_to_close)'
@@ -164,6 +180,32 @@ static void rboxc_keep_reader_command (void *command) { (void)command; }
   if (rl_completer_word_break_characters &&
       rl_completer_word_break_characters != rl_basic_word_break_characters)
     free ((void *)rl_completer_word_break_characters);''')
+  elif name=='general.c':
+   # These four fixed tables have process lifetime. Preserve the original
+   # element initialization and pointer bindings without heap allocations.
+   for table,size in [('prefixes',3),('prefixes2',2),('suffixes',3),('suffixes2',2)]:
+    var='bash_tilde_'+table
+    text=replace(text,f'static char **{var};',f'static char *{var}[{size}];')
+    text=replace(text,f'      {var} = strvec_create ({size});\n','')
+  elif name=='y.tab.c':
+   # The command-valued nonterminals from GNU parse.y own their trees
+   # until a successful reduction transfers them. inputunit returns via
+   # YYACCEPT without assigning a semantic value, so exclude that symbol.
+   commands='command pipeline pipeline_command list0 list1 compound_list simple_list simple_list1 simple_command shell_command for_command select_command case_command group_command arith_command cond_command arith_for_command coproc comsub funsub function_def function_body if_command elif_clause subshell'.split()
+   assert len(commands)==25 and all('YYSYMBOL_'+n+' =' in text for n in commands)
+   cases=''.join('    case YYSYMBOL_'+n+':\n' for n in commands)
+   anchor='''  YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
+  YY_USE (yykind);
+  YY_IGNORE_MAYBE_UNINITIALIZED_END'''
+   start=text.index('yydestruct (const char *yymsg,');end=text.index('\n}',start)
+   segment=replace(text[start:end],anchor,'''  YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
+  switch (yykind) {
+'''+cases+'''      dispose_command (yyvaluep->command);
+      break;
+    default: break;
+  }
+  YY_IGNORE_MAYBE_UNINITIALIZED_END''')
+   text=text[:start]+segment+text[end:]
   elif name=='redir.c':
    text=replace(text,'static int add_undo_redirect (int, enum r_instruction, int);','static int add_undo_redirect (int, enum r_instruction, int);\nextern void rboxc_bash_track_backup (int);')
    text=replace(text,'  clexec_flag = fcntl (fd, F_GETFD, 0);','  rboxc_bash_track_backup (new_fd);\n  clexec_flag = fcntl (fd, F_GETFD, 0);')
@@ -195,12 +237,48 @@ static void rboxc_release_expansion_slot (void *slot)
   free (*value);
   *value = 0;
 }
+struct rboxc_word_expansion { char *text; };
+static void rboxc_release_word_expansion (void *arg)
+{
+  struct rboxc_word_expansion *owned = arg;
+  free (owned->text);
+  free (owned);
+}
+static void rboxc_dispose_expansion_word (void *arg) { dispose_word (arg); }
 ''')
+   start=text.index('string_extract_double_quoted (const char *string, size_t *sindex, int flags)\n{');end=text.index('\n/*',text.index('\n}',start))
+   segment=text[start:end]
+   anchor='  temp = (char *)xmalloc (1 + slen - *sindex);'
+   segment=replace(segment,anchor,anchor+'''
+  begin_unwind_frame ("rboxc-extract-quoted");
+  add_unwind_protect (xfree, temp);''')
+   segment=replace(segment,'  return (temp);','  discard_unwind_frame ("rboxc-extract-quoted");\n  return (temp);')
+   text=text[:start]+segment+text[end:]
    # The process-substitution child owns its private pathname copy; it can
    # abandon this C frame when executing an ordinary text script.
    start=text.index('process_substitute (char *string, int open_for_read_in_child)');end=text.index('#endif /* PROCESS_SUBSTITUTION */',start)
    segment=text[start:end]
    segment=replace(segment,'  remove_quoted_escapes (string);','  add_unwind_protect (xfree, pathname);\n  remove_quoted_escapes (string);')
+   text=text[:start]+segment+text[end:]
+   start=text.index('parameter_brace_expand_rhs (char *name, char *value,');end=text.index('\n/*',text.index('\n}',start))
+   segment=text[start:end]
+   anchor='  l = *temp ? expand_string_for_rhs (temp, quoted, op, pflags, &l_hasdollat, (int *)NULL)\n\t    : (WORD_LIST *)0;'
+   segment=replace(segment,anchor,'''  begin_unwind_frame ("rboxc-brace-rhs");
+  if (temp != value) add_unwind_protect (xfree, temp);
+  add_unwind_protect_owned (rboxc_dispose_expansion_word, rboxc_dispose_expansion_word, w);
+'''+anchor+'''
+  discard_unwind_frame ("rboxc-brace-rhs");''')
+   text=text[:start]+segment+text[end:]
+   start=text.index('parameter_brace_expand (char *string, size_t *indexp, int quoted, int pflags, int *quoted_dollar_atp, int *contains_dollar_at)\n{');end=text.index('\n/*',text.index('\n}',start))
+   segment=text[start:end]
+   def protect_rhs(match):
+    return '''begin_unwind_frame ("rboxc-brace-arguments");
+          add_unwind_protect (xfree, name);
+          add_unwind_protect (xfree, value);
+          '''+match[0]+'''
+          discard_unwind_frame ("rboxc-brace-arguments");'''
+   segment,count=re.subn(r'ret = parameter_brace_expand_rhs \(.*?\);',protect_rhs,segment,flags=re.S)
+   assert count==2,count
    text=text[:start]+segment+text[end:]
    anchor='static WORD_LIST *\nshell_expand_word_list (WORD_LIST *tlist, int eflags)'
    text=replace(text,anchor,'''struct rboxc_expanded_words { WORD_LIST *original, *expanded; };
@@ -235,15 +313,23 @@ static void rboxc_dispose_expanded_words (void *arg)
    text=text[:start]+segment+text[end:]
    start=text.index('expand_word_internal (WORD_DESC *word, int quoted, int isexp, int *contains_dollar_at, int *expanded_something)');end=text.index('\n/* **************************************************************** */',start)
    segment=text[start:end]
+   anchor='\t      list = expand_word_internal (tword, Q_DOUBLE_QUOTES|(quoted&Q_ARITH), 0, &temp_has_dollar_at, (int *)NULL);'
+   segment=replace(segment,anchor,'''              begin_unwind_frame ("rboxc-quoted-word");
+              add_unwind_protect_owned (rboxc_dispose_expansion_word, rboxc_dispose_expansion_word, tword);
+'''+anchor+'''
+              discard_unwind_frame ("rboxc-quoted-word");''')
+   segment=replace(segment,'  char *istring;','  struct rboxc_word_expansion *owned;')
    anchor='  istring = (char *)xmalloc (istring_size = DEFAULT_INITIAL_ARRAY_SIZE);'
    before,after=segment.split(anchor)
    # Four actual returns after allocation (the other occurrences are prose).
-   after,count=re.subn(r'(?m)^(\s*)return ((?:\(|list;))',r'\1discard_unwind_frame ("rboxc-word-expansion");\n\1return \2',after)
+   after,count=re.subn(r'(?m)^(\s*)return ((?:\(|list;))',r'\1discard_unwind_frame ("rboxc-word-expansion");\n\1free (owned);\n\1return \2',after)
    assert count==4,count
-   segment=before+anchor+'''
+   segment=before+'  owned = xmalloc (sizeof *owned);\n'+anchor+'''
   begin_unwind_frame ("rboxc-word-expansion");
-  add_unwind_protect_owned (rboxc_keep_expansion_slot, rboxc_release_expansion_slot, &istring);
+  add_unwind_protect_owned (rboxc_release_word_expansion, rboxc_release_word_expansion, owned);
 '''+after
+   segment=re.sub(r'\bistring\b','owned->text',segment)
+   segment=segment.replace('free (owned->text);','{ free (owned->text); owned->text = 0; }')
    text=text[:start]+segment+text[end:]
   elif name=='builtins/evalstring.c':
    text=replace(text,'#include "../shell.h"','#include "../shell.h"\nextern void add_unwind_protect_owned (sh_uwfunc_t *, sh_uwfunc_t *, void *);')

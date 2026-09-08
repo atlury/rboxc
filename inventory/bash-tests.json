@@ -718,7 +718,11 @@
         "tilde.tests": "4ea4d56eeadfe0e5640f23e9c03b78bf9a11e444fa2bf60bcf754472ff1e15b6",
         "tilde.right": "bd52fa5e47e52350f655c320be3745df9262b3ab587297357c94759935e025e8"
       },
-      "review": "Complete ordinary expansion/here-string conformance script and referenced sub-scripts reviewed; unchanged GNU expected output retained. Tilde fixture only visits /usr and /tmp and returns to its private directory."
+      "review": "Complete ordinary expansion/here-string conformance script and referenced sub-scripts reviewed; unchanged GNU expected output retained. Tilde fixture only visits /usr and /tmp and returns to its private directory.",
+      "runtime_helpers": [
+        "nss-files"
+      ],
+      "environment_reason": "Use the glibc files passwd provider for both implementations through a test-only preload. The complete original script and expected output are unchanged. Host SSSD findings, including the ineffective cache-disable attempt, remain in the preceding reports."
     },
     {
       "target": "tilde2",
@@ -769,6 +773,14 @@
       "source_sha256": "722e2f857ab582c4b52d254c729c4cd5e7566e6a16f105fc106b5a3ec36ea73f",
       "binary": "build/gnu-bash/zecho",
       "binary_sha256": "733316316f52c643ebacaa780f33e456848daecef84950ae5835bfd9de52be80"
+    }
+  },
+  "runtime_test_helpers": {
+    "nss-files": {
+      "source": "tests/bash-nss-files.c",
+      "source_sha256": "a9d53cf745d3729ad4c573fcd0629f485eb810074b5d38f269749e4e5e1db7e4",
+      "binary": "build/bash-test-helpers/nss-files.so",
+      "binary_sha256": "1404274c59a043554d956337be3fe3301cb13d9161bc4bc762022d9598be494c"
     }
   }
 }
