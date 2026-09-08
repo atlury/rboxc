@@ -10,7 +10,7 @@ import hashlib,json,sys
 from pathlib import Path
 root,source=map(Path,sys.argv[1:])
 pin=json.loads((root/'inventory/sources.json').read_text())['cpio']
-for name,expected in pin['entry_source_sha256'].items():
+for name,expected in {**pin['entry_source_sha256'], **pin.get('source_and_header_sha256',{})}.items():
     assert hashlib.sha256((source/name).read_bytes()).hexdigest()==expected
 PY
 cd "$build"
@@ -19,6 +19,7 @@ if [ ! -f Makefile ]; then
 fi
 export RBOXC_CC_RECORDS="$root/build/cpio-cc-records"
 make -j8 CC="python3 $root/scripts/record-cc.py" > "$root/evidence/raw/cpio-native-build.log" 2>&1
+make -C tests -j8 CC="python3 $root/scripts/record-cc.py" genfile > "$root/evidence/raw/cpio-genfile-build.log" 2>&1
 python3 - "$root" "$source" <<'PY'
 import hashlib,json,subprocess,sys
 from pathlib import Path

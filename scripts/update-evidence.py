@@ -404,7 +404,7 @@ if all(path.exists() for path in tar_reports):
     expected = {row['path']:row['sha256'] for row in manifest['inputs']}
     assert len(original['results']) == original['total'] > 0
     assert all(expected[r['source']] == r['source_sha256'] for r in original['results'])
-    current = all(r['binary_sha256'] == binary_sha256 for r in (original, focused))
+    current = originals_supported('tar', original, focused)
     source_current = entry['rust_sha256'] == linked['rust_source_sha256'] == hashlib.sha256((ROOT/entry['rust_file']).read_bytes()).hexdigest()
     active = current and source_current and entry['translated'] and not linked['native_command_entries']
     active = active and 'tar' in subprocess.check_output([binary,'--list'],text=True).splitlines()
@@ -433,7 +433,8 @@ if all(path.exists() for path in sharutils_reports):
     linked = read('evidence/sharutils-link.json'); manifest = read('inventory/sharutils-tests.json')
     assigned = {r['path']:r['sha256'] for r in manifest['inputs'] if r['state']!='outside-assigned-command-scope'}
     assert assigned == {r['path']:r['sha256'] for r in original['results']}
-    current = all(r['binary_sha256']==binary_sha256 for r in (original,focused,audit))
+    current = (originals_supported('sharutils', original, focused)
+               and audit['binary_sha256']==original['binary_sha256'])
     current = current and original['complete'] and focused['complete'] and audit['passed']==audit['total']>0
     listed = subprocess.check_output([binary,'--list'],text=True).splitlines(); active_entries = 0
     for command in ('uuencode','uudecode'):
@@ -458,6 +459,42 @@ if all(path.exists() for path in sharutils_reports):
         active_entries += int(active)
     extra_providers['sharutils'] = {'active_rust_entries':active_entries,'original_scripts_executed':original['total'],
         'original_scripts_passed':original['passed'],'assigned_original_scripts':len(assigned),
+        'applet_processes':audit['total'],'applet_processes_clean':audit['passed'],
+        'behavior_passed':focused['passed'],'behavior_total':focused['total'],
+        'complete':False,'completion_scope':row['completion_scope']}
+cpio_reports = [ROOT/'evidence/cpio-original.json', ROOT/'evidence/cpio-behavior.json',
+                ROOT/'evidence/cpio-memory-audit.json']
+if all(path.exists() for path in cpio_reports):
+    original, focused, audit = [json.loads(path.read_text()) for path in cpio_reports]
+    linked = read('evidence/cpio-link.json'); manifest = read('inventory/cpio-tests.json')
+    expected = {r['path']:r['sha256'] for r in manifest['inputs']}
+    assert all(expected[r['source']]==r['source_sha256'] for r in original['results'])
+    current = all(r['binary_sha256']==binary_sha256 for r in (original,focused,audit))
+    current = current and original['complete'] and focused['complete'] and audit['passed']==audit['total']>0
+    listed = subprocess.check_output([binary,'--list'],text=True).splitlines(); active_entries = 0
+    for command in ('cpio','mt'):
+        entry = read(f'evidence/cpio-{command}-translation.json')
+        source_current = entry['rust_sha256']==linked['rust_source_sha256'][command]==hashlib.sha256((ROOT/entry['rust_file']).read_bytes()).hexdigest()
+        source_current = source_current and entry['invocation_adapter_sha256']==hashlib.sha256((ROOT/'src/bridges/cpio-invocation.rs').read_bytes()).hexdigest()
+        if command=='mt':
+            source_current = source_current and entry['ownership_adapter_sha256']==hashlib.sha256((ROOT/'src/bridges/mt-owned.rs').read_bytes()).hexdigest()
+        active = current and source_current and entry['translated'] and command in listed and not linked['native_command_entries']
+        checks = [r for r in focused['results'] if r['command']==command]
+        help_checks = [r for r in checks if r['name'] in (command+'-help',command+'-version')]
+        assert len(help_checks)==2
+        row = next(r for r in inventory if r['name']==command)
+        row.update(translated=entry['translated'],compiles=active,active_rust=active,provider_confirmed=True,
+            state='reviewed-originals-validated' if active and command=='cpio' else ('compiled-rust-entry' if active else 'queued'),
+            help_version_pass=active and all(r['pass'] for r in help_checks),
+            valgrind_help_pass=active and all(r['memory_clean'] for r in help_checks),
+            behavior_fixture_count=len(checks),behavior_fixture_pass=active and all(r['pass'] for r in checks),
+            valgrind_fixture_pass=active and all(r['memory_clean'] for r in checks),
+            original_selections_executed=original['total'] if command=='cpio' else 0,
+            gnu_tests_pass=False,valgrind_pass=False,complete=False,
+            completion_scope='GNU Cpio 2.15 Linux/glibc: ten reviewed unchanged cpio originals and 52 focused cpio/mt checks. Broader originals and actual tape-device operations remain unvalidated.')
+        active_entries += int(active)
+    extra_providers['cpio'] = {'active_rust_entries':active_entries,'original_selections_executed':original['total'],
+        'original_selections_passed':original['passed'],'original_inputs_inventoried':len(manifest['inputs']),
         'applet_processes':audit['total'],'applet_processes_clean':audit['passed'],
         'behavior_passed':focused['passed'],'behavior_total':focused['total'],
         'complete':False,'completion_scope':row['completion_scope']}

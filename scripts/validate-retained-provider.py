@@ -10,7 +10,7 @@ import subprocess
 
 ROOT=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--provider',required=True,choices=['hello','time','diffutils','gzip','sed','bc','ed','findutils'])
+parser.add_argument('--provider',required=True,choices=['hello','time','diffutils','gzip','sed','bc','ed','findutils','tar','sharutils'])
 parser.add_argument('--candidate',type=Path,required=True)
 parser.add_argument('--focused-report',type=Path,required=True)
 parser.add_argument('--baseline-proof',type=Path,required=True)
@@ -55,6 +55,24 @@ if provider == 'findutils':
     assert audit['passed'] == audit['total'] > 0
     unchanged[str(audit_path.relative_to(ROOT))] = digest(audit_path)
     unchanged[str(audit_source.relative_to(ROOT))] = digest(audit_source)
+if provider == 'sharutils':
+    audit_path = ROOT/'evidence/sharutils-memory-audit.json'
+    audit = json.loads(audit_path.read_text())
+    baseline_audit = proof['reports']['sharutils-memory-audit']
+    audit_source = ROOT/baseline_audit['path']
+    assert digest(audit_source) == baseline_audit['sha256']
+    assert audit['activation']['same_executable_bytes']
+    assert audit['activation']['source_report_sha256'] == baseline_audit['sha256']
+    assert {k:v for k,v in audit.items() if k not in omit} == {
+        k:v for k,v in json.loads(audit_source.read_text()).items() if k not in omit}
+    assert audit['binary_sha256'] == original['binary_sha256']
+    assert audit['original_report']['sha256'] == digest(source)
+    assert audit['passed'] == audit['total'] == 86
+    for path in (audit_path, audit_source, ROOT/'src/bridges/sharutils-owned.rs'):
+        relative = str(path.relative_to(ROOT))
+        if relative in proof['source_evidence']:
+            assert digest(path) == proof['source_evidence'][relative]
+        unchanged[relative] = digest(path)
 for path in metadata:
     relative=str(path.relative_to(ROOT));expected=proof['source_evidence'][relative]
     assert digest(path)==expected,'provider build metadata or reviewed inventory changed'
