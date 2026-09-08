@@ -378,8 +378,11 @@ libc's later buffered-output flush; both that observation and the corrected
 stream finalization are retained. The resulting candidate is 4,449,392 bytes
 (4.24 MiB), with 52/52 focused comparisons clean, including eight closed-stream
 cases. Ten unchanged permission and directory-metadata originals also pass as
-uid/gid 65534 using byte-verified private executable copies. Earlier originals
-are being revalidated against these new bytes before consolidation. The prior
+uid/gid 65534 using byte-verified private executable copies. The fresh combined
+audit, `evidence/tar-original-standard-stream-audited.json`, now validates
+59/59 unchanged original selections and 754 clean instrumented Tar processes
+on these same bytes. This is reviewed coverage, not full Tar certification;
+broader originals and other-provider regressions remain open. The prior
 candidate additionally passes 107/107 Coreutils Valgrind help checks and
 318/318 behavior checks; those reports retain its earlier binary hash. Fresh
 checks on the corrected candidate now also pass 428/428 Coreutils help/version
