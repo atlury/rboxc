@@ -72,7 +72,7 @@ there where available.
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
 | Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 71 reviewed originals pass |
-| Patch | 2.8 | Candidate passes 23 focused comparisons and eight reviewed originals |
+| Patch | 2.8 | 23 focused comparisons and 24 original scripts pass; two GNU expected failures match |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
 | Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 17 reviewed originals pass with clean Valgrind; broader acceptance open |
@@ -114,6 +114,16 @@ preserved in `evidence/gawk-expanded-original.json`; the corrected run and its
 111 clean candidate process logs are verified in
 `evidence/gawk-locale-memory-audit.json`. Other original Gawk inputs and extension
 profiles remain open.
+
+Patch now passes **24 reviewed original scripts**, and exactly matches the two
+failures that GNU Patch 2.8 registers in `XFAIL_TESTS` (`context-format` and
+`dash-o-append`). Those two retain their failing assertion counts and identical
+GNU/candidate output; they are not counted as ordinary passes. All 23 focused
+comparisons also pass. `evidence/patch-registration-memory-audit.json` verifies
+89 clean candidate Patch process logs. The initial 15/17 strict run is preserved
+in `evidence/patch-expanded-original.json`. The diagnostic-name test instruments
+the unchanged shell driver so GNU's expected executable path stays intact; native
+test-helper logs are retained separately. Other original scripts remain open.
 
 Cpio's original-suite coverage now includes valid symlink archive round-trips,
 long target names and `--to-stdout` extraction. All **13 reviewed original

@@ -21,11 +21,18 @@ profile=ComparisonProfile('patch-original',oracle=ROOT/'build/gnu-patch/src/patc
 source=Path(json.loads((ROOT/'inventory/sources.json').read_text())['patch']['source'])
 manifest=json.loads((ROOT/'inventory/patch-tests.json').read_text())
 selected=[r for r in manifest['inputs'] if r['reviewed']]
-assert len(selected)==8
-helpers={n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','echo','chmod','ls','cut','mktemp','touch','ln','mkdir','expr','seq')}
+assert selected and len({r['target'] for r in selected})==len(selected)
+helpers={n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','echo','chmod','ls','cut','mktemp','touch','ln','mkdir','expr','seq','mv','stat')}
+helpers['grep']=ROOT/'build/gnu-grep/src/grep'
 helpers.update(diff=ROOT/'build/gnu-diffutils/src/diff',sed=ROOT/'build/gnu-sed/sed/sed')
 inputs={p:fingerprint(p) for p in {source/'tests/Makefile.am',source/'tests/test-lib.sh',Path(__file__),Path('/bin/sh').resolve(),*helpers.values(),profile.oracle}}
 for row in selected:inputs[source/row['path']]=row['sha256']
+assert all(fingerprint(p)==h for p,h in inputs.items())
+registration=(source/'tests/Makefile.am').read_text()
+xfail_match=re.search(r'^XFAIL_TESTS = ((?:.*\\\n)*.*)',registration,re.M)
+assert xfail_match
+expected_failures=set(xfail_match[1].replace('\\\n',' ').split())
+assert expected_failures=={'context-format','dash-o-append'}
 results=[]
 for row in selected:
     name=row['target'];outcomes={}
@@ -39,7 +46,8 @@ for row in selected:
                 for n,p in helpers.items():(work/'deps'/n).symlink_to(p)
                 (work/'exec/patch').symlink_to(profile.oracle if implementation=='gnu' else profile.binary)
                 argv=['patch']
-                if instrument:argv=['/usr/bin/valgrind','--leak-check=full','--show-leak-kinds=all',
+                whole_driver=row.get('launch_profile')=='instrument-original-driver'
+                if instrument and not whole_driver:argv=['/usr/bin/valgrind','--leak-check=full','--show-leak-kinds=all',
                     '--track-fds=yes','--trace-children=yes','--log-file='+str(work/'memory/%p.log'),*argv]
                 wrapper=work/'awk-wrapper'
                 wrapper.write_text('#!/bin/sh\nexec '+shlex.join(argv)+' "$@"\n');wrapper.chmod(0o755)
@@ -47,6 +55,11 @@ for row in selected:
                 env={'PATH':str(work/'exec')+':'+str(work/'deps')+':/usr/bin:/bin','HOME':directory,
                      'TMPDIR':directory,'LC_ALL':'C','LANGUAGE':'C','TZ':'UTC0',
                      'srcdir':str(source/'tests'),'abs_top_builddir':directory,'PATCH':str(wrapper)}
+                if whole_driver:
+                    env['PATCH']=str(work/'exec/patch')
+                    if instrument:
+                        command=['/usr/bin/valgrind','--leak-check=full','--show-leak-kinds=all',
+                            '--track-fds=yes','--trace-children=yes','--log-file='+str(work/'memory/%p.log'),*command]
                 done=subprocess.run(command,cwd=work,env=env,stdin=subprocess.DEVNULL,
                     stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=90)
                 (saved/'driver.log').write_bytes(done.stdout)
@@ -57,23 +70,41 @@ for row in selected:
                 logs=[]
                 for p in sorted((saved/'memory').glob('*.log')):
                     text=p.read_text();commands=re.findall(r'^==[0-9]+== Command: (.*)$',text,re.M)
-                    assert len(commands)==1 and commands[0].split()[0]=='patch'
-                    logs.append({**runner.parse_memory_log(text,p.stem,exec_only=True),
+                    image_names=[shlex.split(c)[0] for c in commands]
+                    if whole_driver:
+                        assert all(n in {str(work/'exec/patch'),'/bin/sh',*(str(work/'deps'/h) for h in helpers)} for n in image_names)
+                        assert len(image_names)<=1
+                        role='patch' if image_names==[str(work/'exec/patch')] else 'native-test-helper'
+                    else:
+                        assert image_names==['patch']
+                        role='patch'
+                    logs.append({'role':role,**runner.parse_memory_log(text,p.stem,exec_only=True),
                         'log':str(p.relative_to(ROOT)),'sha256':fingerprint(p)})
-                clean=bool(logs) and all(m['complete_exec_log'] and m['errors']==0
+                patch_logs=[m for m in logs if m['role']=='patch']
+                clean=bool(patch_logs) and all(m['complete_exec_log'] and m['errors']==0
                     and m['non_inherited_descriptors']==0 and not any(m['heap_bytes'].get(k,0)
-                    for k in ('definitely lost','indirectly lost','possibly lost')) for m in logs)
+                    for k in ('definitely lost','indirectly lost','possibly lost')) for m in patch_logs)
                 outcomes[key]={'status':done.returncode,'assertions_pass':passed,'assertion_counts':[[int(n) for n in row] for row in counts],
                     'driver_log':str((saved/'driver.log').relative_to(ROOT)),'driver_log_sha256':fingerprint(saved/'driver.log'),
                     'memory':logs,'memory_clean':clean if instrument else None}
-    passed=all(o['assertions_pass'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
-    results.append({'selection':name,'source':row['path'],'source_sha256':row['sha256'],
+    expected_failure=name in expected_failures
+    reference=outcomes['gnu']
+    for o in outcomes.values():
+        o['expectation_matches']=(o['assertions_pass'] if not expected_failure else
+            o['status']==reference['status']==1 and o['assertion_counts']==reference['assertion_counts']
+            and len(o['assertion_counts'])==1 and o['assertion_counts'][0][2]>0
+            and (ROOT/o['driver_log']).read_bytes()==(ROOT/reference['driver_log']).read_bytes())
+    passed=all(o['expectation_matches'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
+    results.append({'selection':name,'expected_failure':expected_failure,'source':row['path'],'source_sha256':row['sha256'],'launch_profile':row.get('launch_profile','instrument-patch'),
                     'pass':passed,'outcomes':outcomes})
     assert all(fingerprint(p)==h for p,h in inputs.items())
-    report={**profile.metadata(),'scope':'Eight reviewed unchanged GNU Patch scripts exercise edits, backups, file modes, empty files, unmatched input and whitespace. Every Patch invocation is instrumented; original assertion totals and native findings are preserved.',
+    report={**profile.metadata(),'scope':'Reviewed unchanged GNU Patch scripts run in private fixtures with original assertions. Each Patch invocation is instrumented. The diagnostic-name selection instruments the original shell driver to retain the direct Patch path; native shell/helper logs are preserved separately and are not candidate process results.',
         'inputs':{str(p):h for p,h in inputs.items()},'driver_sha256':fingerprint(Path(__file__)),
+        'expected_failure_selections':sorted(expected_failures & {r['target'] for r in selected}),
+        'ordinary_passed':sum(r['pass'] and not r['expected_failure'] for r in results),
+        'expected_failures_matched':sum(r['pass'] and r['expected_failure'] for r in results),
         'planned_total':len(selected),'complete':len(results)==len(selected),
         'passed':sum(r['pass'] for r in results),'total':len(results),'results':results}
     profile.report.write_text(json.dumps(report,indent=2)+'\n')
-    print('PASS' if passed else 'OPEN',name,flush=True)
+    print(('XFAIL-MATCH' if expected_failure else 'PASS') if passed else 'OPEN',name,flush=True)
 raise SystemExit(report['passed']!=report['total'])

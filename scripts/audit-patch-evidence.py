@@ -25,11 +25,13 @@ assert not target.exists(), 'preserve prior audits'
 focused = json.loads(options.focused.read_text())
 original = json.loads(options.original.read_text())
 assert focused['binary_sha256'] == original['binary_sha256'] == fingerprint(Path(focused['binary']))
-assert focused['complete'] and focused['passed'] == focused['total'] == focused['planned_total'] == 108
-assert original['complete'] and original['passed'] == original['total'] == original['planned_total'] == 8
+assert focused['complete'] and focused['passed'] == focused['total'] == focused['planned_total'] == 23
+manifest=json.loads((ROOT/'inventory/patch-tests.json').read_text())
+reviewed={r['target'] for r in manifest['inputs'] if r['reviewed']}
+assert original['complete'] and original['passed'] == original['total'] == original['planned_total'] == len(reviewed)
 assert focused['driver_sha256'] == fingerprint(ROOT/'tests/entry-behavior.py')
 assert original['inputs'][str(ROOT/'tests/patch-original.py')] == fingerprint(ROOT/'tests/patch-original.py')
-assert {r['selection'] for r in original['results']} == {'backup-prefix-suffix','no-backup','inname','file-create-modes','empty-files','unmodified-files','unusual-blanks','file-modes'}
+assert {r['selection'] for r in original['results']} == reviewed
 inputs = {}
 for data in (focused, original):
     inputs.update(data.get('inputs', {})); inputs.update(data['runtime_helpers'])
@@ -59,27 +61,47 @@ for row in focused_rows:
         assert all(outcome[k] == reference[k] for k in ('status','stdout','stderr','tree'))
         if 'memory' in outcome:
             audit(outcome['log'],outcome['log_sha256'],outcome['memory'],key=='rboxc-valgrind',row['name'])
+expected_failures={'context-format','dash-o-append'}
+assert set(original['expected_failure_selections'])==expected_failures
+assert original['ordinary_passed']==len(reviewed)-len(expected_failures)
+assert original['expected_failures_matched']==len(expected_failures)
 for row in original['results']:
-    assert row['pass']
+    assert row['pass'] and row['expected_failure']==(row['selection'] in expected_failures)
+    reference=row['outcomes']['gnu']
     for key,outcome in row['outcomes'].items():
-        assert outcome['status']==0 and outcome['assertions_pass']
+        assert outcome['expectation_matches']
+        if row['expected_failure']:
+            assert outcome['status']==reference['status']==1 and not outcome['assertions_pass']
+            assert outcome['assertion_counts']==reference['assertion_counts']
+            assert (ROOT/outcome['driver_log']).read_bytes()==(ROOT/reference['driver_log']).read_bytes()
+        else:
+            assert outcome['status']==0 and outcome['assertions_pass']
         assert len(outcome['assertion_counts'])==1
         total,passed,failed=outcome['assertion_counts'][0]
-        assert total==passed and total>0 and failed==0
+        assert total>0 and total==passed+failed
+        assert failed>0 if row['expected_failure'] else failed==0
+        counts=re.findall(rb'(\d+) tests \((\d+) passed, (\d+) failed\)',(ROOT/outcome['driver_log']).read_bytes())
+        assert [[int(n) for n in c] for c in counts]==outcome['assertion_counts']
         assert fingerprint(ROOT/outcome['driver_log'])==outcome['driver_log_sha256']
         for log in outcome['memory']:
             contents=(ROOT/log['log']).read_text()
             commands=re.findall(r'^==[0-9]+== Command: (.*)$',contents,re.M)
-            assert len(commands)==1 and commands[0].split()[0]=='patch', 'unclassified child process'
-            audit(log['log'],log['sha256'],log,key=='rboxc-valgrind',row['source'])
-original_processes=sum(len(r['outcomes']['rboxc-valgrind']['memory']) for r in original['results'])
+            assert len(commands)==1, 'unclassified process image'
+            name=commands[0].split()[0]
+            role='patch' if Path(name).name=='patch' else 'native-test-helper'
+            assert role==log['role']
+            if role!='patch':
+                assert row['launch_profile']=='instrument-original-driver'
+                assert Path(name).name in {'sh','cat','diff','mkdir','expr','chmod','rm'}
+            audit(log['log'],log['sha256'],log,key=='rboxc-valgrind' and role=='patch',row['source'])
+original_processes=sum(sum(m['role']=='patch' for m in r['outcomes']['rboxc-valgrind']['memory']) for r in original['results'])
 assert original_processes>0 and len(processes)==23+original_processes
-report = {'scope':'All 23 focused comparisons and eight reviewed unchanged GNU original selections pass. Every input and raw log is hash-checked and every candidate process summary is reparsed. GNU native findings remain baseline observations.',
+report = {'scope':'All 23 focused comparisons and all reviewed unchanged GNU original selections match their registered expectations. The two upstream XFAIL selections retain identical native/candidate failing assertions and output; they are not ordinary passes. Every input and raw log is hash-checked and every candidate process summary is reparsed. GNU native findings remain baseline observations.',
           'binary':focused['binary'],'binary_sha256':focused['binary_sha256'],
           'runtime_helpers':focused['runtime_helpers'],'inputs':inputs,
           'focused_report':{'path':str(options.focused),'sha256':fingerprint(options.focused)},
           'original_report':{'path':str(options.original),'sha256':fingerprint(options.original)},
-          'passed':len(processes),'total':len(processes),'focused_cases':23,'original_selections':8,'original_processes':original_processes,
+          'passed':len(processes),'total':len(processes),'focused_cases':23,'original_selections':len(reviewed),'ordinary_passed':original['ordinary_passed'],'expected_failures_matched':original['expected_failures_matched'],'original_processes':original_processes,
           'driver_sha256':fingerprint(Path(__file__)),'results':processes}
 target.write_text(json.dumps(report,indent=2)+'\n')
-print('Audited 23 focused cases, 8 GNU original selections, and',len(processes),'clean candidate processes')
+print('Audited 23 focused cases,',len(reviewed),'GNU original selections, and',len(processes),'clean candidate processes')
