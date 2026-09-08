@@ -68,7 +68,7 @@ there where available.
 | BC | 1.08.2 | `bc`, `dc` installed |
 | Ed | 1.22.6 | `ed` installed |
 | Findutils | 4.11.0 | `find`, `xargs`, `locate` installed; `updatedb` pending |
-| Tar | 1.35 | Entry translated; linking and runtime validation pending |
+| Tar | 1.35 | `tar` linked in a 129-command candidate; validation in progress |
 
 For a later upstream fix, identify its upstream commit or patch and the release
 baseline in this table. Record the affected commands, upstream reference, local
@@ -326,7 +326,11 @@ GNU Tar 1.35 is pinned from its signature-verified GNU archive. The native
 reference builds with SELinux disabled and ACL/xattr support retained. C2Rust
 has translated its entry with 90 helper imports and 105 Rust definitions.
 An isolated Rust type check passes against the root lockfile dependency
-versions; linking and Rust runtime validation remain pending. A 30-case
+versions. Tar now links in a separate 129-command candidate (4,445,984 bytes),
+with 845 private helper/state symbols and no native C entry. The initial Rust
+run matches 26/30 focused behaviors and passes 6/30 strict checks. Four
+diagnostic-prefix differences and memory/descriptor ownership findings remain
+open; the 128-command installed release is unchanged. A 30-case
 archive-operation harness matches GNU Tar against itself in every comparison;
 only 9/30 native control cases are strict memory-clean, with the other GNU
 findings preserved as baseline observations. This control is not Rust port

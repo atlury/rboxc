@@ -1,3 +1,5 @@
+#[path = "generated/applet_tar.rs"]
+mod applet_tar;
 #[path = "generated/applet_locate.rs"]
 mod applet_locate;
 #[path = "generated/applet_xargs.rs"]
@@ -350,6 +352,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"sync", applet_sync::single_binary_main_sync),
     (b"tac", applet_tac::single_binary_main_tac),
     (b"tail", applet_tail::single_binary_main_tail),
+    (b"tar", applet_tar::single_binary_main_tar),
     (b"tee", applet_tee::single_binary_main_tee),
     (b"test", applet_test::single_binary_main_test),
     (b"time", applet_time::single_binary_main_time),
