@@ -81,6 +81,12 @@ selections.update({
     'exclude13': (72, 'exclude13.at'), 'exclude14': (73, 'exclude14.at'),
     'exclude15': (74, 'exclude15.at'), 'exclude16': (75, 'exclude16.at'),
 })
+selections.update({'label02': (112, 'label02.at'), 'owner': (167, 'owner.at')})
+selections.update({
+    'label04': (114, 'label04.at'), 'label05': (115, 'label05.at'),
+    'onetop01': (234, 'onetop01.at'), 'onetop02': (235, 'onetop02.at'),
+    'onetop03': (236, 'onetop03.at'), 'onetop04': (237, 'onetop04.at'),
+})
 selected = profile.options.commands or list(selections)
 assert set(selected) <= set(selections)
 helpers = {n: ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','mkdir','chmod','touch','sort','echo','basename','cp','ln','true','false','sleep','ls','mv','mktemp','cut','id','date','printf','dd','rmdir','expr','tr','wc','head','tail','uname','cksum')}
@@ -97,6 +103,10 @@ for filename in ('genfile.c', 'argcv.c', 'argcv.h', 'Makefile.am'):
 for name in selected:
     path = source/'tests'/selections[name][1]
     inputs[path] = fingerprint(path)
+if 'owner' in selected:
+    for filename in ('/etc/nsswitch.conf', '/etc/passwd', '/etc/group', '/usr/bin/unshare', '/usr/bin/mount'):
+        path = Path(filename)
+        inputs[path] = fingerprint(path)
 results = []
 for name in selected:
     number, filename = selections[name]
@@ -140,6 +150,20 @@ for name in selected:
                                'LC_ALL': 'C', 'LANGUAGE': 'C', 'TZ': 'UTC0', 'CONFIG_SHELL': '/bin/bash'}
                 command = ['/bin/bash', str(source/'tests/testsuite'), '--debug', str(number),
                            'AUTOTEST_PATH='+str(work/'exec')+':'+str(work/'deps')]
+                nss = None
+                if name == 'owner':
+                    host_nss = Path('/etc/nsswitch.conf').read_text()
+                    config = work/'nsswitch.conf'
+                    config.write_text(re.sub(r'^(passwd|group|shadow|gshadow|initgroups):.*$',
+                                             r'\1: files', host_nss, flags=re.M))
+                    shutil.copy2(config, saved/'nsswitch.conf')
+                    nss = {'profile': 'private-mount-local-files',
+                           'host_sha256': inputs[Path('/etc/nsswitch.conf')],
+                           'private_path': str((saved/'nsswitch.conf').relative_to(ROOT)),
+                           'private_sha256': fingerprint(config)}
+                    command = ['/usr/bin/unshare', '--mount', '--propagation', 'private',
+                               '/bin/sh', '-c', '/usr/bin/mount --bind "$1" /etc/nsswitch.conf || exit 77; shift; exec "$@"',
+                               'local-nss', str(config), *command]
                 credentials = {}
                 if unprivileged:
                     assert os.geteuid() == 0, 'permission profile needs private uid/gid setup'
@@ -148,6 +172,8 @@ for name in selected:
                             os.chown(entry, 65534, 65534)
                     credentials = {'user': 65534, 'group': 65534, 'extra_groups': []}
                 done = subprocess.run(command, cwd=work, env=environment, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=300, **credentials)
+                if nss:
+                    assert Path('/etc/nsswitch.conf').read_text() == host_nss
                 assert all(fingerprint(copied) == expected for copied, expected in copies.values()), 'private executable changed'
                 (saved/'driver.log').write_bytes(done.stdout)
                 for file in ('atconfig', 'atlocal', 'testsuite.log'):
@@ -162,6 +188,7 @@ for name in selected:
                 logs = [{**runner.parse_memory_log(p.read_text(), p.stem, exec_only=True), 'log': str(p.relative_to(ROOT)), 'sha256': fingerprint(p)} for p in sorted((saved/'memory').glob('*.log'))]
                 clean = bool(logs) and all(m['complete_exec_log'] and m['errors'] == 0 and m['non_inherited_descriptors'] == 0 and not any(m['heap_bytes'].get(k, 0) for k in ('definitely lost','indirectly lost','possibly lost')) for m in logs)
                 outcomes[key] = {'status': done.returncode, 'assertions': assertions, 'assertions_pass': passed,
+                                 'nss': nss,
                                  'execution_uid': 65534 if unprivileged else os.geteuid(),
                                  'execution_gid': 65534 if unprivileged else os.getegid(),
                                  'copied_executables': [{'source': str(original), 'private_path': str(copied.relative_to(work)), 'sha256': expected} for original, (copied, expected) in copies.items()],

@@ -413,6 +413,17 @@ is 4,449,352 bytes (4.24 MiB) and is not installed; broader originals and curren
 combined-provider validation remain open. The parser explicitly supplies the C17 spellings
 for boolean and static-assert constructs detected by the native C23 build.
 
+The next `tar-archive-exit-cleanup` candidate passes 57/57 focused checks and
+eight further unchanged GNU originals: multi-volume labels, explicit archive
+owner/group metadata, label rejection during append, and four top-level
+extraction/listing variants. It releases temporary PAX continuation metadata on
+read and write, and closes owned local archive handles on fatal exit while
+invalidating every explicitly closed handle. The owner original uses files-only
+NSS in a private mount namespace; its earlier host SSSD diagnostic remains in
+the baseline report. Earlier allocation and descriptor findings are preserved.
+The preceding 76 originals are being rerun on these bytes; this candidate is
+not installed or fully certified.
+
 ## Status
 
 Of the 553 observed names, 189 currently have GNU provider assignments, including

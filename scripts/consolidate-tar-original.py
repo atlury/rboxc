@@ -66,6 +66,16 @@ for path in options.reports:
         for outcome in row['outcomes'].values():
             assert outcome['assertions_pass'] and outcome['status'] == 0
             assert outcome['assertions'] == [[str(row['autotest_number']), 'ok']]
+            nss = outcome.get('nss')
+            if nss:
+                assert nss['profile'] == 'private-mount-local-files'
+                host = Path('/etc/nsswitch.conf')
+                assert fingerprint(host) == data['inputs'][str(host)] == nss['host_sha256']
+                private = ROOT/nss['private_path']
+                assert fingerprint(private) == nss['private_sha256']
+                expected = re.sub(r'^(passwd|group|shadow|gshadow|initgroups):.*$',
+                                  r'\1: files', host.read_text(), flags=re.M)
+                assert private.read_text() == expected
             copies = outcome.get('copied_executables', [])
             if copies:
                 assert outcome['execution_uid'] == outcome['execution_gid'] == 65534

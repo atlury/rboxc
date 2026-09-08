@@ -14,7 +14,7 @@ def prepare(root):
     records = [json.loads(p.read_text()) for p in (root/'build/tar-cc-records').glob('*.json')]
     outputs = {}
     evidence = []
-    for name in ('misc', 'names', 'compare', 'wordsplit', 'incremen'):
+    for name in ('misc', 'names', 'compare', 'wordsplit', 'incremen', 'buffer'):
         relative = ('lib/' if name == 'wordsplit' else 'src/')+name+'.c'
         original = Path(pin['source'])/relative
         expected = pin['native_cleanup_source_sha256'][relative] if name == 'wordsplit' else pin['helper_source_sha256'][relative]
@@ -95,6 +95,62 @@ rboxc_release_diff_buffer (void)
     }
   rboxc_release_diff_buffer ();
   diff_buffer = page_aligned_alloc (&rboxc_diff_allocation, record_size);''')
+        elif name == 'buffer':
+            # GNU's archive handle is assigned from standard streams, owned
+            # local opens/pipes, or remote handles. Invalidate it at every
+            # explicit close so an exit callback cannot close a reused fd.
+            replace('rmtclose (archive)', 'rboxc_close_archive_handle ()', count=4)
+            anchor = 'static struct tar_stat_info dummy;'
+            replace(anchor, anchor+'''
+static bool rboxc_archive_cleanup_registered;
+static int
+rboxc_close_archive_handle (void)
+{
+  int fd = archive;
+  archive = -1;
+  return rmtclose (fd);
+}
+
+static void
+rboxc_release_local_archive (void)
+{
+  int saved_errno = errno;
+  if (archive > STDERR_FILENO && !_isrmt (archive))
+    rboxc_close_archive_handle ();
+  errno = saved_errno;
+}
+''')
+            replace('open_archive (enum access_mode wanted_access)\n{\n  flush_read_ptr', '''open_archive (enum access_mode wanted_access)
+{
+  if (!rboxc_archive_cleanup_registered)
+    {
+      if (atexit (rboxc_release_local_archive))
+        xalloc_die ();
+      rboxc_archive_cleanup_registered = true;
+    }
+  flush_read_ptr''')
+            # This local header owns its formatted name and account strings.
+            # file_name aliases orig_file_name, unlike normal member records.
+            replace('''      simple_finish_header (write_extended (false, &st, blk));
+      free (st.orig_file_name);''', '''      simple_finish_header (write_extended (false, &st, blk));
+      st.file_name = NULL;
+      tar_stat_destroy (&st);''')
+            # The PAX continuation header's strings/xhdr belong to dummy;
+            # volume decoders copy their values into independent globals.
+            # Release the temporary metadata on every volume-read return.
+            replace('try_new_volume (void)\n{', 'rboxc_try_new_volume_inner (void)\n{')
+            anchor = '#define VOLUME_TEXT " Volume "'
+            replace(anchor, '''static bool
+try_new_volume (void)
+{
+  bool result = rboxc_try_new_volume_inner ();
+  int saved_errno = errno;
+  tar_stat_destroy (&dummy);
+  errno = saved_errno;
+  return result;
+}
+
+'''+anchor)
         elif name == 'incremen':
             anchor = 'static void\nread_incr_db_2 (void)'
             replace(anchor, '''static struct obstack rboxc_snapshot_obstack;
