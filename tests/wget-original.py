@@ -80,10 +80,14 @@ for row in selected:
 
                 (saved/'driver.log').write_bytes(done.stdout)
                 successful=done.stdout.count(b'Test successful.')
-                counts=[(successful,successful,0)]
+                failures=[line.decode() for line in done.stdout.splitlines() if line.startswith(b'Test failed:')]
+                counts=[(successful+len(failures),successful,len(failures))]
                 expected_skip=row.get('expected_feature_skip')
                 skip_matches=bool(expected_skip) and done.returncode==77 and successful==0 and ("Skipped test: Wget misses feature '"+expected_skip+"'").encode() in done.stdout and re.search(rb'^\s+'+expected_skip.encode()+rb'=0$',done.stdout,re.M) is not None
-                passed=not timed_out and (skip_matches if expected_skip else done.returncode==0 and successful==1 and b'Test failed:' not in done.stdout)
+                upstream_skip=row.get('expected_upstream_skip')
+                upstream_skip_matches=bool(upstream_skip) and done.returncode==77 and successful==0 and not failures and done.stdout==b'Setting --no-config (noconfig) to 1\n'
+                ordinary_matches=done.returncode==0 and successful==row.get('success_markers',1) and failures==row.get('expected_phase_failures',[]) and all(s.encode() in done.stdout for s in row.get('required_output',[]))
+                passed=not timed_out and (skip_matches if expected_skip else upstream_skip_matches if upstream_skip else ordinary_matches)
                 shutil.copytree(work/'memory',saved/'memory')
                 logs=[]
                 for p in sorted((saved/'memory').glob('*.log')):
@@ -94,19 +98,23 @@ for row in selected:
                 clean=bool(logs) and all(m['complete_exec_log'] and m['errors']==0
                     and m['non_inherited_descriptors']==0 and not any(m['heap_bytes'].get(k,0)
                     for k in ('definitely lost','indirectly lost','possibly lost')) for m in logs)
-                outcomes[key]={'status':done.returncode,'timed_out':timed_out,'private_inputs':private_inputs,'fixture_raw':{str(p.relative_to(ROOT)):fingerprint(p) for p in (saved/'SSLServer.pm',saved/'server.log') if p.exists()},'assertions_pass':passed and not expected_skip,'expectation_matches':passed,'feature_skip_matches':skip_matches,'assertion_counts':[[int(n) for n in row] for row in counts],
+                outcomes[key]={'status':done.returncode,'timed_out':timed_out,'private_inputs':private_inputs,'fixture_raw':{str(p.relative_to(ROOT)):fingerprint(p) for p in (saved/'SSLServer.pm',saved/'server.log') if p.exists()},'assertions_pass':passed and not expected_skip and not upstream_skip,'upstream_skip_matches':upstream_skip_matches,'phase_failures':failures,'expectation_matches':passed,'feature_skip_matches':skip_matches,'assertion_counts':[[int(n) for n in row] for row in counts],
                     'driver_log':str((saved/'driver.log').relative_to(ROOT)),'driver_log_sha256':fingerprint(saved/'driver.log'),
                     'memory':logs,'memory_clean':clean if instrument else None}
+    expected_processes=row.get('expected_processes')
+    if expected_processes:
+        assert all(len(outcomes[k]['memory'])==expected_processes for k in ('gnu-valgrind','rboxc-valgrind'))
     passed=all(o['expectation_matches'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
-    results.append({'selection':name,'expected_feature_skip':row.get('expected_feature_skip'),'fixture_profile':row.get('fixture_profile'),'source':row['path'],'source_sha256':row['sha256'],
+    results.append({'selection':name,'expected_feature_skip':row.get('expected_feature_skip'),'fixture_profile':row.get('fixture_profile'),'expected_upstream_skip':row.get('expected_upstream_skip'),'source':row['path'],'source_sha256':row['sha256'],
                     'pass':passed,'outcomes':outcomes})
     assert all(fingerprint(p)==h for p,h in inputs.items())
     report={**profile.metadata(),'scope':'Reviewed unchanged GNU Wget Perl scripts serve fixed HTTP responses or FTP file listings/content on their own localhost server and verify status, resumed content and downloaded filenames. Local input/output error cases preserve the original assertions. HTTPS fixtures copy the original modules and certificates, changing only the helper log path to a private location. GNU feature-gate skips are recorded separately and do not count as tested optional behavior. All Wget processes, including feature probes, are instrumented without upstream suppressions; server helpers are not instrumented.',
         'inputs':{str(p):h for p,h in inputs.items()},'driver_sha256':fingerprint(Path(__file__)),
-        'ordinary_passed':sum(r['pass'] and not r['expected_feature_skip'] for r in results),
+        'ordinary_passed':sum(r['pass'] and not r['expected_feature_skip'] and not r['expected_upstream_skip'] for r in results),
         'feature_skips_matched':sum(r['pass'] and bool(r['expected_feature_skip']) for r in results),
+        'upstream_skips_matched':sum(r['pass'] and bool(r['expected_upstream_skip']) for r in results),
         'planned_total':len(selected),'complete':len(results)==len(selected),
         'passed':sum(r['pass'] for r in results),'total':len(results),'results':results}
     profile.report.write_text(json.dumps(report,indent=2)+'\n')
-    print(('FEATURE-SKIP' if row.get('expected_feature_skip') else 'PASS') if passed else 'OPEN',name,flush=True)
+    print(('FEATURE-SKIP' if row.get('expected_feature_skip') else 'UPSTREAM-SKIP' if row.get('expected_upstream_skip') else 'PASS') if passed else 'OPEN',name,flush=True)
 raise SystemExit(report['passed']!=report['total'])

@@ -78,7 +78,7 @@ there where available.
 | Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 17 reviewed originals pass with clean Valgrind; broader acceptance open |
 | Less | 704 | Candidate passes ten focused comparisons; original suite pending |
 | Screen | 5.0.2 | Candidate passes five option comparisons and the descriptor-preservation contract |
-| Wget | 1.25.0 | Candidate passes 14 focused comparisons and 65 original scripts pass; 14 optional-feature skips match GNU |
+| Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
 | glibc | 2.43 | Both entries integrated; 50 focused checks, both getconf originals and three iconv buffer recipes pass |
 
 The next-provider work is preserved before release activation. Gawk's candidate
@@ -115,7 +115,27 @@ preserved in `evidence/gawk-expanded-original.json`; the corrected run and its
 `evidence/gawk-locale-memory-audit.json`. Other original Gawk inputs and extension
 profiles remain open.
 
-Wget now passes **65 original HTTP/FTP/HTTPS scripts**, with the same 14 original
+Wget's 87 registered Perl originals are now accounted for: **71 scripts pass,
+14 IRI feature-gate skips match GNU, one web-of-trust script is unconditionally
+disabled upstream, and one privacy reproduction remains held out**. The final
+HTTPS selections cover certificate rejection/acceptance, revocation and fixed
+local proxy authentication with and without connection reuse. Original scripts
+and certificates remain unchanged; only the helper log path is private.
+The client-certificate script accepts a failed first phase before testing a valid
+key: both pinned OpenSSL builds report status 1 there, against the fixture's
+internal expected status 5. That phase diagnostic is preserved and matched exactly.
+`evidence/wget-certificate-memory-audit.json` verifies 114 clean candidate process
+logs across the 86 reviewed selections and 14 focused comparisons. Initial harness
+expectation failures remain in the preceding TLS reports.
+
+All **17 configured original helper unit functions** also pass in GNU's separate
+native `TESTING` builds, both pristine and with the recorded production HTTP
+cleanup adapter. `evidence/wget-unit-memory-audit.json` verifies both instrumented
+processes have zero errors, no new descriptors and zero heap bytes at exit.
+These native unit executables supply helper evidence, not Rust/multicall entry
+coverage. Disabled optional features and the held-out script remain untested.
+
+The preceding Wget checkpoint passes **65 original HTTP/FTP/HTTPS scripts**, with the same 14 original
 IRI feature-gate skips. Three unchanged HTTPS originals verify forward-secrecy
 and TLS protocol selection using private copies of GNU's localhost certificate
 fixtures; only the server helper's log path changes. All 14 focused comparisons

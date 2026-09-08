@@ -31,6 +31,7 @@ reviewed_rows={r['target']:r for r in manifest['inputs'] if r['reviewed']}
 reviewed=set(reviewed_rows)
 source=Path(json.loads((ROOT/'inventory/sources.json').read_text())['wget']['source'])
 expected_skips={r['target']:r['expected_feature_skip'] for r in manifest['inputs'] if r['reviewed'] and r.get('expected_feature_skip')}
+upstream_skips={r['target']:r['expected_upstream_skip'] for r in manifest['inputs'] if r['reviewed'] and r.get('expected_upstream_skip')}
 assert original['complete'] and original['passed'] == original['total'] == original['planned_total'] == len(reviewed)
 assert focused['driver_sha256'] == fingerprint(ROOT/'tests/entry-behavior.py')
 assert original['inputs'][str(ROOT/'tests/wget-original.py')] == fingerprint(ROOT/'tests/wget-original.py')
@@ -66,10 +67,13 @@ for row in focused_rows:
             audit(outcome['log'],outcome['log_sha256'],outcome['memory'],key=='rboxc-valgrind',row['name'])
 for row in original['results']:
     assert row['pass']
-    fixture=reviewed_rows[row['selection']].get('fixture_profile')
+    recipe=reviewed_rows[row['selection']]
+    fixture=recipe.get('fixture_profile')
     assert row.get('fixture_profile')==fixture
     expected_skip=expected_skips.get(row['selection'])
     assert row['expected_feature_skip']==expected_skip
+    upstream_skip=upstream_skips.get(row['selection'])
+    assert row.get('expected_upstream_skip')==upstream_skip
     for key,outcome in row['outcomes'].items():
         assert outcome['expectation_matches'] and not outcome.get('timed_out',False)
         private=outcome.get('private_inputs',{})
@@ -91,17 +95,34 @@ for row in original['results']:
                 if name!='SSLServer.pm':assert inputs[str(source/'tests'/name)]==expected
         else:assert not private and not raw
         output=(ROOT/outcome['driver_log']).read_bytes()
+        failures=[line.decode() for line in output.splitlines() if line.startswith(b'Test failed:')]
+        successful=output.count(b'Test successful.')
+        assert outcome['phase_failures']==failures
         if expected_skip:
             assert outcome['status']==77 and outcome['feature_skip_matches'] and not outcome['assertions_pass']
             assert ("Skipped test: Wget misses feature '"+expected_skip+"'").encode() in output
             assert re.search(rb'^\s+'+expected_skip.encode()+rb'=0$',output,re.M)
             assert output.count(b'Test successful.')==0
+        elif upstream_skip:
+            assert outcome['status']==77 and outcome['upstream_skip_matches'] and not outcome['assertions_pass']
+            assert output==b'Setting --no-config (noconfig) to 1\n' and successful==0 and not failures
+            if key.endswith('-valgrind'):
+                assert len(outcome['memory'])==1
+                contents=(ROOT/outcome['memory'][0]['log']).read_text()
+                assert re.search(r'^==[0-9]+== Command: wget -d --no-config --version$',contents,re.M)
+            original_script=(source/row['source']).read_text()
+            assert '# TODO: regenerate the certs with endless lifetime\nexit 77;' in original_script
         else:
             assert outcome['status']==0 and outcome['assertions_pass'] and not outcome['feature_skip_matches']
-            assert output.count(b'Test successful.')==1 and b'Test failed:' not in output
+            assert successful==recipe.get('success_markers',1)
+            assert failures==recipe.get('expected_phase_failures',[])
+            assert all(s.encode() in output for s in recipe.get('required_output',[]))
+        assert bool(outcome['upstream_skip_matches'])==bool(upstream_skip)
+        if recipe.get('expected_processes') and key.endswith('-valgrind'):
+            assert len(outcome['memory'])==recipe['expected_processes']
         assert len(outcome['assertion_counts'])==1
         total,passed,failed=outcome['assertion_counts'][0]
-        assert total==passed==(0 if expected_skip else 1) and failed==0
+        assert (total,passed,failed)==(successful+len(failures),successful,len(failures))
         assert fingerprint(ROOT/outcome['driver_log'])==outcome['driver_log_sha256']
         for log in outcome['memory']:
             contents=(ROOT/log['log']).read_text()
@@ -110,15 +131,16 @@ for row in original['results']:
             audit(log['log'],log['sha256'],log,key=='rboxc-valgrind',row['source'])
 original_processes=sum(len(r['outcomes']['rboxc-valgrind']['memory']) for r in original['results'])
 assert original_processes>0 and len(processes)==14+original_processes
-assert original['ordinary_passed']==len(reviewed)-len(expected_skips)
+assert original['ordinary_passed']==len(reviewed)-len(expected_skips)-len(upstream_skips)
 assert original['feature_skips_matched']==len(expected_skips)
-report = {'scope':'All 14 focused comparisons pass and all currently reviewed unchanged GNU original selections match their expected outcomes. Optional-feature skips are reported separately and do not certify the skipped behavior. Every input and raw log is hash-checked and every candidate process summary is reparsed. GNU native findings remain baseline observations.',
+assert original['upstream_skips_matched']==len(upstream_skips)
+report = {'scope':'All 14 focused comparisons pass and all currently reviewed unchanged GNU original selections match their expected outcomes. Optional-feature and unconditional upstream skips are reported separately and do not certify the skipped behavior. Every input and raw log is hash-checked and every candidate process summary is reparsed. GNU native findings remain baseline observations.',
           'binary':focused['binary'],'binary_sha256':focused['binary_sha256'],
           'runtime_helpers':focused['runtime_helpers'],'inputs':inputs,
           'focused_report':{'path':str(options.focused),'sha256':fingerprint(options.focused)},
           'original_report':{'path':str(options.original),'sha256':fingerprint(options.original)},
           'passed':len(processes),'total':len(processes),'focused_cases':14,'original_selections':len(reviewed),'original_processes':original_processes,
-          'ordinary_passed':original['ordinary_passed'],'feature_skips_matched':original['feature_skips_matched'],
+          'ordinary_passed':original['ordinary_passed'],'feature_skips_matched':original['feature_skips_matched'],'upstream_skips_matched':original['upstream_skips_matched'],
           'driver_sha256':fingerprint(Path(__file__)),'results':processes}
 target.write_text(json.dumps(report,indent=2)+'\n')
 print('Audited 14 focused cases,',len(reviewed),'GNU original selections, and',len(processes),'clean candidate processes')
