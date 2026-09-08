@@ -93,7 +93,7 @@ in `evidence/which-activation.json`.
 
 GNU Diffutils 3.12 is pinned from its verified signed archive. All four command
 entries (`cmp`, `diff`, `diff3`, and `sdiff`) are active in the installed
-124-command executable. Its native helpers and Rust-owned diff state share 369
+125-command executable. Its native helpers and Rust-owned diff state share 369
 private symbols. The translation retains C23 null-pointer semantics through a
 GNU17 parser adaptation and preserves provider pathname diagnostics. All 33
 registered original scripts are inventoried. Of 30 reviewed originals, the
@@ -117,7 +117,7 @@ is built with PCRE2 10.46 support. The original registration contains 128 tests,
 recorded for individual review before execution. Grep has one C command entry;
 `egrep` and `fgrep` are shell aliases in the GNU source. Their warnings and option
 insertion now dispatch internally to the translated grep entry in the installed
-124-command executable. The matcher helpers and Rust-owned state use 338 private
+125-command executable. The matcher helpers and Rust-owned state use 338 private
 symbols. All 68 focused native/Valgrind comparisons pass, including basic,
 extended, fixed, and PCRE matching; both aliases; quiet recursive searches;
 compiler errors; long lines; and output errors. Cleanup releases completed
@@ -139,7 +139,7 @@ A bounded 8.7 MB cached-input observation found after/before median runtime
 ratios of 0.83–1.01 across four matchers; concurrent tests and process startup
 limit precision, so this is not a performance certification. Activation,
 prior artifact backups, and installed-path checks are recorded in
-`evidence/grep-activation.json`. The 124-command build passes all 68 fresh
+`evidence/grep-activation.json`. The 125-command build passes all 68 fresh
 focused comparisons. Its Grep source, native helper objects, and compiler inputs
 are verified unchanged; the original results retain their actual earlier
 binary hash and are not counted as a new original-suite run.
@@ -149,7 +149,7 @@ oracle and compiler records are prepared for the `gzip`, `gunzip`, `uncompress`,
 and `zcat` inventory entries. The latter entries use upstream shell adapters
 and an installed alias; their compatibility work is separate from Grep.
 The 30 original Gzip registrations remain inventoried for individual review.
-The installed 124-command executable includes the translated C entry,
+The installed 125-command executable includes the translated C entry,
 three internal shell-alias adaptations, and 170 private helper/state symbols.
 Its three GNU input/output/window buffer alignments are retained and verified
 in the executable. All 56 focused comparisons now pass, including compression,
@@ -167,7 +167,7 @@ artifacts. Auxiliary shell programs and the remaining originals stay open.
 GNU Sed 4.10 is pinned from its verified signed archive. Its native oracle
 and compiler records are prepared with SELinux explicitly disabled. The
 75 original shell/Perl registrations are inventoried for individual review.
-The translated entry is active in the 124-command release with 301
+The translated entry is active in the 125-command release with 301
 private helper/state symbols and no native command entry. All 56 focused
 comparisons match GNU and have clean Valgrind results, including regex reuse,
 partial compilation, directory input errors, and in-place edits. Ownership
@@ -196,7 +196,7 @@ profiles; seven are excluded. A fresh run on the activated 124-command release
 reproduces these results.
 
 GNU BC 1.08.2 is pinned from its verified signed archive. Both `bc` and `dc`
-entries are active in the 124-command release. Each calculator retains
+entries are active in the 125-command release. Each calculator retains
 its own native arithmetic helper copy and symbol namespace (283 private
 symbols total), because their standalone sources define overlapping helper
 names. Optional Readline/libedit support is disabled in the recorded native
@@ -218,7 +218,7 @@ arithmetic, bounded BC_ENV_ARGS math options, and BC's SIGINT handler after an
 observed output marker.
 
 GNU Ed 1.22.6 is pinned from its verified signed archive. Its Rust command
-entry compiles in a separate 125-command candidate with 89 private helper/state
+entry is active in the 125-command release with 89 private helper/state
 symbols. A small wrapper adapts dispatcher arguments to Ed's const argv type.
 All 44 initial focused observations match GNU, with their original memory and
 descriptor findings retained. Parser storage now remains valid through exit,
@@ -230,12 +230,13 @@ Valgrind. The full run exposed a temporary filter-command allocation retained
 after use; freeing it after write_file returns leaves all 242 Ed process logs
 clean. Thirteen external child findings remain explicit: native GNU cat/sort
 allocations and shell descriptor observations during redirection. The earlier
-241/242 editor-memory result is preserved. Ed is not installed yet.
+241/242 editor-memory result is preserved. The combined checks pass;
+`evidence/ed-activation.json` records activation and retained artifacts.
 
 ## Status
 
-The installed executable registers 124 commands: 107 Coreutils entries, GNU Hello,
-GNU Time, GNU Which, four GNU Diffutils commands, three GNU Grep commands, four GNU Gzip commands, GNU Sed, and GNU bc/dc,
+The installed executable registers 125 commands: 107 Coreutils entries, GNU Hello,
+GNU Time, GNU Which, four GNU Diffutils commands, three GNU Grep commands, four GNU Gzip commands, GNU Sed, GNU bc/dc, and GNU Ed,
 all with active Rust command entries. No native C command entry remains, and assembly succeeds without the
 C-entry opt-in. `printf`, `sort`, `od`, `numfmt`, and `seq` use native numeric
 helpers: floating values stay inside GNU C functions and cross the boundary
@@ -251,10 +252,16 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The current release executable is 3,331,128 bytes (3.18 MiB), dynamically linked
+The current release executable is 3,388,896 bytes (3.23 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
+
+Original-suite results for unchanged earlier providers retain their actual binary
+hashes: the 124-command release, or the earlier 117-command Grep release. Verified
+source/helper identity and complete fresh focused comparisons support retaining
+those results. They are not reported as original-suite reruns on the 125-command
+executable. The input-identity validator also rejects incomplete focused batches.
 
 The current release dynamically links libacl, libattr, and libcap for GNU metadata
 helpers, and libpcre2-8 for Grep PCRE matching. A separate static-link trial against the previous 2,405,616-byte

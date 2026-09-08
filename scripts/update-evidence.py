@@ -14,6 +14,28 @@ behavior = read('evidence/behavior.json')
 inventory = read('inventory/applets.json')
 binary = ROOT/'target/release/rboxc'
 binary_sha256 = hashlib.sha256(binary.read_bytes()).hexdigest()
+def originals_supported(provider, original, focused):
+    if focused['binary_sha256'] != binary_sha256:
+        return False
+    if original['binary_sha256'] == binary_sha256:
+        return True
+    path = ROOT/f'evidence/{provider}-original-reuse.json'
+    if not path.exists():
+        return False
+    reuse = json.loads(path.read_text())
+    if reuse['binary_sha256'] != binary_sha256:
+        return False
+    assert reuse['passed'] == reuse['total'] == 1
+    assert reuse['assessment'] == 'unchanged-inputs-with-current-focused-validation'
+    observation = reuse['original_observations']
+    assert observation['binary_sha256'] == original['binary_sha256']
+    assert hashlib.sha256((ROOT/observation['path']).read_bytes()).hexdigest() == observation['sha256']
+    fresh = reuse['focused_observations']
+    assert hashlib.sha256((ROOT/fresh['path']).read_bytes()).hexdigest() == fresh['sha256']
+    assert focused['passed'] == focused['total'] == fresh['passed'] == fresh['total'] > 0
+    for name, expected in {**reuse['unchanged_provider_inputs'], **reuse['unchanged_compiler_inputs']}.items():
+        assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest() == expected
+    return True
 for row in inventory:
     if row['name'] not in translation:
         continue
@@ -36,7 +58,7 @@ if all(path.exists() for path in hello_reports):
     manifest = read('inventory/hello-tests.json')
     expected = {row['script']: row['source_sha256'] for row in manifest['scripts']}
     assert all(expected.get(row['script']) == row['source_sha256'] for row in original['results'])
-    current = all(report['binary_sha256'] == binary_sha256 for report in (original, focused))
+    current = originals_supported('hello', original, focused)
     source_current = (entry['rust_sha256'] == linked['rust_source_sha256'] ==
                       hashlib.sha256((ROOT/entry['rust_file']).read_bytes()).hexdigest())
     listed = subprocess.check_output([binary, '--list'], text=True).splitlines()
@@ -68,7 +90,7 @@ if all(path.exists() for path in time_reports):
     manifest = read('inventory/time-tests.json')
     expected = {r['script']: r['source_sha256'] for r in manifest['scripts']}
     assert all(expected.get(r['script']) == r['source_sha256'] for r in original['results'])
-    current = all(report['binary_sha256'] == binary_sha256 for report in (original, focused))
+    current = originals_supported('time', original, focused)
     source_current = (entry['rust_sha256'] == linked['rust_source_sha256'] ==
                       hashlib.sha256((ROOT/entry['rust_file']).read_bytes()).hexdigest())
     listed = subprocess.check_output([binary, '--list'], text=True).splitlines()
@@ -125,7 +147,7 @@ if all(path.exists() for path in diffutils_reports):
     manifest = read('inventory/diffutils-tests.json')
     expected = {r['script']: r['source_sha256'] for r in manifest['scripts']}
     assert all(expected.get(r['script']) == r['source_sha256'] for r in original['results'])
-    current = all(report['binary_sha256'] == binary_sha256 for report in (original, focused))
+    current = originals_supported('diffutils', original, focused)
     listed = subprocess.check_output([binary, '--list'], text=True).splitlines()
     active_entries = 0
     for command in ('cmp', 'diff', 'diff3', 'sdiff'):
@@ -215,7 +237,7 @@ if all(path.exists() for path in gzip_reports):
     assert all(expected[r['script']]['source_sha256'] == r['source_sha256'] and
                expected[r['script']].get('built_programs') == r.get('built_programs')
                for r in original['results'])
-    current = all(report['binary_sha256'] == binary_sha256 for report in (original, focused))
+    current = originals_supported('gzip', original, focused)
     source_current = (entry['rust_sha256'] == linked['rust_source_sha256'] ==
                       hashlib.sha256((ROOT/entry['rust_file']).read_bytes()).hexdigest())
     listed = subprocess.check_output([binary, '--list'], text=True).splitlines()
@@ -252,7 +274,7 @@ if all(path.exists() for path in sed_reports):
     expected = {r['script']: r for r in manifest['scripts'] if r['reviewed']}
     assert set(expected) == {r['script'] for r in original['results']}
     assert all(expected[r['script']]['source_sha256'] == r['source_sha256'] for r in original['results'])
-    current = all(r['binary_sha256'] == binary_sha256 for r in (original, focused))
+    current = originals_supported('sed', original, focused)
     source_current = entry['rust_sha256'] == linked['rust_source_sha256'] == hashlib.sha256((ROOT/entry['rust_file']).read_bytes()).hexdigest()
     listed = subprocess.check_output([binary, '--list'], text=True).splitlines()
     active = current and source_current and entry['translated'] and 'sed' in listed and not linked['native_command_entries']
@@ -280,7 +302,7 @@ if all(path.exists() for path in bc_reports):
     expected = {r['path']:r for r in manifest['inputs'] if r['state']=='reviewed'}
     assert set(expected) == {r['path'] for r in original['results']}
     assert all(all(r[k]==v for k,v in expected[r['path']].items()) for r in original['results'])
-    current = all(r['binary_sha256'] == binary_sha256 for r in (original, focused, terminal))
+    current = originals_supported('bc', original, focused) and terminal['binary_sha256'] == binary_sha256
     listed = subprocess.check_output([binary, '--list'], text=True).splitlines(); active_entries = 0
     for command in ('bc','dc'):
         entry = read('evidence/bc-'+command+'-translation.json')
@@ -304,6 +326,43 @@ if all(path.exists() for path in bc_reports):
         'behavior_passed':focused['passed'],'behavior_total':focused['total'],
         'terminal_passed':terminal['passed'],'terminal_total':terminal['total'],
         'complete':False,'completion_scope':row['completion_scope']}
+ed_reports = [ROOT/'evidence/ed-original.json', ROOT/'evidence/ed-behavior.json']
+if all(path.exists() for path in ed_reports):
+    original, focused = [json.loads(path.read_text()) for path in ed_reports]
+    entry = read('evidence/ed-translation.json'); linked = read('evidence/ed-link.json')
+    manifest = read('inventory/ed-tests.json')
+    assert hashlib.sha256((ROOT/'inventory/ed-tests.json').read_bytes()).hexdigest() == original['manifest_sha256']
+    current = all(r['binary_sha256']==binary_sha256 for r in (original,focused))
+    source_current = entry['rust_sha256'] == linked['rust_source_sha256'] == hashlib.sha256((ROOT/entry['rust_file']).read_bytes()).hexdigest()
+    listed = subprocess.check_output([binary,'--list'],text=True).splitlines()
+    active = current and source_current and entry['translated'] and 'ed' in listed and not linked['native_command_entries']
+    checks = focused['results']; help_checks = [r for r in checks if r['name'] in ('help','version')]
+    assert len(help_checks)==2
+    row = next(r for r in inventory if r['name']=='ed')
+    row.update(translated=entry['translated'], compiles=active, active_rust=active,
+        provider_confirmed=True, state='original-suite-validated' if active else 'queued',
+        help_version_pass=active and all(r['pass'] for r in help_checks),
+        valgrind_help_pass=active and all(r['memory_clean'] for r in help_checks),
+        behavior_fixture_count=len(checks), behavior_fixture_pass=active and all(r['pass'] for r in checks),
+        valgrind_fixture_pass=active and all(r['memory_clean'] for r in checks),
+        gnu_tests_pass=active and original['assertions_passed'], valgrind_pass=False, complete=False,
+        completion_scope='GNU Ed 1.22.6 full original check script with all 90 input files and 44 focused checks. All assertions and 242 editor process memory checks pass. External native child findings and additional interactive/signal coverage remain explicit.')
+    candidate=original['outcomes']['rboxc-valgrind']
+    extra_providers['ed']={'active_rust_entries':int(active),'original_scripts':1,
+        'original_assertions_passed':original['assertions_passed'],'original_all_process_passed':original['passed'],
+        'editing_inputs':original['editing_inputs'],'diagnostic_inputs':original['diagnostic_inputs'],
+        'editor_processes':candidate['editor_processes'],'editor_memory_clean':candidate['editor_memory_clean'],
+        'external_child_findings':len(candidate['external_child_findings']),
+        'behavior_passed':focused['passed'],'behavior_total':focused['total'],
+        'complete':False,'completion_scope':row['completion_scope']}
+for provider, data in extra_providers.items():
+    path=ROOT/f'evidence/{provider}-original.json'
+    if path.exists():
+        original=json.loads(path.read_text())
+        data['original_binary_sha256']=original['binary_sha256']
+        data['originals_on_current_binary']=original['binary_sha256']==binary_sha256
+        if provider != 'grep':
+            data['retained_original_inputs_verified']=bool(data['active_rust_entries']) and not data['originals_on_current_binary']
 (ROOT/'inventory/applets.json').write_text(json.dumps(inventory, indent=2)+'\n')
 reviewed_valgrind = read('evidence/gnu-reviewed-valgrind.json')
 assessments = {'clean': 0, 'assertions_passed_memory_open': 0,
