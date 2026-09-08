@@ -50,6 +50,24 @@ text = text.replace('.as_va_list()', '')
 text = text.replace('::core::ptr::from_exposed_addr_mut', '::core::ptr::with_exposed_provenance_mut')
 text = text.replace('.expose_addr()', '.expose_provenance()')
 
+# C2Rust represents C enums as transparent integer newtypes. Its bitfield
+# derive still expects FieldType; delegate to the exact underlying integer.
+enum_fields = []
+for enum, integer in re.findall(r'pub struct (\w+)\(pub (::core::ffi::c_\w+)\);', text):
+    if re.search(r'ty = "'+re.escape(enum)+'"', text):
+        enum_fields.append(enum)
+        text += f'''
+impl ::c2rust_bitfields::FieldType for {enum} {{
+    const IS_SIGNED: bool = <{integer} as ::c2rust_bitfields::FieldType>::IS_SIGNED;
+    fn get_bit(&self, bit: usize) -> bool {{
+        <{integer} as ::c2rust_bitfields::FieldType>::get_bit(&self.0, bit)
+    }}
+    fn get_field(field: &[u8], range: (usize, usize)) -> Self {{
+        Self(<{integer} as ::c2rust_bitfields::FieldType>::get_field(field, range))
+    }}
+}}
+'''
+
 opaque = re.findall(r'^    pub type (\w+);$', text, re.M)
 text = re.sub(r'^    pub type \w+;\n', '', text, flags=re.M)
 # External is the default linkage for an exported Rust definition.
@@ -93,6 +111,37 @@ def renamed_export(match):
     return '#[export_name = "'+mapping[symbol]+'"]'
 text = re.sub(r'#\[export_name = "(?P<name>\w+)"\]', renamed_export, text)
 assert set(exports) == defined_symbols([ROOT/f'build/gnu-{provider}'/ENTRY_OBJECTS[name]]) - {'main'}
+if name == 'inetd':
+    anchor = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_inetd('
+    assert text.count(anchor) == 1
+    text = text.replace(anchor, 'unsafe extern "C" fn rboxc_inetd_main_inner(')
+    text += '''
+extern "C" { #[link_name = "environ"] static mut RBOXC_INETD_ENVIRON: *mut *mut ::core::ffi::c_char; }
+#[no_mangle]
+pub unsafe extern "C" fn single_binary_main_inetd(argc: ::core::ffi::c_int, argv: *mut *mut ::core::ffi::c_char) -> ::core::ffi::c_int {
+    rboxc_inetd_main_inner(argc, argv, RBOXC_INETD_ENVIRON)
+}
+'''
+if name == 'less':
+    anchor = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_less('
+    assert text.count(anchor) == 1
+    text = text.replace(anchor, 'unsafe extern "C" fn rboxc_less_main_inner(')
+    text += '''
+#[no_mangle]
+pub unsafe extern "C" fn single_binary_main_less(argc: ::core::ffi::c_int, argv: *mut *mut ::core::ffi::c_char) -> ::core::ffi::c_int {
+    rboxc_less_main_inner(argc, argv.cast())
+}
+'''
+if name == 'patch':
+    anchor = '        if replace_file {\n            output_file('
+    assert text.count(anchor) == 1
+    text = text.replace(anchor, '''        if !outfile.is_null() && outfd >= 0 && close(outfd) < 0 {
+            write_fatal();
+        }
+'''+anchor)
+    anchor = '        if exiting == 0 {\n            free((*f).from.alloc'
+    assert text.count(anchor) == 1
+    text = text.replace(anchor, anchor.replace('exiting == 0', 'exiting >= 0'))
 notice = re.match(r'\s*(/\*.*?\*/)', source.read_text(), re.S)[1]
 target = ROOT/f'src/generated/applet_{name}.rs'
 target.write_text('// Generated from pinned GNU '+name+' '+pin['version']+' by scripts/translate-entry-provider.py.\n'
@@ -106,5 +155,9 @@ report = {'provider':provider,'version':pin['version'],'command':name,
           'helper_imports':{s:mapping[s] for s in sorted(imports)},
           'rust_exports':{s:mapping[s] for s in sorted(exports)},
           'opaque_pointer_types':opaque,'log':str(log.relative_to(ROOT)),'log_sha256':fingerprint(log)}
+report['enum_bitfield_integer_delegation'] = enum_fields
+if name == 'inetd': report['adaptations'].append('Pass the process environ as GNU main\'s third argument through a two-argument dispatcher adapter.')
+if name == 'less': report['adaptations'].append('Preserve Less const-qualified argv pointees through a dispatcher pointer-qualification adapter.')
+if name == 'patch': report['adaptations'].append('Close the unused per-file temporary descriptor when -o sends output to a separately owned stream, after the original final use.')
 (ROOT/f'evidence/{name}-translation.json').write_text(json.dumps(report,indent=2)+'\n')
 print('Translated GNU',name,'with',len(imports),'helper imports and',len(exports),'Rust exports')

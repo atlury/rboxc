@@ -51004,3 +51004,63 @@ unsafe extern "C" fn c2rust_run_static_initializers() {
 #[cfg_attr(target_os = "windows", link_section = ".CRT$XIB")]
 #[cfg_attr(target_os = "macos", link_section = "__DATA,__mod_init_func")]
 static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [c2rust_run_static_initializers];
+
+impl ::c2rust_bitfields::FieldType for complain_overflow {
+    const IS_SIGNED: bool = <::core::ffi::c_uint as ::c2rust_bitfields::FieldType>::IS_SIGNED;
+    fn get_bit(&self, bit: usize) -> bool {
+        <::core::ffi::c_uint as ::c2rust_bitfields::FieldType>::get_bit(&self.0, bit)
+    }
+    fn get_field(field: &[u8], range: (usize, usize)) -> Self {
+        Self(<::core::ffi::c_uint as ::c2rust_bitfields::FieldType>::get_field(field, range))
+    }
+}
+
+impl ::c2rust_bitfields::FieldType for bfd_lto_object_type {
+    const IS_SIGNED: bool = <::core::ffi::c_uint as ::c2rust_bitfields::FieldType>::IS_SIGNED;
+    fn get_bit(&self, bit: usize) -> bool {
+        <::core::ffi::c_uint as ::c2rust_bitfields::FieldType>::get_bit(&self.0, bit)
+    }
+    fn get_field(field: &[u8], range: (usize, usize)) -> Self {
+        Self(<::core::ffi::c_uint as ::c2rust_bitfields::FieldType>::get_field(field, range))
+    }
+}
+
+impl ::c2rust_bitfields::FieldType for bfd_plugin_format {
+    const IS_SIGNED: bool = <::core::ffi::c_uint as ::c2rust_bitfields::FieldType>::IS_SIGNED;
+    fn get_bit(&self, bit: usize) -> bool {
+        <::core::ffi::c_uint as ::c2rust_bitfields::FieldType>::get_bit(&self.0, bit)
+    }
+    fn get_field(field: &[u8], range: (usize, usize)) -> Self {
+        Self(<::core::ffi::c_uint as ::c2rust_bitfields::FieldType>::get_field(field, range))
+    }
+}
+
+impl ::c2rust_bitfields::FieldType for bfd_last_io {
+    const IS_SIGNED: bool = <::core::ffi::c_uint as ::c2rust_bitfields::FieldType>::IS_SIGNED;
+    fn get_bit(&self, bit: usize) -> bool {
+        <::core::ffi::c_uint as ::c2rust_bitfields::FieldType>::get_bit(&self.0, bit)
+    }
+    fn get_field(field: &[u8], range: (usize, usize)) -> Self {
+        Self(<::core::ffi::c_uint as ::c2rust_bitfields::FieldType>::get_field(field, range))
+    }
+}
+
+impl ::c2rust_bitfields::FieldType for bfd_direction {
+    const IS_SIGNED: bool = <::core::ffi::c_uint as ::c2rust_bitfields::FieldType>::IS_SIGNED;
+    fn get_bit(&self, bit: usize) -> bool {
+        <::core::ffi::c_uint as ::c2rust_bitfields::FieldType>::get_bit(&self.0, bit)
+    }
+    fn get_field(field: &[u8], range: (usize, usize)) -> Self {
+        Self(<::core::ffi::c_uint as ::c2rust_bitfields::FieldType>::get_field(field, range))
+    }
+}
+
+impl ::c2rust_bitfields::FieldType for bfd_format {
+    const IS_SIGNED: bool = <::core::ffi::c_uint as ::c2rust_bitfields::FieldType>::IS_SIGNED;
+    fn get_bit(&self, bit: usize) -> bool {
+        <::core::ffi::c_uint as ::c2rust_bitfields::FieldType>::get_bit(&self.0, bit)
+    }
+    fn get_field(field: &[u8], range: (usize, usize)) -> Self {
+        Self(<::core::ffi::c_uint as ::c2rust_bitfields::FieldType>::get_field(field, range))
+    }
+}

@@ -22,12 +22,14 @@ outputs,definitions=prepare_archives(ROOT,name,mapping)
 record=original_link(ROOT,name)
 local=local_libraries(ROOT,name)
 flags=[word for word in record['arguments'] if word.startswith(('-l','-L','-Wl,')) and word not in local]
-expected={'gawk':['-lreadline','-lm'],'patch':['-lattr'],
+expected={'gawk':['-lreadline','-lm'],'patch':['-lattr'],'less':['-ltinfo'],
+    'wget':['-lpcre2-8','-lssl','-lcrypto','-lz'],'screen':['-lcrypt','-lcurses'],
     'dnsdomainname':['-lutil'],'logger':['-lutil'],'inetd':['-lutil'],
     'syslogd':['-lutil'],'tftpd':['-lutil'],'traceroute':['-lutil'],
     'ping':[],'ping6':[],'ifconfig':[],'telnetd':['-ltermcap','-lutil','-lcrypt']}
 if provider=='binutils':
-    assert [f for f in flags if not f.startswith('-L')]==['-lz','-lzstd']
+    assert '-lz' in local, 'retain the configured bundled zlib'
+    assert [f for f in flags if not f.startswith('-L')]==['-lzstd']
     assert all(Path(f[2:]).resolve().is_relative_to(ROOT/'build/gnu-binutils') for f in flags if f.startswith('-L'))
 else:
     assert flags==expected[name], 'review changed GNU link flags'
@@ -37,8 +39,9 @@ report_path=ROOT/f'evidence/{name}-link.json'
 if report_path.exists():
     previous=json.loads(report_path.read_text())['link_inputs']
     if previous[0] in link:
-        assert link[-len(previous):]==previous
-        link=link[:-len(previous)]
+        start=link.index(previous[0])
+        assert link[start:start+len(previous)]==previous
+        del link[start:start+len(previous)]
 assert not any(p in link for p in map(str,outputs))
 link_file.write_text('\n'.join(link+extra)+'\n')
 registry=ROOT/'src/registry.rs';text=registry.read_text()

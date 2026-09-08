@@ -72,10 +72,14 @@ there where available.
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; ten reviewed originals validated; tape-device operations untested |
 | Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 11 reviewed originals pass |
-| Patch | 2.8 | Rust entry and candidate compile; runtime validation pending |
-| Binutils | 2.47 | Native oracle built; three entry translations in progress |
-| Inetutils | 2.8 | Native oracles built; entry translations in progress |
+| Patch | 2.8 | Candidate passes 23 focused comparisons and eight reviewed originals |
+| Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
+| Inetutils | 2.8 | Nine entries compile; option checks and read-only interface listing pass; four entries pending |
 | Bash | 5.3 | Native oracle built; Rust control-flow adaptation pending |
+| Less | 704 | Rust entry compiles; runtime validation in progress |
+| Screen | 5.0.2 | Rust entry compiles; runtime validation in progress |
+| Wget | 1.25.0 | Rust entry compiles; runtime validation in progress |
+| glibc | 2.43 | `getconf`, `iconv` source-pinned; entry builds pending |
 
 The next-provider work is preserved before release activation. Gawk's candidate
 uses GNU's `MEMDEBUG` per-object allocation mode; the earlier pooled native and
@@ -85,9 +89,35 @@ cleanup adapter closes only standard descriptors that GNU replaced with
 comparisons and eleven reviewed original Make targets pass, including strict
 candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
-GNU's readline dependency. Patch and the other new translations have separate
-compilation and runtime-validation states and do not change the installed
-133-command release or its completion claims.
+GNU's readline dependency.
+
+The latest source checkpoint builds a 152-command candidate: 19 of the 54
+previously queued names now compile, with 35 still awaiting integration.
+The installed release remains at 133 commands pending combined regression and
+activation. `evidence/gnu-assigned-progress.json` records these separate states.
+No new full-provider completion is claimed. The 149-command intermediate
+candidate passes all 108 selected native/Valgrind comparisons. Binutils tests
+use valid compiler-produced ELF objects and fixed input mtimes. Archive-index
+creation timestamps are checked against each invocation's time window, with
+deterministic archives requiring zero; raw archive bytes remain in the evidence.
+The enum bitfield adapter delegates to the original integer representation, and
+Inetd's dispatcher adapter passes the process environment to GNU's entry.
+
+Patch's eight reviewed original scripts pass all 54 assertions in each execution
+mode. Its strict audit reparses 50 clean candidate process logs across the 23
+focused cases and 27 original invocations. Cleanup closes its patch input,
+unused temporary output descriptors and directory cache, and frees queued
+outputs on normal exit while preserving the signal-handler path. Ifconfig
+closes the socket used to enumerate interfaces. Original observations remain
+preserved. The current Inetutils runtime evidence covers option parsing and
+read-only listing, with service behavior and full suites still open.
+
+Screen uses GNU's `--disable-pam` configuration because PAM headers are absent;
+PAM integration is untested. Its build date is fixed through
+`SOURCE_DATE_EPOCH=1700000000`. Wget uses GNU's OpenSSL configuration and its
+native fallback cookie checks; GnuTLS and libpsl are absent from this profile.
+The glibc baseline matches the host's 2.43 release and is a fixed port baseline,
+not a claim about the latest available upstream version.
 
 For a later upstream fix, identify its upstream commit or patch and the release
 baseline in this table. Record the affected commands, upstream reference, local

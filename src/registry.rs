@@ -1,3 +1,33 @@
+#[path = "generated/applet_screen.rs"]
+mod applet_screen;
+#[path = "generated/applet_wget.rs"]
+mod applet_wget;
+#[path = "generated/applet_less.rs"]
+mod applet_less;
+#[path = "generated/applet_telnetd.rs"]
+mod applet_telnetd;
+#[path = "generated/applet_ifconfig.rs"]
+mod applet_ifconfig;
+#[path = "generated/applet_ping6.rs"]
+mod applet_ping6;
+#[path = "generated/applet_ping.rs"]
+mod applet_ping;
+#[path = "generated/applet_traceroute.rs"]
+mod applet_traceroute;
+#[path = "generated/applet_syslogd.rs"]
+mod applet_syslogd;
+#[path = "generated/applet_inetd.rs"]
+mod applet_inetd;
+#[path = "generated/applet_logger.rs"]
+mod applet_logger;
+#[path = "generated/applet_dnsdomainname.rs"]
+mod applet_dnsdomainname;
+#[path = "generated/applet_readelf.rs"]
+mod applet_readelf;
+#[path = "generated/applet_strings.rs"]
+mod applet_strings;
+#[path = "generated/applet_ar.rs"]
+mod applet_ar;
 #[path = "generated/applet_patch.rs"]
 mod applet_patch;
 #[path = "generated/applet_gawk.rs"]
@@ -262,6 +292,7 @@ mod applet_yes;
 type Entry = unsafe extern "C" fn(c_int, *mut *mut c_char) -> c_int;
 static APPLETS: &[(&[u8], Entry)] = &[
     (b"[", applet__::single_binary_main__),
+    (b"ar", applet_ar::single_binary_main_ar),
     (b"arch", applet_arch::single_binary_main_arch),
     (b"awk", applet_gawk::single_binary_main_gawk),
     (b"b2sum", applet_b2sum::single_binary_main_b2sum),
@@ -292,6 +323,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"dir", applet_dir::single_binary_main_dir),
     (b"dircolors", applet_dircolors::single_binary_main_dircolors),
     (b"dirname", applet_dirname::single_binary_main_dirname),
+    (b"dnsdomainname", applet_dnsdomainname::single_binary_main_dnsdomainname),
     (b"du", applet_du::single_binary_main_du),
     (b"echo", applet_echo::single_binary_main_echo),
     (b"ed", applet_ed::single_binary_main_ed),
@@ -315,12 +347,16 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"hostid", applet_hostid::single_binary_main_hostid),
     (b"hostname", applet_hostname::single_binary_main_hostname),
     (b"id", applet_id::single_binary_main_id),
+    (b"ifconfig", applet_ifconfig::single_binary_main_ifconfig),
+    (b"inetd", applet_inetd::single_binary_main_inetd),
     (b"install", applet_ginstall::single_binary_main_ginstall),
     (b"join", applet_join::single_binary_main_join),
     (b"kill", applet_kill::single_binary_main_kill),
+    (b"less", applet_less::single_binary_main_less),
     (b"link", applet_link::single_binary_main_link),
     (b"ln", applet_ln::single_binary_main_ln),
     (b"locate", applet_locate::single_binary_main_locate),
+    (b"logger", applet_logger::single_binary_main_logger),
     (b"logname", applet_logname::single_binary_main_logname),
     (b"ls", applet_ls::single_binary_main_ls),
     (b"md5sum", applet_md5sum::single_binary_main_md5sum),
@@ -340,16 +376,20 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"paste", applet_paste::single_binary_main_paste),
     (b"patch", applet_patch::single_binary_main_patch),
     (b"pathchk", applet_pathchk::single_binary_main_pathchk),
+    (b"ping", applet_ping::single_binary_main_ping),
+    (b"ping6", applet_ping6::single_binary_main_ping6),
     (b"pinky", applet_pinky::single_binary_main_pinky),
     (b"pr", applet_pr::single_binary_main_pr),
     (b"printenv", applet_printenv::single_binary_main_printenv),
     (b"printf", applet_printf::single_binary_main_printf),
     (b"ptx", applet_ptx::single_binary_main_ptx),
     (b"pwd", applet_pwd::single_binary_main_pwd),
+    (b"readelf", applet_readelf::single_binary_main_readelf),
     (b"readlink", applet_readlink::single_binary_main_readlink),
     (b"realpath", applet_realpath::single_binary_main_realpath),
     (b"rm", applet_rm::single_binary_main_rm),
     (b"rmdir", applet_rmdir::single_binary_main_rmdir),
+    (b"screen", applet_screen::single_binary_main_screen),
     (b"sdiff", applet_sdiff::single_binary_main_sdiff),
     (b"sed", applet_sed::single_binary_main_sed),
     (b"seq", applet_seq::single_binary_main_seq),
@@ -365,18 +405,22 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"split", applet_split::single_binary_main_split),
     (b"stat", applet_stat::single_binary_main_stat),
     (b"stdbuf", applet_stdbuf::single_binary_main_stdbuf),
+    (b"strings", applet_strings::single_binary_main_strings),
     (b"stty", applet_stty::single_binary_main_stty),
     (b"sum", applet_sum::single_binary_main_sum),
     (b"sync", applet_sync::single_binary_main_sync),
+    (b"syslogd", applet_syslogd::single_binary_main_syslogd),
     (b"tac", applet_tac::single_binary_main_tac),
     (b"tail", applet_tail::single_binary_main_tail),
     (b"tar", applet_tar::single_binary_main_tar),
     (b"tee", applet_tee::single_binary_main_tee),
+    (b"telnetd", applet_telnetd::single_binary_main_telnetd),
     (b"test", applet_test::single_binary_main_test),
     (b"time", applet_time::single_binary_main_time),
     (b"timeout", applet_timeout::single_binary_main_timeout),
     (b"touch", applet_touch::single_binary_main_touch),
     (b"tr", applet_tr::single_binary_main_tr),
+    (b"traceroute", applet_traceroute::single_binary_main_traceroute),
     (b"true", applet_true::single_binary_main_true),
     (b"truncate", applet_truncate::single_binary_main_truncate),
     (b"tsort", applet_tsort::single_binary_main_tsort),
@@ -392,6 +436,7 @@ static APPLETS: &[(&[u8], Entry)] = &[
     (b"uuencode", applet_uuencode::single_binary_main_uuencode),
     (b"vdir", applet_vdir::single_binary_main_vdir),
     (b"wc", applet_wc::single_binary_main_wc),
+    (b"wget", applet_wget::single_binary_main_wget),
     (b"which", applet_which::single_binary_main_which),
     (b"who", applet_who::single_binary_main_who),
     (b"whoami", applet_whoami::single_binary_main_whoami),

@@ -1458,6 +1458,9 @@ pub unsafe extern "C" fn single_binary_main_patch(
                 write_fatal();
             }
         }
+        if !outfile.is_null() && outfd >= 0 && close(outfd) < 0 {
+            write_fatal();
+        }
         if replace_file {
             output_file(
                 &raw mut tmpout,
@@ -3556,7 +3559,7 @@ unsafe extern "C" fn output_files(mut st: *const stat, mut exiting: ::core::ffi:
                 && (*st).st_dev == (*from_st).st_dev
                 && (*st).st_ino == (*from_st).st_ino;
         }
-        if exiting == 0 {
+        if exiting >= 0 {
             free((*f).from.alloc as *mut ::core::ffi::c_void);
             free(f as *mut ::core::ffi::c_void);
         }

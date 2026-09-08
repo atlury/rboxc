@@ -6,16 +6,17 @@ import re
 import subprocess
 
 ENTRY_OBJECTS = {'gawk':'main.o','bash':'shell.o','patch':'src/patch.o',
-    'ar':'binutils/ar.o','readelf':'binutils/readelf.o','strings':'binutils/strings.o',
+    'less':'main.o','screen':'screen.o','wget':'src/main.o',
+    'ar':'binutils/not-ranlib.o','readelf':'binutils/readelf.o','strings':'binutils/strings.o',
     'dnsdomainname':'src/dnsdomainname.o','logger':'src/logger.o','inetd':'src/inetd.o',
     'syslogd':'src/syslogd.o','tftpd':'src/tftpd.o','traceroute':'src/traceroute.o',
     'ping':'ping/ping.o','ping6':'ping/ping6.o','ifconfig':'ifconfig/ifconfig.o',
     'telnetd':'telnetd/telnetd.o'}
 PROVIDERS = {n: ('binutils' if n in ('ar','readelf','strings') else
-                 n if n in ('gawk','bash','patch') else 'inetutils') for n in ENTRY_OBJECTS}
+                 n if n in ('gawk','bash','patch','less','screen','wget') else 'inetutils') for n in ENTRY_OBJECTS}
 
 def binary_path(root,command):
-    relative={'gawk':'gawk','bash':'bash'}.get(command,ENTRY_OBJECTS[command][:-2])
+    relative={'gawk':'gawk','bash':'bash','ar':'binutils/ar','less':'less','wget':'src/wget'}.get(command,ENTRY_OBJECTS[command][:-2])
     return root/f'build/gnu-{PROVIDERS[command]}'/relative
 
 def fingerprint(path):
@@ -67,6 +68,12 @@ def prepare_archives(root,provider,mapping):
     adapted={}
     if provider=='gawk':
         from gawk_cleanup import prepare
+        adapted=prepare(root)
+    if provider=='patch':
+        from patch_cleanup import prepare
+        adapted=prepare(root)
+    if provider=='ifconfig':
+        from ifconfig_cleanup import prepare
         adapted=prepare(root)
     stage=root/f'build/translation/{provider}';stage.mkdir(parents=True,exist_ok=True)
     definitions=stage/'helper-symbol-map'

@@ -10,7 +10,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('provider',choices=['gawk','bash','patch','binutils','inetutils'])
+parser.add_argument('provider',choices=['gawk','bash','patch','binutils','inetutils','less','screen','wget'])
 name = parser.parse_args().provider
 pin = json.loads((ROOT/'inventory/sources.json').read_text())[name]
 source = Path(pin['source']); build = ROOT/'build'/('gnu-'+name)
@@ -24,19 +24,22 @@ if not (build/'Makefile').exists():
     args=[str(source/'configure'),'--prefix='+str(ROOT/'build/oracle'/name)]
     if name=='bash':args.append('--without-bash-malloc')
     if name=='binutils':args += ['--disable-gdb','--disable-gdbserver','--disable-gprofng','--disable-sim']
+    if name=='wget':args.append('--with-ssl=openssl')
+    if name=='screen':args.append('--disable-pam')
     with (ROOT/f'evidence/raw/{name}-configure.log').open('w') as log:
         subprocess.run(args,cwd=build,env=environment,stdout=log,stderr=subprocess.STDOUT,check=True)
 with (ROOT/f'evidence/raw/{name}-native-build.log').open('w') as log:
     targets=['all-binutils'] if name=='binutils' else []
+    if name=='screen':targets += ['-B','screen','CFLAGS='+environment['CFLAGS']+' -Wall -Wextra -iquote '+str(source),'SOURCE_DATE_EPOCH=1700000000']
     subprocess.run(['make','-j8','CC=python3 '+str(ROOT/'scripts/record-provider-cc.py'),*targets],cwd=build,
                    env=environment,stdout=log,stderr=subprocess.STDOUT,check=True)
-binary = build/{'patch':'src/patch','binutils':'binutils/ar','inetutils':'src/dnsdomainname'}.get(name,name)
+binary = build/{'patch':'src/patch','binutils':'binutils/ar','inetutils':'src/dnsdomainname','wget':'src/wget'}.get(name,name)
 links=[json.loads(p.read_text()) for p in records.glob('*.json')]
 links=[r for r in links if r['kind']=='link' and (Path(r['directory'])/r['output']).resolve()==binary]
 assert len(links)==1
 profile={'provider':name,'version':pin['version'],'scope':'Pinned native oracle and recorded GNU compile/link inputs. Native helpers and runtime feature configuration are retained; this is not port certification.',
          'configure_arguments':subprocess.check_output(['./config.status','--config'],cwd=build,text=True).strip(),
-         'config_header_sha256':digest(build/('binutils/config.h' if name=='binutils' else 'config.h')),
+         'config_header_sha256':digest(build/({'binutils':'binutils/config.h','less':'defines.h','wget':'src/config.h'}.get(name,'config.h'))),
          'oracle':{'path':str(binary),'sha256':digest(binary),'version':subprocess.check_output([binary,'--version'],text=True).splitlines()[0]},
          'link_record':links[0],
          'compiler':subprocess.check_output(['gcc','--version'],text=True).splitlines()[0]}

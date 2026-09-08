@@ -3523,8 +3523,7 @@ pub unsafe extern "C" fn prepenv(
         );
     };
 }
-#[no_mangle]
-pub unsafe extern "C" fn single_binary_main_inetd(
+unsafe extern "C" fn rboxc_inetd_main_inner(
     mut argc: ::core::ffi::c_int,
     mut argv: *mut *mut ::core::ffi::c_char,
     mut envp: *mut *mut ::core::ffi::c_char,
@@ -3864,3 +3863,9 @@ pub const PATH_INETDPID: [::core::ffi::c_char; 53] = unsafe {
 };
 pub const r#true: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
 pub const r#false: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+
+extern "C" { #[link_name = "environ"] static mut RBOXC_INETD_ENVIRON: *mut *mut ::core::ffi::c_char; }
+#[no_mangle]
+pub unsafe extern "C" fn single_binary_main_inetd(argc: ::core::ffi::c_int, argv: *mut *mut ::core::ffi::c_char) -> ::core::ffi::c_int {
+    rboxc_inetd_main_inner(argc, argv, RBOXC_INETD_ENVIRON)
+}
