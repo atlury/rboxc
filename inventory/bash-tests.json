@@ -1,6 +1,6 @@
 {
   "provider": "GNU Bash 5.3",
-  "scope": "Top-level original run recipes inventoried; five complete ordinary conformance scripts reviewed. Other recipes, nested standalone tests and interactive profiles remain unreviewed.",
+  "scope": "Top-level original run recipes inventoried; eight complete ordinary conformance scripts and their nested dependencies reviewed for execution. Other recipes and interactive profiles remain open; explicit reproduction inputs are not executed.",
   "inputs": [
     {
       "target": "alias",
@@ -69,8 +69,17 @@
       "target": "attr",
       "recipe": "run-attr",
       "recipe_sha256": "b99e423dee7199e0afb894da04e6f47ded72ce8bcc61b41eb46d1f6f37a4a8cf",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "script": "attr.tests",
+      "expected": "attr.right",
+      "output_mode": "drop-expect",
+      "fixtures": {
+        "attr.tests": "3125539ec6ab6ced93cd13c6425110ed57b330d113666f1e4fc012851814ce13",
+        "attr.right": "7353d3b306723871486c97a185789e9c1d53856ac4fab5d964a6282657873872",
+        "attr1.sub": "692c66bf4e4c164fcef743df033359b7720f029713c378ae1442f56da1d80b05",
+        "attr2.sub": "767977eaa0178b36e4b6b6bbf90eb343becd4026ab977b9613f88d09463f451c"
+      },
+      "review": "Complete ordinary conformance script and every referenced sub-script reviewed; unchanged expected-output comparison retained."
     },
     {
       "target": "braces",
@@ -90,8 +99,19 @@
       "target": "case",
       "recipe": "run-case",
       "recipe_sha256": "4587f9945873601b515df072cd22ceed203ee0f5d70b43dbf0ec6b9086fe79ab",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "script": "case.tests",
+      "expected": "case.right",
+      "output_mode": "merged",
+      "fixtures": {
+        "case.tests": "5b420bbe71936021aa22b0a85afb0a5ab897a0139f2de62ec90ece156fe2ff7b",
+        "case.right": "e79c4c2b22b0753956250fea7afd57166c5fb8e1269ac1eb0342d42643c2f029",
+        "case1.sub": "87733c1663a838f26ab3a8cf0e2c62ce43ec7a464492216fa6d77acd172c1538",
+        "case2.sub": "728f6cbae79d85fd5c7fab431173ee41258025321bbc04e6b58b7f26a48e4dbe",
+        "case3.sub": "9a902c38406de90263a34a51e7bf6a70edb14d4d5964c2e4e00b6a28812362e1",
+        "case4.sub": "ba0050b9ade5853034fc7dbe525891545db6a77f4f4d22e8a2b37358035026cc"
+      },
+      "review": "Complete ordinary conformance script and every referenced sub-script reviewed; unchanged expected-output comparison retained."
     },
     {
       "target": "casemod",
@@ -224,7 +244,8 @@
       "recipe": "run-exportfunc",
       "recipe_sha256": "2282d2dfff62f30ab56db4535d196cf4262484de915acc4b1de01641239c9171",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "mixed-reproduction-inputs-unexecuted",
+      "review": "Contains explicit vulnerability reproductions. Whole recipe remains unexecuted; ordinary function-export cases can be covered separately without these inputs."
     },
     {
       "target": "extglob",
@@ -259,7 +280,8 @@
       "recipe": "run-getopts",
       "recipe_sha256": "e12a4459bd6d1141fa79e7c333c93cebcc4d38f5f67bb751df948eac48bb4d9c",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "pending-review",
+      "review": "Main script and ten children inspected; getopts6.sub includes an explicit historical crash reproduction. Whole recipe remains unexecuted; ordinary selections require separate accounting."
     },
     {
       "target": "glob-bracket",
@@ -587,8 +609,16 @@
       "target": "shopt",
       "recipe": "run-shopt",
       "recipe_sha256": "bcbd27e9389d96377beb7a544c07fc1ad7f2760d599c2281461f1a971e3e4b07",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "script": "shopt.tests",
+      "expected": "shopt.right",
+      "output_mode": "merged",
+      "fixtures": {
+        "shopt.tests": "797b2416abbe421e447d7372c69ee0523719c1f2730de956eae8c95c1e4ccfb8",
+        "shopt.right": "d7cc1fdd151682eb40de85165d4e9351d88bd17a5dc83adf7aab359c9bb4e49d",
+        "shopt1.sub": "1ae5dbeeb4a359131f23f2ffe6a6c04d1da820620114e44138452bdade0fc6a2"
+      },
+      "review": "Complete ordinary conformance script and every referenced sub-script reviewed; unchanged expected-output comparison retained."
     },
     {
       "target": "strip",
@@ -653,5 +683,14 @@
       "reviewed": false,
       "state": "pending-review"
     }
-  ]
+  ],
+  "fixed_test_helpers": {
+    "recho": {
+      "source": "support/recho.c",
+      "source_sha256": "727c641a01c679e9a077a30f23019c7244d56b97100639709a2da0f355360805",
+      "binary": "build/gnu-bash/recho",
+      "binary_sha256": "84a37cbedb1b6b448bc289c044e850313f6fc1c2bb8f2507fca684e5e88d8989",
+      "scope": "Original argument-printing test helper, shared by oracle and candidate; not counted as an applet port."
+    }
+  }
 }

@@ -162,8 +162,9 @@ void rboxc_bash_track_backup(int fd) {
 }
 int rboxc_bash_owned_close(int fd) {
   int result = close(fd), saved = errno;
-  /* On this Linux target EINTR also releases the descriptor. */
-  if (result == 0 || saved == EINTR || saved == EBADF) forget_bash_backup(fd);
+  /* Linux releases the descriptor before reporting late close errors.
+     EBADF also means this ownership record is no longer valid. */
+  forget_bash_backup(fd);
   errno = saved;
   return result;
 }

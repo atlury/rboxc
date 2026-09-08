@@ -11,7 +11,7 @@ def prepare(root):
  outputs={};reports=[]
  def replace(text,old,new):
   assert text.count(old)==1,(old,text.count(old));return text.replace(old,new)
- for name in ['make_cmd.c','dispose_cmd.c','unwind_prot.c','variables.c','execute_cmd.c','subst.c','trap.c','expr.c','redir.c','builtins/evalstring.c','native-helpers.c']:
+ for name in ['make_cmd.c','dispose_cmd.c','unwind_prot.c','variables.c','execute_cmd.c','subst.c','trap.c','expr.c','redir.c','eval.c','bashline.c','builtins/evalstring.c','native-helpers.c']:
   original=(root/'build/translation/bash'/name) if name=='native-helpers.c' else source/name
   if name!='native-helpers.c':assert fingerprint(original)==pin['source_and_header_sha256'][name]
   text=original.read_text()
@@ -108,6 +108,8 @@ rboxc_close_pipeline_fd (int fd)
    # This GNU helper preserves dispositions explicitly set to ignore.
    text=replace(text,'  reset_parser ();\n  initialize_subshell ();','  reset_parser ();\n  free_trap_strings ();\n  initialize_subshell ();')
   elif name=='expr.c':
+   assert text.count('vincdec = itos (v2);')==2 and text.count('free (vincdec);')==2
+   text=text.replace('vincdec = itos (v2);','vincdec = rboxc_expr_hold (itos (v2));').replace('free (vincdec);','rboxc_expr_release (vincdec);')
    anchor='static procenv_t evalbuf;'
    text=replace(text,anchor,anchor+'''
 /* Assignment strings outlive recursive arithmetic parsing, but not a failed
@@ -145,6 +147,23 @@ static void rboxc_expr_release_to (struct rboxc_expr_string *mark)
    assert segment.count('free (lhs);')==2 and segment.count('free (rhs);')==1
    segment=segment.replace('free (lhs);','rboxc_expr_release (lhs);').replace('free (rhs);','rboxc_expr_release (rhs);')
    text=text[:start]+segment+text[end:]
+  elif name=='eval.c':
+   anchor='static void send_pwd_to_eterm (void);'
+   text=replace(text,anchor,'''extern void add_unwind_protect_owned (sh_uwfunc_t *, sh_uwfunc_t *, void *);
+static void rboxc_keep_reader_command (void *command) { (void)command; }
+'''+anchor)
+   anchor='\t      execute_command (current_command);'
+   text=replace(text,anchor,'''              begin_unwind_frame ("rboxc-reader-command");
+              add_unwind_protect_owned (rboxc_keep_reader_command, uw_dispose_command, current_command);
+'''+anchor+'''
+              discard_unwind_frame ("rboxc-reader-command");''')
+  elif name=='bashline.c':
+   text=replace(text,'reset_completer_word_break_chars (void)\n{','''reset_completer_word_break_chars (void)
+{
+  /* Same ownership contract as assign_comp_wordbreaks in variables.c. */
+  if (rl_completer_word_break_characters &&
+      rl_completer_word_break_characters != rl_basic_word_break_characters)
+    free ((void *)rl_completer_word_break_characters);''')
   elif name=='redir.c':
    text=replace(text,'static int add_undo_redirect (int, enum r_instruction, int);','static int add_undo_redirect (int, enum r_instruction, int);\nextern void rboxc_bash_track_backup (int);')
    text=replace(text,'  clexec_flag = fcntl (fd, F_GETFD, 0);','  rboxc_bash_track_backup (new_fd);\n  clexec_flag = fcntl (fd, F_GETFD, 0);')
@@ -177,6 +196,35 @@ static void rboxc_release_expansion_slot (void *slot)
   *value = 0;
 }
 ''')
+   # The process-substitution child owns its private pathname copy; it can
+   # abandon this C frame when executing an ordinary text script.
+   start=text.index('process_substitute (char *string, int open_for_read_in_child)');end=text.index('#endif /* PROCESS_SUBSTITUTION */',start)
+   segment=text[start:end]
+   segment=replace(segment,'  remove_quoted_escapes (string);','  add_unwind_protect (xfree, pathname);\n  remove_quoted_escapes (string);')
+   text=text[:start]+segment+text[end:]
+   anchor='static WORD_LIST *\nshell_expand_word_list (WORD_LIST *tlist, int eflags)'
+   text=replace(text,anchor,'''struct rboxc_expanded_words { WORD_LIST *original, *expanded; };
+static void rboxc_dispose_expanded_words (void *arg)
+{
+  struct rboxc_expanded_words *owned = arg;
+  dispose_words (owned->original);
+  dispose_words (owned->expanded);
+  free (owned);
+}
+
+'''+anchor)
+   start=text.index(anchor);end=text.index('/* Perform assignment statements optionally',start)
+   segment=text[start:end]
+   segment=replace(segment,'  int expanded_something, has_dollar_at;','''  int expanded_something, has_dollar_at;
+  struct rboxc_expanded_words *owned = xmalloc (sizeof *owned);
+  owned->original = tlist; owned->expanded = 0;
+  begin_unwind_frame ("rboxc-shell-expand");
+  add_unwind_protect_owned (rboxc_dispose_expanded_words, rboxc_dispose_expanded_words, owned);''')
+   segment=replace(segment,'\t  dispose_words (orig_list);\n\t  /* Dispose the new list we\'re building. */\n\t  dispose_words (new_list);','\t  run_unwind_frame ("rboxc-shell-expand");')
+   anchor='      new_list = (WORD_LIST *)list_append ((GENERIC_LIST *)expanded, (GENERIC_LIST *)new_list);'
+   segment=replace(segment,anchor,anchor+'\n      owned->expanded = new_list;')
+   segment=replace(segment,'  if (orig_list)  ','  discard_unwind_frame ("rboxc-shell-expand");\n  free (owned);\n  if (orig_list)  ')
+   text=text[:start]+segment+text[end:]
    start=text.index('expand_string_assignment (const char *string, int quoted)');end=text.index('\n/* Expand one of the PS?',start)
    segment=text[start:end]
    anchor='  td.word = savestring (string);'
@@ -250,5 +298,5 @@ static void rboxc_script_cleanup (void)
  archive=stage/'libbuiltins.a';shutil.copyfile(root/'build/gnu-bash/builtins/libbuiltins.a',archive)
  subprocess.run(['ar','r',str(archive),str(outputs.pop('evalstring.o'))],check=True)
  subprocess.run(['ranlib',str(archive)],check=True);outputs[archive.name]=archive
- (root/'evidence/bash-native-cleanup.json').write_text(json.dumps({'scope':'Release Bash restart caches, snapshots, argument vectors, unwind payloads, expansion buffers and discarded trap strings. Dispose rejected arithmetic-for trees and failed arithmetic assignment strings. Track owned standard remaps and redirection backups, forget normal backup closes, and finalize abandoned descriptors at normal exit.','driver_sha256':fingerprint(Path(__file__)),'files':reports,'adapted_builtin_archive_sha256':fingerprint(archive)},indent=2)+'\n')
+ (root/'evidence/bash-native-cleanup.json').write_text(json.dumps({'scope':'Release Bash restart caches, snapshots, argument vectors, unwind payloads, expansion buffers and discarded trap strings. Dispose rejected arithmetic-for trees, failed arithmetic assignment/increment strings, temporary word lists, reader commands abandoned during exec restart and replaced completion strings. Track owned standard remaps and redirection backups, forget normal backup closes, and finalize abandoned descriptors at normal exit.','driver_sha256':fingerprint(Path(__file__)),'files':reports,'adapted_builtin_archive_sha256':fingerprint(archive)},indent=2)+'\n')
  return outputs

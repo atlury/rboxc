@@ -75,7 +75,7 @@ there where available.
 | Patch | 2.8 | Candidate passes 23 focused comparisons and eight reviewed originals |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
-| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; five originals pass with clean Valgrind, broader acceptance open |
+| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; eight originals pass with clean Valgrind, broader acceptance open |
 | Less | 704 | Candidate passes ten focused comparisons; original suite pending |
 | Screen | 5.0.2 | Candidate passes five option comparisons and the descriptor-preservation contract |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and four reviewed originals |
@@ -91,7 +91,34 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-The next Bash original-suite cleanup checkpoint passes all **five reviewed
+The latest Bash ownership checkpoint passes **eight complete reviewed original
+scripts** (`arith-for`, `attr`, `case`, `casemod`, `invert`, `precedence`, `shopt`,
+`strip`) with clean Valgrind process trees. This includes every nested dependency
+of the selected scripts. It also passes 44 focused Bash checks, all 69 shell
+adapter/updatedb checks, 428 Coreutils smoke comparisons and 11 dispatcher checks.
+The 187-command executable is **14,713,960 bytes** (14.03 MiB), SHA-256
+`c45278c9081eb9b94ee46d177c62d9a46bb9aae7f488a87659095abd193673ba`;
+an independent rebuild is byte-identical.
+
+The additional cleanup owns temporary expanded word lists across error recovery,
+releases reader commands and process-substitution paths abandoned by interpreter
+restart, and frees replaced completion strings and failed increment/decrement
+values. Redirection backup ownership is forgotten after every returned Linux
+close result, including late errors. Seven native/Valgrind contracts verify
+owned exit cleanup, errno preservation and reuse of the same descriptor for the
+same file. `evidence/bash-ownership-validation.json` binds the exact final build,
+source and process evidence; intermediate findings are retained separately.
+
+The original Bash `recho` test helper is built with
+`make -C build/gnu-bash recho`, pinned in `inventory/bash-tests.json`, and shared by
+both implementations. It is a test dependency and is not counted as an applet.
+The same manifest still accounts for 80 other top-level recipes without claiming
+passes. Whole scripts containing explicit reproduction inputs remain unexecuted;
+ordinary selections require separate accounting. Broader Bash/GNU acceptance,
+interactive profiles and release activation remain open. The 354 deferred
+provider assignments are unchanged.
+
+The preceding Bash original-suite cleanup checkpoint passes all **five reviewed
 original scripts**, including strict Valgrind checks for the complete candidate
 process trees. It releases rejected arithmetic-for syntax trees and assignment
 strings abandoned by arithmetic error recovery, and tracks redirection backup

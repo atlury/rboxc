@@ -12,13 +12,20 @@ runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner)
 profile=ComparisonProfile('bash-original',oracle=ROOT/'build/gnu-bash/bash',selections=True)
 source=Path(json.loads((ROOT/'inventory/sources.json').read_text())['bash']['source'])/'tests'
 manifest=ROOT/'inventory/bash-tests.json'
-selected=[r for r in json.loads(manifest.read_text())['inputs'] if r['reviewed']]
+inventory=json.loads(manifest.read_text())
+selected=[r for r in inventory['inputs'] if r['reviewed']]
 if profile.options.commands:
     assert set(profile.options.commands)<={r['target'] for r in selected}
     selected=[r for r in selected if r['target'] in profile.options.commands]
 assert selected
-helpers={'sed':ROOT/'build/gnu-sed/sed/sed','grep':ROOT/'build/gnu-grep/src/grep'}
+helpers={'sed':ROOT/'build/gnu-sed/sed/sed','grep':ROOT/'build/gnu-grep/src/grep',
+         'diff':ROOT/'build/gnu-diffutils/src/diff','awk':ROOT/'build/gnu-gawk/gawk',
+         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('od','mktemp','touch','chmod','rm')}}
+fixed_helpers=inventory.get('fixed_test_helpers',{})
 inputs={p:fingerprint(p) for p in [Path(__file__),manifest,profile.oracle,*helpers.values()]}
+for helper in fixed_helpers.values():
+    inputs[source.parent/helper['source']]=helper['source_sha256']
+    inputs[ROOT/helper['binary']]=helper['binary_sha256']
 for row in selected:
     inputs[source/row['recipe']]=row['recipe_sha256']
     inputs.update({source/n:h for n,h in row['fixtures'].items()})
@@ -34,6 +41,7 @@ for row in selected:
                 work=Path(directory);(work/'exec').mkdir()
                 alias=work/'exec/bash';alias.symlink_to(binary)
                 for n,p in helpers.items():(work/'exec'/n).symlink_to(p if implementation=='gnu' else profile.binary)
+                for n,h in fixed_helpers.items():(work/'exec'/n).symlink_to(ROOT/h['binary'])
                 for n in row['fixtures']:shutil.copy2(source/n,work/n)
                 argv=[str(alias),'--noprofile','--norc','./'+row['script']]
                 if instrument:argv=['/usr/bin/valgrind','--leak-check=full','--show-leak-kinds=all',
@@ -65,7 +73,7 @@ for row in selected:
     results.append({'selection':name,'pass':passed,'outcomes':outcomes})
     assert all(fingerprint(p)==h for p,h in inputs.items())
     report={**profile.metadata(),'inputs':{str(p):h for p,h in inputs.items()},
-        'scope':'Reviewed complete Bash scripts execute unchanged in private directories. Compare their original expected files using the output mode/filter from the original run recipe, and compare exit status with GNU. Trace shell children and text helpers: native GNU Bash/sed/grep for the oracle, integrated Bash/sed/grep for the candidate. Preserve native GNU memory findings. Other original scripts remain open.',
+        'scope':'Reviewed complete Bash scripts and their nested dependencies execute unchanged in private directories. Compare original expected files using the output mode/filter from the original run recipe, and compare exit status with GNU. Trace shell children and command helpers: pinned native GNU tools for the oracle, integrated tools for the candidate. Original fixed test helpers are shared and never counted as ports. Preserve native GNU memory findings. Other original scripts remain open.',
         'complete':len(results)==len(selected),'planned_total':len(selected),'passed':sum(r['pass'] for r in results),'total':len(results),'results':results}
     profile.report.write_text(json.dumps(report,indent=2)+'\n')
     print('PASS' if passed else 'OPEN',name,flush=True)
