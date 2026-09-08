@@ -330,7 +330,11 @@ versions. Tar now links in a separate 129-command candidate (4,445,984 bytes),
 with 845 private helper/state symbols and no native C entry. The initial Rust
 run matches 26/30 focused behaviors and passes 6/30 strict checks. Four
 diagnostic-prefix differences and memory/descriptor ownership findings remain
-open; the 128-command installed release is unchanged. A 30-case
+open in that preserved baseline; the 128-command installed release is unchanged.
+The next candidate preserves full invocation-path diagnostics and frees the
+default-settings help string after copying it into the obstack. All 30 focused
+behaviors now match GNU, with 11/30 strict checks passing. Remaining findings
+concern native helper ownership of directory handles and file-selection records. A 30-case
 archive-operation harness matches GNU Tar against itself in every comparison;
 only 9/30 native control cases are strict memory-clean, with the other GNU
 findings preserved as baseline observations. This control is not Rust port

@@ -4182,6 +4182,7 @@ unsafe extern "C" fn tar_help_filter(
                 __len_2,
             );
             (*__o_2).next_free = (*__o_2).next_free.offset(__len_2 as isize);
+            free(s.cast());
             let mut __o_3: *mut obstack = &raw mut stk;
             if ({
                 let mut __o1: *const obstack = __o_3;
@@ -7629,8 +7630,7 @@ unsafe extern "C" fn decode_options(
     checkpoint_finish_compile();
     report_textual_dates(&raw mut args);
 }
-#[no_mangle]
-pub unsafe extern "C" fn single_binary_main_tar(
+unsafe extern "C" fn rboxc_tar_main_inner(
     mut argc: ::core::ffi::c_int,
     mut argv: *mut *mut ::core::ffi::c_char,
 ) -> ::core::ffi::c_int {
@@ -7907,3 +7907,23 @@ pub const TTY_NAME: [::core::ffi::c_char; 9] =
 pub const __CHAR_BIT__: ::core::ffi::c_int = 8 as ::core::ffi::c_int;
 pub const r#true: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
 pub const r#false: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+
+extern "C" {
+    static mut error_print_progname: Option<unsafe extern "C" fn()>;
+}
+static mut RBOXC_INVOCATION: *const ::core::ffi::c_char = ::core::ptr::null();
+unsafe extern "C" fn rboxc_tar_error_prefix() {
+    libc::fprintf(stderr.cast(), b"%s: \0".as_ptr().cast(), RBOXC_INVOCATION);
+}
+#[no_mangle]
+pub unsafe extern "C" fn single_binary_main_tar(
+    argc: ::core::ffi::c_int, argv: *mut *mut ::core::ffi::c_char,
+) -> ::core::ffi::c_int {
+    RBOXC_INVOCATION = if argv.is_null() || (*argv).is_null() {
+        b"tar\0".as_ptr().cast()
+    } else { *argv };
+    if error_print_progname.is_none() {
+        error_print_progname = Some(rboxc_tar_error_prefix);
+    }
+    rboxc_tar_main_inner(argc, argv)
+}

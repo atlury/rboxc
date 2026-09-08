@@ -80,6 +80,39 @@ def renamed_export(match):
     return '#[export_name = "'+mapping[symbol]+'"]'
 text = re.sub(r'#\[export_name = "(?P<name>\w+)"\]', renamed_export, text)
 assert set(exports) == defined_symbols([ROOT/'build/gnu-tar'/ENTRY_OBJECTS[name]]) - {'main'}
+anchor = '#[no_mangle]\npub unsafe extern "C" fn single_binary_main_tar('
+assert text.count(anchor) == 1
+text = text.replace(anchor, 'unsafe extern "C" fn rboxc_tar_main_inner(')
+text += '''
+extern "C" {
+    static mut error_print_progname: Option<unsafe extern "C" fn()>;
+}
+static mut RBOXC_INVOCATION: *const ::core::ffi::c_char = ::core::ptr::null();
+unsafe extern "C" fn rboxc_tar_error_prefix() {
+    libc::fprintf(stderr.cast(), b"%s: \\0".as_ptr().cast(), RBOXC_INVOCATION);
+}
+#[no_mangle]
+pub unsafe extern "C" fn single_binary_main_tar(
+    argc: ::core::ffi::c_int, argv: *mut *mut ::core::ffi::c_char,
+) -> ::core::ffi::c_int {
+    RBOXC_INVOCATION = if argv.is_null() || (*argv).is_null() {
+        b"tar\\0".as_ptr().cast()
+    } else { *argv };
+    if error_print_progname.is_none() {
+        error_print_progname = Some(rboxc_tar_error_prefix);
+    }
+    rboxc_tar_main_inner(argc, argv)
+}
+'''
+# The default-settings text is copied into the help obstack before S is
+# overwritten with the completed help text; release that intermediate copy.
+start = text.index('unsafe extern "C" fn tar_help_filter(')
+end = text.index('unsafe extern "C" fn expand_pax_option(', start)
+part = text[start:end]
+anchor = '            (*__o_2).next_free = (*__o_2).next_free.offset(__len_2 as isize);'
+assert part.count(anchor) == 1 and part.count('s = format_default_settings();') == 1
+part = part.replace(anchor, anchor+'\n            free(s.cast());')
+text = text[:start]+part+text[end:]
 notice = re.match(r'\s*(/\*.*?\*/)', source.read_text(), re.S)[1]
 target = ROOT/f'src/generated/applet_{name}.rs'
 target.write_text('// Generated from pinned GNU Tar '+pin['version']+' by scripts/translate-tar.py.\n'
@@ -90,6 +123,8 @@ report = {'provider': 'tar', 'version': pin['version'], 'command': name,
           'scope': 'C2Rust entry with namespaced GNU native helpers. Compilation and behavior validation are separate.',
           'rust_file': str(target.relative_to(ROOT)), 'rust_sha256': fingerprint(target),
           'raw_translation_sha256': fingerprint(outputs[0]), 'compile_database_sha256': fingerprint(database),
+          'adaptations': ['Preserve full argv[0] diagnostics through GNU error_print_progname.',
+                          'Free the default-settings help string after copying it into the obstack.'],
           'helper_imports': {s: mapping[s] for s in sorted(imports)},
           'rust_exports': {s: mapping[s] for s in sorted(exports)},
           'opaque_pointer_types': opaque, 'log': str(log.relative_to(ROOT)), 'log_sha256': fingerprint(log)}
