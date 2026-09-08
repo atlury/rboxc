@@ -25,6 +25,7 @@ assert selected and len({r['target'] for r in selected})==len(selected)
 assert fingerprint(source/'test/Makefile.am')==manifest['registration_sha256']
 makefile=ROOT/'build/gnu-gawk/test/Makefile'
 helpers={'cmp':ROOT/'build/gnu-diffutils/src/cmp',
+         'grep':ROOT/'build/gnu-grep/src/grep',
          'sed':ROOT/'build/gnu-sed/sed/sed',
          **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('rm','echo','od','tr')}}
 inputs={p:fingerprint(p) for p in {makefile,source/'test/Makefile.am',source/'test/Makefile.in',

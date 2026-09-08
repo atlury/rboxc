@@ -71,7 +71,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 105 reviewed originals pass |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 187 reviewed originals pass |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -91,7 +91,15 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-Gawk now passes **105 reviewed original Make recipes** and all 85 focused
+Gawk now passes **187 reviewed original Make recipes**, including further CSV
+and record handling, namespaces, array and parameter diagnostics, numeric
+formatting and profiling. The original programs, input files, expected output
+and recipes are unchanged. Together with the retained 85 focused comparisons
+on the same candidate, `evidence/gawk-record-memory-audit.json` verifies 272 clean
+candidate process logs. The source-ownership contracts remain separately recorded;
+other original inputs and extension profiles still require acceptance work.
+
+The preceding Gawk checkpoint passes **105 reviewed original Make recipes** and all 85 focused
 comparisons. Three added diagnostic cases exposed parser source descriptors left
 open on fatal exit. The reproducible native helper adapter now closes still-owned
 source inputs, including the one-line reader's stream, while preserving stdin.
