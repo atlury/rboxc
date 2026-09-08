@@ -124,7 +124,15 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-Four additional Gawk originals now pass using the pinned native `ordchr`,
+Eight additional Gawk extension originals now pass, including filename matching,
+file metadata, function-table dispatch and six fixed wrong-argument diagnostics.
+`evidence/gawk-extension-expanded-memory-audit.json` verifies 13 clean original
+invocations plus the retained 85 focused comparisons on the same candidate.
+The extension libraries remain pinned native GNU helpers. Alongside the preceding
+language checkpoint, this records 408 passing original recipes and three shared
+GNU assertion failures across separate scopes; full Gawk acceptance remains open.
+
+The preceding four extension originals pass using the pinned native `ordchr`,
 `revoutput`, `readfile` and `filefuncs` extension libraries. Their unchanged
 recipes resolve libraries through a private directory preserving GNU's relative
 `AWKLIBPATH`. `evidence/gawk-extension-initial-memory-audit.json` verifies four
