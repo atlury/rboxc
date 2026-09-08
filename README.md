@@ -251,6 +251,11 @@ comparison verifies unchanged descriptor callbacks, O_PATH handling, early
 return, and errno while avoiding polls of known closed descriptors. The first
 nine unchanged DejaGNU selections pass (22 original assertions in all four
 GNU/Rust/native/Valgrind profiles); expanded original tests are in progress.
+The expanded pass now covers 57 original selections and 139 assertions.
+A further ownership pass handles repeated database searches, partial regex
+compilation, and failed xargs children with argument files; all 81 focused
+checks pass on that candidate. Both earlier candidates and reports remain
+available. Additional reviewed original selections are running.
 
 ## Status
 

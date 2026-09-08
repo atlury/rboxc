@@ -3152,6 +3152,7 @@ unsafe extern "C" fn xargs_do_exec(
                 };
             }
             // Only the failed-exec child owns this replacement for stdin.
+            rboxc_release_xargs_input();
             if keep_stdin == 0 || open_tty { libc::close(0); }
             _exit(if saved_errno == ENOENT {
                 XargsStatusValues::XARGS_EXIT_COMMAND_NOT_FOUND.0 as ::core::ffi::c_int

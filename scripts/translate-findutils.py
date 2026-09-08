@@ -138,6 +138,7 @@ elif name == 'xargs':
     anchor = '            _exit(if saved_errno == ENOENT {'
     assert text.count(anchor) == 1
     text = text.replace(anchor, '''            // Only the failed-exec child owns this replacement for stdin.
+            rboxc_release_xargs_input();
             if keep_stdin == 0 || open_tty { libc::close(0); }
 ''' + anchor)
     text += '''
@@ -162,14 +163,37 @@ elif name == 'locate':
     declaration = re.search(r'    let mut procdata: process_data = process_data \{.*?\n    \};', text, re.S)
     assert declaration
     static = declaration[0].replace('    let mut procdata:', 'static mut RBOXC_PROCDATA:', 1)
-    text = text[:declaration.start()] + '    rboxc_release_locate_path();' + text[declaration.end():]
+    reset = declaration[0].replace('let mut procdata: process_data', 'procdata', 1)
+    text = text[:declaration.start()] + '    rboxc_release_locate_path();\n' + reset + text[declaration.end():]
     start = text.index('unsafe extern "C" fn search_one_database(')
     end = text.index('unsafe extern "C" fn usage(', start)
     text = text[:start] + re.sub(r'\bprocdata\b', 'RBOXC_PROCDATA', text[start:end]) + text[end:]
+    assert mapping['rpl_regfree'] == 'rboxc_findutils_locate_rpl_regfree'
+    imports.append('rpl_regfree')
+    anchor = '            rpl_re_set_syntax(regex_options as reg_syntax_t);'
+    assert text.count(anchor) == 1
+    text = text.replace(anchor, '            RBOXC_REGEXES.push(p);\n' + anchor)
     text += '\n' + static + '''
+extern "C" {
+    #[link_name = "rboxc_findutils_locate_rpl_regfree"]
+    fn rboxc_locate_regfree(regex: *mut re_pattern_buffer);
+}
+static mut RBOXC_REGEXES: Vec<*mut regular_expression> = Vec::new();
 extern "C" fn rboxc_release_locate_path() {
     unsafe {
         let saved_errno = *libc::__errno_location();
+        while let Some(regex) = RBOXC_REGEXES.pop() {
+            rboxc_locate_regfree(&raw mut (*regex).regex);
+            libc::free(regex.cast());
+        }
+        // Visitor data is borrowed except for regexes, which are owned above.
+        while !inspectors.is_null() {
+            let node = inspectors;
+            inspectors = (*node).next;
+            libc::free(node.cast());
+        }
+        lastinspector = ::core::ptr::null_mut();
+        past_pat_inspector = ::core::ptr::null_mut();
         libc::free(RBOXC_PROCDATA.original_filename.cast());
         RBOXC_PROCDATA.original_filename = ::core::ptr::null_mut();
         *libc::__errno_location() = saved_errno;
@@ -188,13 +212,25 @@ extern "C" fn rboxc_release_locate_path() {
     anchor = '    limits.limit = 0 as uintmax_t;'
     assert body.count(anchor) == 1
     body = body.replace(anchor, registration + anchor)
+    anchor = '        fp = fdopen(fd, b"r\\0".as_ptr() as *const ::core::ffi::c_char);'
+    assert body.count(anchor) == 1
+    body = body.replace(anchor, anchor + '\n        RBOXC_DBFILE = fp;')
+    anchor = '        if fclose(fp) == EOF {'
+    assert body.count(anchor) == 1
+    body = body.replace(anchor, '        RBOXC_DBFILE = ::core::ptr::null_mut();\n' + anchor)
     text = text[:start] + body + text[end:]
     text += '''
 static mut RBOXC_DBPATH: *mut ::core::ffi::c_char = ::core::ptr::null_mut();
+static mut RBOXC_DBFILE: *mut FILE = ::core::ptr::null_mut();
 extern "C" fn rboxc_release_locate_resources() {
     rboxc_release_locate_path();
     unsafe {
         let saved_errno = *libc::__errno_location();
+        if !RBOXC_DBFILE.is_null() {
+            let owned = RBOXC_DBFILE;
+            RBOXC_DBFILE = ::core::ptr::null_mut();
+            libc::fclose(owned.cast());
+        }
         libc::free(RBOXC_DBPATH.cast());
         RBOXC_DBPATH = ::core::ptr::null_mut();
         *libc::__errno_location() = saved_errno;
@@ -204,6 +240,7 @@ extern "C" fn rboxc_release_locate_resources() {
     cleanup_registration = registration
     ownership_adaptations.append('Give the database path buffer stable ownership, releasing it between searches and at exit.')
     ownership_adaptations.append('Release database-name storage on early returns; register before close_stdout can terminate a write-error exit.')
+    ownership_adaptations.append('Release visitor nodes and GNU regex objects between databases and on exit, including partial regex compilation; close the active database FILE on early exit.')
 text += '''
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_'''+name+'''(

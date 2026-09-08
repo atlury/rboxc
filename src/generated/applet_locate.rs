@@ -1991,6 +1991,19 @@ unsafe extern "C" fn search_one_database(
     let mut argn: ::core::ffi::c_int = 0;
     let mut nread: ::core::ffi::c_int = 0;
     rboxc_release_locate_path();
+    RBOXC_PROCDATA = process_data {
+        c: 0,
+        count: 0,
+        len: 0,
+        original_filename: ::core::ptr::null_mut::<::core::ffi::c_char>(),
+        pathsize: 0,
+        munged_filename: ::core::ptr::null_mut::<::core::ffi::c_char>(),
+        fp: ::core::ptr::null_mut::<FILE>(),
+        dbfile: ::core::ptr::null::<::core::ffi::c_char>(),
+        endian_state: GetwordEndianState::GetwordEndianStateInitial,
+        bigram1: [0; 128],
+        bigram2: [0; 128],
+    };
     let mut slocate_seclevel: ::core::ffi::c_int = 0;
     let mut oldformat: ::core::ffi::c_int = 0;
     let mut slocatedb_format: ::core::ffi::c_int = 0;
@@ -2312,6 +2325,7 @@ unsafe extern "C" fn search_one_database(
                 0 as ::core::ffi::c_int,
                 ::core::mem::size_of::<re_pattern_buffer>(),
             );
+            RBOXC_REGEXES.push(p);
             rpl_re_set_syntax(regex_options as reg_syntax_t);
             (*p).regex.allocated = 100 as __re_long_size_t;
             (*p).regex.buffer = xmalloc((*p).regex.allocated) as *mut re_dfa_t;
@@ -3483,6 +3497,7 @@ unsafe extern "C" fn dolocate(
             }
         }
         fp = fdopen(fd, b"r\0".as_ptr() as *const ::core::ffi::c_char);
+        RBOXC_DBFILE = fp;
         if fp.is_null() {
             if 0 != 0 {
                 error(
@@ -3541,6 +3556,7 @@ unsafe extern "C" fn dolocate(
             regex,
             regex_options,
         );
+        RBOXC_DBFILE = ::core::ptr::null_mut();
         if fclose(fp) == EOF {
             if 0 != 0 {
                 error(
@@ -3666,9 +3682,26 @@ static mut RBOXC_PROCDATA: process_data = process_data {
         bigram1: [0; 128],
         bigram2: [0; 128],
     };
+extern "C" {
+    #[link_name = "rboxc_findutils_locate_rpl_regfree"]
+    fn rboxc_locate_regfree(regex: *mut re_pattern_buffer);
+}
+static mut RBOXC_REGEXES: Vec<*mut regular_expression> = Vec::new();
 extern "C" fn rboxc_release_locate_path() {
     unsafe {
         let saved_errno = *libc::__errno_location();
+        while let Some(regex) = RBOXC_REGEXES.pop() {
+            rboxc_locate_regfree(&raw mut (*regex).regex);
+            libc::free(regex.cast());
+        }
+        // Visitor data is borrowed except for regexes, which are owned above.
+        while !inspectors.is_null() {
+            let node = inspectors;
+            inspectors = (*node).next;
+            libc::free(node.cast());
+        }
+        lastinspector = ::core::ptr::null_mut();
+        past_pat_inspector = ::core::ptr::null_mut();
         libc::free(RBOXC_PROCDATA.original_filename.cast());
         RBOXC_PROCDATA.original_filename = ::core::ptr::null_mut();
         *libc::__errno_location() = saved_errno;
@@ -3676,10 +3709,16 @@ extern "C" fn rboxc_release_locate_path() {
 }
 
 static mut RBOXC_DBPATH: *mut ::core::ffi::c_char = ::core::ptr::null_mut();
+static mut RBOXC_DBFILE: *mut FILE = ::core::ptr::null_mut();
 extern "C" fn rboxc_release_locate_resources() {
     rboxc_release_locate_path();
     unsafe {
         let saved_errno = *libc::__errno_location();
+        if !RBOXC_DBFILE.is_null() {
+            let owned = RBOXC_DBFILE;
+            RBOXC_DBFILE = ::core::ptr::null_mut();
+            libc::fclose(owned.cast());
+        }
         libc::free(RBOXC_DBPATH.cast());
         RBOXC_DBPATH = ::core::ptr::null_mut();
         *libc::__errno_location() = saved_errno;

@@ -37,18 +37,26 @@ for name,fixture in {
  's118-0':'stairs-0','s14-0':'stairs-0','s14_2-0':'stairs2-0','s15-0':'stairs-0','s25-0':'stairs-0',
  'space-r':'space','space-t-0':'space',
 }.items():selections['xargs/'+name]=(1,[fixture+'.xi'] if fixture else [])
+for name in ('depth-d','exec-many-rtn-failure','exec-many-rtn-success','exec-one-rtn-fail','exec-one-rtn-success','execdir-hier','execdir-one','execdir-pwd','execdir-pwd1','execdir-root-only','follow-arg-parent-symlink','follow-basic','fprint0_stdout','fprintf-samefile','gnu-or','gnuand','gnunot','ilname','inum','name-opt','name-period','name-slash','no-fdleak-test','perm-slash','posix-dflt','posix-h','posix-l','posix-perminvalid','print0','print_stdout','printf-h','printf-nonlocal-symlink','printf-slash','printf-symlink','printfHdfl','prune-default-print','regex2','sv-bug-12230','sv-bug-17477','sv-bug-17782','sv-bug-18222','sv-bug-27563-execdir','used-invarg','used-missing','wholename','xtype-symlink','xtype'):
+ selections['find/'+name]=(4,[])
+selections.update({'find/mindepth-arg':(8,[]),'find/mindepth-badarg':(64,[]),'find/printf-reserved':(12,[]),'find/user-invalid':(20,[])})
+for name in ('exists1','exists2','exists3','notexists1','notexists2','notexists3','ignore_case1','ignore_case2','ignore_case3','slocate'):
+ selections['locate/'+name]=(1,[])
+selections.update({'locate/bigendian':(1,['../locate.gnu/locateddb.old.powerpc.xi']),
+                   'locate/littleendian':(1,['../locate.gnu/locateddb.old.x86.xi']),
+                   'locate/bigprefix1':(2,[]),'locate/exceedshort':(1,[]),'locate/sv-bug-14535':(8,[])})
 selected=profile.options.commands or list(selections)
 assert set(selected)<=set(selections)
 oracles={n:ROOT/'build/gnu-findutils'/n/n for n in ('find','xargs','locate')}
-helpers={n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','mkdir','chmod','touch','sort','echo','basename','cp','ln','true','sleep')}
+helpers={n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','mkdir','chmod','touch','sort','echo','basename','cp','ln','true','false','sleep','ls','mv','mktemp','cut','id','date')}
 helpers.update({n:ROOT/'build/gnu-diffutils/src'/n for n in ('cmp','diff')})
 helpers['sed']=ROOT/'build/gnu-sed/sed/sed'
 frcode=ROOT/'build/gnu-findutils/locate/frcode'
 updatedb=ROOT/'build/gnu-findutils/locate/updatedb'
-inputs={p:fingerprint(p) for p in {*oracles.values(),*helpers.values(),frcode,updatedb,Path(__file__)}}
+inputs={p:fingerprint(p) for p in {*oracles.values(),*helpers.values(),frcode,updatedb,Path('/usr/bin/sort'),Path('/usr/bin/locale'),source/'locate/updatedb.sh',Path(__file__)}}
 for selection in selected:
  command,name=selection.split('/');suite=source/command/'testsuite'
- for p in [suite/'config/unix.exp',suite/(command+'.gnu')/(name+'.exp'),*[suite/'inputs'/n for n in selections[selection][1]]]:inputs[p]=fingerprint(p)
+ for p in [suite/'config/unix.exp',suite/(command+'.gnu')/(name+'.exp'),*[(suite/'inputs'/n).resolve() for n in selections[selection][1]]]:inputs[p]=fingerprint(p)
  for suffix in ('xo','xe'):
   p=suite/(command+'.gnu')/(name+'.'+suffix)
   if p.exists():inputs[p]=fingerprint(p)
@@ -74,12 +82,12 @@ for index,selection in enumerate(selected):
     (work/'find/ftsfind.o').symlink_to(ROOT/'build/gnu-findutils/find/ftsfind.o')
     (work/'xargs/xargs.o').symlink_to(ROOT/'build/gnu-findutils/xargs/xargs.o')
     (work/'locate/frcode').symlink_to(frcode)
-    # The selected text-only cases do not execute updatedb; the unchanged
-    # harness nevertheless checks that its configured pathname exists.
+    # Native updatedb and frcode are fixture helpers, not translated commands.
+    # Database construction uses only each original script's private paths.
     (work/'locate/updatedb').symlink_to(updatedb)
     cwd=work/command/'testsuite';suite=source/command/'testsuite'
     (cwd/'site.exp').write_text('set srcdir "'+str(suite)+'"\nset objdir "'+str(cwd)+'"\nset build_triplet x86_64-pc-linux-gnu\nset host_triplet x86_64-pc-linux-gnu\n')
-    env={'PATH':str(deps)+':/usr/bin:/bin','HOME':directory,'LC_ALL':'C','LANGUAGE':'C','TZ':'UTC0','DEJAGNU':'/dev/null','TERM':'dumb'}
+    env={'PATH':str(deps)+':/usr/bin:/bin','HOME':directory,'LC_ALL':'C','LANGUAGE':'C','TZ':'UTC0','TMPDIR':directory,'DEJAGNU':'/dev/null','TERM':'dumb'}
     invocation=['/usr/bin/runtest','--tool',command,'--srcdir',str(suite),command+'.gnu/'+name+'.exp']
     done=subprocess.run(invocation,cwd=cwd,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=180)
     (saved/'driver.log').write_bytes(done.stdout)
@@ -98,7 +106,7 @@ for index,selection in enumerate(selected):
  row['pass']=row['assertions_pass'] and outcomes['rboxc-valgrind']['memory_clean']
  results.append(row)
  assert all(fingerprint(p)==h for p,h in inputs.items()),'test input changed'
- report={'scope':'Reviewed original DejaGNU scripts and expected fixtures, unchanged. Four GNU/Rust/native/Valgrind observations per selection. Private shell wrappers only select executables and instrumentation. Original find tests retain optimization levels 0,1,2,3. Native frcode is a fixture helper, and updatedb is only an unexecuted harness prerequisite for these text-only locate cases.',
+ report={'scope':'Reviewed original DejaGNU scripts and expected fixtures, unchanged. Four GNU/Rust/native/Valgrind observations per selection. Private shell wrappers only select executables and instrumentation. Original find tests retain optimization levels 0,1,2,3. Native frcode and updatedb are fixture helpers and are not counted as ports. Their source/configured scripts and the configured absolute sort helper are pinned. Locale case-folding uses the available native UTF-8 locale selected by the unchanged original script.',
          **profile.metadata(),'inputs':{str(p):h for p,h in inputs.items()},'passed':sum(r['pass'] for r in results),'total':len(results),
          'assertions_passed':sum(r['expected_assertions'] for r in results if r['assertions_pass']),'results':results}
  profile.report.write_text(json.dumps(report,indent=2)+'\n')
