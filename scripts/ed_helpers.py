@@ -27,6 +27,8 @@ def symbol_map(root):
 
 
 def prepare_archive(root, mapping):
+    from ed_cleanup import prepare
+    filter_helper = prepare(root)
     stage = root/'build/translation/ed'
     stage.mkdir(parents=True, exist_ok=True)
     definitions = stage/'helper-symbol-map'
@@ -34,7 +36,8 @@ def prepare_archive(root, mapping):
     objects = []
     for original in native_inputs(root):
         target = stage/original.name
-        subprocess.run(['objcopy', '--redefine-syms='+str(definitions), original, target], check=True)
+        selected = filter_helper if original.name == 'main_loop.o' else original
+        subprocess.run(['objcopy', '--redefine-syms='+str(definitions), selected, target], check=True)
         objects.append(target)
     archive = root/'build/helpers/libed-rboxc.a'
     temporary = archive.with_suffix('.tmp.a')
