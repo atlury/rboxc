@@ -30,6 +30,8 @@ class ComparisonProfile:
         if self.options.report_name in {'smoke', 'valgrind', 'dispatcher', 'behavior', 'valgrind-equivalence'}:
             parser.error('named comparisons cannot overwrite installed-release reports')
         self.report = ROOT/'evidence'/(name+'.json')
+        if self.options.report_name and self.report.exists():
+            parser.error('named comparison report already exists; choose a new --report-name')
         self.logs = ROOT/'evidence/raw'
         if self.options.report_name:
             self.logs = self.logs/name

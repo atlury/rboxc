@@ -27,6 +27,9 @@ the operative new objective without falsely declaring the old work complete.
 Rust `std`, unsafe Rust, libc, and GNU C helper libraries are permitted for this
 behavior-first phase. Safe ownership conversion and no_std are later work.
 An external GNU executable used as an oracle is never counted as a port.
+Named comparison runs now reject an existing report name before creating logs.
+`evidence/comparison-report-preservation.json` records the rejection and verifies
+that the previous report and log directories remain unchanged.
 
 ## Initial source profile
 
