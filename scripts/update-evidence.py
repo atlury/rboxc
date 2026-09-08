@@ -332,7 +332,7 @@ if all(path.exists() for path in ed_reports):
     entry = read('evidence/ed-translation.json'); linked = read('evidence/ed-link.json')
     manifest = read('inventory/ed-tests.json')
     assert hashlib.sha256((ROOT/'inventory/ed-tests.json').read_bytes()).hexdigest() == original['manifest_sha256']
-    current = all(r['binary_sha256']==binary_sha256 for r in (original,focused))
+    current = originals_supported('ed', original, focused)
     source_current = entry['rust_sha256'] == linked['rust_source_sha256'] == hashlib.sha256((ROOT/entry['rust_file']).read_bytes()).hexdigest()
     listed = subprocess.check_output([binary,'--list'],text=True).splitlines()
     active = current and source_current and entry['translated'] and 'ed' in listed and not linked['native_command_entries']
@@ -355,6 +355,46 @@ if all(path.exists() for path in ed_reports):
         'external_child_findings':len(candidate['external_child_findings']),
         'behavior_passed':focused['passed'],'behavior_total':focused['total'],
         'complete':False,'completion_scope':row['completion_scope']}
+findutils_reports = [ROOT/'evidence/findutils-original.json', ROOT/'evidence/findutils-behavior.json',
+                     ROOT/'evidence/findutils-original-memory-audit.json']
+if all(path.exists() for path in findutils_reports):
+    original, focused, audit = [json.loads(path.read_text()) for path in findutils_reports]
+    linked = read('evidence/findutils-link.json'); manifest = read('inventory/findutils-tests.json')
+    current = all(r['binary_sha256'] == binary_sha256 for r in (original, focused, audit))
+    listed = subprocess.check_output([binary, '--list'], text=True).splitlines()
+    active_entries = 0
+    for command in ('find', 'xargs', 'locate'):
+        entry = read(f'evidence/findutils-{command}-translation.json')
+        source_current = entry['rust_sha256'] == linked['rust_source_sha256'][command] == hashlib.sha256((ROOT/entry['rust_file']).read_bytes()).hexdigest()
+        active = current and source_current and entry['translated'] and command in listed and not linked['native_command_entries']
+        checks = [r for r in focused['results'] if r['command'] == command]
+        help_checks = [r for r in checks if r['name'] in (command+'-help', command+'-version')]
+        assert len(help_checks) == 2
+        observations = [r for r in original['results'] if r['selection'].startswith(command+'/')]
+        registered = [r for r in manifest['inputs'] if r['path'].startswith(command+'/testsuite/'+command+'.')]
+        row = next(r for r in inventory if r['name'] == command)
+        row.update(translated=entry['translated'], compiles=active, active_rust=active,
+            provider_confirmed=True, state='reviewed-originals-validated' if active else 'queued',
+            help_version_pass=active and all(r['pass'] for r in help_checks),
+            valgrind_help_pass=active and all(r['memory_clean'] for r in help_checks),
+            behavior_fixture_count=len(checks), behavior_fixture_pass=active and bool(checks) and all(r['pass'] for r in checks),
+            valgrind_fixture_pass=active and bool(checks) and all(r['memory_clean'] for r in checks),
+            original_selections_executed=len(observations), original_selections_registered=len(registered),
+            original_applet_assertions_and_memory_passed=active and bool(observations) and all(r['applet_assertions_and_memory_passed'] for r in observations),
+            gnu_tests_pass=active and len(observations)==len(registered)>0 and all(r['assertions_pass'] for r in observations),
+            valgrind_pass=False, complete=False,
+            completion_scope='GNU Findutils 4.11.0 Linux/glibc original selections and focused checks. Excluded Find tests, external shell findings, and the declared large-exec child-instrumentation limit remain explicit. updatedb/frcode porting is pending; no full-provider completion claim.')
+        active_entries += int(active)
+    extra_providers['findutils'] = {
+        'active_rust_entries':active_entries, 'original_selections_executed':original['total'],
+        'original_selections_registered':sum('/testsuite/config/' not in r['path'] for r in manifest['inputs']),
+        'original_all_process_passed':original['passed'],
+        'applet_assertions_and_memory_passed':original['applet_assertions_and_memory_passed'],
+        'original_assertions_passed':original['assertions_passed'],
+        'applet_processes':audit['total'], 'applet_processes_clean':audit['passed'],
+        'external_child_findings':len(audit['external_child_findings']),
+        'behavior_passed':focused['passed'], 'behavior_total':focused['total'],
+        'complete':False, 'completion_scope':row['completion_scope']}
 for provider, data in extra_providers.items():
     path=ROOT/f'evidence/{provider}-original.json'
     if path.exists():

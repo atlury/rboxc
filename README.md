@@ -67,7 +67,7 @@ there where available.
 | Sed | 4.10 | `sed` installed |
 | BC | 1.08.2 | `bc`, `dc` installed |
 | Ed | 1.22.6 | `ed` installed |
-| Findutils | 4.11.0 | `find`, `xargs`, `locate` in candidate testing; `updatedb` pending |
+| Findutils | 4.11.0 | `find`, `xargs`, `locate` installed; `updatedb` pending |
 | Tar | 1.35 | Entry translated; linking and runtime validation pending |
 
 For a later upstream fix, identify its upstream commit or patch and the release
@@ -273,12 +273,12 @@ allocations and shell descriptor observations during redirection. The earlier
 
 GNU Findutils 4.11.0 is pinned from its verified signed archive and built with
 SELinux disabled. The translated find, xargs, and locate entries compile in a
-separate 128-command candidate. Their native helpers have separate command
+validated 128-command release. Their native helpers have separate command
 namespaces (1,465 symbols), and their C entry objects are excluded. The native
 build retains GNU's libm linkage. The original shell/DejaGNU inventory contains
 240 test and harness inputs under individual review. DejaGNU is installed
 as a test prerequisite. updatedb and its private frcode encoder remain separate
-porting work; Findutils is not installed yet.
+porting work; the three translated commands are installed.
 
 The Findutils candidate passes 68/68 focused behavior and Valgrind checks.
 The preserved baseline matched behavior but passed only 23/68 strict checks;
@@ -299,19 +299,28 @@ checks for every traced process. Two retain system-shell file descriptors,
 one exposed final execdir-batch ownership, and one reached a host NSS module
 that probes an invalid descriptor. The execdir and early-output-file cleanup
 fixes pass an expanded 83/83 focused profile. The original NSS case now passes with a private local-files configuration.
-Fresh final-candidate batches cover 123 GNU-category and 105 POSIX/System V
-selections: all assertions and 955 Findutils process memory checks pass.
-Two GNU-category selections retain eight system-shell descriptor findings,
-so their strict all-process status remains open. Three original permission
-selections also pass, with 15 clean applet processes. The final two large-exec
-selections are running separately; the first attempt reached its 180-second
-harness deadline and is not counted as a pass. Earlier observations remain
-unchanged. All combined regressions pass on the final 128-command candidate:
-428 help/version comparisons, 107 Valgrind help checks, 318 behavior and
+The final candidate passes all 83 focused comparisons and all assertions in
+233 reviewed original selections (746 assertions in each GNU/Rust/native/
+Valgrind profile), including every registered xargs and locate test. A fresh
+log audit verifies 982 clean Findutils processes. Strict all-process results
+are 230/233: three selections retain 488 findings in traced native shells and
+helpers. These remain explicit in `evidence/findutils-original-memory-audit.json`.
+Four historical Find reproductions are excluded and unexecuted; the three
+harness inputs are separate. The 7,200-file exec-nogaps selection instruments
+Find itself but does not instrument its pinned native exec children; other
+selections trace children. The permission and large-exec profiles run as
+uid/gid 65534 in private owned trees. An earlier 180-second harness timeout
+remains an unsuccessful attempt, followed by a completed longer profile.
+
+The final 128-command candidate also passes all combined regressions: 428
+help/version comparisons, 107 Valgrind help checks, 318 behavior and
 instrumented-equivalence checks, 11 dispatcher checks, all prior-provider
-focused profiles, and four BC terminal profiles. Previous provider originals
-retain their actual binary hashes, supported by unchanged-input validation
-and those fresh focused profiles.
+focused profiles, and four BC terminal profiles. The hash-verified activation
+in `evidence/findutils-activation.json` retains the previous 125-command binary
+and reports. Original suites from earlier providers retain their actual
+binary hashes under unchanged-input validation and fresh focused checks.
+Findutils' excluded originals, external-child findings, and pending
+updatedb/frcode integration prevent a full-provider completion claim.
 
 GNU Tar 1.35 is pinned from its signature-verified GNU archive. The native
 reference builds with SELinux disabled and ACL/xattr support retained. C2Rust
@@ -327,8 +336,8 @@ for boolean and static-assert constructs detected by the native C23 build.
 
 ## Status
 
-The installed executable registers 125 commands: 107 Coreutils entries, GNU Hello,
-GNU Time, GNU Which, four GNU Diffutils commands, three GNU Grep commands, four GNU Gzip commands, GNU Sed, GNU bc/dc, and GNU Ed,
+The installed executable registers 128 commands: 107 Coreutils entries, GNU Hello,
+GNU Time, GNU Which, four GNU Diffutils commands, three GNU Grep commands, four GNU Gzip commands, GNU Sed, GNU bc/dc, GNU Ed, and Findutils (`find`, `xargs`, `locate`),
 all with active Rust command entries. No native C command entry remains, and assembly succeeds without the
 C-entry opt-in. `printf`, `sort`, `od`, `numfmt`, and `seq` use native numeric
 helpers: floating values stay inside GNU C functions and cross the boundary
@@ -344,19 +353,20 @@ GNU helper bodies remain native C. For example, `cp.c` is translated, while
 object is removed from the linked helper archives. This is a behavior-first
 port in progress, not a claim that every implementation body is already Rust.
 
-The current release executable is 3,388,896 bytes (3.23 MiB), dynamically linked
+The current release executable is 3,951,688 bytes (3.77 MiB), dynamically linked
 on the recorded host profile. This does not include native shared-library
 dependencies or command-specific runtime helpers such as GNU `stdbuf`'s library.
 Cross-platform builds and release packaging remain open.
 
 Original-suite results for unchanged earlier providers retain their actual binary
-hashes: the 124-command release, or the earlier 117-command Grep release. Verified
+hashes: the 124-command release, the 125-command Ed release, or the earlier
+117-command Grep release. Verified
 source/helper identity and complete fresh focused comparisons support retaining
-those results. They are not reported as original-suite reruns on the 125-command
+those results. They are not reported as original-suite reruns on the 128-command
 executable. The input-identity validator also rejects incomplete focused batches.
 
 The current release dynamically links libacl, libattr, and libcap for GNU metadata
-helpers, and libpcre2-8 for Grep PCRE matching. A separate static-link trial against the previous 2,405,616-byte
+helpers, libpcre2-8 for Grep PCRE matching, and libm for Findutils. A separate static-link trial against the previous 2,405,616-byte
 build removes those two runtime dependencies and grows that executable by
 7,784 bytes to 2,413,400 bytes. All five selected
 original metadata scripts pass natively and under Valgrind on that trial.
