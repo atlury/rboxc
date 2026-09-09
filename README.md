@@ -2326,7 +2326,7 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. The current
-[evidence/gnu-pr-expanded-coverage.json](evidence/gnu-pr-expanded-coverage.json)
+[evidence/gnu-date-expanded-coverage.json](evidence/gnu-date-expanded-coverage.json)
 extends the preserved suite checkpoints: **640 scripts passed**, 29 have
 selected coverage, five are skipped, 29 are excluded and 30 remain pending.
 Excluding the 29 exclusions, 640/704 scripts (90.9%) have whole-script passes;
@@ -2478,6 +2478,23 @@ case selection and raw summaries. Twenty-two historical cases remain held.
 The ledger has 590 passed scripts, 27 passed selections, 40 open profiles,
 47 pending and 29 exclusions under Valgrind. Earlier selections retain their
 recorded candidate hashes; the installed release remains unchanged.
+
+The `date` selection expands from 265 to **993/996 cases**, including all 364
+cross-DST intervals and their original debug variants. All selected assertions
+pass normally and under Valgrind, with **994 clean candidate process images**
+on the recorded expr-cleanup candidate. Three historical cases remain held.
+[evidence/gnu-date-expanded-validation.json](evidence/gnu-date-expanded-validation.json)
+verifies the source, names, locale files and complete process summaries.
+
+All **29 partial entries now have normal and Valgrind execution evidence**:
+17 Perl selections contain **4,475 selected cases**, with 109 historical cases
+held; 12 shell selections retain their exact recorded omitted source ranges.
+All selected normal assertions pass. Under Valgrind, 27 selections pass and
+`env -S` plus `numfmt` retain their documented instrumentation differences.
+There are no unexecuted partial-entry Valgrind profiles. This does not convert
+any partial entry into a whole-script pass or complete the remaining 30 pending
+scripts. [evidence/gnu-partial-coverage-validation.json](evidence/gnu-partial-coverage-validation.json)
+checks every partial entry against its source review and both execution reports.
 
 Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
