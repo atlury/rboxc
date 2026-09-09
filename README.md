@@ -2326,7 +2326,7 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. The current
-[evidence/gnu-fixture-stream-cleanup-coverage.json](evidence/gnu-fixture-stream-cleanup-coverage.json)
+[evidence/gnu-close-stdout-profile-coverage.json](evidence/gnu-close-stdout-profile-coverage.json)
 extends the preserved suite checkpoints: **648 scripts passed**, 32 have
 selected coverage, five are skipped, 29 are excluded and 19 remain pending.
 Excluding the 29 exclusions, 648/704 scripts (92.0%) have whole-script passes;
@@ -2605,6 +2605,19 @@ These results have their own `passed-adapted-fixture` category: the current
 Valgrind ledger has 591 passed scripts, 29 passed selections, two adapted fixture
 passes, 40 open profiles, 42 pending and 29 exclusions. Native whole-script
 counts are unchanged; neither unmodified helper profile becomes a strict pass.
+
+The current whole `misc/close-stdout.sh` original passes its assertions and
+has **24 clean candidate process logs**. Four other logs each contain exactly
+three descriptor-1 findings from `fstat`, `write` and `close` on intentionally
+closed stdout. All 28 candidate logs have no lost heap bytes or extra open
+descriptors. The original requires these four commands to return 1; all do.
+[evidence/gnu-close-stdout-profile-validation.json](evidence/gnu-close-stdout-profile-validation.json)
+accounts for every reported candidate error context and retains native GNU
+findings. No suppression or production change is used. This result is recorded
+as `validated-expected-fd-errors`, separate from strict zero-error passes. The
+current Valgrind ledger has 591 passed scripts, 29 passed selections, two adapted
+fixture passes, one validated expected-fd-error profile, 39 open profiles,
+42 pending and 29 exclusions. Native whole-script totals remain unchanged.
 
 Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
