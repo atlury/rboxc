@@ -1,0 +1,131 @@
+==620764== Memcheck, a memory error detector
+==620764== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==620764== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+==620764== Command: tar --record-size=512 -d -M -f arc.1 -f arc.2
+==620764== Parent PID: 620762
+==620764== 
+==620764== 
+==620764== FILE DESCRIPTORS: 1 open (0 inherited) at exit.
+==620764== Open file descriptor 0: /dev/full
+==620764==    at 0x4A1A9E6: open (open64.c:41)
+==620764==    by 0x4050574: open (fcntl2.h:55)
+==620764==    by 0x4050574: stdopen (stdopen.c:51)
+==620764==    by 0x400BE26: main (tar.c:2773)
+==620764== 
+==620764== 
+==620764== HEAP SUMMARY:
+==620764==     in use at exit: 9,073 bytes in 17 blocks
+==620764==   total heap usage: 65 allocs, 48 frees, 51,415 bytes allocated
+==620764== 
+==620764== 5 bytes in 1 blocks are still reachable in loss record 1 of 11
+==620764==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620764==    by 0x405185D: xmalloc (xmalloc.c:45)
+==620764==    by 0x405185D: xmemdup (xmalloc.c:314)
+==620764==    by 0x405185D: xstrdup (xmalloc.c:339)
+==620764==    by 0x402644F: assign_string (misc.c:58)
+==620764==    by 0x402973C: uname_to_uid (names.c:550)
+==620764==    by 0x402457F: decode_header (list.c:694)
+==620764==    by 0x4025616: read_and (list.c:194)
+==620764==    by 0x400CD7C: main (tar.c:2837)
+==620764== 
+==620764== 5 bytes in 1 blocks are still reachable in loss record 2 of 11
+==620764==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620764==    by 0x405185D: xmalloc (xmalloc.c:45)
+==620764==    by 0x405185D: xmemdup (xmalloc.c:314)
+==620764==    by 0x405185D: xstrdup (xmalloc.c:339)
+==620764==    by 0x402644F: assign_string (misc.c:58)
+==620764==    by 0x40297DC: gname_to_gid (names.c:580)
+==620764==    by 0x402455F: decode_header (list.c:699)
+==620764==    by 0x4025616: read_and (list.c:194)
+==620764==    by 0x400CD7C: main (tar.c:2837)
+==620764== 
+==620764== 11 bytes in 1 blocks are still reachable in loss record 3 of 11
+==620764==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620764==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==620764==    by 0x40264C0: assign_string_n (misc.c:76)
+==620764==    by 0x4010243: try_new_volume (buffer.c:1494)
+==620764==    by 0x4010243: _gnu_flush_read (buffer.c:1888)
+==620764==    by 0x4010243: gnu_flush_read (buffer.c:1909)
+==620764==    by 0x400E689: find_next_block (buffer.c:609)
+==620764==    by 0x402B955: check_data_region (sparse.c:680)
+==620764==    by 0x402D06E: sparse_diff_file (sparse.c:742)
+==620764==    by 0x4012DAF: diff_file (compare.c:234)
+==620764==    by 0x4012DAF: diff_archive (compare.c:492)
+==620764==    by 0x4025852: read_and (list.c:229)
+==620764==    by 0x400CD7C: main (tar.c:2837)
+==620764== 
+==620764== 16 bytes in 1 blocks are still reachable in loss record 4 of 11
+==620764==    at 0x48C4E43: calloc (vg_replace_malloc.c:1678)
+==620764==    by 0x40516F1: xcalloc (xmalloc.c:298)
+==620764==    by 0x40516F1: xzalloc (xmalloc.c:283)
+==620764==    by 0x400BEF9: decode_options (tar.c:2297)
+==620764==    by 0x400BEF9: main (tar.c:2792)
+==620764== 
+==620764== 31 bytes in 3 blocks are indirectly lost in loss record 5 of 11
+==620764==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620764==    by 0x40387DD: wsnode_quoteremoval (wordsplit.c:651)
+==620764==    by 0x4039CFD: wordsplit_process_list (wordsplit.c:2390)
+==620764==    by 0x403A562: wordsplit_run.constprop.0 (wordsplit.c:2434)
+==620764==    by 0x400BFFA: parse_default_options (tar.c:2256)
+==620764==    by 0x400BFFA: decode_options (tar.c:2378)
+==620764==    by 0x400BFFA: main (tar.c:2792)
+==620764== 
+==620764== 31 bytes in 3 blocks are definitely lost in loss record 6 of 11
+==620764==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620764==    by 0x403A1FB: wordsplit_finish (wordsplit.c:836)
+==620764==    by 0x400BFFA: parse_default_options (tar.c:2256)
+==620764==    by 0x400BFFA: decode_options (tar.c:2378)
+==620764==    by 0x400BFFA: main (tar.c:2792)
+==620764== 
+==620764== 80 bytes in 1 blocks are still reachable in loss record 7 of 11
+==620764==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620764==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==620764==    by 0x400BE43: main (tar.c:2781)
+==620764== 
+==620764== 102 bytes in 1 blocks are still reachable in loss record 8 of 11
+==620764==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620764==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==620764==    by 0x4029881: name_init (names.c:869)
+==620764==    by 0x400C94C: main (tar.c:2794)
+==620764== 
+==620764== 151 (120 direct, 31 indirect) bytes in 3 blocks are definitely lost in loss record 9 of 11
+==620764==    at 0x48C4E43: calloc (vg_replace_malloc.c:1678)
+==620764==    by 0x403959D: wsnode_new (wordsplit.c:422)
+==620764==    by 0x403959D: wordsplit_add_segm (wordsplit.c:523)
+==620764==    by 0x4039854: scan_word (wordsplit.c:2062)
+==620764==    by 0x4039C7C: wordsplit_process_list (wordsplit.c:2358)
+==620764==    by 0x403A562: wordsplit_run.constprop.0 (wordsplit.c:2434)
+==620764==    by 0x400BFFA: parse_default_options (tar.c:2256)
+==620764==    by 0x400BFFA: decode_options (tar.c:2378)
+==620764==    by 0x400BFFA: main (tar.c:2792)
+==620764== 
+==620764== 4,064 bytes in 1 blocks are still reachable in loss record 10 of 11
+==620764==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620764==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==620764==    by 0x404A07D: call_chunkfun (obstack.c:88)
+==620764==    by 0x404A07D: _obstack_begin_worker.isra.0 (obstack.c:135)
+==620764==    by 0x404A0A8: _obstack_begin (obstack.c:157)
+==620764==    by 0x4032C57: _transform_name_to_obstack (transform.c:592)
+==620764==    by 0x4032C57: transform_name_fp (transform.c:614)
+==620764==    by 0x4023670: transform_member_name (list.c:114)
+==620764==    by 0x4023670: transform_stat_info.part.0 (list.c:150)
+==620764==    by 0x4025850: transform_stat_info (list.c:227)
+==620764==    by 0x4025850: read_and (list.c:227)
+==620764==    by 0x400CD7C: main (tar.c:2837)
+==620764== 
+==620764== 4,608 bytes in 1 blocks are possibly lost in loss record 11 of 11
+==620764==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620764==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==620764==    by 0x4027C22: page_aligned_alloc (misc.c:1235)
+==620764==    by 0x4012544: diff_init (compare.c:48)
+==620764==    by 0x400CD70: main (tar.c:2836)
+==620764== 
+==620764== LEAK SUMMARY:
+==620764==    definitely lost: 151 bytes in 6 blocks
+==620764==    indirectly lost: 31 bytes in 3 blocks
+==620764==      possibly lost: 4,608 bytes in 1 blocks
+==620764==    still reachable: 4,283 bytes in 7 blocks
+==620764==         suppressed: 0 bytes in 0 blocks
+==620764== 
+==620764== For lists of detected and suppressed errors, rerun with: -s
+==620764== ERROR SUMMARY: 4 errors from 4 contexts (suppressed: 0 from 0)

@@ -1,0 +1,63 @@
+#                             -*- compilation -*-
+158. multiv02.at:28: testing skipping a straddling member ...
+/opt/src/tar-1.35/tests/multiv02.at:31:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --length 10240 --file en
+genfile --length 20000 --file to
+genfile --length 20000 --file tre
+genfile --length 10240 --file fire
+
+exec <&-
+
+tar -c -f A.tar -f B.tar -f C.tar -M -L 30 en to tre fire || exit 1
+echo separator
+tar -v -x -f A.tar -f B.tar -f C.tar -M en --warning=no-timestamp || exit 1
+)
+/opt/src/tar-1.35/tests/multiv02.at:31:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --length 10240 --file en
+genfile --length 20000 --file to
+genfile --length 20000 --file tre
+genfile --length 10240 --file fire
+
+exec <&-
+
+tar -c -f A.tar -f B.tar -f C.tar -M -L 30 en to tre fire || exit 1
+echo separator
+tar -v -x -f A.tar -f B.tar -f C.tar -M en --warning=no-timestamp || exit 1
+)
+/opt/src/tar-1.35/tests/multiv02.at:31:
+mkdir pax
+(cd pax
+TEST_TAR_FORMAT=pax
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H pax"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --length 10240 --file en
+genfile --length 20000 --file to
+genfile --length 20000 --file tre
+genfile --length 10240 --file fire
+
+exec <&-
+
+tar -c -f A.tar -f B.tar -f C.tar -M -L 30 en to tre fire || exit 1
+echo separator
+tar -v -x -f A.tar -f B.tar -f C.tar -M en --warning=no-timestamp || exit 1
+)
+158. multiv02.at:28: 158. skipping a straddling member (multiv02.at:28): ok     (0m0.032s 0m0.067s)

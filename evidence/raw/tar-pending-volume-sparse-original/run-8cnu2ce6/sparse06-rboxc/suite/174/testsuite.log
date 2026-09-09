@@ -1,0 +1,74 @@
+#                             -*- compilation -*-
+174. sparse06.at:21: testing storing sparse file using seek method ...
+/opt/src/tar-1.35/tests/sparse06.at:32:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+
+checkseekhole || exit 77
+
+
+TAR_OPTIONS="$TAR_OPTIONS --hole-detection=seek"
+genfile --sparse --file bigsparse 0 ABC 8G DEF || exit 77
+tar -cSf a bigsparse
+test $? -eq 0 || exit 1
+
+
+rm -rf out archive.tar smallsparse && mkdir out
+genfile --sparse --quiet --file smallsparse 0 ABC || exit 77
+tar -cSf archive.tar smallsparse
+tar -xf archive.tar -C out
+cmp smallsparse out/smallsparse
+
+
+rm -rf out archive.tar smallsparse && mkdir out
+genfile --sparse --quiet --file smallsparse 0 ABC 10M || exit 77
+tar -cSf archive.tar smallsparse
+tar -xf archive.tar -C out
+cmp smallsparse out/smallsparse
+
+
+rm -rf out archive.tar smallsparse && mkdir out
+genfile --sparse --quiet --file smallsparse 0 ABC 10M DEF || exit 77
+tar -cSf archive.tar smallsparse
+tar -xf archive.tar -C out
+cmp smallsparse out/smallsparse
+
+
+
+rm -rf out archive.tar smallsparse && mkdir out
+genfile --sparse --quiet --file smallsparse 10M || exit 77
+tar -cSf archive.tar smallsparse
+tar -xf archive.tar -C out
+cmp smallsparse out/smallsparse
+
+
+rm -rf out archive.tar smallsparse && mkdir out
+genfile --sparse --quiet --file smallsparse 10M ABC || exit 77
+tar -cSf archive.tar smallsparse
+tar -xf archive.tar -C out
+cmp smallsparse out/smallsparse
+
+
+rm -rf out archive.tar smallsparse && mkdir out
+genfile --sparse --quiet --file smallsparse 10M ABC 20M || exit 77
+tar -cSf archive.tar smallsparse
+tar -xf archive.tar -C out
+cmp smallsparse out/smallsparse
+
+
+
+rm -rf out archive.tar smallsparse && mkdir out
+genfile --sparse --quiet --file smallsparse 10M DEF 20M GHI 30M JKL 40M || exit 77
+tar -cSf archive.tar smallsparse
+tar -xf archive.tar -C out
+cmp smallsparse out/smallsparse
+
+
+)
+174. sparse06.at:21: 174. storing sparse file using seek method (sparse06.at:21): ok     (0m0.069s 0m0.152s)

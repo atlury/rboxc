@@ -1,0 +1,61 @@
+#                             -*- compilation -*-
+176. sparsemv.at:21: testing sparse files in MV archives ...
+/opt/src/tar-1.35/tests/sparsemv.at:31:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+exec <&-
+TAR_OPTIONS="$TAR_OPTIONS --hole-detection=raw"
+genfile --sparse --file sparsefile 0 ABCDEFGHIJK 1M ABCDEFGHI || exit 77
+echo "Pass 1: Split between data blocks"
+echo "Create archive"
+tar --sparse -c --record-size=512 -M -L6 -f arc.1 -f arc.2 sparsefile || exit 1
+echo "Test archive"
+tar --record-size=512 -t -M -f arc.1 -f arc.2
+echo "Compare archive"
+tar --record-size=512 -d -M -f arc.1 -f arc.2
+
+echo "Pass 2: Split within a data block"
+genfile --sparse --file sparsefile 0 ABCDEFGHIJ 1M ABCDEFGHI || exit 77
+echo "Create archive"
+tar --sparse -c --record-size=512 -M -L6 -f arc.1 -f arc.2 sparsefile || exit 1
+echo "Test archive"
+tar --record-size=512 -t -M -f arc.1 -f arc.2
+echo "Compare archive"
+tar --record-size=512 -d -M -f arc.1 -f arc.2
+)
+/opt/src/tar-1.35/tests/sparsemv.at:31:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+exec <&-
+TAR_OPTIONS="$TAR_OPTIONS --hole-detection=raw"
+genfile --sparse --file sparsefile 0 ABCDEFGHIJK 1M ABCDEFGHI || exit 77
+echo "Pass 1: Split between data blocks"
+echo "Create archive"
+tar --sparse -c --record-size=512 -M -L6 -f arc.1 -f arc.2 sparsefile || exit 1
+echo "Test archive"
+tar --record-size=512 -t -M -f arc.1 -f arc.2
+echo "Compare archive"
+tar --record-size=512 -d -M -f arc.1 -f arc.2
+
+echo "Pass 2: Split within a data block"
+genfile --sparse --file sparsefile 0 ABCDEFGHIJ 1M ABCDEFGHI || exit 77
+echo "Create archive"
+tar --sparse -c --record-size=512 -M -L6 -f arc.1 -f arc.2 sparsefile || exit 1
+echo "Test archive"
+tar --record-size=512 -t -M -f arc.1 -f arc.2
+echo "Compare archive"
+tar --record-size=512 -d -M -f arc.1 -f arc.2
+)
+176. sparsemv.at:21: 176. sparse files in MV archives (sparsemv.at:21): ok     (0m0.048s 0m0.068s)

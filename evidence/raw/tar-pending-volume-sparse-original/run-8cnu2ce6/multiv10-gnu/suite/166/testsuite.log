@@ -1,0 +1,22 @@
+#                             -*- compilation -*-
+166. multiv10.at:37: testing file start at the beginning of a posix volume ...
+/opt/src/tar-1.35/tests/multiv10.at:40:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+set -e
+genfile --length=15360 --file data1
+genfile --length=15360 --file data2
+tar -v -c -L 10 -M -f 1.tar -f 2.tar -f 3.tar -f 4.tar -f 5.tar data1 data2
+tar -M -t -f 1.tar -f 2.tar -f 3.tar -f 4.tar -f 5.tar
+mkdir out
+tar -C out -M -x -f 1.tar -f 2.tar -f 3.tar -f 4.tar -f 5.tar
+cmp data1 out/data1
+cmp data2 out/data2
+)
+166. multiv10.at:37: 166. file start at the beginning of a posix volume (multiv10.at:37): ok     (0m0.009s 0m0.023s)

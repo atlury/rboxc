@@ -1,0 +1,53 @@
+#                             -*- compilation -*-
+189. volume.at:23: testing volume ...
+/opt/src/tar-1.35/tests/volume.at:26:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+tar -cf archive -V label -T /dev/null || exit 1
+
+tar xfV archive label || exit 1
+tar xfV archive 'la?el' || exit 1
+tar xfV archive 'l*l' || exit 1
+
+echo 1>&2 -----
+tar xfV archive lab
+test $? = 2 || exit 1
+echo 1>&2 -----
+tar xfV archive bel
+test $? = 2 || exit 1
+echo 1>&2 -----
+tar xfV archive babel
+test $? = 2
+)
+/opt/src/tar-1.35/tests/volume.at:26:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+tar -cf archive -V label -T /dev/null || exit 1
+
+tar xfV archive label || exit 1
+tar xfV archive 'la?el' || exit 1
+tar xfV archive 'l*l' || exit 1
+
+echo 1>&2 -----
+tar xfV archive lab
+test $? = 2 || exit 1
+echo 1>&2 -----
+tar xfV archive bel
+test $? = 2 || exit 1
+echo 1>&2 -----
+tar xfV archive babel
+test $? = 2
+)
+189. volume.at:23: 189. volume (volume.at:23): ok     (0m0.018s 0m0.043s)

@@ -1,0 +1,19 @@
+#                             -*- compilation -*-
+164. multiv08.at:25: testing multivolume header creation ...
+/opt/src/tar-1.35/tests/multiv08.at:28:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --length 9472 --file a
+genfile --length 9984 --file b
+decho Creating
+tar -c -M -L10 -f A.tar -f B.tar -f C.tar a b
+decho Testing
+tar -tMR -f A.tar -f B.tar -f C.tar
+)
+164. multiv08.at:25: 164. multivolume header creation (multiv08.at:25): ok     (0m0.006s 0m0.017s)

@@ -1,0 +1,211 @@
+==620451== Memcheck, a memory error detector
+==620451== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==620451== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+==620451== Command: tar -xf archive.tar -C out
+==620451== Parent PID: 619371
+==620451== 
+==620451== 
+==620451== FILE DESCRIPTORS: 2 open (1 inherited) at exit.
+==620451== Open file descriptor 4: out
+==620451==    at 0x4A1AADA: openat (openat64.c:39)
+==620451==    by 0x4027817: openat (fcntl2.h:175)
+==620451==    by 0x4027817: chdir_do (misc.c:988)
+==620451==    by 0x402A0C7: name_match (names.c:1330)
+==620451==    by 0x4025622: read_and (list.c:196)
+==620451==    by 0x400CD61: main (tar.c:2823)
+==620451== 
+==620451== 
+==620451== HEAP SUMMARY:
+==620451==     in use at exit: 37,619 bytes in 23 blocks
+==620451==   total heap usage: 74 allocs, 51 frees, 90,758 bytes allocated
+==620451== 
+==620451== 1 bytes in 1 blocks are indirectly lost in loss record 1 of 17
+==620451==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620451==    by 0x405185D: xmalloc (xmalloc.c:45)
+==620451==    by 0x405185D: xmemdup (xmalloc.c:314)
+==620451==    by 0x405185D: xstrdup (xmalloc.c:339)
+==620451==    by 0x402994B: make_name (names.c:599)
+==620451==    by 0x402994B: addname (names.c:1233)
+==620451==    by 0x4025436: read_and (list.c:174)
+==620451==    by 0x400CD61: main (tar.c:2823)
+==620451== 
+==620451== 4 bytes in 1 blocks are still reachable in loss record 2 of 17
+==620451==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620451==    by 0x405185D: xmalloc (xmalloc.c:45)
+==620451==    by 0x405185D: xmemdup (xmalloc.c:314)
+==620451==    by 0x405185D: xstrdup (xmalloc.c:339)
+==620451==    by 0x4029A2E: name_gather (names.c:1215)
+==620451==    by 0x4025436: read_and (list.c:174)
+==620451==    by 0x400CD61: main (tar.c:2823)
+==620451== 
+==620451== 5 bytes in 1 blocks are still reachable in loss record 3 of 17
+==620451==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620451==    by 0x405185D: xmalloc (xmalloc.c:45)
+==620451==    by 0x405185D: xmemdup (xmalloc.c:314)
+==620451==    by 0x405185D: xstrdup (xmalloc.c:339)
+==620451==    by 0x402644F: assign_string (misc.c:58)
+==620451==    by 0x402973C: uname_to_uid (names.c:550)
+==620451==    by 0x402457F: decode_header (list.c:694)
+==620451==    by 0x4025616: read_and (list.c:194)
+==620451==    by 0x400CD61: main (tar.c:2823)
+==620451== 
+==620451== 5 bytes in 1 blocks are still reachable in loss record 4 of 17
+==620451==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620451==    by 0x405185D: xmalloc (xmalloc.c:45)
+==620451==    by 0x405185D: xmemdup (xmalloc.c:314)
+==620451==    by 0x405185D: xstrdup (xmalloc.c:339)
+==620451==    by 0x402644F: assign_string (misc.c:58)
+==620451==    by 0x40297DC: gname_to_gid (names.c:580)
+==620451==    by 0x402455F: decode_header (list.c:699)
+==620451==    by 0x4025616: read_and (list.c:194)
+==620451==    by 0x400CD61: main (tar.c:2823)
+==620451== 
+==620451== 16 bytes in 1 blocks are still reachable in loss record 5 of 17
+==620451==    at 0x48C4E43: calloc (vg_replace_malloc.c:1678)
+==620451==    by 0x40516F1: xcalloc (xmalloc.c:298)
+==620451==    by 0x40516F1: xzalloc (xmalloc.c:283)
+==620451==    by 0x400BEF9: decode_options (tar.c:2297)
+==620451==    by 0x400BEF9: main (tar.c:2792)
+==620451== 
+==620451== 31 bytes in 3 blocks are indirectly lost in loss record 6 of 17
+==620451==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620451==    by 0x40387DD: wsnode_quoteremoval (wordsplit.c:651)
+==620451==    by 0x4039CFD: wordsplit_process_list (wordsplit.c:2390)
+==620451==    by 0x403A562: wordsplit_run.constprop.0 (wordsplit.c:2434)
+==620451==    by 0x400BFFA: parse_default_options (tar.c:2256)
+==620451==    by 0x400BFFA: decode_options (tar.c:2378)
+==620451==    by 0x400BFFA: main (tar.c:2792)
+==620451== 
+==620451== 31 bytes in 3 blocks are definitely lost in loss record 7 of 17
+==620451==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620451==    by 0x403A1FB: wordsplit_finish (wordsplit.c:836)
+==620451==    by 0x400BFFA: parse_default_options (tar.c:2256)
+==620451==    by 0x400BFFA: decode_options (tar.c:2378)
+==620451==    by 0x400BFFA: main (tar.c:2792)
+==620451== 
+==620451== 48 bytes in 1 blocks are still reachable in loss record 8 of 17
+==620451==    at 0x48C53C0: reallocarray (vg_replace_malloc.c:1806)
+==620451==    by 0x40515C9: xreallocarray (xmalloc.c:84)
+==620451==    by 0x40515C9: x2nrealloc (xmalloc.c:203)
+==620451==    by 0x4027754: chdir_arg (misc.c:934)
+==620451==    by 0x4029A36: name_gather (names.c:1215)
+==620451==    by 0x4025436: read_and (list.c:174)
+==620451==    by 0x400CD61: main (tar.c:2823)
+==620451== 
+==620451== 56 bytes in 1 blocks are definitely lost in loss record 9 of 17
+==620451==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620451==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==620451==    by 0x40283CE: name_elt_alloc (names.c:683)
+==620451==    by 0x40289D8: name_add_dir (names.c:839)
+==620451==    by 0x40289D8: names_parse_opt (names.c:192)
+==620451==    by 0x404233D: group_parse (argp-parse.c:233)
+==620451==    by 0x404233D: parser_parse_opt (argp-parse.c:736)
+==620451==    by 0x404233D: parser_parse_next (argp-parse.c:859)
+==620451==    by 0x404233D: argp_parse (argp-parse.c:927)
+==620451==    by 0x400C045: decode_options (tar.c:2380)
+==620451==    by 0x400C045: main (tar.c:2792)
+==620451== 
+==620451== 80 bytes in 1 blocks are still reachable in loss record 10 of 17
+==620451==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620451==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==620451==    by 0x400BE43: main (tar.c:2781)
+==620451== 
+==620451== 97 (96 direct, 1 indirect) bytes in 1 blocks are definitely lost in loss record 11 of 17
+==620451==    at 0x48C4E43: calloc (vg_replace_malloc.c:1678)
+==620451==    by 0x40516F1: xcalloc (xmalloc.c:298)
+==620451==    by 0x40516F1: xzalloc (xmalloc.c:283)
+==620451==    by 0x4029932: make_name (names.c:596)
+==620451==    by 0x4029932: addname (names.c:1233)
+==620451==    by 0x4025436: read_and (list.c:174)
+==620451==    by 0x400CD61: main (tar.c:2823)
+==620451== 
+==620451== 102 bytes in 1 blocks are still reachable in loss record 12 of 17
+==620451==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620451==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==620451==    by 0x4029881: name_init (names.c:869)
+==620451==    by 0x400C94C: main (tar.c:2794)
+==620451== 
+==620451== 112 bytes in 1 blocks are still reachable in loss record 13 of 17
+==620451==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620451==    by 0x491DE43: __gconv_open (gconv_open.c:77)
+==620451==    by 0x491D9E0: iconv_open (iconv_open.c:39)
+==620451==    by 0x403383D: utf8_init (utf8.c:61)
+==620451==    by 0x403383D: utf8_convert (utf8.c:73)
+==620451==    by 0x401DE33: decode_string (xheader.c:1032)
+==620451==    by 0x401DE33: raw_path_decoder (xheader.c:1258)
+==620451==    by 0x401DE33: raw_path_decoder (xheader.c:1254)
+==620451==    by 0x401DE33: sparse_path_decoder (xheader.c:1282)
+==620451==    by 0x401CA71: decode_record.isra.0 (xheader.c:662)
+==620451==    by 0x401EB99: xheader_decode (xheader.c:708)
+==620451==    by 0x40242BA: decode_header (list.c:717)
+==620451==    by 0x4025616: read_and (list.c:194)
+==620451==    by 0x400CD61: main (tar.c:2823)
+==620451== 
+==620451== 151 (120 direct, 31 indirect) bytes in 3 blocks are definitely lost in loss record 14 of 17
+==620451==    at 0x48C4E43: calloc (vg_replace_malloc.c:1678)
+==620451==    by 0x403959D: wsnode_new (wordsplit.c:422)
+==620451==    by 0x403959D: wordsplit_add_segm (wordsplit.c:523)
+==620451==    by 0x4039854: scan_word (wordsplit.c:2062)
+==620451==    by 0x4039C7C: wordsplit_process_list (wordsplit.c:2358)
+==620451==    by 0x403A562: wordsplit_run.constprop.0 (wordsplit.c:2434)
+==620451==    by 0x400BFFA: parse_default_options (tar.c:2256)
+==620451==    by 0x400BFFA: decode_options (tar.c:2378)
+==620451==    by 0x400BFFA: main (tar.c:2792)
+==620451== 
+==620451== 208 bytes in 1 blocks are still reachable in loss record 15 of 17
+==620451==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620451==    by 0x4929C6F: __gconv_lookup_cache (gconv_cache.c:361)
+==620451==    by 0x491F8EE: __gconv_find_transform (gconv_db.c:717)
+==620451==    by 0x491DDE5: __gconv_open (gconv_open.c:73)
+==620451==    by 0x491D9E0: iconv_open (iconv_open.c:39)
+==620451==    by 0x403383D: utf8_init (utf8.c:61)
+==620451==    by 0x403383D: utf8_convert (utf8.c:73)
+==620451==    by 0x401DE33: decode_string (xheader.c:1032)
+==620451==    by 0x401DE33: raw_path_decoder (xheader.c:1258)
+==620451==    by 0x401DE33: raw_path_decoder (xheader.c:1254)
+==620451==    by 0x401DE33: sparse_path_decoder (xheader.c:1282)
+==620451==    by 0x401CA71: decode_record.isra.0 (xheader.c:662)
+==620451==    by 0x401EB99: xheader_decode (xheader.c:708)
+==620451==    by 0x40242BA: decode_header (list.c:717)
+==620451==    by 0x4025616: read_and (list.c:194)
+==620451==    by 0x400CD61: main (tar.c:2823)
+==620451== 
+==620451== 4,064 bytes in 1 blocks are still reachable in loss record 16 of 17
+==620451==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620451==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==620451==    by 0x404A07D: call_chunkfun (obstack.c:88)
+==620451==    by 0x404A07D: _obstack_begin_worker.isra.0 (obstack.c:135)
+==620451==    by 0x404A0A8: _obstack_begin (obstack.c:157)
+==620451==    by 0x4032C57: _transform_name_to_obstack (transform.c:592)
+==620451==    by 0x4032C57: transform_name_fp (transform.c:614)
+==620451==    by 0x4023670: transform_member_name (list.c:114)
+==620451==    by 0x4023670: transform_stat_info.part.0 (list.c:150)
+==620451==    by 0x4025850: transform_stat_info (list.c:227)
+==620451==    by 0x4025850: read_and (list.c:227)
+==620451==    by 0x400CD61: main (tar.c:2823)
+==620451== 
+==620451== 32,640 bytes in 1 blocks are still reachable in loss record 17 of 17
+==620451==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==620451==    by 0x491DECE: __gconv_open (gconv_open.c:127)
+==620451==    by 0x491D9E0: iconv_open (iconv_open.c:39)
+==620451==    by 0x403383D: utf8_init (utf8.c:61)
+==620451==    by 0x403383D: utf8_convert (utf8.c:73)
+==620451==    by 0x401DE33: decode_string (xheader.c:1032)
+==620451==    by 0x401DE33: raw_path_decoder (xheader.c:1258)
+==620451==    by 0x401DE33: raw_path_decoder (xheader.c:1254)
+==620451==    by 0x401DE33: sparse_path_decoder (xheader.c:1282)
+==620451==    by 0x401CA71: decode_record.isra.0 (xheader.c:662)
+==620451==    by 0x401EB99: xheader_decode (xheader.c:708)
+==620451==    by 0x40242BA: decode_header (list.c:717)
+==620451==    by 0x4025616: read_and (list.c:194)
+==620451==    by 0x400CD61: main (tar.c:2823)
+==620451== 
+==620451== LEAK SUMMARY:
+==620451==    definitely lost: 303 bytes in 8 blocks
+==620451==    indirectly lost: 32 bytes in 4 blocks
+==620451==      possibly lost: 0 bytes in 0 blocks
+==620451==    still reachable: 37,284 bytes in 11 blocks
+==620451==         suppressed: 0 bytes in 0 blocks
+==620451== 
+==620451== For lists of detected and suppressed errors, rerun with: -s
+==620451== ERROR SUMMARY: 5 errors from 5 contexts (suppressed: 0 from 0)

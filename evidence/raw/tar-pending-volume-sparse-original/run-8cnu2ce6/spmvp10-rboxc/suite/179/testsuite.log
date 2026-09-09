@@ -1,0 +1,32 @@
+#                             -*- compilation -*-
+179. spmvp10.at:21: testing sparse files in PAX MV archives, v.1.0 ...
+/opt/src/tar-1.35/tests/spmvp10.at:24:
+mkdir pax
+(cd pax
+TEST_TAR_FORMAT=pax
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H pax"
+export TAR_OPTIONS
+rm -rf *
+
+exec <&-
+TAR_OPTIONS="$TAR_OPTIONS --hole-detection=raw"
+genfile --sparse --file sparsefile 0 ABCDEFGH 1M ABCDEFGHI || exit 77
+echo "Pass 1: Split between data blocks"
+echo "Create archive"
+tar --sparse --sparse-version=1.0 -c --record-size=512 -M -L6 -f arc.1 -f arc.2 -f arc.3 sparsefile
+echo "Test archive"
+tar -t -M -f arc.1 -f arc.2 -f arc.3
+echo "Compare archive"
+tar -d -M -f arc.1 -f arc.2 -f arc.3
+
+echo "Pass 2: Split within a data block"
+genfile --sparse --file sparsefile 0 ABCDEFG 1M ABCDEFGHI || exit 77
+echo "Create archive"
+tar --sparse --sparse-version=1.0 -c --record-size=512 -M -L6 -f arc.1 -f arc.2 -f arc.3 sparsefile
+echo "Test archive"
+tar -t -M -f arc.1 -f arc.2 -f arc.3
+echo "Compare archive"
+tar -d -M -f arc.1 -f arc.2 -f arc.3
+)
+179. spmvp10.at:21: 179. sparse files in PAX MV archives, v.1.0 (spmvp10.at:21): ok     (0m0.021s 0m0.043s)

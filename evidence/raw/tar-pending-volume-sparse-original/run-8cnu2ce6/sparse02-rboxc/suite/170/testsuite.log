@@ -1,0 +1,51 @@
+#                             -*- compilation -*-
+170. sparse02.at:21: testing extracting sparse file over a pipe ...
+/opt/src/tar-1.35/tests/sparse02.at:28:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --sparse --file sparsefile --block-size 512 0 ABCD 1M EFGH 2000K IJKL || exit 77
+tar --hole-detection=raw -c -f archive --sparse sparsefile || exit 1
+echo separator
+
+tar xfO archive | cat - > sparsecopy || exit 1
+cmp sparsefile sparsecopy
+)
+/opt/src/tar-1.35/tests/sparse02.at:28:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --sparse --file sparsefile --block-size 512 0 ABCD 1M EFGH 2000K IJKL || exit 77
+tar --hole-detection=raw -c -f archive --sparse sparsefile || exit 1
+echo separator
+
+tar xfO archive | cat - > sparsecopy || exit 1
+cmp sparsefile sparsecopy
+)
+/opt/src/tar-1.35/tests/sparse02.at:28:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --sparse --file sparsefile --block-size 512 0 ABCD 1M EFGH 2000K IJKL || exit 77
+tar --hole-detection=raw -c -f archive --sparse sparsefile || exit 1
+echo separator
+
+tar xfO archive | cat - > sparsecopy || exit 1
+cmp sparsefile sparsecopy
+)
+170. sparse02.at:21: 170. extracting sparse file over a pipe (sparse02.at:21): ok     (0m0.051s 0m0.090s)

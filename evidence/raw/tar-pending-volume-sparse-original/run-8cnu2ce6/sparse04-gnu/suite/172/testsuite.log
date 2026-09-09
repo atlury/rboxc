@@ -1,0 +1,15 @@
+#                             -*- compilation -*-
+172. sparse04.at:21: testing storing long sparse file names ...
+/opt/src/tar-1.35/tests/sparse04.at:35:
+mkdir pax
+(cd pax
+TEST_TAR_FORMAT=pax
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H pax"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --sparse --file 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960 --block-size 512 8M A || exit 77
+tar -f - -c --sparse --posix 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960 | tar tf -
+)
+172. sparse04.at:21: 172. storing long sparse file names (sparse04.at:21): ok     (0m0.008s 0m0.013s)

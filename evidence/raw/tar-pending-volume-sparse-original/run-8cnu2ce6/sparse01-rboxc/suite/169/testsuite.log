@@ -1,0 +1,90 @@
+#                             -*- compilation -*-
+169. sparse01.at:21: testing sparse files ...
+/opt/src/tar-1.35/tests/sparse01.at:24:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --length 1000 -f begin
+genfile --length 1000 -f end
+genfile --sparse --file sparsefile --block-size 512 0 ABCD 1M EFGH 2000K IJKL || exit 77
+tar -c -f archive --sparse begin sparsefile end || exit 1
+echo separator
+
+tar tfv archive
+echo separator
+mkdir directory
+tar Cxf directory archive --warning=no-timestamp
+genfile --stat=name,size sparsefile
+cmp sparsefile directory/sparsefile
+)
+stdout:
+separator
+-rw-r--r-- root/root      1000 2026-09-09 01:45 begin
+-rw-r--r-- root/root   3102720 2026-09-09 01:45 sparsefile
+-rw-r--r-- root/root      1000 2026-09-09 01:45 end
+separator
+sparsefile 3102720
+/opt/src/tar-1.35/tests/sparse01.at:24:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --length 1000 -f begin
+genfile --length 1000 -f end
+genfile --sparse --file sparsefile --block-size 512 0 ABCD 1M EFGH 2000K IJKL || exit 77
+tar -c -f archive --sparse begin sparsefile end || exit 1
+echo separator
+
+tar tfv archive
+echo separator
+mkdir directory
+tar Cxf directory archive --warning=no-timestamp
+genfile --stat=name,size sparsefile
+cmp sparsefile directory/sparsefile
+)
+stdout:
+separator
+-rw-r--r-- root/root      1000 2026-09-09 01:45 begin
+-rw-r--r-- root/root   3102720 2026-09-09 01:45 sparsefile
+-rw-r--r-- root/root      1000 2026-09-09 01:45 end
+separator
+sparsefile 3102720
+/opt/src/tar-1.35/tests/sparse01.at:24:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --length 1000 -f begin
+genfile --length 1000 -f end
+genfile --sparse --file sparsefile --block-size 512 0 ABCD 1M EFGH 2000K IJKL || exit 77
+tar -c -f archive --sparse begin sparsefile end || exit 1
+echo separator
+
+tar tfv archive
+echo separator
+mkdir directory
+tar Cxf directory archive --warning=no-timestamp
+genfile --stat=name,size sparsefile
+cmp sparsefile directory/sparsefile
+)
+stdout:
+separator
+-rw-r--r-- root/root      1000 2026-09-09 01:45 begin
+-rw-r--r-- root/root   3102720 2026-09-09 01:45 sparsefile
+-rw-r--r-- root/root      1000 2026-09-09 01:45 end
+separator
+sparsefile 3102720
+169. sparse01.at:21: 169. sparse files (sparse01.at:21): ok     (0m0.043s 0m0.131s)

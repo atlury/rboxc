@@ -1,0 +1,41 @@
+#                             -*- compilation -*-
+161. multiv05.at:26: testing Restoring after an out of sync volume ...
+/opt/src/tar-1.35/tests/multiv05.at:30:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+exec <&-
+
+genfile --length 250k --file jeden
+genfile --length 250k --file dwa
+genfile --length 250k --file trzy
+genfile --length 250k --file cztery
+genfile --length 250k --file piec
+genfile --length 250k --file szesc
+
+
+echo Creating archive
+tar -c -M -L 502 -f a.tar -f b.tar -f c.tar jeden dwa trzy cztery piec szesc
+echo separator
+mkdir bak
+mv jeden dwa trzy cztery piec szesc bak
+tar -vxM -f a.tar -f c.tar -f b.tar -f c.tar
+echo Diffing jeden
+   cmp bak/jeden jeden || exit 1
+echo Diffing dwa
+   cmp bak/dwa dwa || exit 1
+echo Diffing trzy
+   cmp bak/trzy trzy || exit 1
+echo Diffing cztery
+   cmp bak/cztery cztery || exit 1
+echo Diffing piec
+   cmp bak/piec piec || exit 1
+echo Diffing szesc
+   cmp bak/szesc szesc || exit 1
+)
+161. multiv05.at:26: 161. Restoring after an out of sync volume (multiv05.at:26): ok     (0m1.644s 0m0.120s)

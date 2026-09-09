@@ -145,6 +145,27 @@ selections.update({
     'time02': (156, 'time02.at'),
     'options': (3, 'options.at'),
 })
+selections.update({
+    'multiv01': (157, 'multiv01.at'),
+    'multiv02': (158, 'multiv02.at'),
+    'multiv03': (159, 'multiv03.at'),
+    'multiv04': (160, 'multiv04.at'),
+    'multiv05': (161, 'multiv05.at'),
+    'multiv06': (162, 'multiv06.at'),
+    'multiv08': (164, 'multiv08.at'),
+    'multiv10': (166, 'multiv10.at'),
+    'volume': (189, 'volume.at'),
+    'sparse01': (169, 'sparse01.at'),
+    'sparse02': (170, 'sparse02.at'),
+    'sparse03': (171, 'sparse03.at'),
+    'sparse04': (172, 'sparse04.at'),
+    'sparse06': (174, 'sparse06.at'),
+    'sparse07': (175, 'sparse07.at'),
+    'sparsemv': (176, 'sparsemv.at'),
+    'spmvp00': (177, 'spmvp00.at'),
+    'spmvp01': (178, 'spmvp01.at'),
+    'spmvp10': (179, 'spmvp10.at'),
+})
 selected = profile.options.commands or list(selections)
 assert set(selected) <= set(selections)
 helpers = {n: ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','mkdir','chmod','touch','sort','echo','basename','cp','ln','true','false','sleep','ls','mv','mktemp','cut','id','date','printf','dd','rmdir','expr','tr','wc','head','tail','uname','cksum')}
@@ -163,6 +184,11 @@ for filename in ('genfile.c', 'argcv.c', 'argcv.h', 'ckmtime.c', 'checkseekhole.
 manifest = json.loads((ROOT/'inventory/tar-tests.json').read_text())
 registered = {row['path']: row for row in manifest['inputs']}
 assert fingerprint(source/'tests/testsuite.at') == manifest['registration_sha256']
+if set(selected) & {'spmvp00', 'spmvp01', 'spmvp10'}:
+    support = source/'tests/sparsemvp.at'
+    assert registered['tests/sparsemvp.at']['reviewed']
+    assert fingerprint(support) == registered['tests/sparsemvp.at']['sha256']
+    inputs[support] = fingerprint(support)
 for name in selected:
     path = source/'tests'/selections[name][1]
     reviewed = registered[str(path.relative_to(source))]
@@ -244,7 +270,15 @@ def run_selection(name):
                     if (work/file).exists():
                         shutil.copy2(work/file, saved/file)
                 if (work/'testsuite.dir').exists():
-                    shutil.copytree(work/'testsuite.dir', saved/'suite', symlinks=True)
+                    def preserve_fixture(src, dst):
+                        # Preserve holes in large original fixtures instead of materializing gigabytes.
+                        if os.stat(src).st_size > 64 * 1024 * 1024:
+                            subprocess.run([str(work/'deps/cp'), '--sparse=always',
+                                            '--preserve=mode,timestamps', '--', src, dst], check=True)
+                            return dst
+                        return shutil.copy2(src, dst)
+                    shutil.copytree(work/'testsuite.dir', saved/'suite', symlinks=True,
+                                    copy_function=preserve_fixture)
                 shutil.copytree(work/'memory', saved/'memory')
                 output = done.stdout.decode(errors='replace')
                 assertions = re.findall(r'^\s*(\d+):\s+.*?\s+(ok|FAILED|skipped|expected failure)(?: \([^\n]*\))?\s*$', output, re.M)

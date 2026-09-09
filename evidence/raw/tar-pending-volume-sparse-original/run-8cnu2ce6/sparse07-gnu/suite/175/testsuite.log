@@ -1,0 +1,45 @@
+#                             -*- compilation -*-
+175. sparse07.at:21: testing sparse files with unicode names ...
+/opt/src/tar-1.35/tests/sparse07.at:24:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --sparse --file žluť --block-size 512 0 ABCD 1M EFGH 2000K IJKL || exit 77
+tar -c -f archive --sparse žluť || exit 1
+
+tar tf archive
+)
+/opt/src/tar-1.35/tests/sparse07.at:24:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --sparse --file žluť --block-size 512 0 ABCD 1M EFGH 2000K IJKL || exit 77
+tar -c -f archive --sparse žluť || exit 1
+
+tar tf archive
+)
+/opt/src/tar-1.35/tests/sparse07.at:24:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --sparse --file žluť --block-size 512 0 ABCD 1M EFGH 2000K IJKL || exit 77
+tar -c -f archive --sparse žluť || exit 1
+
+tar tf archive
+)
+175. sparse07.at:21: 175. sparse files with unicode names (sparse07.at:21): ok     (0m0.010s 0m0.042s)

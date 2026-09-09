@@ -1,0 +1,33 @@
+#                             -*- compilation -*-
+171. sparse03.at:21: testing storing sparse files > 8G ...
+/opt/src/tar-1.35/tests/sparse03.at:29:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+test "${TARTEST_SKIP_LARGE_FILES:-0}" != 0 && exit 77
+genfile --length 1000 --file begin
+genfile --length 1000 --file end
+genfile --sparse --file sparsefile --block-size 512 8G A || exit 77
+tar -c -f archive --sparse begin sparsefile end || exit 1
+echo separator
+
+tar tfv archive
+echo separator
+mkdir directory
+tar Cxf directory archive
+genfile --stat=name,size sparsefile
+cmp sparsefile directory/sparsefile
+)
+stdout:
+separator
+-rw-r--r-- root/root      1000 2026-09-09 01:45 begin
+-rw-r--r-- root/root 8589935104 2026-09-09 01:45 sparsefile
+-rw-r--r-- root/root       1000 2026-09-09 01:45 end
+separator
+sparsefile 8589935104
+171. sparse03.at:21: 171. storing sparse files > 8G (sparse03.at:21): ok     (0m2.291s 0m1.058s)

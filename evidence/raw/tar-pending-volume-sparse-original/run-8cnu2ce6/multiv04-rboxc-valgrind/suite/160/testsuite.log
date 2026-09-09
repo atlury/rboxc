@@ -1,0 +1,55 @@
+#                             -*- compilation -*-
+160. multiv04.at:36: testing split directory members in a MV archive ...
+/opt/src/tar-1.35/tests/multiv04.at:39:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+mkdir directory
+awk 'BEGIN { for (i = 0; i < 1024; i++) printf("directory/%014x\n", i); }' </dev/null | genfile --files-from -
+
+exec <&-
+
+sleep 2
+
+tar --listed-incremental=list -c -f archive.a directory
+
+sleep 2
+
+tar --listed-incremental=list -c --record-size 1024 -L 16 -f arc.1 -f arc.2 -v directory
+
+echo separator
+
+tar -MRt -f arc.1 -f arc.2)
+/opt/src/tar-1.35/tests/multiv04.at:39:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+mkdir directory
+awk 'BEGIN { for (i = 0; i < 1024; i++) printf("directory/%014x\n", i); }' </dev/null | genfile --files-from -
+
+exec <&-
+
+sleep 2
+
+tar --listed-incremental=list -c -f archive.a directory
+
+sleep 2
+
+tar --listed-incremental=list -c --record-size 1024 -L 16 -f arc.1 -f arc.2 -v directory
+
+echo separator
+
+tar -MRt -f arc.1 -f arc.2)
+160. multiv04.at:36: 160. split directory members in a MV archive (multiv04.at:36): ok     (0m5.073s 0m0.357s)
