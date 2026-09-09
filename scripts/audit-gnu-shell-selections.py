@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Independently audit five ordinary selections without certifying whole scripts."""
+"""Independently audit ordinary selections without certifying whole scripts."""
 # SPDX-License-Identifier: GPL-3.0-or-later
 from collections import Counter
+import argparse
 import copy
 import hashlib
 import importlib.util
@@ -22,17 +23,35 @@ def module(name, path):
     return result
 
 
-runner = module('reviewed', 'evidence/raw/gnu-shell-selection-final-driver.py')
-selector = module('selector', 'evidence/raw/gnu-shell-selection-final-helper.py')
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--group', choices=('shell', 'file'), default='shell')
+group = parser.parse_args().group
+prefix = 'gnu-' + group + '-selection'
+runner_path = f'evidence/raw/{prefix}-final-driver.py'
+selector_path = f'evidence/raw/{prefix}-final-helper.py'
+runner = module('reviewed', runner_path)
+selector = module('selector', selector_path)
 raw, reports, images, totals = {}, {}, {}, {}
 sha = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
-target = ROOT/'evidence/gnu-shell-selection-validation.json'
-coverage_target = ROOT/'evidence/gnu-shell-selection-coverage.json'
+target = ROOT/f'evidence/{prefix}-validation.json'
+coverage_target = ROOT/f'evidence/{prefix}-coverage.json'
 assert not target.exists() and not coverage_target.exists()
 historic = {
-    'tests/gnu/reviewed-original.py': 'evidence/raw/gnu-shell-selection-final-driver.py',
-    'scripts/gnu_shell_selections.py': 'evidence/raw/gnu-shell-selection-final-helper.py',
+    'tests/gnu/reviewed-original.py': runner_path,
+    'scripts/gnu_shell_selections.py': selector_path,
 }
+expected = ({'tests/shred/shred-passes.sh': 4, 'tests/od/od-N.sh': 10,
+             'tests/tac/tac-2-nonseekable.sh': 6, 'tests/cksum/b2sum.sh': 48,
+             'tests/cksum/cksum-c.sh': 44} if group == 'shell' else
+            {'tests/ln/misc.sh': 24, 'tests/ln/relative.sh': 9,
+             'tests/split/line-bytes.sh': 221, 'tests/sort/sort-merge-fdlimit.sh': 5})
+
+
+def report_stem(script):
+    if group == 'file':
+        return 'gnu-file-selections'
+    return ('gnu-shell-selection-cksum' if script.endswith('/cksum-c.sh')
+            else 'gnu-shell-selections-ready')
 
 
 def pin(path, expected=None):
@@ -47,13 +66,13 @@ def pin(path, expected=None):
     return value
 
 
-snapshot = ROOT/'evidence/raw/gnu-shell-selection-final-inventory.json'
+snapshot = ROOT/f'evidence/raw/{prefix}-final-inventory.json'
 pin(snapshot)
 definitions = {r['script']: r for r in json.loads(snapshot.read_text())}
-review_path = ROOT/'evidence/gnu-shell-selection-review.json'
+review_path = ROOT/f'evidence/{prefix}-review.json'
 pin(review_path)
 review = json.loads(review_path.read_text())
-assert {r['script'] for r in review['selections']} == set(selector.EXCLUDED)
+assert {r['script'] for r in review['selections']} == set(expected) <= set(selector.EXCLUDED)
 for selected in review['selections']:
     script = selected['script']
     definition = definitions[script]
@@ -74,8 +93,7 @@ for selected in review['selections']:
     assert b''.join(parts) + original[cursor:] == data
     pin(selected['selected_path'], metadata['selected_sha256'])
     assert (ROOT/selected['selected_path']).read_bytes() == data
-    stem = ('gnu-shell-selection-cksum' if script.endswith('/cksum-c.sh')
-            else 'gnu-shell-selections-ready')
+    stem = report_stem(script)
     for instrument in (False, True):
         report = ROOT/f'evidence/raw/{stem}-{"valgrind" if instrument else "original"}.json'
         reports[str(report.relative_to(ROOT))] = pin(report)
@@ -116,6 +134,11 @@ for selected in review['selections']:
             if not instrument:
                 continue
             command_images = []
+            private_file = None
+            if script == 'tests/ln/misc.sh':
+                private_file, = re.findall(
+                    r'^\+ af=(/tmp/rboxc-upstream-[a-z0-9_]+/gt-misc\.sh\.[A-Za-z0-9]+/tln-file)$',
+                    log, re.M)
             clean = 0
             assert outcome['memory']
             for memory in outcome['memory']:
@@ -126,6 +149,8 @@ for selected in review['selections']:
                 assert set(re.findall(r'^==([0-9]+)==', text, re.M)) == {path.stem}
                 image, = re.findall(r'^==[0-9]+== Command: (.*)$', text, re.M)
                 assert image.split()[0] in definition['commands'], image
+                if private_file:
+                    image = image.replace(private_file, '$PRIVATE/tln-file')
                 command_images.append(image)
                 errors = list(re.finditer('ERROR SUMMARY:', text))
                 fds = list(re.finditer('FILE DESCRIPTORS:', text))
@@ -143,16 +168,11 @@ for selected in review['selections']:
                 'commands': dict(sorted(Counter(command_images).items())),
             }
     assert images[script, 'gnu'] == images[script, 'rboxc']
-    # Explicit fixed inventories for the four small original sections.
-    expected = {'tests/shred/shred-passes.sh': 4, 'tests/od/od-N.sh': 10,
-                'tests/tac/tac-2-nonseekable.sh': 6, 'tests/cksum/b2sum.sh': 48,
-                'tests/cksum/cksum-c.sh': 44}
-    if script in expected:
-        assert totals[script]['rboxc']['images'] == expected[script]
+    assert totals[script]['rboxc']['images'] == expected[script]
 
 # Retain the earlier fixture omissions as skips, never as coverage.
-for stem in ('gnu-shell-selections-original', 'gnu-shell-selections-ready-original',
-             'gnu-shell-selections-ready-valgrind'):
+for stem in (('gnu-shell-selections-original', 'gnu-shell-selections-ready-original',
+              'gnu-shell-selections-ready-valgrind') if group == 'shell' else ()):
     path = ROOT/f'evidence/raw/{stem}.json'
     pin(path)
     row, = [r for r in json.loads(path.read_text())['results'] if r['script'].endswith('/cksum-c.sh')]
@@ -162,17 +182,17 @@ for stem in ('gnu-shell-selections-original', 'gnu-shell-selections-ready-origin
         pin(row[implementation]['log'])
         assert 'shuf: not built' in (ROOT/row[implementation]['log']).read_text()
 
-base_path = ROOT/'evidence/gnu-cut-selection-coverage.json'
+base_path = ROOT/('evidence/gnu-cut-selection-coverage.json' if group == 'shell'
+                  else 'evidence/gnu-shell-selection-coverage.json')
 base = json.loads(base_path.read_text())
 pin(base_path)
 coverage = copy.deepcopy(base)
 for row in coverage['results']:
-    if row['script'] not in selector.EXCLUDED:
+    if row['script'] not in expected:
         continue
     assert row['state'] == row['valgrind_state'] == 'pending'
     script = row['script']
-    stem = ('gnu-shell-selection-cksum' if script.endswith('/cksum-c.sh')
-            else 'gnu-shell-selections-ready')
+    stem = report_stem(script)
     row.update(state='partial', execution_coverage='selected-shell-sections',
                shell_selection=definitions[script]['shell_selection'],
                valgrind_state='passed-selection',
@@ -181,18 +201,18 @@ for row in coverage['results']:
                audit=str(target.relative_to(ROOT)),
                binary_sha256=sha(ROOT/'target/iconv-charmap-cleanup-candidate/release/rboxc'))
 assert all(a == b for a, b in zip(base['results'], coverage['results'])
-           if a['script'] not in selector.EXCLUDED)
+           if a['script'] not in expected)
 coverage['counts'] = dict(sorted(Counter(r['state'] for r in coverage['results']).items()))
 coverage['valgrind_counts'] = dict(sorted(Counter(r['valgrind_state'] for r in coverage['results']).items()))
 coverage.update(base_report=str(base_path.relative_to(ROOT)), base_report_sha256=sha(base_path),
-                scope='Pinned 733-script ledger extended by five ordinary shell selections. Excluded intervals remain unexecuted; full script and release acceptance remain open.')
+                scope=f'Pinned 733-script ledger extended by {len(expected)} ordinary shell selections. Excluded intervals remain unexecuted; full script and release acceptance remain open.')
 coverage_target.write_text(json.dumps(coverage, indent=2)+'\n')
 target.write_text(json.dumps({
-    'scope': 'Original assertions pass normally and under Valgrind for all five selected scripts. Every candidate image is clean; native GNU findings remain recorded. These are partial script results.',
+    'scope': 'Original assertions pass normally and under Valgrind for all selected scripts. Every candidate image is clean; native GNU findings remain recorded. These are partial script results.',
     'results': totals, 'raw': raw, 'reports': reports,
     'coverage': str(coverage_target.relative_to(ROOT)),
     'coverage_sha256': sha(coverage_target),
     'clean_candidate_processes': sum(r['rboxc']['clean'] for r in totals.values()),
     'accounting_pass': True, 'selected_sections_pass': True, 'full_suite_pass': False,
 }, indent=2)+'\n')
-print('PASS: five ordinary shell selections;', sum(r['rboxc']['clean'] for r in totals.values()), 'clean candidate images')
+print('PASS:', len(expected), 'ordinary shell selections;', sum(r['rboxc']['clean'] for r in totals.values()), 'clean candidate images')

@@ -2325,10 +2325,10 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. The current
-[evidence/gnu-shell-selection-coverage.json](evidence/gnu-shell-selection-coverage.json)
-extends the preserved `evidence/gnu-suite-coverage.json` checkpoint by eight
-reviewed selections: 639 scripts passed, 21 have selected coverage, five
-are skipped, 29 are excluded and 39 remain pending.
+[evidence/gnu-file-selection-coverage.json](evidence/gnu-file-selection-coverage.json)
+extends the preserved `evidence/gnu-suite-coverage.json` checkpoint by twelve
+reviewed selections: 639 scripts passed, 25 have selected coverage, five
+are skipped, 29 are excluded and 35 remain pending.
 
 All 197 reviewed `env -S` cases pass normally against GNU. The original table
 contains 199 cases; two historical reproduction cases remain unexecuted.
@@ -2361,9 +2361,18 @@ inventories and complete logs are checked by
 The original `cksum-c` fixture omission is preserved as a skip; its corrected
 profile registers `shuf` and passes. Historical memory/crash sections and the
 separate strace I/O fault profile remain unexecuted. These are partial script
-results. The Valgrind ledger now has 589 passed scripts, 15 passed selections,
-39 open profiles, 61 pending and 29 exclusions. Installed-release evidence is
-unchanged.
+results.
+Four further selections pass link creation, simple backups and interactive
+precedence; relative links; the original **220-case split matrix**; and merge
+batch sizes with 17 inputs under bounded descriptor limits. All four pass
+normally and under Valgrind, adding **259 clean candidate images** on the same
+`7a05a47f` candidate. The link comparison normalizes only its private fixture
+filename; every source interval and command image is retained in
+[evidence/gnu-file-selection-validation.json](evidence/gnu-file-selection-validation.json).
+Historical memory/crash sections and split's separate address-space-limit
+profile remain held. The Valgrind ledger now has 589 passed scripts, 19 passed
+selections, 39 open profiles, 57 pending and 29 exclusions. Installed-release
+evidence is unchanged.
 
 Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
