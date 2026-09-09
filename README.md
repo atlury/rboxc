@@ -2246,11 +2246,26 @@ nine GNU comparisons under Valgrind; all 428 help/version comparisons and 107
 Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
-root tests and 41 generated factor tests. `scripts/suite-inventory.py` reconciles
-the original test evidence into `evidence/gnu-suite-coverage.json`: 639 scripts
-passed, 13 have selected-case coverage, five are skipped, 29 are excluded,
-and 47 remain pending. No recorded native failures
-remain in the executed selections. Three SELinux-only scripts whose names do
+root tests and 41 generated factor tests. The current
+[evidence/gnu-env-s-selection-coverage.json](evidence/gnu-env-s-selection-coverage.json)
+extends the preserved `evidence/gnu-suite-coverage.json` checkpoint by one
+reviewed selection: 639 scripts passed, 14 have selected-case coverage, five
+are skipped, 29 are excluded and 46 remain pending.
+
+All 197 reviewed `env -S` cases pass normally against GNU. The original table
+contains 199 cases; two historical reproduction cases remain unexecuted.
+Under Valgrind, both implementations retain 88 differences from injected
+environment variables, two absolute diagnostic-name differences and two
+finding profiles in the native Perl helper. There are 196 clean candidate
+process logs, including the 90 instrumentation baselines; the Valgrind
+selection remains open. Its audit verifies the exact case selection, raw
+output differences and matching command-image inventories:
+[evidence/gnu-env-s-selection-validation.json](evidence/gnu-env-s-selection-validation.json).
+The Valgrind ledger now has 589 passed scripts, eight passed selections,
+39 open profiles, 68 pending and 29 exclusions. Installed-release evidence is
+unchanged.
+
+Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
 explicitly excluded with source hashes in inventory/gnu-suite-exclusions.json.
 This scope correction adds no passes. Partial selections and skips
