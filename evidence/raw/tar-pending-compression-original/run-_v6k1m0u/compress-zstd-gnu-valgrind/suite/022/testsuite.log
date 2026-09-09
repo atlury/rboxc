@@ -1,0 +1,32 @@
+#                             -*- compilation -*-
+22. testsuite.at:248: testing compress: zstd ...
+/opt/src/tar-1.35/tests/testsuite.at:248:
+
+cat /dev/null | zstd - > /dev/null 2>&1 || exit 77
+
+unset TAR_OPTIONS
+
+touch empty
+set -e
+: create with --zstd
+tar --zstd -cf k.tar.zst empty
+tar tf k.tar.zst
+
+
+echo testing .zst
+tar -acf k2.tar.zst empty
+cat k2.tar.zst | zstd -d > k.zst.tar
+tar tf k.zst.tar
+
+echo testing .tzst
+tar -acf k2.tar.tzst empty
+cat k2.tar.tzst | zstd -d > k.tzst.tar
+tar tf k.tzst.tar
+
+
+# Extraction: ensure compressed format is correctly recognized
+rm -f empty
+tar xf k.tar.zst
+test -f empty
+
+22. testsuite.at:248: 22. compress: zstd (testsuite.at:248): ok     (0m8.716s 0m0.602s)

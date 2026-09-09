@@ -1,0 +1,103 @@
+#                             -*- compilation -*-
+191. comprec.at:21: testing compressed format recognition ...
+/opt/src/tar-1.35/tests/comprec.at:25:
+mkdir v7
+(cd v7
+TEST_TAR_FORMAT=v7
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H v7"
+export TAR_OPTIONS
+rm -rf *
+
+
+cat /dev/null | gzip - > /dev/null 2>&1 || exit 77
+
+genfile --length 10240 --file file1
+echo "separator"
+tar cfz archive file1
+echo "separator"
+mv file1 orig
+tar xfv archive --warning=no-timestamp
+cmp orig file1
+)
+/opt/src/tar-1.35/tests/comprec.at:25:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+cat /dev/null | gzip - > /dev/null 2>&1 || exit 77
+
+genfile --length 10240 --file file1
+echo "separator"
+tar cfz archive file1
+echo "separator"
+mv file1 orig
+tar xfv archive --warning=no-timestamp
+cmp orig file1
+)
+/opt/src/tar-1.35/tests/comprec.at:25:
+mkdir ustar
+(cd ustar
+TEST_TAR_FORMAT=ustar
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H ustar"
+export TAR_OPTIONS
+rm -rf *
+
+
+cat /dev/null | gzip - > /dev/null 2>&1 || exit 77
+
+genfile --length 10240 --file file1
+echo "separator"
+tar cfz archive file1
+echo "separator"
+mv file1 orig
+tar xfv archive --warning=no-timestamp
+cmp orig file1
+)
+/opt/src/tar-1.35/tests/comprec.at:25:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+
+cat /dev/null | gzip - > /dev/null 2>&1 || exit 77
+
+genfile --length 10240 --file file1
+echo "separator"
+tar cfz archive file1
+echo "separator"
+mv file1 orig
+tar xfv archive --warning=no-timestamp
+cmp orig file1
+)
+/opt/src/tar-1.35/tests/comprec.at:25:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+cat /dev/null | gzip - > /dev/null 2>&1 || exit 77
+
+genfile --length 10240 --file file1
+echo "separator"
+tar cfz archive file1
+echo "separator"
+mv file1 orig
+tar xfv archive --warning=no-timestamp
+cmp orig file1
+)
+191. comprec.at:21: 191. compressed format recognition (comprec.at:21): ok     (0m0.039s 0m0.126s)

@@ -1,0 +1,30 @@
+#                             -*- compilation -*-
+199. remfiles02.at:28: testing remove-files with compression: grand-child ...
+/opt/src/tar-1.35/tests/remfiles02.at:32:
+
+cat /dev/null | gzip - > /dev/null 2>&1 || exit 77
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+
+mkdir dir
+cd dir
+mkdir a
+genfile --file b
+mkdir c
+
+tar -c -f a -z --remove-files b c 2>err
+EC=$?
+sed -n '/(child)/p' err >&2
+rm err
+find . | sort
+exit $EC
+
+--- -	2026-09-09 02:11:29.767033518 +0000
++++ /tmp/rboxc-tar-original-u3w5gall/testsuite.dir/at-groups/199/stderr	2026-09-09 02:11:29.763929548 +0000
+@@ -1,3 +1 @@
+-tar (child): a: Cannot open: Is a directory
+-tar (child): Error is not recoverable: exiting now
+ 
+199. remfiles02.at:28: 199. remove-files with compression: grand-child (remfiles02.at:28): FAILED (remfiles02.at:32)

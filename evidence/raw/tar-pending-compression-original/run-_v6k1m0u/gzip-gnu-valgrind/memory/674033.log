@@ -1,0 +1,77 @@
+==674033== Memcheck, a memory error detector
+==674033== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==674033== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+==674033== Command: tar xfvz /dev/null
+==674033== Parent PID: 674029
+==674033== 
+==674033== 
+==674033== FILE DESCRIPTORS: 3 open (3 inherited) at exit.
+==674033== 
+==674033== HEAP SUMMARY:
+==674033==     in use at exit: 14,634 bytes in 10 blocks
+==674033==   total heap usage: 20 allocs, 10 frees, 22,442 bytes allocated
+==674033== 
+==674033== 12 bytes in 4 blocks are still reachable in loss record 1 of 7
+==674033==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==674033==    by 0x405185D: xmalloc (xmalloc.c:45)
+==674033==    by 0x405185D: xmemdup (xmalloc.c:314)
+==674033==    by 0x405185D: xstrdup (xmalloc.c:339)
+==674033==    by 0x400C4F1: decode_options (tar.c:2353)
+==674033==    by 0x400C4F1: main (tar.c:2792)
+==674033== 
+==674033== 16 bytes in 1 blocks are still reachable in loss record 2 of 7
+==674033==    at 0x48C4E43: calloc (vg_replace_malloc.c:1678)
+==674033==    by 0x40516F1: xcalloc (xmalloc.c:298)
+==674033==    by 0x40516F1: xzalloc (xmalloc.c:283)
+==674033==    by 0x400BEF9: decode_options (tar.c:2297)
+==674033==    by 0x400BEF9: main (tar.c:2792)
+==674033== 
+==674033== 32 bytes in 1 blocks are still reachable in loss record 3 of 7
+==674033==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==674033==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==674033==    by 0x402F07B: optloc_save (tar.c:926)
+==674033==    by 0x402FFB0: set_use_compress_program_option (tar.c:985)
+==674033==    by 0x4030B0E: parse_opt (tar.c:1777)
+==674033==    by 0x404233D: group_parse (argp-parse.c:233)
+==674033==    by 0x404233D: parser_parse_opt (argp-parse.c:736)
+==674033==    by 0x404233D: parser_parse_next (argp-parse.c:859)
+==674033==    by 0x404233D: argp_parse (argp-parse.c:927)
+==674033==    by 0x400C045: decode_options (tar.c:2380)
+==674033==    by 0x400C045: main (tar.c:2792)
+==674033== 
+==674033== 56 bytes in 1 blocks are still reachable in loss record 4 of 7
+==674033==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==674033==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==674033==    by 0x400C46E: decode_options (tar.c:2340)
+==674033==    by 0x400C46E: main (tar.c:2792)
+==674033== 
+==674033== 80 bytes in 1 blocks are still reachable in loss record 5 of 7
+==674033==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==674033==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==674033==    by 0x400BE43: main (tar.c:2781)
+==674033== 
+==674033== 102 bytes in 1 blocks are still reachable in loss record 6 of 7
+==674033==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==674033==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==674033==    by 0x4029881: name_init (names.c:869)
+==674033==    by 0x400C94C: main (tar.c:2794)
+==674033== 
+==674033== 14,336 bytes in 1 blocks are still reachable in loss record 7 of 7
+==674033==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==674033==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==674033==    by 0x4027C22: page_aligned_alloc (misc.c:1235)
+==674033==    by 0x400D5A3: init_buffer (buffer.c:657)
+==674033==    by 0x4010B3B: _open_archive (buffer.c:725)
+==674033==    by 0x4010B3B: open_archive (buffer.c:2025)
+==674033==    by 0x402543F: read_and (list.c:176)
+==674033==    by 0x400CD61: main (tar.c:2823)
+==674033== 
+==674033== LEAK SUMMARY:
+==674033==    definitely lost: 0 bytes in 0 blocks
+==674033==    indirectly lost: 0 bytes in 0 blocks
+==674033==      possibly lost: 0 bytes in 0 blocks
+==674033==    still reachable: 14,634 bytes in 10 blocks
+==674033==         suppressed: 0 bytes in 0 blocks
+==674033== 
+==674033== For lists of detected and suppressed errors, rerun with: -s
+==674033== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

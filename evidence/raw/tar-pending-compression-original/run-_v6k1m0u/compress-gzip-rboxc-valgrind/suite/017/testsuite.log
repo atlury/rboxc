@@ -1,0 +1,32 @@
+#                             -*- compilation -*-
+17. testsuite.at:242: testing compress: gzip ...
+/opt/src/tar-1.35/tests/testsuite.at:242:
+
+cat /dev/null | gzip - > /dev/null 2>&1 || exit 77
+
+unset TAR_OPTIONS
+
+touch empty
+set -e
+: create with --gzip
+tar --gzip -cf k.tar.gz empty
+tar tf k.tar.gz
+
+
+echo testing .gz
+tar -acf k2.tar.gz empty
+cat k2.tar.gz | gzip -d > k.gz.tar
+tar tf k.gz.tar
+
+echo testing .tgz
+tar -acf k2.tar.tgz empty
+cat k2.tar.tgz | gzip -d > k.tgz.tar
+tar tf k.tgz.tar
+
+
+# Extraction: ensure compressed format is correctly recognized
+rm -f empty
+tar xf k.tar.gz
+test -f empty
+
+17. testsuite.at:242: 17. compress: gzip (testsuite.at:242): ok     (0m9.525s 0m0.654s)

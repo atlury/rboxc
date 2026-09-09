@@ -1,0 +1,54 @@
+#                             -*- compilation -*-
+198. remfiles01.at:28: testing remove-files with compression ...
+/opt/src/tar-1.35/tests/remfiles01.at:32:
+
+echo "test" > $$
+chmod 0 $$
+cat $$ > /dev/null 2>&1
+result=$?
+rm -f $$
+test $result -eq 0 && exit 77
+
+
+cat /dev/null | gzip - > /dev/null 2>&1 || exit 77
+
+
+case `(cat "$at_myself" 2>&3 | :) 3>&1 >/dev/null` in #(
+?*) exit 77;;
+esac
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+
+mkdir dir
+cd dir
+genfile --file a --length 0
+chmod 0 a
+genfile --file b
+mkdir c
+
+# Depending on when the SIGPIPE gets delivered, the invocation below
+# may finish with either
+#  tar: a: Cannot write: Broken pipe
+# or
+#  tar: Child returned status 2
+
+# Discard diagnostics that some shells generate about broken pipes,
+# and discard all of tar's diagnostics except for the ones saying "(child)".
+# Gzip's exit code is propagated to the shell.  Usually it is 141.
+# Convert all non-zero exits to 2 to make it predictable.
+(tar -c -f a -z --remove-files b c 2>err || (exit 2) ) 2>/dev/null
+EC=$?
+sed -n '/(child)/p' err >&2
+rm err
+find . | sort
+exit $EC
+
+--- -	2026-09-09 02:11:25.258253914 +0000
++++ /tmp/rboxc-tar-original-8448ddo3/testsuite.dir/at-groups/198/stderr	2026-09-09 02:11:25.254843600 +0000
+@@ -1,3 +1 @@
+-tar (child): a: Cannot open: Permission denied
+-tar (child): Error is not recoverable: exiting now
+ 
+198. remfiles01.at:28: 198. remove-files with compression (remfiles01.at:28): FAILED (remfiles01.at:32)

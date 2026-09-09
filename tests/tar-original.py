@@ -212,6 +212,28 @@ selections.update({
     'exclude05': (64, 'exclude05.at'),
     'sigpipe': (196, 'sigpipe.at'),
 })
+selections.update({
+    'extrac05': (88, 'extrac05.at'),
+    'extrac13': (96, 'extrac13.at'),
+    'extrac14': (97, 'extrac14.at'),
+    'extrac25': (108, 'extrac25.at'),
+    'gzip': (42, 'gzip.at'),
+    'opcomp04': (9, 'opcomp04.at'),
+    'comprec': (191, 'comprec.at'),
+    'comperr': (197, 'comperr.at'),
+    'remfiles01': (198, 'remfiles01.at'),
+    'remfiles02': (199, 'remfiles02.at'),
+    'compress-gzip': (17, 'testsuite.at'),
+    'compress-bzip2': (18, 'testsuite.at'),
+    'compress-xz': (19, 'testsuite.at'),
+    'compress-lzip': (20, 'testsuite.at'),
+    'compress-lzop': (21, 'testsuite.at'),
+    'compress-zstd': (22, 'testsuite.at'),
+})
+permission_selections['remfiles01'] = selections['remfiles01']
+compression_selections = {name: name[9:] for name in selections if name.startswith('compress-')}
+compression_selections.update({name: 'gzip' for name in ('gzip', 'opcomp04', 'comprec', 'remfiles01', 'remfiles02')})
+compression_selections['comperr'] = 'false'
 selected = profile.options.commands or list(selections)
 assert set(selected) <= set(selections)
 helpers = {n: ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','mkdir','chmod','touch','sort','echo','basename','cp','ln','true','false','sleep','ls','mv','mktemp','cut','id','date','printf','dd','rmdir','expr','tr','wc','head','tail','uname','cksum','chown')}
@@ -222,6 +244,8 @@ helpers['genfile'] = ROOT/'build/gnu-tar/tests/genfile'
 helpers['ckmtime'] = ROOT/'build/gnu-tar/tests/ckmtime'
 helpers['checkseekhole'] = ROOT/'build/gnu-tar/tests/checkseekhole'
 helpers['find'] = ROOT/'build/gnu-findutils/find/find'
+helpers['gzip'] = ROOT/'build/gnu-gzip/gzip'
+helpers.update({name: (Path('/usr/bin')/name).resolve(strict=True) for name in ('bzip2', 'xz', 'lzip', 'lzop', 'zstd')})
 helpers['mount'] = Path('/usr/bin/mount')
 helpers['umount'] = Path('/usr/bin/umount')
 helpers['xargs'] = ROOT/'build/gnu-findutils/xargs/xargs'
@@ -235,6 +259,8 @@ for filename in ('genfile.c', 'argcv.c', 'argcv.h', 'ckmtime.c', 'checkseekhole.
 for filename in ('/usr/lib/x86_64-linux-gnu/libacl.so.1', '/usr/lib/x86_64-linux-gnu/libcap.so.2', '/usr/lib/x86_64-linux-gnu/libc.so.6'):
     path = Path(filename).resolve(strict=True)
     inputs[path] = fingerprint(path)
+if set(selected) & set(compression_selections):
+    inputs[source/'tests/compress.m4'] = fingerprint(source/'tests/compress.m4')
 manifest = json.loads((ROOT/'inventory/tar-tests.json').read_text())
 registered = {row['path']: row for row in manifest['inputs']}
 assert fingerprint(source/'tests/testsuite.at') == manifest['registration_sha256']
@@ -351,6 +377,9 @@ def run_selection(name):
                                  'private_atconfig_sha256': fingerprint(saved/'atconfig')}
     row = {'selection': name, 'autotest_number': number, 'source': 'tests/'+filename, 'source_sha256': inputs[source/'tests'/filename],
            'outcomes': outcomes, 'assertions_pass': all(r['assertions_pass'] for r in outcomes.values())}
+    compressor = compression_selections.get(name)
+    if compressor:
+        row['child_dependencies'] = {command: str(helpers[compressor]) for command in (compressor, compressor+' -d')}
     row['pass'] = row['assertions_pass'] and outcomes['rboxc-valgrind']['memory_clean']
     return row
 

@@ -97,6 +97,11 @@ for path in options.reports:
                 assert fingerprint(ROOT/log['log']) == log['sha256']
         logs = row['outcomes']['rboxc-valgrind']['memory']
         assert logs
+        outcome = row['outcomes']['rboxc-valgrind']
+        config = (ROOT/outcome['driver_log']).parent/'atconfig'
+        assert fingerprint(config) == outcome['private_atconfig_sha256']
+        private = re.findall(r"^abs_builddir='([^']+)'$", config.read_text(), re.M)
+        assert len(private) == 1
         for log in logs:
             path = ROOT/log['log']
             contents = path.read_text()
@@ -105,8 +110,22 @@ for path in options.reports:
             assert parsed['complete_exec_log'] and parsed['errors'] == 0 and parsed['non_inherited_descriptors'] == 0
             assert not any(parsed['heap_bytes'].get(k, 0) for k in ('definitely lost', 'indirectly lost', 'possibly lost'))
             commands = re.findall(r'^==\d+== Command: (.*)$', contents, re.M)
-            assert commands and all(command == 'tar' or command.startswith('tar ') for command in commands), 'separate external child assessment required'
-            audited.append({'selection': row['selection'], **log, 'command': commands[-1], 'pass': True})
+            assert len(commands) == 1, 'one final executable image per log required'
+            command = commands[0]
+            role = 'tar'
+            dependency = None
+            if not (command == 'tar' or command.startswith('tar ')):
+                key = command.removeprefix(private[0]+'/deps/')
+                declared = row.get('child_dependencies', {})
+                if command.startswith('/bin/sh -c ') and command[11:] in declared:
+                    dependency = str(Path('/bin/sh').resolve())
+                else:
+                    dependency = declared.get(key)
+                assert dependency, 'separate external child assessment required: '+command
+                assert fingerprint(Path(dependency)) == data['inputs'][dependency]
+                role = 'native-child-dependency'
+            audited.append({'selection': row['selection'], **log, 'command': command,
+                            'role': role, 'dependency': dependency, 'pass': True})
         results[row['selection']] = {**row, 'observation_source': origin}
 assert len(results) == options.expected_selections
 if options.selection:
@@ -116,6 +135,10 @@ report = {'scope': 'Disjoint unchanged original GNU Tar selections on identical 
           **metadata, 'inputs': inputs, 'source_reports': provenance,
           'driver_sha256': fingerprint(Path(__file__)), 'passed': len(results), 'total': len(results),
           'candidate_processes': len(audited), 'candidate_processes_clean': len(audited),
+          'candidate_tar_processes_clean': sum(p['role'] == 'tar' for p in audited),
+          'candidate_child_dependency_processes_clean': sum(p['role'] == 'native-child-dependency' for p in audited),
           'process_audit': audited, 'results': [results[key] for key in sorted(results)]}
 target.write_text(json.dumps(report, indent=2)+'\n')
-print('Consolidated', len(results), 'original selections with', len(audited), 'clean Tar processes')
+print('Consolidated', len(results), 'original selections with', len(audited),
+      'clean processes:', report['candidate_tar_processes_clean'], 'Tar and',
+      report['candidate_child_dependency_processes_clean'], 'native child dependencies')
