@@ -2,7 +2,6 @@
 """Execute reviewed original GNU Gawk Make targets without changing recipes."""
 # SPDX-License-Identifier: GPL-3.0-or-later
 from concurrent.futures import ThreadPoolExecutor
-from collections import Counter
 import importlib.util
 import json
 import os
@@ -105,16 +104,9 @@ def run_selection(row):
                 logs=[]
                 for p in sorted((saved/'memory').glob('*.log')):
                     text=p.read_text();commands=re.findall(r'^==[0-9]+== Command: (.*)$',text,re.M)
-                    assert len(commands)==1
-                    command=commands[0]
-                    role='gawk' if command.split()[0]=='gawk' else 'child-dependency'
-                    assert role=='gawk' or command in row.get('child_commands',{})
+                    assert len(commands)==1 and commands[0].split()[0]=='gawk'
                     logs.append({**runner.parse_memory_log(text,p.stem,exec_only=True),
-                        'log':str(p.relative_to(ROOT)),'sha256':fingerprint(p),
-                        'command':command,'role':role})
-                if instrument:
-                    assert any(m['role']=='gawk' for m in logs)
-                    assert Counter(m['command'] for m in logs if m['role']=='child-dependency')==row.get('child_commands',{})
+                        'log':str(p.relative_to(ROOT)),'sha256':fingerprint(p)})
                 clean=bool(logs) and all(m['complete_exec_log'] and m['errors']==0
                     and m['non_inherited_descriptors']==0 and not any(m['heap_bytes'].get(k,0)
                     for k in ('definitely lost','indirectly lost','possibly lost')) for m in logs)
@@ -124,7 +116,7 @@ def run_selection(row):
                     'memory':logs,'memory_clean':clean if instrument else None}
     passed=all(o['assertions_pass'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
     baseline_matches=bool(row.get('expected_baseline_output')) and all(o['baseline_failure_matches'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
-    return {'baseline_failure_matches':baseline_matches,'child_commands':row.get('child_commands',{}),'locale_profile':row.get('locale_profile'),'extension_profile':row.get('extension_profile'),'working_files':row.get('working_files',{}),'selection':name,'source':row['path'],'source_sha256':row['sha256'],
+    return {'baseline_failure_matches':baseline_matches,'locale_profile':row.get('locale_profile'),'extension_profile':row.get('extension_profile'),'working_files':row.get('working_files',{}),'selection':name,'source':row['path'],'source_sha256':row['sha256'],
             'pass':passed,'outcomes':outcomes}
 
 results=[]

@@ -74,7 +74,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 431 reviewed originals pass; three original failures match GNU |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 436 reviewed originals pass; three original failures match GNU |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -231,7 +231,19 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-Eight further unchanged Gawk recipes pass for nested and custom sorting,
+Five further unchanged Gawk recipes pass for pipe input/output, expression
+precedence and child exit statuses. The driver requires the exact twelve shell
+child command headers and invocation counts; both Gawk and its children must
+have complete, clean Valgrind summaries. `evidence/gawk-shell-coverage.json`
+audits **436 passing original recipes, three unchanged GNU baseline failures
+and 547 clean processes**: 450 original Gawk invocations, twelve shell children
+and the shared 85 focused cases counted once. Nine exclusions and 186 inputs
+awaiting individual accounting remain. The initial command-header classification
+attempt is retained in `evidence/gawk-shell-classification-initial.json`; it is
+not counted as a passing run. These comparisons retain the exact immutable
+Gawk ownership candidate recorded in the reports; release activation remains open.
+
+Eight preceding unchanged Gawk recipes pass for nested and custom sorting,
 typed-pattern substitution, shortest matches, byte-locale matching, lexicon
 records and repeated file reading. The file-reading recipe runs both original
 programs against its unchanged input. `evidence/gawk-pattern-coverage.json`

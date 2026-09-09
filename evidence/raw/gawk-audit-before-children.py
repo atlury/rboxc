@@ -2,7 +2,6 @@
 """Verify current Gawk comparisons and reparse every candidate process log."""
 # SPDX-License-Identifier: GPL-3.0-or-later
 import argparse
-from collections import Counter
 import importlib.util
 import json
 from pathlib import Path
@@ -98,8 +97,6 @@ for row in original['results']:
     else:
         assert not row['baseline_failure_matches']
     assert row['locale_profile']==reviewed_rows[row['selection']].get('locale_profile')
-    children=reviewed_rows[row['selection']].get('child_commands',{})
-    assert row.get('child_commands',{})==children
     working_files=reviewed_rows[row['selection']].get('working_files',{})
     assert row.get('working_files',{})==working_files
     for filename,entry in working_files.items():
@@ -134,24 +131,11 @@ for row in original['results']:
             assert outcome['assertions_pass'] and not outcome['baseline_failure_matches']
             assert outcome['actual_output'] is None and outcome['actual_output_sha256'] is None
         assert fingerprint(ROOT/outcome['driver_log'])==outcome['driver_log_sha256']
-        observed_children=Counter()
-        gawk_processes=0
         for log in outcome['memory']:
             contents=(ROOT/log['log']).read_text()
             commands=re.findall(r'^==[0-9]+== Command: (.*)$',contents,re.M)
-            assert len(commands)==1
-            command=commands[0]
-            if command.split()[0]=='gawk':
-                gawk_processes+=1
-                assert log.get('role','gawk')=='gawk'
-            else:
-                assert command in children, 'unclassified child process'
-                assert log['role']=='child-dependency'
-                observed_children[command]+=1
-            assert log.get('command',command)==command
+            assert len(commands)==1 and commands[0].split()[0]=='gawk', 'unclassified child process'
             audit(log['log'],log['sha256'],log,key=='rboxc-valgrind',row['source'])
-        if key.endswith('-valgrind'):
-            assert gawk_processes>0 and observed_children==children
 original_processes=sum(len(r['outcomes']['rboxc-valgrind']['memory']) for r in original['results'])
 assert original_processes>0 and len(processes)==85+original_processes
 report = {'scope':'All 85 focused comparisons pass. Original assertion passes and exact failures shared with the pinned native GNU baseline are counted separately; baseline matches do not count as passing original tests. Every input and raw log is hash-checked and every candidate process summary is reparsed. GNU native findings remain baseline observations.',
@@ -163,7 +147,5 @@ report = {'scope':'All 85 focused comparisons pass. Original assertion passes an
           'original_assertion_passes':original['passed'],'baseline_failures_matched':len(baselines),'baseline_selections':sorted(baselines),'baseline_evidence':baseline_evidence,'driver_sha256':fingerprint(Path(__file__)),'results':processes}
 report['selected_targets']=requested
 report['extension_selections']=[n for n,r in reviewed_rows.items() if r.get('extension_profile')]
-report['child_dependency_processes']=sum(sum(r.get('child_commands',{}).values()) for r in reviewed_rows.values())
-report['original_gawk_processes']=original_processes-report['child_dependency_processes']
 target.write_text(json.dumps(report,indent=2)+'\n')
 print('Audited 85 focused cases,',len(reviewed),'GNU original selections, and',len(processes),'clean candidate processes')

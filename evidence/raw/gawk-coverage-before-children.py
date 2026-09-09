@@ -29,8 +29,7 @@ assert fingerprint(source/'test/Makefile.am') == manifest['registration_sha256']
 for row in manifest['inputs']:
     assert fingerprint(source/row['path']) == row['sha256']
 archives = [ROOT/'tests/gawk-original.py', ROOT/'evidence/raw/gawk-array-driver.py',
-            ROOT/'evidence/raw/gawk-language-time-driver.py',
-            ROOT/'evidence/raw/gawk-working-fixtures-driver.py']
+            ROOT/'evidence/raw/gawk-language-time-driver.py']
 driver_versions = {fingerprint(p): str(p.relative_to(ROOT)) for p in archives}
 focused_path = ROOT/'evidence/gawk-source-behavior.json'
 focused = json.loads(focused_path.read_text())
@@ -50,7 +49,7 @@ def check_inputs(data):
         else:
             assert fingerprint(Path(filename)) == expected, filename
 
-def check_memory(recorded, log, expected, candidate, case, focused_case=False, children=None):
+def check_memory(recorded, log, expected, candidate, case, focused_case=False):
     p = ROOT/log
     assert fingerprint(p) == expected
     text = p.read_text()
@@ -62,10 +61,7 @@ def check_memory(recorded, log, expected, candidate, case, focused_case=False, c
         if Path(argv[0]).name == 'rboxc':
             assert candidate and argv[1] in ('awk', 'gawk', 'nawk')
     else:
-        assert argv[0] == 'gawk' or commands[0] in (children or {})
-    role='child-dependency' if not focused_case and argv[0]!='gawk' else 'gawk'
-    assert recorded.get('role',role)==role
-    assert recorded.get('command',commands[0])==commands[0]
+        assert argv[0] == 'gawk'
     pids = set(re.findall(r'^==([0-9]+)==', text, re.M))
     assert len(pids) == 1
     parsed = runner.parse_memory_log(text, pids.pop(), exec_only=True)
@@ -77,7 +73,7 @@ def check_memory(recorded, log, expected, candidate, case, focused_case=False, c
                        for k in ('definitely lost', 'indirectly lost', 'possibly lost'))
     collection = candidate_logs if candidate else native_logs
     assert log not in collection, 'do not count shared process logs twice'
-    collection[log] = {'case': case, 'sha256': expected, 'role':role, **parsed}
+    collection[log] = {'case': case, 'sha256': expected, **parsed}
 
 check_inputs(focused)
 for item in focused['oracles'].values():
@@ -109,8 +105,6 @@ for filename in sorted({r['evidence'] for r in reviewed.values()}):
             assert fingerprint(source/'test'/name) == expected
         assert result.get('working_files', {}) == row.get('working_files', {})
         assert result.get('extension_profile') == row.get('extension_profile')
-        children=row.get('child_commands',{})
-        assert result.get('child_commands',{})==children
         baseline = row.get('expected_baseline_output')
         assert result['pass'] == (baseline is None)
         for key, outcome in result['outcomes'].items():
@@ -127,14 +121,11 @@ for filename in sorted({r['evidence'] for r in reviewed.values()}):
                 assert result['selection'] in log.read_text().splitlines() and b'Error ' not in log.read_bytes()
             if key.endswith('-valgrind'):
                 assert outcome['memory']
-                assert Counter(m['command'] for m in outcome['memory']
-                    if m.get('role')=='child-dependency')==children
-                assert any(m.get('role','gawk')=='gawk' for m in outcome['memory'])
                 if key == 'rboxc-valgrind':
                     assert outcome['memory_clean']
                 for memory in outcome['memory']:
                     check_memory(memory, memory['log'], memory['sha256'],
-                                 key == 'rboxc-valgrind', result['selection'], children=children)
+                                 key == 'rboxc-valgrind', result['selection'])
     report_refs[filename] = {'sha256': fingerprint(path), 'passed': data['passed'],
                              'total': data['total'], 'driver_archive': driver_versions[data['driver_sha256']]}
 assert seen == set(reviewed)
@@ -151,8 +142,6 @@ result = {'scope': 'Distinct reviewed Gawk recipes on one immutable candidate. E
           'baseline_failures': sum(bool(r.get('expected_baseline_output')) for r in reviewed.values()),
           'focused_cases': 85, 'clean_candidate_processes': len(candidate_logs),
           'clean_original_processes': len(candidate_logs)-85,
-          'clean_child_dependency_processes':sum(r['role']=='child-dependency' for r in candidate_logs.values()),
-          'clean_original_gawk_processes':sum(r['role']=='gawk' for r in candidate_logs.values())-85,
           'original_reports': report_refs,
           'focused_report': {'path': str(focused_path.relative_to(ROOT)), 'sha256': fingerprint(focused_path)},
           'driver_archives': driver_versions, 'driver_sha256': fingerprint(Path(__file__)),
