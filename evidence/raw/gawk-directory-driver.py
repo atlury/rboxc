@@ -34,7 +34,7 @@ helpers={'cmp':ROOT/'build/gnu-diffutils/src/cmp',
          'grep':ROOT/'build/gnu-grep/src/grep',
          'egrep':ROOT/'build/gnu-grep/src/egrep',
          'sed':ROOT/'build/gnu-sed/sed/sed',
-         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('rm','echo','od','tr','cp','sort','ls','stat','uname','basename','chmod')}}
+         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('rm','echo','od','tr','cp','sort','ls','stat','uname')}}
 inputs={p:fingerprint(p) for p in {makefile,source/'test/Makefile.am',source/'test/Makefile.in',
     Path(__file__),Path('/usr/bin/make'),Path('/bin/bash').resolve(),Path('/bin/sh').resolve(),*helpers.values(),profile.oracle}}
 for row in selected:

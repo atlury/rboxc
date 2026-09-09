@@ -31,7 +31,8 @@ for row in manifest['inputs']:
 archives = [ROOT/'tests/gawk-original.py', ROOT/'evidence/raw/gawk-array-driver.py',
             ROOT/'evidence/raw/gawk-language-time-driver.py',
             ROOT/'evidence/raw/gawk-working-fixtures-driver.py',
-            ROOT/'evidence/raw/gawk-shell-driver.py']
+            ROOT/'evidence/raw/gawk-shell-driver.py',
+            ROOT/'evidence/raw/gawk-directory-driver.py']
 driver_versions = {fingerprint(p): str(p.relative_to(ROOT)) for p in archives}
 focused_path = ROOT/'evidence/gawk-source-behavior.json'
 focused = json.loads(focused_path.read_text())
