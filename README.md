@@ -106,9 +106,9 @@ this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
 The current 187-command candidate is **14,717,048 bytes**, at
-`target/screen-owned-candidate/release/rboxc`, with a byte-identical independent
-rebuild. All 428 Coreutils smoke checks, 11 dispatcher checks and five Screen
-option comparisons pass. The installed 133-command release remains unchanged;
+`target/tar-map-probe-candidate/release/rboxc`, with a byte-identical independent
+rebuild. All 428 Coreutils smoke checks, 11 dispatcher checks and 57 Tar
+comparisons pass; preceding Screen evidence retains its actual candidate hash. The installed 133-command release remains unchanged;
 full GNU-wide acceptance remains open.
 
 Screen's original attach/detach test now passes natively and under Valgrind
@@ -908,6 +908,12 @@ prior artifact backups, and installed-path checks are recorded in
 focused comparisons. Its Grep source, native helper objects, and compiler inputs
 are verified unchanged; the original results retain their actual earlier
 binary hash and are not counted as a new original-suite run.
+
+The unchanged Gzip empty-suffix original now passes as well: it rejects the
+invalid option and preserves the compressed input.
+`evidence/gzip-empty-suffix-audited.json` verifies both candidate processes
+under Valgrind. This adds one full original on the current Tar map/probe
+candidate; earlier Gzip results retain their own binary hashes.
 
 GNU Gzip 1.14 is also pinned from its verified signed archive. Its native
 oracle and compiler records are prepared for the `gzip`, `gunzip`, `uncompress`,
