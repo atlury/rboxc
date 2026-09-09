@@ -14,7 +14,7 @@ def prepare(root):
     records = [json.loads(p.read_text()) for p in (root/'build/tar-cc-records').glob('*.json')]
     outputs = {}
     evidence = []
-    for name in ('misc', 'names', 'compare', 'wordsplit', 'incremen', 'buffer'):
+    for name in ('misc', 'names', 'compare', 'wordsplit', 'incremen', 'buffer', 'map'):
         relative = ('lib/' if name == 'wordsplit' else 'src/')+name+'.c'
         original = Path(pin['source'])/relative
         expected = pin['native_cleanup_source_sha256'][relative] if name == 'wordsplit' else pin['helper_source_sha256'][relative]
@@ -95,7 +95,16 @@ rboxc_release_diff_buffer (void)
     }
   rboxc_release_diff_buffer ();
   diff_buffer = page_aligned_alloc (&rboxc_diff_allocation, record_size);''')
+        elif name == 'map':
+            # getline owns this buffer even for an empty map; parsed names
+            # were duplicated into the table before its lifetime ends.
+            replace('  fclose (fp);', '  free (buf);\n  fclose (fp);')
         elif name == 'buffer':
+            # A newly created update archive can contain no bytes.  Initialize
+            # the probe block before reading; short reads still retain every
+            # actual byte for GNU's compression signature checks.
+            replace('  record_end = record_start; /* set up for 1st record = # 0 */\n  sfr = read_full_records;',
+                    '  record_end = record_start; /* set up for 1st record = # 0 */\n  memset (record_start, 0, BLOCKSIZE);\n  sfr = read_full_records;')
             # GNU's archive handle is assigned from standard streams, owned
             # local opens/pipes, or remote handles. Invalidate it at every
             # explicit close so an exit callback cannot close a reused fd.
@@ -322,7 +331,7 @@ rboxc_release_file_options (void)
     subprocess.run(['ar', 'r', archive, outputs.pop('wordsplit.o')], check=True)
     subprocess.run(['ranlib', archive], check=True)
     outputs['libtar.a'] = archive
-    report = {'scope': 'Keep GNU selection and directory behavior, while tracking live name allocations independently of discarded selection cursors, releasing consumed directory/option records, closing/freeing owned working-directory state, retaining/freeing the aligned comparison allocation, freeing consumed wordsplit nodes after copying their output, retaining/freeing option-file words after GNU finishes borrowing them, and releasing the incremental snapshot parser obstack on return or process exit. Native oracle objects remain unchanged.',
+    report = {'scope': 'Keep GNU selection and directory behavior, while tracking live name allocations independently of discarded selection cursors, releasing consumed directory/option records, closing/freeing owned working-directory state, retaining/freeing the aligned comparison allocation, freeing consumed wordsplit nodes after copying their output, retaining/freeing option-file words after GNU finishes borrowing them, and releasing the incremental snapshot parser obstack on return or process exit. Map input line buffers are freed after parsing, and compression probe headers start initialized before reading an empty or partial archive. Native oracle objects remain unchanged.',
               'driver_sha256': fingerprint(Path(__file__)), 'adaptations': evidence}
     (root/'evidence/tar-native-cleanup.json').write_text(json.dumps(report, indent=2)+'\n')
     return outputs

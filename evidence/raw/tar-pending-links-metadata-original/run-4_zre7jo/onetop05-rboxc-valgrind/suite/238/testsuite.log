@@ -1,0 +1,238 @@
+#                             -*- compilation -*-
+238. onetop05.at:21: testing tar --one-top-level restoring permissions ...
+/opt/src/tar-1.35/tests/onetop05.at:28:
+mkdir v7
+(cd v7
+TEST_TAR_FORMAT=v7
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H v7"
+export TAR_OPTIONS
+rm -rf *
+
+orig_mode=3702
+mkdir d
+chmod $orig_mode d
+
+mode=$(genfile --stat=mode.7777 d)
+test $mode = $orig_mode || exit 77
+
+genfile --file d/file
+tar -cf d.tar -C d .
+rm -rf d
+
+(mkdir d1
+chmod 700 d1
+cd d1
+tar --one-top-level=top -xpf ../d.tar)
+mode=$(genfile --stat=mode.777 d1)
+if test 700 = $mode; then
+    echo "CWD: OK"
+else
+    echo "CWD: mode changed: 700 != $mode"
+fi
+
+mkdir d2
+chmod 700 d2
+tar -C d2 --one-top-level=top -xpf d.tar
+mode=$(genfile --stat=mode.777 d2)
+if test 700 = $mode; then
+    echo "DIR: OK"
+else
+    echo "DIR: mode changed: 700 != $mode"
+fi
+mode=$(genfile --stat=mode.7777 d2/top)
+if test $mode = $orig_mode; then
+    echo "TOP: OK"
+else
+    echo "TOP: mode changed: $orig_mode != $mode"
+fi
+)
+/opt/src/tar-1.35/tests/onetop05.at:28:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+orig_mode=3702
+mkdir d
+chmod $orig_mode d
+
+mode=$(genfile --stat=mode.7777 d)
+test $mode = $orig_mode || exit 77
+
+genfile --file d/file
+tar -cf d.tar -C d .
+rm -rf d
+
+(mkdir d1
+chmod 700 d1
+cd d1
+tar --one-top-level=top -xpf ../d.tar)
+mode=$(genfile --stat=mode.777 d1)
+if test 700 = $mode; then
+    echo "CWD: OK"
+else
+    echo "CWD: mode changed: 700 != $mode"
+fi
+
+mkdir d2
+chmod 700 d2
+tar -C d2 --one-top-level=top -xpf d.tar
+mode=$(genfile --stat=mode.777 d2)
+if test 700 = $mode; then
+    echo "DIR: OK"
+else
+    echo "DIR: mode changed: 700 != $mode"
+fi
+mode=$(genfile --stat=mode.7777 d2/top)
+if test $mode = $orig_mode; then
+    echo "TOP: OK"
+else
+    echo "TOP: mode changed: $orig_mode != $mode"
+fi
+)
+/opt/src/tar-1.35/tests/onetop05.at:28:
+mkdir ustar
+(cd ustar
+TEST_TAR_FORMAT=ustar
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H ustar"
+export TAR_OPTIONS
+rm -rf *
+
+orig_mode=3702
+mkdir d
+chmod $orig_mode d
+
+mode=$(genfile --stat=mode.7777 d)
+test $mode = $orig_mode || exit 77
+
+genfile --file d/file
+tar -cf d.tar -C d .
+rm -rf d
+
+(mkdir d1
+chmod 700 d1
+cd d1
+tar --one-top-level=top -xpf ../d.tar)
+mode=$(genfile --stat=mode.777 d1)
+if test 700 = $mode; then
+    echo "CWD: OK"
+else
+    echo "CWD: mode changed: 700 != $mode"
+fi
+
+mkdir d2
+chmod 700 d2
+tar -C d2 --one-top-level=top -xpf d.tar
+mode=$(genfile --stat=mode.777 d2)
+if test 700 = $mode; then
+    echo "DIR: OK"
+else
+    echo "DIR: mode changed: 700 != $mode"
+fi
+mode=$(genfile --stat=mode.7777 d2/top)
+if test $mode = $orig_mode; then
+    echo "TOP: OK"
+else
+    echo "TOP: mode changed: $orig_mode != $mode"
+fi
+)
+/opt/src/tar-1.35/tests/onetop05.at:28:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+orig_mode=3702
+mkdir d
+chmod $orig_mode d
+
+mode=$(genfile --stat=mode.7777 d)
+test $mode = $orig_mode || exit 77
+
+genfile --file d/file
+tar -cf d.tar -C d .
+rm -rf d
+
+(mkdir d1
+chmod 700 d1
+cd d1
+tar --one-top-level=top -xpf ../d.tar)
+mode=$(genfile --stat=mode.777 d1)
+if test 700 = $mode; then
+    echo "CWD: OK"
+else
+    echo "CWD: mode changed: 700 != $mode"
+fi
+
+mkdir d2
+chmod 700 d2
+tar -C d2 --one-top-level=top -xpf d.tar
+mode=$(genfile --stat=mode.777 d2)
+if test 700 = $mode; then
+    echo "DIR: OK"
+else
+    echo "DIR: mode changed: 700 != $mode"
+fi
+mode=$(genfile --stat=mode.7777 d2/top)
+if test $mode = $orig_mode; then
+    echo "TOP: OK"
+else
+    echo "TOP: mode changed: $orig_mode != $mode"
+fi
+)
+/opt/src/tar-1.35/tests/onetop05.at:28:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+orig_mode=3702
+mkdir d
+chmod $orig_mode d
+
+mode=$(genfile --stat=mode.7777 d)
+test $mode = $orig_mode || exit 77
+
+genfile --file d/file
+tar -cf d.tar -C d .
+rm -rf d
+
+(mkdir d1
+chmod 700 d1
+cd d1
+tar --one-top-level=top -xpf ../d.tar)
+mode=$(genfile --stat=mode.777 d1)
+if test 700 = $mode; then
+    echo "CWD: OK"
+else
+    echo "CWD: mode changed: 700 != $mode"
+fi
+
+mkdir d2
+chmod 700 d2
+tar -C d2 --one-top-level=top -xpf d.tar
+mode=$(genfile --stat=mode.777 d2)
+if test 700 = $mode; then
+    echo "DIR: OK"
+else
+    echo "DIR: mode changed: 700 != $mode"
+fi
+mode=$(genfile --stat=mode.7777 d2/top)
+if test $mode = $orig_mode; then
+    echo "TOP: OK"
+else
+    echo "TOP: mode changed: $orig_mode != $mode"
+fi
+)
+238. onetop05.at:21: 238. tar --one-top-level restoring permissions (onetop05.at:21): ok     (0m11.339s 0m0.841s)

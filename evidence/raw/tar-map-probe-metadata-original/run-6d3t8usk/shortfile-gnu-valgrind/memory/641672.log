@@ -1,0 +1,81 @@
+==641672== Memcheck, a memory error detector
+==641672== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==641672== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+==641672== Command: tar tf foo
+==641672== Parent PID: 641670
+==641672== 
+==641672== 
+==641672== FILE DESCRIPTORS: 1 open (1 inherited) at exit.
+==641672== 
+==641672== HEAP SUMMARY:
+==641672==     in use at exit: 338 bytes in 12 blocks
+==641672==   total heap usage: 25 allocs, 13 frees, 31,177 bytes allocated
+==641672== 
+==641672== 6 bytes in 2 blocks are indirectly lost in loss record 1 of 8
+==641672==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==641672==    by 0x405185D: xmalloc (xmalloc.c:45)
+==641672==    by 0x405185D: xmemdup (xmalloc.c:314)
+==641672==    by 0x405185D: xstrdup (xmalloc.c:339)
+==641672==    by 0x400C4F1: decode_options (tar.c:2353)
+==641672==    by 0x400C4F1: main (tar.c:2792)
+==641672== 
+==641672== 7 bytes in 2 blocks are indirectly lost in loss record 2 of 8
+==641672==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==641672==    by 0x40387DD: wsnode_quoteremoval (wordsplit.c:651)
+==641672==    by 0x4039CFD: wordsplit_process_list (wordsplit.c:2390)
+==641672==    by 0x403A562: wordsplit_run.constprop.0 (wordsplit.c:2434)
+==641672==    by 0x400BFFA: parse_default_options (tar.c:2256)
+==641672==    by 0x400BFFA: decode_options (tar.c:2378)
+==641672==    by 0x400BFFA: main (tar.c:2792)
+==641672== 
+==641672== 7 bytes in 2 blocks are definitely lost in loss record 3 of 8
+==641672==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==641672==    by 0x403A1FB: wordsplit_finish (wordsplit.c:836)
+==641672==    by 0x400BFFA: parse_default_options (tar.c:2256)
+==641672==    by 0x400BFFA: decode_options (tar.c:2378)
+==641672==    by 0x400BFFA: main (tar.c:2792)
+==641672== 
+==641672== 16 bytes in 1 blocks are still reachable in loss record 4 of 8
+==641672==    at 0x48C4E43: calloc (vg_replace_malloc.c:1678)
+==641672==    by 0x40516F1: xcalloc (xmalloc.c:298)
+==641672==    by 0x40516F1: xzalloc (xmalloc.c:283)
+==641672==    by 0x400BEF9: decode_options (tar.c:2297)
+==641672==    by 0x400BEF9: main (tar.c:2792)
+==641672== 
+==641672== 46 (40 direct, 6 indirect) bytes in 1 blocks are definitely lost in loss record 5 of 8
+==641672==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==641672==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==641672==    by 0x400C46E: decode_options (tar.c:2340)
+==641672==    by 0x400C46E: main (tar.c:2792)
+==641672== 
+==641672== 80 bytes in 1 blocks are still reachable in loss record 6 of 8
+==641672==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==641672==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==641672==    by 0x400BE43: main (tar.c:2781)
+==641672== 
+==641672== 87 (80 direct, 7 indirect) bytes in 2 blocks are definitely lost in loss record 7 of 8
+==641672==    at 0x48C4E43: calloc (vg_replace_malloc.c:1678)
+==641672==    by 0x403959D: wsnode_new (wordsplit.c:422)
+==641672==    by 0x403959D: wordsplit_add_segm (wordsplit.c:523)
+==641672==    by 0x4039854: scan_word (wordsplit.c:2062)
+==641672==    by 0x4039C7C: wordsplit_process_list (wordsplit.c:2358)
+==641672==    by 0x403A562: wordsplit_run.constprop.0 (wordsplit.c:2434)
+==641672==    by 0x400BFFA: parse_default_options (tar.c:2256)
+==641672==    by 0x400BFFA: decode_options (tar.c:2378)
+==641672==    by 0x400BFFA: main (tar.c:2792)
+==641672== 
+==641672== 102 bytes in 1 blocks are still reachable in loss record 8 of 8
+==641672==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==641672==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==641672==    by 0x4029881: name_init (names.c:869)
+==641672==    by 0x400C94C: main (tar.c:2794)
+==641672== 
+==641672== LEAK SUMMARY:
+==641672==    definitely lost: 127 bytes in 5 blocks
+==641672==    indirectly lost: 13 bytes in 4 blocks
+==641672==      possibly lost: 0 bytes in 0 blocks
+==641672==    still reachable: 198 bytes in 3 blocks
+==641672==         suppressed: 0 bytes in 0 blocks
+==641672== 
+==641672== For lists of detected and suppressed errors, rerun with: -s
+==641672== ERROR SUMMARY: 3 errors from 3 contexts (suppressed: 0 from 0)

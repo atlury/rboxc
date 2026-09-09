@@ -1,0 +1,52 @@
+==650191== Memcheck, a memory error detector
+==650191== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==650191== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+==650191== Command: tar --list -vvf a dir --numeric-owner
+==650191== Parent PID: 650054
+==650191== 
+==650191== 
+==650191== FILE DESCRIPTORS: 1 open (1 inherited) at exit.
+==650191== 
+==650191== HEAP SUMMARY:
+==650191==     in use at exit: 4,262 bytes in 4 blocks
+==650191==   total heap usage: 40 allocs, 36 frees, 40,062 bytes allocated
+==650191== 
+==650191== 16 bytes in 1 blocks are still reachable in loss record 1 of 4
+==650191==    at 0x5875E43: calloc (vg_replace_malloc.c:1678)
+==650191==    by 0x469E501: rboxc_tar_xzalloc (in /root/rboxc/target/tar-map-probe-candidate/release/rboxc)
+==650191==    by 0x4477AF5: single_binary_main_tar (in /root/rboxc/target/tar-map-probe-candidate/release/rboxc)
+==650191==    by 0x5A18600: (below main) (libc_start_call_main.h:59)
+==650191== 
+==650191== 80 bytes in 1 blocks are still reachable in loss record 2 of 4
+==650191==    at 0x586E858: malloc (vg_replace_malloc.c:447)
+==650191==    by 0x469E0DC: rboxc_tar_xmalloc (in /root/rboxc/target/tar-map-probe-candidate/release/rboxc)
+==650191==    by 0x4477A00: single_binary_main_tar (in /root/rboxc/target/tar-map-probe-candidate/release/rboxc)
+==650191==    by 0x5A18600: (below main) (libc_start_call_main.h:59)
+==650191== 
+==650191== 102 bytes in 1 blocks are still reachable in loss record 3 of 4
+==650191==    at 0x586E858: malloc (vg_replace_malloc.c:447)
+==650191==    by 0x469E0DC: rboxc_tar_xmalloc (in /root/rboxc/target/tar-map-probe-candidate/release/rboxc)
+==650191==    by 0x46734A1: rboxc_tar_name_init (in /root/rboxc/target/tar-map-probe-candidate/release/rboxc)
+==650191==    by 0x4478A7A: single_binary_main_tar (in /root/rboxc/target/tar-map-probe-candidate/release/rboxc)
+==650191==    by 0x5A18600: (below main) (libc_start_call_main.h:59)
+==650191== 
+==650191== 4,064 bytes in 1 blocks are still reachable in loss record 4 of 4
+==650191==    at 0x586E858: malloc (vg_replace_malloc.c:447)
+==650191==    by 0x469E0DC: rboxc_tar_xmalloc (in /root/rboxc/target/tar-map-probe-candidate/release/rboxc)
+==650191==    by 0x4695FFD: _obstack_begin_worker.isra.0 (in /root/rboxc/target/tar-map-probe-candidate/release/rboxc)
+==650191==    by 0x4696028: rboxc_tar__obstack_begin (in /root/rboxc/target/tar-map-probe-candidate/release/rboxc)
+==650191==    by 0x4679CD7: rboxc_tar_transform_name_fp (in /root/rboxc/target/tar-map-probe-candidate/release/rboxc)
+==650191==    by 0x466D0B0: transform_stat_info.part.0 (in /root/rboxc/target/tar-map-probe-candidate/release/rboxc)
+==650191==    by 0x466F290: rboxc_tar_read_and (in /root/rboxc/target/tar-map-probe-candidate/release/rboxc)
+==650191==    by 0x4478B39: single_binary_main_tar (in /root/rboxc/target/tar-map-probe-candidate/release/rboxc)
+==650191==    by 0x5A18600: (below main) (libc_start_call_main.h:59)
+==650191== 
+==650191== LEAK SUMMARY:
+==650191==    definitely lost: 0 bytes in 0 blocks
+==650191==    indirectly lost: 0 bytes in 0 blocks
+==650191==      possibly lost: 0 bytes in 0 blocks
+==650191==    still reachable: 4,262 bytes in 4 blocks
+==650191==         suppressed: 0 bytes in 0 blocks
+==650191== 
+==650191== For lists of detected and suppressed errors, rerun with: -s
+==650191== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

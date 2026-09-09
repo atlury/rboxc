@@ -1,0 +1,50 @@
+#                             -*- compilation -*-
+168. map.at:21: testing --owner-map and --group-map ...
+/opt/src/tar-1.35/tests/map.at:24:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+export TZ=UTC0
+
+genfile --file a
+set -- `genfile --stat=uid,gid a`
+cat > uid.map <<EOT
+# Owner mapping
++$1	"Joe the Plumber:1234"
+EOT
+# Group mapping
+cat > gid.map <<EOT
++$2	"Plumber's Union:5678"
+EOT
+
+tar --owner-map=uid.map\
+    --group-map=gid.map\
+    --owner="Fallback Owner:4321" \
+    --group="Fallback Group:8765" \
+    --mtime='@0' \
+    --mode='u=rw,go=r' \
+    -cf 1.tar a
+
+tar -tvf 1.tar
+tar --numeric-owner -tvf 1.tar
+
+> uid.map
+> gid.map
+
+tar --owner-map=uid.map\
+    --group-map=gid.map\
+    --owner="Fallback Owner:4321" \
+    --group="Fallback Group:8765" \
+    --mtime='@0' \
+    --mode='u=rw,go=r' \
+    -cf 2.tar a
+
+tar -tvf 2.tar
+tar --numeric-owner -tvf 2.tar
+)
+168. map.at:21: 168. --owner-map and --group-map (map.at:21): ok     (0m4.740s 0m0.301s)

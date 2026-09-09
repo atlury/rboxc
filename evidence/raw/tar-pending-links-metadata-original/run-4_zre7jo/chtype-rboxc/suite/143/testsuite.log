@@ -1,0 +1,123 @@
+#                             -*- compilation -*-
+143. chtype.at:27: testing changed file types in incrementals ...
+/opt/src/tar-1.35/tests/chtype.at:30:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+
+install-sh -d directory/b/c >/dev/null && genfile --file directory/b/c/x || exit 77
+mkdir directory/a
+genfile --file directory/a/a
+
+echo First backup
+tar --create --file=archive.1 --listed-incremental=db.1 directory
+
+sleep 2
+
+# Remove directory b and create a file with this name.
+# Previous versions were not able to restore over this file.
+rm -r directory/b
+genfile --file directory/b
+genfile --file directory/a/b
+
+echo Second backup
+tar --create --file=archive.2 --listed-incremental=db.2 directory
+
+# Delete a
+rm -r directory
+
+echo Restore archive.1
+tar -xf archive.1 --listed-incremental=/dev/null --warning=no-timestamp
+echo Restore archive.2
+tar -xf archive.2 --listed-incremental=/dev/null --warning=no-timestamp
+find directory | sort
+)
+/opt/src/tar-1.35/tests/chtype.at:30:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+
+install-sh -d directory/b/c >/dev/null && genfile --file directory/b/c/x || exit 77
+mkdir directory/a
+genfile --file directory/a/a
+
+echo First backup
+tar --create --file=archive.1 --listed-incremental=db.1 directory
+
+sleep 2
+
+# Remove directory b and create a file with this name.
+# Previous versions were not able to restore over this file.
+rm -r directory/b
+genfile --file directory/b
+genfile --file directory/a/b
+
+echo Second backup
+tar --create --file=archive.2 --listed-incremental=db.2 directory
+
+# Delete a
+rm -r directory
+
+echo Restore archive.1
+tar -xf archive.1 --listed-incremental=/dev/null --warning=no-timestamp
+echo Restore archive.2
+tar -xf archive.2 --listed-incremental=/dev/null --warning=no-timestamp
+find directory | sort
+)
+/opt/src/tar-1.35/tests/chtype.at:30:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+
+install-sh -d directory/b/c >/dev/null && genfile --file directory/b/c/x || exit 77
+mkdir directory/a
+genfile --file directory/a/a
+
+echo First backup
+tar --create --file=archive.1 --listed-incremental=db.1 directory
+
+sleep 2
+
+# Remove directory b and create a file with this name.
+# Previous versions were not able to restore over this file.
+rm -r directory/b
+genfile --file directory/b
+genfile --file directory/a/b
+
+echo Second backup
+tar --create --file=archive.2 --listed-incremental=db.2 directory
+
+# Delete a
+rm -r directory
+
+echo Restore archive.1
+tar -xf archive.1 --listed-incremental=/dev/null --warning=no-timestamp
+echo Restore archive.2
+tar -xf archive.2 --listed-incremental=/dev/null --warning=no-timestamp
+find directory | sort
+)
+143. chtype.at:27: 143. changed file types in incrementals (chtype.at:27): ok     (0m0.095s 0m0.194s)

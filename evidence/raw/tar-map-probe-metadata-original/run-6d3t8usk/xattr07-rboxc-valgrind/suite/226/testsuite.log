@@ -1,0 +1,278 @@
+#                             -*- compilation -*-
+226. xattr07.at:26: testing xattrs: xattrs and --skip-old-files ...
+/opt/src/tar-1.35/tests/xattr07.at:29:
+mkdir v7
+(cd v7
+TEST_TAR_FORMAT=v7
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H v7"
+export TAR_OPTIONS
+rm -rf *
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfattr -n user.test -v ahoj $file
+  # check whether tar fails to store xattrs
+  err=$( tar --xattrs -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+mkdir dir
+genfile --file dir/file
+genfile --file dir/file2
+
+setfattr -n user.test -v OurDirValue dir
+setfattr -n user.test -v OurFileValue dir/file
+setfattr -n user.test -v OurFileValue dir/file2
+
+tar --xattrs --no-recursion -cf archive.tar dir dir/file dir/file2
+
+setfattr -n user.test -v OurDirValue2 dir
+setfattr -n user.test -v OurFileValue2 dir/file
+setfattr -n user.test -v OurFileValue2 dir/file2
+
+# Check that tar continues to file2 too!
+tar --xattrs -xvf archive.tar --skip-old-files
+tar --xattrs -xvf archive.tar --keep-old-files
+
+getfattr -h -d dir         | grep -v -e '^#' -e ^$
+getfattr -h -d dir/file    | grep -v -e '^#' -e ^$
+getfattr -h -d dir/file2   | grep -v -e '^#' -e ^$
+)
+/opt/src/tar-1.35/tests/xattr07.at:29:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfattr -n user.test -v ahoj $file
+  # check whether tar fails to store xattrs
+  err=$( tar --xattrs -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+mkdir dir
+genfile --file dir/file
+genfile --file dir/file2
+
+setfattr -n user.test -v OurDirValue dir
+setfattr -n user.test -v OurFileValue dir/file
+setfattr -n user.test -v OurFileValue dir/file2
+
+tar --xattrs --no-recursion -cf archive.tar dir dir/file dir/file2
+
+setfattr -n user.test -v OurDirValue2 dir
+setfattr -n user.test -v OurFileValue2 dir/file
+setfattr -n user.test -v OurFileValue2 dir/file2
+
+# Check that tar continues to file2 too!
+tar --xattrs -xvf archive.tar --skip-old-files
+tar --xattrs -xvf archive.tar --keep-old-files
+
+getfattr -h -d dir         | grep -v -e '^#' -e ^$
+getfattr -h -d dir/file    | grep -v -e '^#' -e ^$
+getfattr -h -d dir/file2   | grep -v -e '^#' -e ^$
+)
+/opt/src/tar-1.35/tests/xattr07.at:29:
+mkdir ustar
+(cd ustar
+TEST_TAR_FORMAT=ustar
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H ustar"
+export TAR_OPTIONS
+rm -rf *
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfattr -n user.test -v ahoj $file
+  # check whether tar fails to store xattrs
+  err=$( tar --xattrs -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+mkdir dir
+genfile --file dir/file
+genfile --file dir/file2
+
+setfattr -n user.test -v OurDirValue dir
+setfattr -n user.test -v OurFileValue dir/file
+setfattr -n user.test -v OurFileValue dir/file2
+
+tar --xattrs --no-recursion -cf archive.tar dir dir/file dir/file2
+
+setfattr -n user.test -v OurDirValue2 dir
+setfattr -n user.test -v OurFileValue2 dir/file
+setfattr -n user.test -v OurFileValue2 dir/file2
+
+# Check that tar continues to file2 too!
+tar --xattrs -xvf archive.tar --skip-old-files
+tar --xattrs -xvf archive.tar --keep-old-files
+
+getfattr -h -d dir         | grep -v -e '^#' -e ^$
+getfattr -h -d dir/file    | grep -v -e '^#' -e ^$
+getfattr -h -d dir/file2   | grep -v -e '^#' -e ^$
+)
+/opt/src/tar-1.35/tests/xattr07.at:29:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfattr -n user.test -v ahoj $file
+  # check whether tar fails to store xattrs
+  err=$( tar --xattrs -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+mkdir dir
+genfile --file dir/file
+genfile --file dir/file2
+
+setfattr -n user.test -v OurDirValue dir
+setfattr -n user.test -v OurFileValue dir/file
+setfattr -n user.test -v OurFileValue dir/file2
+
+tar --xattrs --no-recursion -cf archive.tar dir dir/file dir/file2
+
+setfattr -n user.test -v OurDirValue2 dir
+setfattr -n user.test -v OurFileValue2 dir/file
+setfattr -n user.test -v OurFileValue2 dir/file2
+
+# Check that tar continues to file2 too!
+tar --xattrs -xvf archive.tar --skip-old-files
+tar --xattrs -xvf archive.tar --keep-old-files
+
+getfattr -h -d dir         | grep -v -e '^#' -e ^$
+getfattr -h -d dir/file    | grep -v -e '^#' -e ^$
+getfattr -h -d dir/file2   | grep -v -e '^#' -e ^$
+)
+/opt/src/tar-1.35/tests/xattr07.at:29:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfattr -n user.test -v ahoj $file
+  # check whether tar fails to store xattrs
+  err=$( tar --xattrs -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+mkdir dir
+genfile --file dir/file
+genfile --file dir/file2
+
+setfattr -n user.test -v OurDirValue dir
+setfattr -n user.test -v OurFileValue dir/file
+setfattr -n user.test -v OurFileValue dir/file2
+
+tar --xattrs --no-recursion -cf archive.tar dir dir/file dir/file2
+
+setfattr -n user.test -v OurDirValue2 dir
+setfattr -n user.test -v OurFileValue2 dir/file
+setfattr -n user.test -v OurFileValue2 dir/file2
+
+# Check that tar continues to file2 too!
+tar --xattrs -xvf archive.tar --skip-old-files
+tar --xattrs -xvf archive.tar --keep-old-files
+
+getfattr -h -d dir         | grep -v -e '^#' -e ^$
+getfattr -h -d dir/file    | grep -v -e '^#' -e ^$
+getfattr -h -d dir/file2   | grep -v -e '^#' -e ^$
+)
+226. xattr07.at:26: 226. xattrs: xattrs and --skip-old-files (xattr07.at:26): ok     (0m16.004s 0m1.212s)

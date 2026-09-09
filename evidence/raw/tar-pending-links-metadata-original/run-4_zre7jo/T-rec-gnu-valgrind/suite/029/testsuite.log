@@ -1,0 +1,28 @@
+#                             -*- compilation -*-
+29. T-rec.at:21: testing recursive file lists ...
+/opt/src/tar-1.35/tests/T-rec.at:24:
+mkdir ustar
+(cd ustar
+TEST_TAR_FORMAT=ustar
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H ustar"
+export TAR_OPTIONS
+rm -rf *
+
+>file1
+>file2
+cat >F1 <<'_ATEOF'
+file1
+-T F2
+_ATEOF
+
+cat >F2 <<'_ATEOF'
+file2
+-T F1
+_ATEOF
+
+tar cf archive -T F1
+echo $?
+tar tf archive
+)
+29. T-rec.at:21: 29. recursive file lists (T-rec.at:21): ok     (0m1.157s 0m0.093s)

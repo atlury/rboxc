@@ -1,0 +1,84 @@
+#                             -*- compilation -*-
+233. capabs_raw01.at:25: testing capabilities: binary store/restore ...
+/opt/src/tar-1.35/tests/capabs_raw01.at:28:
+mkdir v7
+(cd v7
+TEST_TAR_FORMAT=v7
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H v7"
+export TAR_OPTIONS
+rm -rf *
+
+
+echo "test" > $$
+chmod 0 $$
+cat $$ > /dev/null 2>&1
+result=$?
+rm -f $$
+test $result -eq 0 || exit 77
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfattr -n user.test -v ahoj $file
+  # check whether tar fails to store xattrs
+  err=$( tar --xattrs -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setcap "= cap_chown=ei" $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getcap $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+  rm -rf $file
+
+
+mkdir dir
+genfile --file dir/file
+
+setcap "= cap_chown=ei" dir/file
+
+# archive whole directory including binary xattrs
+tar --xattrs -cf archive.tar dir
+
+# clear the directory
+rm -rf dir
+
+# restore _all_ xattrs (not just the user.* domain)
+tar --xattrs --xattrs-include='*' -xf archive.tar
+
+# Newer systems print = instead of + here
+getcap dir/file | sed 's/+/=/'
+)
+--- -	2026-09-09 01:55:25.879529925 +0000
++++ /tmp/rboxc-tar-original-yto6zii9/testsuite.dir/at-groups/233/stdout	2026-09-09 01:55:25.876556733 +0000
+@@ -1,2 +1,2 @@
+-dir/file = cap_chown=ei
++dir/file cap_chown=ei
+ 
+233. capabs_raw01.at:25: 233. capabilities: binary store/restore (capabs_raw01.at:25): FAILED (capabs_raw01.at:28)

@@ -1,0 +1,31 @@
+#                             -*- compilation -*-
+11. opcomp06.at:21: testing --pax-option compatibility ...
+/opt/src/tar-1.35/tests/opcomp06.at:24:
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfacl -m u:$UID:rwx $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfacl $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+  rm -rf $file
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfacl -m u:$UID:rwx $file
+  err=$( tar --acls -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+genfile --file file
+tar -cf test.tar --acls -Hgnu file
+
+11. opcomp06.at:21: 11. --pax-option compatibility (opcomp06.at:21): ok     (0m0.011s 0m0.032s)

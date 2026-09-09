@@ -1,0 +1,36 @@
+#                             -*- compilation -*-
+92. extrac09.at:34: testing extracting even when . and .. are unreadable ...
+/opt/src/tar-1.35/tests/extrac09.at:37:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+echo "test" > $$
+chmod 0 $$
+cat $$ > /dev/null 2>&1
+result=$?
+rm -f $$
+test $result -eq 0 && exit 77
+
+
+mkdir dir
+mkdir dir/sub
+mkdir dir/sub/extract
+genfile --file dir/sub/f
+cd dir/sub
+
+tar -cf archive.tar f
+
+chmod a-r . ..
+tar -xvf archive.tar -C extract f
+status=$?
+chmod a+r . ..
+cmp f extract/f || status=$?
+exit $status
+)
+92. extrac09.at:34: 92. extracting even when . and .. are unreadable (extrac09.at:34): ok     (0m0.009s 0m0.038s)

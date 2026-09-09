@@ -1,0 +1,273 @@
+#                             -*- compilation -*-
+225. xattr06.at:27: testing xattrs: exclude xattrs on create  ...
+/opt/src/tar-1.35/tests/xattr06.at:30:
+mkdir v7
+(cd v7
+TEST_TAR_FORMAT=v7
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H v7"
+export TAR_OPTIONS
+rm -rf *
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfattr -n user.test -v ahoj $file
+  # check whether tar fails to store xattrs
+  err=$( tar --xattrs -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+mkdir dir
+mkdir output
+genfile --file dir/file
+
+for attr in excluded incla inclb inclc incl_excluded
+do
+  setfattr -n user.${attr} -v value dir/file || exit 77
+done
+
+tar --xattrs-include=user.incl'*' --xattrs-exclude=user.incl_excluded -cf archive.tar -C dir .
+tar -xf archive.tar --xattrs-include=user.incl[ab] --xattrs-exclude=user.inclb -C output
+
+getfattr -d output/file | grep -v \
+    -e excluded \
+    -e inclb \
+    -e inclc > filtered
+getfattr -d output/file > full
+# if they differ then the attribute is still present
+diff filtered full
+)
+/opt/src/tar-1.35/tests/xattr06.at:30:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfattr -n user.test -v ahoj $file
+  # check whether tar fails to store xattrs
+  err=$( tar --xattrs -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+mkdir dir
+mkdir output
+genfile --file dir/file
+
+for attr in excluded incla inclb inclc incl_excluded
+do
+  setfattr -n user.${attr} -v value dir/file || exit 77
+done
+
+tar --xattrs-include=user.incl'*' --xattrs-exclude=user.incl_excluded -cf archive.tar -C dir .
+tar -xf archive.tar --xattrs-include=user.incl[ab] --xattrs-exclude=user.inclb -C output
+
+getfattr -d output/file | grep -v \
+    -e excluded \
+    -e inclb \
+    -e inclc > filtered
+getfattr -d output/file > full
+# if they differ then the attribute is still present
+diff filtered full
+)
+/opt/src/tar-1.35/tests/xattr06.at:30:
+mkdir ustar
+(cd ustar
+TEST_TAR_FORMAT=ustar
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H ustar"
+export TAR_OPTIONS
+rm -rf *
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfattr -n user.test -v ahoj $file
+  # check whether tar fails to store xattrs
+  err=$( tar --xattrs -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+mkdir dir
+mkdir output
+genfile --file dir/file
+
+for attr in excluded incla inclb inclc incl_excluded
+do
+  setfattr -n user.${attr} -v value dir/file || exit 77
+done
+
+tar --xattrs-include=user.incl'*' --xattrs-exclude=user.incl_excluded -cf archive.tar -C dir .
+tar -xf archive.tar --xattrs-include=user.incl[ab] --xattrs-exclude=user.inclb -C output
+
+getfattr -d output/file | grep -v \
+    -e excluded \
+    -e inclb \
+    -e inclc > filtered
+getfattr -d output/file > full
+# if they differ then the attribute is still present
+diff filtered full
+)
+/opt/src/tar-1.35/tests/xattr06.at:30:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfattr -n user.test -v ahoj $file
+  # check whether tar fails to store xattrs
+  err=$( tar --xattrs -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+mkdir dir
+mkdir output
+genfile --file dir/file
+
+for attr in excluded incla inclb inclc incl_excluded
+do
+  setfattr -n user.${attr} -v value dir/file || exit 77
+done
+
+tar --xattrs-include=user.incl'*' --xattrs-exclude=user.incl_excluded -cf archive.tar -C dir .
+tar -xf archive.tar --xattrs-include=user.incl[ab] --xattrs-exclude=user.inclb -C output
+
+getfattr -d output/file | grep -v \
+    -e excluded \
+    -e inclb \
+    -e inclc > filtered
+getfattr -d output/file > full
+# if they differ then the attribute is still present
+diff filtered full
+)
+/opt/src/tar-1.35/tests/xattr06.at:30:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfattr -n user.test -v ahoj $file
+  # check whether tar fails to store xattrs
+  err=$( tar --xattrs -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+mkdir dir
+mkdir output
+genfile --file dir/file
+
+for attr in excluded incla inclb inclc incl_excluded
+do
+  setfattr -n user.${attr} -v value dir/file || exit 77
+done
+
+tar --xattrs-include=user.incl'*' --xattrs-exclude=user.incl_excluded -cf archive.tar -C dir .
+tar -xf archive.tar --xattrs-include=user.incl[ab] --xattrs-exclude=user.inclb -C output
+
+getfattr -d output/file | grep -v \
+    -e excluded \
+    -e inclb \
+    -e inclc > filtered
+getfattr -d output/file > full
+# if they differ then the attribute is still present
+diff filtered full
+)
+225. xattr06.at:27: 225. xattrs: exclude xattrs on create  (xattr06.at:27): ok     (0m12.315s 0m0.904s)

@@ -1,0 +1,95 @@
+==639566== Memcheck, a memory error detector
+==639566== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==639566== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+==639566== Command: tar tvf archive
+==639566== Parent PID: 639471
+==639566== 
+==639566== 
+==639566== FILE DESCRIPTORS: 1 open (1 inherited) at exit.
+==639566== 
+==639566== HEAP SUMMARY:
+==639566==     in use at exit: 4,411 bytes in 14 blocks
+==639566==   total heap usage: 43 allocs, 29 frees, 39,950 bytes allocated
+==639566== 
+==639566== 6 bytes in 2 blocks are indirectly lost in loss record 1 of 9
+==639566==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==639566==    by 0x40387DD: wsnode_quoteremoval (wordsplit.c:651)
+==639566==    by 0x4039CFD: wordsplit_process_list (wordsplit.c:2390)
+==639566==    by 0x403A562: wordsplit_run.constprop.0 (wordsplit.c:2434)
+==639566==    by 0x400BFFA: parse_default_options (tar.c:2256)
+==639566==    by 0x400BFFA: decode_options (tar.c:2378)
+==639566==    by 0x400BFFA: main (tar.c:2792)
+==639566== 
+==639566== 6 bytes in 2 blocks are definitely lost in loss record 2 of 9
+==639566==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==639566==    by 0x403A1FB: wordsplit_finish (wordsplit.c:836)
+==639566==    by 0x400BFFA: parse_default_options (tar.c:2256)
+==639566==    by 0x400BFFA: decode_options (tar.c:2378)
+==639566==    by 0x400BFFA: main (tar.c:2792)
+==639566== 
+==639566== 9 bytes in 3 blocks are indirectly lost in loss record 3 of 9
+==639566==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==639566==    by 0x405185D: xmalloc (xmalloc.c:45)
+==639566==    by 0x405185D: xmemdup (xmalloc.c:314)
+==639566==    by 0x405185D: xstrdup (xmalloc.c:339)
+==639566==    by 0x400C4F1: decode_options (tar.c:2353)
+==639566==    by 0x400C4F1: main (tar.c:2792)
+==639566== 
+==639566== 16 bytes in 1 blocks are still reachable in loss record 4 of 9
+==639566==    at 0x48C4E43: calloc (vg_replace_malloc.c:1678)
+==639566==    by 0x40516F1: xcalloc (xmalloc.c:298)
+==639566==    by 0x40516F1: xzalloc (xmalloc.c:283)
+==639566==    by 0x400BEF9: decode_options (tar.c:2297)
+==639566==    by 0x400BEF9: main (tar.c:2792)
+==639566== 
+==639566== 57 (48 direct, 9 indirect) bytes in 1 blocks are definitely lost in loss record 5 of 9
+==639566==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==639566==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==639566==    by 0x400C46E: decode_options (tar.c:2340)
+==639566==    by 0x400C46E: main (tar.c:2792)
+==639566== 
+==639566== 80 bytes in 1 blocks are still reachable in loss record 6 of 9
+==639566==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==639566==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==639566==    by 0x400BE43: main (tar.c:2781)
+==639566== 
+==639566== 86 (80 direct, 6 indirect) bytes in 2 blocks are definitely lost in loss record 7 of 9
+==639566==    at 0x48C4E43: calloc (vg_replace_malloc.c:1678)
+==639566==    by 0x403959D: wsnode_new (wordsplit.c:422)
+==639566==    by 0x403959D: wordsplit_add_segm (wordsplit.c:523)
+==639566==    by 0x4039854: scan_word (wordsplit.c:2062)
+==639566==    by 0x4039C7C: wordsplit_process_list (wordsplit.c:2358)
+==639566==    by 0x403A562: wordsplit_run.constprop.0 (wordsplit.c:2434)
+==639566==    by 0x400BFFA: parse_default_options (tar.c:2256)
+==639566==    by 0x400BFFA: decode_options (tar.c:2378)
+==639566==    by 0x400BFFA: main (tar.c:2792)
+==639566== 
+==639566== 102 bytes in 1 blocks are still reachable in loss record 8 of 9
+==639566==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==639566==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==639566==    by 0x4029881: name_init (names.c:869)
+==639566==    by 0x400C94C: main (tar.c:2794)
+==639566== 
+==639566== 4,064 bytes in 1 blocks are still reachable in loss record 9 of 9
+==639566==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==639566==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==639566==    by 0x404A07D: call_chunkfun (obstack.c:88)
+==639566==    by 0x404A07D: _obstack_begin_worker.isra.0 (obstack.c:135)
+==639566==    by 0x404A0A8: _obstack_begin (obstack.c:157)
+==639566==    by 0x4032C57: _transform_name_to_obstack (transform.c:592)
+==639566==    by 0x4032C57: transform_name_fp (transform.c:614)
+==639566==    by 0x4023670: transform_member_name (list.c:114)
+==639566==    by 0x4023670: transform_stat_info.part.0 (list.c:150)
+==639566==    by 0x4025850: transform_stat_info (list.c:227)
+==639566==    by 0x4025850: read_and (list.c:227)
+==639566==    by 0x400CD4B: main (tar.c:2832)
+==639566== 
+==639566== LEAK SUMMARY:
+==639566==    definitely lost: 134 bytes in 5 blocks
+==639566==    indirectly lost: 15 bytes in 5 blocks
+==639566==      possibly lost: 0 bytes in 0 blocks
+==639566==    still reachable: 4,262 bytes in 4 blocks
+==639566==         suppressed: 0 bytes in 0 blocks
+==639566== 
+==639566== For lists of detected and suppressed errors, rerun with: -s
+==639566== ERROR SUMMARY: 3 errors from 3 contexts (suppressed: 0 from 0)

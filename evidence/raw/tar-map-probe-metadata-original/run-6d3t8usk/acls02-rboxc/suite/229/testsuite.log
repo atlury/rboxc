@@ -1,0 +1,378 @@
+#                             -*- compilation -*-
+229. acls02.at:25: testing acls: work with -C ...
+/opt/src/tar-1.35/tests/acls02.at:28:
+mkdir v7
+(cd v7
+TEST_TAR_FORMAT=v7
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H v7"
+export TAR_OPTIONS
+rm -rf *
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfacl -m u:$UID:rwx $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfacl $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+  rm -rf $file
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfacl -m u:$UID:rwx $file
+  err=$( tar --acls -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+mkdir dir
+mkdir dir/subdir
+genfile --file dir/subdir/file
+
+MYNAME=$( id -un )
+
+setfacl -m u:$MYNAME:--x dir/subdir
+setfacl -m u:$MYNAME:--x dir/subdir/file
+
+cd dir
+getfattr -h -m. -d subdir subdir/file > ../before
+cd ..
+
+tar --acls -cf archive.tar -C dir subdir
+rm -rf dir
+
+mkdir dir
+tar --acls -xf archive.tar -C dir
+
+cd dir
+getfattr -h -m. -d subdir subdir/file > ../after
+cd ..
+
+diff before after
+test "$?" = 0
+)
+/opt/src/tar-1.35/tests/acls02.at:28:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfacl -m u:$UID:rwx $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfacl $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+  rm -rf $file
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfacl -m u:$UID:rwx $file
+  err=$( tar --acls -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+mkdir dir
+mkdir dir/subdir
+genfile --file dir/subdir/file
+
+MYNAME=$( id -un )
+
+setfacl -m u:$MYNAME:--x dir/subdir
+setfacl -m u:$MYNAME:--x dir/subdir/file
+
+cd dir
+getfattr -h -m. -d subdir subdir/file > ../before
+cd ..
+
+tar --acls -cf archive.tar -C dir subdir
+rm -rf dir
+
+mkdir dir
+tar --acls -xf archive.tar -C dir
+
+cd dir
+getfattr -h -m. -d subdir subdir/file > ../after
+cd ..
+
+diff before after
+test "$?" = 0
+)
+/opt/src/tar-1.35/tests/acls02.at:28:
+mkdir ustar
+(cd ustar
+TEST_TAR_FORMAT=ustar
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H ustar"
+export TAR_OPTIONS
+rm -rf *
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfacl -m u:$UID:rwx $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfacl $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+  rm -rf $file
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfacl -m u:$UID:rwx $file
+  err=$( tar --acls -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+mkdir dir
+mkdir dir/subdir
+genfile --file dir/subdir/file
+
+MYNAME=$( id -un )
+
+setfacl -m u:$MYNAME:--x dir/subdir
+setfacl -m u:$MYNAME:--x dir/subdir/file
+
+cd dir
+getfattr -h -m. -d subdir subdir/file > ../before
+cd ..
+
+tar --acls -cf archive.tar -C dir subdir
+rm -rf dir
+
+mkdir dir
+tar --acls -xf archive.tar -C dir
+
+cd dir
+getfattr -h -m. -d subdir subdir/file > ../after
+cd ..
+
+diff before after
+test "$?" = 0
+)
+/opt/src/tar-1.35/tests/acls02.at:28:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfacl -m u:$UID:rwx $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfacl $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+  rm -rf $file
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfacl -m u:$UID:rwx $file
+  err=$( tar --acls -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+mkdir dir
+mkdir dir/subdir
+genfile --file dir/subdir/file
+
+MYNAME=$( id -un )
+
+setfacl -m u:$MYNAME:--x dir/subdir
+setfacl -m u:$MYNAME:--x dir/subdir/file
+
+cd dir
+getfattr -h -m. -d subdir subdir/file > ../before
+cd ..
+
+tar --acls -cf archive.tar -C dir subdir
+rm -rf dir
+
+mkdir dir
+tar --acls -xf archive.tar -C dir
+
+cd dir
+getfattr -h -m. -d subdir subdir/file > ../after
+cd ..
+
+diff before after
+test "$?" = 0
+)
+/opt/src/tar-1.35/tests/acls02.at:28:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfacl -m u:$UID:rwx $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfacl $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+  rm -rf $file
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfacl -m u:$UID:rwx $file
+  err=$( tar --acls -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+mkdir dir
+mkdir dir/subdir
+genfile --file dir/subdir/file
+
+MYNAME=$( id -un )
+
+setfacl -m u:$MYNAME:--x dir/subdir
+setfacl -m u:$MYNAME:--x dir/subdir/file
+
+cd dir
+getfattr -h -m. -d subdir subdir/file > ../before
+cd ..
+
+tar --acls -cf archive.tar -C dir subdir
+rm -rf dir
+
+mkdir dir
+tar --acls -xf archive.tar -C dir
+
+cd dir
+getfattr -h -m. -d subdir subdir/file > ../after
+cd ..
+
+diff before after
+test "$?" = 0
+)
+229. acls02.at:25: 229. acls: work with -C (acls02.at:25): ok     (0m0.094s 0m0.323s)

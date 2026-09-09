@@ -1,0 +1,143 @@
+#                             -*- compilation -*-
+147. link03.at:24: testing working -l with --remove-files ...
+/opt/src/tar-1.35/tests/link03.at:34:
+mkdir v7
+(cd v7
+TEST_TAR_FORMAT=v7
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H v7"
+export TAR_OPTIONS
+rm -rf *
+
+
+genfile -l 64 -f file1
+ln file1 file2
+ln file2 file3
+ln file3 file4
+
+echo archive.1
+tar -c -f archive.1 -l --remove-files file1 file2 file3 file4
+
+genfile -l 64 -f file1
+ln file1 file2
+ln file2 file3
+ln file3 file4
+
+echo archive.2
+tar -c -f archive.2 -l --remove-files file1 file2 file3
+echo testing archive.2
+tar tfv archive.2 | sed -n 's/.*file[2-3] link to //p'
+)
+/opt/src/tar-1.35/tests/link03.at:34:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+genfile -l 64 -f file1
+ln file1 file2
+ln file2 file3
+ln file3 file4
+
+echo archive.1
+tar -c -f archive.1 -l --remove-files file1 file2 file3 file4
+
+genfile -l 64 -f file1
+ln file1 file2
+ln file2 file3
+ln file3 file4
+
+echo archive.2
+tar -c -f archive.2 -l --remove-files file1 file2 file3
+echo testing archive.2
+tar tfv archive.2 | sed -n 's/.*file[2-3] link to //p'
+)
+/opt/src/tar-1.35/tests/link03.at:34:
+mkdir ustar
+(cd ustar
+TEST_TAR_FORMAT=ustar
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H ustar"
+export TAR_OPTIONS
+rm -rf *
+
+
+genfile -l 64 -f file1
+ln file1 file2
+ln file2 file3
+ln file3 file4
+
+echo archive.1
+tar -c -f archive.1 -l --remove-files file1 file2 file3 file4
+
+genfile -l 64 -f file1
+ln file1 file2
+ln file2 file3
+ln file3 file4
+
+echo archive.2
+tar -c -f archive.2 -l --remove-files file1 file2 file3
+echo testing archive.2
+tar tfv archive.2 | sed -n 's/.*file[2-3] link to //p'
+)
+/opt/src/tar-1.35/tests/link03.at:34:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+
+genfile -l 64 -f file1
+ln file1 file2
+ln file2 file3
+ln file3 file4
+
+echo archive.1
+tar -c -f archive.1 -l --remove-files file1 file2 file3 file4
+
+genfile -l 64 -f file1
+ln file1 file2
+ln file2 file3
+ln file3 file4
+
+echo archive.2
+tar -c -f archive.2 -l --remove-files file1 file2 file3
+echo testing archive.2
+tar tfv archive.2 | sed -n 's/.*file[2-3] link to //p'
+)
+/opt/src/tar-1.35/tests/link03.at:34:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+genfile -l 64 -f file1
+ln file1 file2
+ln file2 file3
+ln file3 file4
+
+echo archive.1
+tar -c -f archive.1 -l --remove-files file1 file2 file3 file4
+
+genfile -l 64 -f file1
+ln file1 file2
+ln file2 file3
+ln file3 file4
+
+echo archive.2
+tar -c -f archive.2 -l --remove-files file1 file2 file3
+echo testing archive.2
+tar tfv archive.2 | sed -n 's/.*file[2-3] link to //p'
+)
+147. link03.at:24: 147. working -l with --remove-files (link03.at:24): ok     (0m8.801s 0m0.634s)

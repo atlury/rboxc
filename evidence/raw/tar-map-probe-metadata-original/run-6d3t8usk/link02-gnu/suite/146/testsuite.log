@@ -1,0 +1,83 @@
+#                             -*- compilation -*-
+146. link02.at:32: testing preserve hard links with --remove-files ...
+/opt/src/tar-1.35/tests/link02.at:35:
+mkdir v7
+(cd v7
+TEST_TAR_FORMAT=v7
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H v7"
+export TAR_OPTIONS
+rm -rf *
+
+genfile -l 64 -f file1
+ln file1 file2
+ln file2 file3
+ln file3 file4
+tar -c -f archive --remove-files file1 file2 file3 file4
+tar tfv archive | sed -n 's/.*file[2-4] link to //p'
+)
+/opt/src/tar-1.35/tests/link02.at:35:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+genfile -l 64 -f file1
+ln file1 file2
+ln file2 file3
+ln file3 file4
+tar -c -f archive --remove-files file1 file2 file3 file4
+tar tfv archive | sed -n 's/.*file[2-4] link to //p'
+)
+/opt/src/tar-1.35/tests/link02.at:35:
+mkdir ustar
+(cd ustar
+TEST_TAR_FORMAT=ustar
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H ustar"
+export TAR_OPTIONS
+rm -rf *
+
+genfile -l 64 -f file1
+ln file1 file2
+ln file2 file3
+ln file3 file4
+tar -c -f archive --remove-files file1 file2 file3 file4
+tar tfv archive | sed -n 's/.*file[2-4] link to //p'
+)
+/opt/src/tar-1.35/tests/link02.at:35:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+genfile -l 64 -f file1
+ln file1 file2
+ln file2 file3
+ln file3 file4
+tar -c -f archive --remove-files file1 file2 file3 file4
+tar tfv archive | sed -n 's/.*file[2-4] link to //p'
+)
+/opt/src/tar-1.35/tests/link02.at:35:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+genfile -l 64 -f file1
+ln file1 file2
+ln file2 file3
+ln file3 file4
+tar -c -f archive --remove-files file1 file2 file3 file4
+tar tfv archive | sed -n 's/.*file[2-4] link to //p'
+)
+146. link02.at:32: 146. preserve hard links with --remove-files (link02.at:32): ok     (0m0.043s 0m0.107s)

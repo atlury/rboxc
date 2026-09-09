@@ -1,6 +1,6 @@
 {
-  "scope": "Keep GNU selection and directory behavior, while tracking live name allocations independently of discarded selection cursors, releasing consumed directory/option records, closing/freeing owned working-directory state, retaining/freeing the aligned comparison allocation, freeing consumed wordsplit nodes after copying their output, retaining/freeing option-file words after GNU finishes borrowing them, and releasing the incremental snapshot parser obstack on return or process exit. Native oracle objects remain unchanged.",
-  "driver_sha256": "eecec63c066eccba5478b9e70c39e8881ee6d96786bd3ea3941910f4204a5df8",
+  "scope": "Keep GNU selection and directory behavior, while tracking live name allocations independently of discarded selection cursors, releasing consumed directory/option records, closing/freeing owned working-directory state, retaining/freeing the aligned comparison allocation, freeing consumed wordsplit nodes after copying their output, retaining/freeing option-file words after GNU finishes borrowing them, and releasing the incremental snapshot parser obstack on return or process exit. Map input line buffers are freed after parsing, and compression probe headers start initialized before reading an empty or partial archive. Native oracle objects remain unchanged.",
+  "driver_sha256": "b394c0653ff05d78d90710d59b432744abe56265b754b05f7e803d99b72198e5",
   "adaptations": [
     {
       "source": "/opt/src/tar-1.35/src/misc.c",
@@ -179,9 +179,9 @@
       "source": "/opt/src/tar-1.35/src/buffer.c",
       "original_sha256": "da5531181b92b080b9ba56b583b9f1a0c9c5160e4f211d9098319e606f2540fc",
       "adapted_source": "build/tar-cleanup/buffer.c",
-      "adapted_source_sha256": "e9ac8bedcab6bd936109a1d415dd9ada66860a09dbd1b086ebfa216b5f44f2bb",
+      "adapted_source_sha256": "084a99100a0869e8d47c4540dbaffa51e45a7bef26eea8d615ca08206b62f361",
       "object": "build/tar-cleanup/buffer.o",
-      "object_sha256": "8051c6b8d641a609f942b01a57cfdad413d6fdd938f8eb702478a0b3680c8ddf",
+      "object_sha256": "8ff21e36fb1b0aed52f1d5738a25b5c22327d3ce7aad0ed7354ad0351e34d7f5",
       "compiler_arguments": [
         "gcc",
         "-DHAVE_CONFIG_H",
@@ -208,6 +208,41 @@
         "-I/opt/src/tar-1.35/src"
       ],
       "log": "evidence/raw/tar-buffer-cleanup-build.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/opt/src/tar-1.35/src/map.c",
+      "original_sha256": "1f014976e9a51d8cb05fb07952a066da5b75d117000b6f89ff824fb90b8d8b87",
+      "adapted_source": "build/tar-cleanup/map.c",
+      "adapted_source_sha256": "1e49fec323ca66f7f13909e1b25fe4d37c8f92c1adea911176d823806b215a26",
+      "object": "build/tar-cleanup/map.o",
+      "object_sha256": "38589e504a1af346b98311ea901a48f695f25b010d80bbd1348310ac204c3bf0",
+      "compiler_arguments": [
+        "gcc",
+        "-DHAVE_CONFIG_H",
+        "-I.",
+        "-I/opt/src/tar-1.35/src",
+        "-I..",
+        "-I/opt/src/tar-1.35/gnu",
+        "-I../",
+        "-I../gnu",
+        "-I/opt/src/tar-1.35/lib",
+        "-I../lib",
+        "-g",
+        "-O2",
+        "-MT",
+        "map.o",
+        "-MD",
+        "-MP",
+        "-MF",
+        ".deps/map.Tpo",
+        "-c",
+        "-o",
+        "/root/rboxc/build/tar-cleanup/map.o",
+        "/root/rboxc/build/tar-cleanup/map.c",
+        "-I/opt/src/tar-1.35/src"
+      ],
+      "log": "evidence/raw/tar-map-cleanup-build.log",
       "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
   ]

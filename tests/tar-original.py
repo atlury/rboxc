@@ -166,9 +166,44 @@ selections.update({
     'spmvp01': (178, 'spmvp01.at'),
     'spmvp10': (179, 'spmvp10.at'),
 })
+selections.update({
+    'T-rec': (29, 'T-rec.at'),
+    'exclude06': (65, 'exclude06.at'),
+    'chtype': (143, 'chtype.at'),
+    'ignfail': (144, 'ignfail.at'),
+    'link01': (145, 'link01.at'),
+    'link02': (146, 'link02.at'),
+    'link03': (147, 'link03.at'),
+    'link04': (148, 'link04.at'),
+    'map': (168, 'map.at'),
+    'shortfile': (192, 'shortfile.at'),
+    'shortupd': (193, 'shortupd.at'),
+    'onetop05': (238, 'onetop05.at'),
+    'extrac09': (92, 'extrac09.at'),
+    'numeric': (46, 'numeric.at'),
+})
+permission_selections.update({name: selections[name] for name in ('ignfail', 'extrac09')})
+nss_selections = {'owner', 'map', 'numeric'}
+selections.update({
+    'xattr01': (220, 'xattr01.at'),
+    'xattr02': (221, 'xattr02.at'),
+    'xattr03': (222, 'xattr03.at'),
+    'xattr04': (223, 'xattr04.at'),
+    'xattr05': (224, 'xattr05.at'),
+    'xattr06': (225, 'xattr06.at'),
+    'xattr07': (226, 'xattr07.at'),
+    'xattr08': (227, 'xattr08.at'),
+    'acls01': (228, 'acls01.at'),
+    'acls02': (229, 'acls02.at'),
+    'acls03': (230, 'acls03.at'),
+    'capabs_raw01': (233, 'capabs_raw01.at'),
+    'opcomp06': (11, 'opcomp06.at'),
+})
+permission_selections['xattr08'] = selections['xattr08']
+nss_selections.update({'acls01', 'acls02', 'acls03', 'opcomp06'})
 selected = profile.options.commands or list(selections)
 assert set(selected) <= set(selections)
-helpers = {n: ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','mkdir','chmod','touch','sort','echo','basename','cp','ln','true','false','sleep','ls','mv','mktemp','cut','id','date','printf','dd','rmdir','expr','tr','wc','head','tail','uname','cksum')}
+helpers = {n: ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','mkdir','chmod','touch','sort','echo','basename','cp','ln','true','false','sleep','ls','mv','mktemp','cut','id','date','printf','dd','rmdir','expr','tr','wc','head','tail','uname','cksum','chown')}
 helpers.update({n: ROOT/'build/gnu-diffutils/src'/n for n in ('cmp', 'diff')})
 helpers['sed'] = ROOT/'build/gnu-sed/sed/sed'
 helpers['grep'] = ROOT/'build/gnu-grep/src/grep'
@@ -176,10 +211,16 @@ helpers['genfile'] = ROOT/'build/gnu-tar/tests/genfile'
 helpers['ckmtime'] = ROOT/'build/gnu-tar/tests/ckmtime'
 helpers['checkseekhole'] = ROOT/'build/gnu-tar/tests/checkseekhole'
 helpers['find'] = ROOT/'build/gnu-findutils/find/find'
+helpers['xargs'] = ROOT/'build/gnu-findutils/xargs/xargs'
+helpers.update({name: Path('/usr/bin')/name for name in ('getfattr', 'setfattr', 'getfacl', 'setfacl')})
+helpers.update({name: Path('/usr/sbin')/name for name in ('getcap', 'setcap')})
 inputs = {p: fingerprint(p) for p in {*helpers.values(), profile.oracle, source/'tests/testsuite', source/'tests/testsuite.at',
     ROOT/'build/gnu-tar/tests/atconfig', ROOT/'build/gnu-tar/tests/atlocal', Path('/bin/bash'), Path('/bin/sh').resolve(), Path('/usr/bin/awk').resolve(), Path(__file__)}}
 for filename in ('genfile.c', 'argcv.c', 'argcv.h', 'ckmtime.c', 'checkseekhole.c', 'Makefile.am'):
     path = source/'tests'/filename
+    inputs[path] = fingerprint(path)
+for filename in ('/usr/lib/x86_64-linux-gnu/libacl.so.1', '/usr/lib/x86_64-linux-gnu/libcap.so.2', '/usr/lib/x86_64-linux-gnu/libc.so.6'):
+    path = Path(filename).resolve(strict=True)
     inputs[path] = fingerprint(path)
 manifest = json.loads((ROOT/'inventory/tar-tests.json').read_text())
 registered = {row['path']: row for row in manifest['inputs']}
@@ -194,7 +235,7 @@ for name in selected:
     reviewed = registered[str(path.relative_to(source))]
     assert reviewed['reviewed'] and fingerprint(path) == reviewed['sha256']
     inputs[path] = fingerprint(path)
-if 'owner' in selected:
+if set(selected) & nss_selections:
     for filename in ('/etc/nsswitch.conf', '/etc/passwd', '/etc/group', '/usr/bin/unshare', '/usr/bin/mount'):
         path = Path(filename)
         inputs[path] = fingerprint(path)
@@ -241,7 +282,7 @@ def run_selection(name):
                 command = ['/bin/bash', str(source/'tests/testsuite'), '--debug', str(number),
                            'AUTOTEST_PATH='+str(work/'exec')+':'+str(work/'deps')]
                 nss = None
-                if name == 'owner':
+                if name in nss_selections:
                     host_nss = Path('/etc/nsswitch.conf').read_text()
                     config = work/'nsswitch.conf'
                     config.write_text(re.sub(r'^(passwd|group|shadow|gshadow|initgroups):.*$',

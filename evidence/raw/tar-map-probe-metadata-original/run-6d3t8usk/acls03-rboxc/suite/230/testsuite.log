@@ -1,0 +1,1088 @@
+#                             -*- compilation -*-
+230. acls03.at:30: testing acls: default ACLs ...
+/opt/src/tar-1.35/tests/acls03.at:47:
+mkdir v7
+(cd v7
+TEST_TAR_FORMAT=v7
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H v7"
+export TAR_OPTIONS
+rm -rf *
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfacl -m u:$UID:rwx $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfacl $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+  rm -rf $file
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfacl -m u:$UID:rwx $file
+  err=$( tar --acls -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+
+MYNAME=$( id -un )
+MYGROUP=$( id -gn )
+
+# Prepare directory structure with default ACLs
+mkdir -p pure/d1/d2
+genfile --file pure/d1/f2a
+genfile --file pure/d1/f2b
+genfile --file pure/d1/d2/f3a
+genfile --file pure/d1/d2/f3b
+setfacl    -m g:$MYGROUP:r-x pure/d1
+setfacl -d -m g:$MYGROUP:rwx pure/d1
+setfacl -d -m u:$MYNAME:rwx  pure/d1
+# "*a" files have "some" additional ACLs
+setfacl    -m u:$MYNAME:--- pure/d1/d2/f3a
+setfacl    -m u:$MYNAME:--- pure/d1/f2a
+
+# use default format (no acls stored)
+tar -cf noacl.tar -C pure d1
+
+# use posix format, acls stored
+tar --acls -cf acl.tar -C pure d1
+
+# Directory names are chosen based on "how the files were extracted from
+# archive".  Equivalent no* tags are used also:
+#   ^sacl_    — extracted archive has stored ACLs
+#   _def_     — target directory (-C) has default ACLs
+#   _optacl$  — extraction was done with --acls option
+
+mkdir sacl_def_optacl
+mkdir sacl_def_optnoacl
+mkdir sacl_nodef_optacl
+mkdir sacl_nodef_optnoacl
+mkdir nosacl_def_optacl
+mkdir nosacl_def_optnoacl
+mkdir nosacl_nodef_optacl
+mkdir nosacl_nodef_optnoacl
+
+setfacl -d -m u:$MYNAME:---  nosacl_def_optnoacl sacl_def_optnoacl sacl_def_optacl nosacl_def_optacl
+setfacl -d -m g:$MYGROUP:--- nosacl_def_optnoacl sacl_def_optnoacl sacl_def_optacl nosacl_def_optacl
+
+tar -xf acl.tar -C sacl_nodef_optnoacl
+tar --acls -xf acl.tar -C sacl_nodef_optacl
+tar -xf acl.tar -C sacl_def_optnoacl
+tar --acls -xf acl.tar -C sacl_def_optacl
+tar -xf noacl.tar -C nosacl_def_optnoacl
+# _NO_ ACLs in output
+tar -xf noacl.tar -C nosacl_nodef_optnoacl
+tar -xf noacl.tar -C nosacl_nodef_optacl
+tar -cf noacl_repackaged.tar -C nosacl_nodef_optnoacl d1
+# _NO_ ACLs in output (even when default ACLs exist)
+tar --acls -xf noacl_repackaged.tar -C nosacl_def_optacl
+
+
+    cd pure
+    pure="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+
+    cd sacl_def_optacl
+    sacl_def_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd sacl_def_optnoacl
+    sacl_def_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd sacl_nodef_optacl
+    sacl_nodef_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd sacl_nodef_optnoacl
+    sacl_nodef_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_def_optacl
+    nosacl_def_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_def_optnoacl
+    nosacl_def_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_nodef_optacl
+    nosacl_nodef_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_nodef_optnoacl
+    nosacl_nodef_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+
+    echo "$pure" > pure.log
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    if test ! "$pure" "=" "$sacl_def_optacl"; then
+        echo "bad 'pure' against 'sacl_def_optacl' output"
+    fi
+
+
+
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    echo "$sacl_nodef_optacl" > sacl_nodef_optacl.log
+    if test ! "$sacl_def_optacl" "=" "$sacl_nodef_optacl"; then
+        echo "bad 'sacl_def_optacl' against 'sacl_nodef_optacl' output"
+    fi
+
+
+    echo "$sacl_def_optnoacl" > sacl_def_optnoacl.log
+    echo "$nosacl_def_optnoacl" > nosacl_def_optnoacl.log
+    if test ! "$sacl_def_optnoacl" "=" "$nosacl_def_optnoacl"; then
+        echo "bad 'sacl_def_optnoacl' against 'nosacl_def_optnoacl' output"
+    fi
+
+
+    echo "$sacl_nodef_optnoacl" > sacl_nodef_optnoacl.log
+    echo "$nosacl_nodef_optnoacl" > nosacl_nodef_optnoacl.log
+    if test ! "$sacl_nodef_optnoacl" "=" "$nosacl_nodef_optnoacl"; then
+        echo "bad 'sacl_nodef_optnoacl' against 'nosacl_nodef_optnoacl' output"
+    fi
+
+
+    echo "$nosacl_def_optacl" > nosacl_def_optacl.log
+    echo "$nosacl_nodef_optacl" > nosacl_nodef_optacl.log
+    if test ! "$nosacl_def_optacl" "=" "$nosacl_nodef_optacl"; then
+        echo "bad 'nosacl_def_optacl' against 'nosacl_nodef_optacl' output"
+    fi
+
+
+    echo "$nosacl_def_optacl" > nosacl_def_optacl.log
+    echo "$nosacl_nodef_optnoacl" > nosacl_nodef_optnoacl.log
+    if test ! "$nosacl_def_optacl" "=" "$nosacl_nodef_optnoacl"; then
+        echo "bad 'nosacl_def_optacl' against 'nosacl_nodef_optnoacl' output"
+    fi
+
+
+
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    echo "$sacl_def_optnoacl" > sacl_def_optnoacl.log
+    if test ! "$sacl_def_optacl" "!=" "$sacl_def_optnoacl"; then
+        echo "bad 'sacl_def_optacl' against 'sacl_def_optnoacl' output"
+    fi
+
+
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    echo "$nosacl_def_optnoacl" > nosacl_def_optnoacl.log
+    if test ! "$sacl_def_optacl" "!=" "$nosacl_def_optnoacl"; then
+        echo "bad 'sacl_def_optacl' against 'nosacl_def_optnoacl' output"
+    fi
+
+
+    echo "$nosacl_def_optnoacl" > nosacl_def_optnoacl.log
+    echo "$nosacl_nodef_optnoacl" > nosacl_nodef_optnoacl.log
+    if test ! "$nosacl_def_optnoacl" "!=" "$nosacl_nodef_optnoacl"; then
+        echo "bad 'nosacl_def_optnoacl' against 'nosacl_nodef_optnoacl' output"
+    fi
+
+)
+/opt/src/tar-1.35/tests/acls03.at:47:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfacl -m u:$UID:rwx $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfacl $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+  rm -rf $file
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfacl -m u:$UID:rwx $file
+  err=$( tar --acls -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+
+MYNAME=$( id -un )
+MYGROUP=$( id -gn )
+
+# Prepare directory structure with default ACLs
+mkdir -p pure/d1/d2
+genfile --file pure/d1/f2a
+genfile --file pure/d1/f2b
+genfile --file pure/d1/d2/f3a
+genfile --file pure/d1/d2/f3b
+setfacl    -m g:$MYGROUP:r-x pure/d1
+setfacl -d -m g:$MYGROUP:rwx pure/d1
+setfacl -d -m u:$MYNAME:rwx  pure/d1
+# "*a" files have "some" additional ACLs
+setfacl    -m u:$MYNAME:--- pure/d1/d2/f3a
+setfacl    -m u:$MYNAME:--- pure/d1/f2a
+
+# use default format (no acls stored)
+tar -cf noacl.tar -C pure d1
+
+# use posix format, acls stored
+tar --acls -cf acl.tar -C pure d1
+
+# Directory names are chosen based on "how the files were extracted from
+# archive".  Equivalent no* tags are used also:
+#   ^sacl_    — extracted archive has stored ACLs
+#   _def_     — target directory (-C) has default ACLs
+#   _optacl$  — extraction was done with --acls option
+
+mkdir sacl_def_optacl
+mkdir sacl_def_optnoacl
+mkdir sacl_nodef_optacl
+mkdir sacl_nodef_optnoacl
+mkdir nosacl_def_optacl
+mkdir nosacl_def_optnoacl
+mkdir nosacl_nodef_optacl
+mkdir nosacl_nodef_optnoacl
+
+setfacl -d -m u:$MYNAME:---  nosacl_def_optnoacl sacl_def_optnoacl sacl_def_optacl nosacl_def_optacl
+setfacl -d -m g:$MYGROUP:--- nosacl_def_optnoacl sacl_def_optnoacl sacl_def_optacl nosacl_def_optacl
+
+tar -xf acl.tar -C sacl_nodef_optnoacl
+tar --acls -xf acl.tar -C sacl_nodef_optacl
+tar -xf acl.tar -C sacl_def_optnoacl
+tar --acls -xf acl.tar -C sacl_def_optacl
+tar -xf noacl.tar -C nosacl_def_optnoacl
+# _NO_ ACLs in output
+tar -xf noacl.tar -C nosacl_nodef_optnoacl
+tar -xf noacl.tar -C nosacl_nodef_optacl
+tar -cf noacl_repackaged.tar -C nosacl_nodef_optnoacl d1
+# _NO_ ACLs in output (even when default ACLs exist)
+tar --acls -xf noacl_repackaged.tar -C nosacl_def_optacl
+
+
+    cd pure
+    pure="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+
+    cd sacl_def_optacl
+    sacl_def_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd sacl_def_optnoacl
+    sacl_def_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd sacl_nodef_optacl
+    sacl_nodef_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd sacl_nodef_optnoacl
+    sacl_nodef_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_def_optacl
+    nosacl_def_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_def_optnoacl
+    nosacl_def_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_nodef_optacl
+    nosacl_nodef_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_nodef_optnoacl
+    nosacl_nodef_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+
+    echo "$pure" > pure.log
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    if test ! "$pure" "=" "$sacl_def_optacl"; then
+        echo "bad 'pure' against 'sacl_def_optacl' output"
+    fi
+
+
+
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    echo "$sacl_nodef_optacl" > sacl_nodef_optacl.log
+    if test ! "$sacl_def_optacl" "=" "$sacl_nodef_optacl"; then
+        echo "bad 'sacl_def_optacl' against 'sacl_nodef_optacl' output"
+    fi
+
+
+    echo "$sacl_def_optnoacl" > sacl_def_optnoacl.log
+    echo "$nosacl_def_optnoacl" > nosacl_def_optnoacl.log
+    if test ! "$sacl_def_optnoacl" "=" "$nosacl_def_optnoacl"; then
+        echo "bad 'sacl_def_optnoacl' against 'nosacl_def_optnoacl' output"
+    fi
+
+
+    echo "$sacl_nodef_optnoacl" > sacl_nodef_optnoacl.log
+    echo "$nosacl_nodef_optnoacl" > nosacl_nodef_optnoacl.log
+    if test ! "$sacl_nodef_optnoacl" "=" "$nosacl_nodef_optnoacl"; then
+        echo "bad 'sacl_nodef_optnoacl' against 'nosacl_nodef_optnoacl' output"
+    fi
+
+
+    echo "$nosacl_def_optacl" > nosacl_def_optacl.log
+    echo "$nosacl_nodef_optacl" > nosacl_nodef_optacl.log
+    if test ! "$nosacl_def_optacl" "=" "$nosacl_nodef_optacl"; then
+        echo "bad 'nosacl_def_optacl' against 'nosacl_nodef_optacl' output"
+    fi
+
+
+    echo "$nosacl_def_optacl" > nosacl_def_optacl.log
+    echo "$nosacl_nodef_optnoacl" > nosacl_nodef_optnoacl.log
+    if test ! "$nosacl_def_optacl" "=" "$nosacl_nodef_optnoacl"; then
+        echo "bad 'nosacl_def_optacl' against 'nosacl_nodef_optnoacl' output"
+    fi
+
+
+
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    echo "$sacl_def_optnoacl" > sacl_def_optnoacl.log
+    if test ! "$sacl_def_optacl" "!=" "$sacl_def_optnoacl"; then
+        echo "bad 'sacl_def_optacl' against 'sacl_def_optnoacl' output"
+    fi
+
+
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    echo "$nosacl_def_optnoacl" > nosacl_def_optnoacl.log
+    if test ! "$sacl_def_optacl" "!=" "$nosacl_def_optnoacl"; then
+        echo "bad 'sacl_def_optacl' against 'nosacl_def_optnoacl' output"
+    fi
+
+
+    echo "$nosacl_def_optnoacl" > nosacl_def_optnoacl.log
+    echo "$nosacl_nodef_optnoacl" > nosacl_nodef_optnoacl.log
+    if test ! "$nosacl_def_optnoacl" "!=" "$nosacl_nodef_optnoacl"; then
+        echo "bad 'nosacl_def_optnoacl' against 'nosacl_nodef_optnoacl' output"
+    fi
+
+)
+/opt/src/tar-1.35/tests/acls03.at:47:
+mkdir ustar
+(cd ustar
+TEST_TAR_FORMAT=ustar
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H ustar"
+export TAR_OPTIONS
+rm -rf *
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfacl -m u:$UID:rwx $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfacl $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+  rm -rf $file
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfacl -m u:$UID:rwx $file
+  err=$( tar --acls -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+
+MYNAME=$( id -un )
+MYGROUP=$( id -gn )
+
+# Prepare directory structure with default ACLs
+mkdir -p pure/d1/d2
+genfile --file pure/d1/f2a
+genfile --file pure/d1/f2b
+genfile --file pure/d1/d2/f3a
+genfile --file pure/d1/d2/f3b
+setfacl    -m g:$MYGROUP:r-x pure/d1
+setfacl -d -m g:$MYGROUP:rwx pure/d1
+setfacl -d -m u:$MYNAME:rwx  pure/d1
+# "*a" files have "some" additional ACLs
+setfacl    -m u:$MYNAME:--- pure/d1/d2/f3a
+setfacl    -m u:$MYNAME:--- pure/d1/f2a
+
+# use default format (no acls stored)
+tar -cf noacl.tar -C pure d1
+
+# use posix format, acls stored
+tar --acls -cf acl.tar -C pure d1
+
+# Directory names are chosen based on "how the files were extracted from
+# archive".  Equivalent no* tags are used also:
+#   ^sacl_    — extracted archive has stored ACLs
+#   _def_     — target directory (-C) has default ACLs
+#   _optacl$  — extraction was done with --acls option
+
+mkdir sacl_def_optacl
+mkdir sacl_def_optnoacl
+mkdir sacl_nodef_optacl
+mkdir sacl_nodef_optnoacl
+mkdir nosacl_def_optacl
+mkdir nosacl_def_optnoacl
+mkdir nosacl_nodef_optacl
+mkdir nosacl_nodef_optnoacl
+
+setfacl -d -m u:$MYNAME:---  nosacl_def_optnoacl sacl_def_optnoacl sacl_def_optacl nosacl_def_optacl
+setfacl -d -m g:$MYGROUP:--- nosacl_def_optnoacl sacl_def_optnoacl sacl_def_optacl nosacl_def_optacl
+
+tar -xf acl.tar -C sacl_nodef_optnoacl
+tar --acls -xf acl.tar -C sacl_nodef_optacl
+tar -xf acl.tar -C sacl_def_optnoacl
+tar --acls -xf acl.tar -C sacl_def_optacl
+tar -xf noacl.tar -C nosacl_def_optnoacl
+# _NO_ ACLs in output
+tar -xf noacl.tar -C nosacl_nodef_optnoacl
+tar -xf noacl.tar -C nosacl_nodef_optacl
+tar -cf noacl_repackaged.tar -C nosacl_nodef_optnoacl d1
+# _NO_ ACLs in output (even when default ACLs exist)
+tar --acls -xf noacl_repackaged.tar -C nosacl_def_optacl
+
+
+    cd pure
+    pure="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+
+    cd sacl_def_optacl
+    sacl_def_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd sacl_def_optnoacl
+    sacl_def_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd sacl_nodef_optacl
+    sacl_nodef_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd sacl_nodef_optnoacl
+    sacl_nodef_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_def_optacl
+    nosacl_def_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_def_optnoacl
+    nosacl_def_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_nodef_optacl
+    nosacl_nodef_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_nodef_optnoacl
+    nosacl_nodef_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+
+    echo "$pure" > pure.log
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    if test ! "$pure" "=" "$sacl_def_optacl"; then
+        echo "bad 'pure' against 'sacl_def_optacl' output"
+    fi
+
+
+
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    echo "$sacl_nodef_optacl" > sacl_nodef_optacl.log
+    if test ! "$sacl_def_optacl" "=" "$sacl_nodef_optacl"; then
+        echo "bad 'sacl_def_optacl' against 'sacl_nodef_optacl' output"
+    fi
+
+
+    echo "$sacl_def_optnoacl" > sacl_def_optnoacl.log
+    echo "$nosacl_def_optnoacl" > nosacl_def_optnoacl.log
+    if test ! "$sacl_def_optnoacl" "=" "$nosacl_def_optnoacl"; then
+        echo "bad 'sacl_def_optnoacl' against 'nosacl_def_optnoacl' output"
+    fi
+
+
+    echo "$sacl_nodef_optnoacl" > sacl_nodef_optnoacl.log
+    echo "$nosacl_nodef_optnoacl" > nosacl_nodef_optnoacl.log
+    if test ! "$sacl_nodef_optnoacl" "=" "$nosacl_nodef_optnoacl"; then
+        echo "bad 'sacl_nodef_optnoacl' against 'nosacl_nodef_optnoacl' output"
+    fi
+
+
+    echo "$nosacl_def_optacl" > nosacl_def_optacl.log
+    echo "$nosacl_nodef_optacl" > nosacl_nodef_optacl.log
+    if test ! "$nosacl_def_optacl" "=" "$nosacl_nodef_optacl"; then
+        echo "bad 'nosacl_def_optacl' against 'nosacl_nodef_optacl' output"
+    fi
+
+
+    echo "$nosacl_def_optacl" > nosacl_def_optacl.log
+    echo "$nosacl_nodef_optnoacl" > nosacl_nodef_optnoacl.log
+    if test ! "$nosacl_def_optacl" "=" "$nosacl_nodef_optnoacl"; then
+        echo "bad 'nosacl_def_optacl' against 'nosacl_nodef_optnoacl' output"
+    fi
+
+
+
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    echo "$sacl_def_optnoacl" > sacl_def_optnoacl.log
+    if test ! "$sacl_def_optacl" "!=" "$sacl_def_optnoacl"; then
+        echo "bad 'sacl_def_optacl' against 'sacl_def_optnoacl' output"
+    fi
+
+
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    echo "$nosacl_def_optnoacl" > nosacl_def_optnoacl.log
+    if test ! "$sacl_def_optacl" "!=" "$nosacl_def_optnoacl"; then
+        echo "bad 'sacl_def_optacl' against 'nosacl_def_optnoacl' output"
+    fi
+
+
+    echo "$nosacl_def_optnoacl" > nosacl_def_optnoacl.log
+    echo "$nosacl_nodef_optnoacl" > nosacl_nodef_optnoacl.log
+    if test ! "$nosacl_def_optnoacl" "!=" "$nosacl_nodef_optnoacl"; then
+        echo "bad 'nosacl_def_optnoacl' against 'nosacl_nodef_optnoacl' output"
+    fi
+
+)
+/opt/src/tar-1.35/tests/acls03.at:47:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfacl -m u:$UID:rwx $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfacl $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+  rm -rf $file
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfacl -m u:$UID:rwx $file
+  err=$( tar --acls -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+
+MYNAME=$( id -un )
+MYGROUP=$( id -gn )
+
+# Prepare directory structure with default ACLs
+mkdir -p pure/d1/d2
+genfile --file pure/d1/f2a
+genfile --file pure/d1/f2b
+genfile --file pure/d1/d2/f3a
+genfile --file pure/d1/d2/f3b
+setfacl    -m g:$MYGROUP:r-x pure/d1
+setfacl -d -m g:$MYGROUP:rwx pure/d1
+setfacl -d -m u:$MYNAME:rwx  pure/d1
+# "*a" files have "some" additional ACLs
+setfacl    -m u:$MYNAME:--- pure/d1/d2/f3a
+setfacl    -m u:$MYNAME:--- pure/d1/f2a
+
+# use default format (no acls stored)
+tar -cf noacl.tar -C pure d1
+
+# use posix format, acls stored
+tar --acls -cf acl.tar -C pure d1
+
+# Directory names are chosen based on "how the files were extracted from
+# archive".  Equivalent no* tags are used also:
+#   ^sacl_    — extracted archive has stored ACLs
+#   _def_     — target directory (-C) has default ACLs
+#   _optacl$  — extraction was done with --acls option
+
+mkdir sacl_def_optacl
+mkdir sacl_def_optnoacl
+mkdir sacl_nodef_optacl
+mkdir sacl_nodef_optnoacl
+mkdir nosacl_def_optacl
+mkdir nosacl_def_optnoacl
+mkdir nosacl_nodef_optacl
+mkdir nosacl_nodef_optnoacl
+
+setfacl -d -m u:$MYNAME:---  nosacl_def_optnoacl sacl_def_optnoacl sacl_def_optacl nosacl_def_optacl
+setfacl -d -m g:$MYGROUP:--- nosacl_def_optnoacl sacl_def_optnoacl sacl_def_optacl nosacl_def_optacl
+
+tar -xf acl.tar -C sacl_nodef_optnoacl
+tar --acls -xf acl.tar -C sacl_nodef_optacl
+tar -xf acl.tar -C sacl_def_optnoacl
+tar --acls -xf acl.tar -C sacl_def_optacl
+tar -xf noacl.tar -C nosacl_def_optnoacl
+# _NO_ ACLs in output
+tar -xf noacl.tar -C nosacl_nodef_optnoacl
+tar -xf noacl.tar -C nosacl_nodef_optacl
+tar -cf noacl_repackaged.tar -C nosacl_nodef_optnoacl d1
+# _NO_ ACLs in output (even when default ACLs exist)
+tar --acls -xf noacl_repackaged.tar -C nosacl_def_optacl
+
+
+    cd pure
+    pure="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+
+    cd sacl_def_optacl
+    sacl_def_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd sacl_def_optnoacl
+    sacl_def_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd sacl_nodef_optacl
+    sacl_nodef_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd sacl_nodef_optnoacl
+    sacl_nodef_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_def_optacl
+    nosacl_def_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_def_optnoacl
+    nosacl_def_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_nodef_optacl
+    nosacl_nodef_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_nodef_optnoacl
+    nosacl_nodef_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+
+    echo "$pure" > pure.log
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    if test ! "$pure" "=" "$sacl_def_optacl"; then
+        echo "bad 'pure' against 'sacl_def_optacl' output"
+    fi
+
+
+
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    echo "$sacl_nodef_optacl" > sacl_nodef_optacl.log
+    if test ! "$sacl_def_optacl" "=" "$sacl_nodef_optacl"; then
+        echo "bad 'sacl_def_optacl' against 'sacl_nodef_optacl' output"
+    fi
+
+
+    echo "$sacl_def_optnoacl" > sacl_def_optnoacl.log
+    echo "$nosacl_def_optnoacl" > nosacl_def_optnoacl.log
+    if test ! "$sacl_def_optnoacl" "=" "$nosacl_def_optnoacl"; then
+        echo "bad 'sacl_def_optnoacl' against 'nosacl_def_optnoacl' output"
+    fi
+
+
+    echo "$sacl_nodef_optnoacl" > sacl_nodef_optnoacl.log
+    echo "$nosacl_nodef_optnoacl" > nosacl_nodef_optnoacl.log
+    if test ! "$sacl_nodef_optnoacl" "=" "$nosacl_nodef_optnoacl"; then
+        echo "bad 'sacl_nodef_optnoacl' against 'nosacl_nodef_optnoacl' output"
+    fi
+
+
+    echo "$nosacl_def_optacl" > nosacl_def_optacl.log
+    echo "$nosacl_nodef_optacl" > nosacl_nodef_optacl.log
+    if test ! "$nosacl_def_optacl" "=" "$nosacl_nodef_optacl"; then
+        echo "bad 'nosacl_def_optacl' against 'nosacl_nodef_optacl' output"
+    fi
+
+
+    echo "$nosacl_def_optacl" > nosacl_def_optacl.log
+    echo "$nosacl_nodef_optnoacl" > nosacl_nodef_optnoacl.log
+    if test ! "$nosacl_def_optacl" "=" "$nosacl_nodef_optnoacl"; then
+        echo "bad 'nosacl_def_optacl' against 'nosacl_nodef_optnoacl' output"
+    fi
+
+
+
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    echo "$sacl_def_optnoacl" > sacl_def_optnoacl.log
+    if test ! "$sacl_def_optacl" "!=" "$sacl_def_optnoacl"; then
+        echo "bad 'sacl_def_optacl' against 'sacl_def_optnoacl' output"
+    fi
+
+
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    echo "$nosacl_def_optnoacl" > nosacl_def_optnoacl.log
+    if test ! "$sacl_def_optacl" "!=" "$nosacl_def_optnoacl"; then
+        echo "bad 'sacl_def_optacl' against 'nosacl_def_optnoacl' output"
+    fi
+
+
+    echo "$nosacl_def_optnoacl" > nosacl_def_optnoacl.log
+    echo "$nosacl_nodef_optnoacl" > nosacl_nodef_optnoacl.log
+    if test ! "$nosacl_def_optnoacl" "!=" "$nosacl_nodef_optnoacl"; then
+        echo "bad 'nosacl_def_optnoacl' against 'nosacl_nodef_optnoacl' output"
+    fi
+
+)
+/opt/src/tar-1.35/tests/acls03.at:47:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfacl -m u:$UID:rwx $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfacl $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+  rm -rf $file
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfacl -m u:$UID:rwx $file
+  err=$( tar --acls -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+
+MYNAME=$( id -un )
+MYGROUP=$( id -gn )
+
+# Prepare directory structure with default ACLs
+mkdir -p pure/d1/d2
+genfile --file pure/d1/f2a
+genfile --file pure/d1/f2b
+genfile --file pure/d1/d2/f3a
+genfile --file pure/d1/d2/f3b
+setfacl    -m g:$MYGROUP:r-x pure/d1
+setfacl -d -m g:$MYGROUP:rwx pure/d1
+setfacl -d -m u:$MYNAME:rwx  pure/d1
+# "*a" files have "some" additional ACLs
+setfacl    -m u:$MYNAME:--- pure/d1/d2/f3a
+setfacl    -m u:$MYNAME:--- pure/d1/f2a
+
+# use default format (no acls stored)
+tar -cf noacl.tar -C pure d1
+
+# use posix format, acls stored
+tar --acls -cf acl.tar -C pure d1
+
+# Directory names are chosen based on "how the files were extracted from
+# archive".  Equivalent no* tags are used also:
+#   ^sacl_    — extracted archive has stored ACLs
+#   _def_     — target directory (-C) has default ACLs
+#   _optacl$  — extraction was done with --acls option
+
+mkdir sacl_def_optacl
+mkdir sacl_def_optnoacl
+mkdir sacl_nodef_optacl
+mkdir sacl_nodef_optnoacl
+mkdir nosacl_def_optacl
+mkdir nosacl_def_optnoacl
+mkdir nosacl_nodef_optacl
+mkdir nosacl_nodef_optnoacl
+
+setfacl -d -m u:$MYNAME:---  nosacl_def_optnoacl sacl_def_optnoacl sacl_def_optacl nosacl_def_optacl
+setfacl -d -m g:$MYGROUP:--- nosacl_def_optnoacl sacl_def_optnoacl sacl_def_optacl nosacl_def_optacl
+
+tar -xf acl.tar -C sacl_nodef_optnoacl
+tar --acls -xf acl.tar -C sacl_nodef_optacl
+tar -xf acl.tar -C sacl_def_optnoacl
+tar --acls -xf acl.tar -C sacl_def_optacl
+tar -xf noacl.tar -C nosacl_def_optnoacl
+# _NO_ ACLs in output
+tar -xf noacl.tar -C nosacl_nodef_optnoacl
+tar -xf noacl.tar -C nosacl_nodef_optacl
+tar -cf noacl_repackaged.tar -C nosacl_nodef_optnoacl d1
+# _NO_ ACLs in output (even when default ACLs exist)
+tar --acls -xf noacl_repackaged.tar -C nosacl_def_optacl
+
+
+    cd pure
+    pure="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+
+    cd sacl_def_optacl
+    sacl_def_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd sacl_def_optnoacl
+    sacl_def_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd sacl_nodef_optacl
+    sacl_nodef_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd sacl_nodef_optnoacl
+    sacl_nodef_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_def_optacl
+    nosacl_def_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_def_optnoacl
+    nosacl_def_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_nodef_optacl
+    nosacl_nodef_optacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+    cd nosacl_nodef_optnoacl
+    nosacl_nodef_optnoacl="$(find d1 | sort | xargs -n 1 getfacl)"
+    cd ..
+
+
+
+    echo "$pure" > pure.log
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    if test ! "$pure" "=" "$sacl_def_optacl"; then
+        echo "bad 'pure' against 'sacl_def_optacl' output"
+    fi
+
+
+
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    echo "$sacl_nodef_optacl" > sacl_nodef_optacl.log
+    if test ! "$sacl_def_optacl" "=" "$sacl_nodef_optacl"; then
+        echo "bad 'sacl_def_optacl' against 'sacl_nodef_optacl' output"
+    fi
+
+
+    echo "$sacl_def_optnoacl" > sacl_def_optnoacl.log
+    echo "$nosacl_def_optnoacl" > nosacl_def_optnoacl.log
+    if test ! "$sacl_def_optnoacl" "=" "$nosacl_def_optnoacl"; then
+        echo "bad 'sacl_def_optnoacl' against 'nosacl_def_optnoacl' output"
+    fi
+
+
+    echo "$sacl_nodef_optnoacl" > sacl_nodef_optnoacl.log
+    echo "$nosacl_nodef_optnoacl" > nosacl_nodef_optnoacl.log
+    if test ! "$sacl_nodef_optnoacl" "=" "$nosacl_nodef_optnoacl"; then
+        echo "bad 'sacl_nodef_optnoacl' against 'nosacl_nodef_optnoacl' output"
+    fi
+
+
+    echo "$nosacl_def_optacl" > nosacl_def_optacl.log
+    echo "$nosacl_nodef_optacl" > nosacl_nodef_optacl.log
+    if test ! "$nosacl_def_optacl" "=" "$nosacl_nodef_optacl"; then
+        echo "bad 'nosacl_def_optacl' against 'nosacl_nodef_optacl' output"
+    fi
+
+
+    echo "$nosacl_def_optacl" > nosacl_def_optacl.log
+    echo "$nosacl_nodef_optnoacl" > nosacl_nodef_optnoacl.log
+    if test ! "$nosacl_def_optacl" "=" "$nosacl_nodef_optnoacl"; then
+        echo "bad 'nosacl_def_optacl' against 'nosacl_nodef_optnoacl' output"
+    fi
+
+
+
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    echo "$sacl_def_optnoacl" > sacl_def_optnoacl.log
+    if test ! "$sacl_def_optacl" "!=" "$sacl_def_optnoacl"; then
+        echo "bad 'sacl_def_optacl' against 'sacl_def_optnoacl' output"
+    fi
+
+
+    echo "$sacl_def_optacl" > sacl_def_optacl.log
+    echo "$nosacl_def_optnoacl" > nosacl_def_optnoacl.log
+    if test ! "$sacl_def_optacl" "!=" "$nosacl_def_optnoacl"; then
+        echo "bad 'sacl_def_optacl' against 'nosacl_def_optnoacl' output"
+    fi
+
+
+    echo "$nosacl_def_optnoacl" > nosacl_def_optnoacl.log
+    echo "$nosacl_nodef_optnoacl" > nosacl_nodef_optnoacl.log
+    if test ! "$nosacl_def_optnoacl" "!=" "$nosacl_nodef_optnoacl"; then
+        echo "bad 'nosacl_def_optnoacl' against 'nosacl_nodef_optnoacl' output"
+    fi
+
+)
+230. acls03.at:30: 230. acls: default ACLs (acls03.at:30): ok     (0m0.506s 0m1.484s)

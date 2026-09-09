@@ -19,6 +19,8 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('reports', nargs='+', type=Path)
 parser.add_argument('--expected-selections', type=int, required=True)
 parser.add_argument('--report-name', required=True)
+parser.add_argument('--selection', action='append', default=[],
+                    help='Audit only these named passing groups; retain source report and omitted outcomes')
 parser.add_argument('--archived-driver', type=Path, action='append', default=[],
                     help='Preserved original driver bytes for reports predating allowlist expansion')
 options = parser.parse_args()
@@ -42,7 +44,10 @@ for path in options.reports:
         metadata = current
     assert current == metadata, 'different executable/helper profiles'
     assert fingerprint(Path(data['binary'])) == data['binary_sha256']
-    assert data['passed'] == data['total'] == len(data['results']) > 0
+    assert data['total'] == len(data['results']) > 0
+    assert data['passed'] == sum(bool(row['pass']) for row in data['results'])
+    if not options.selection:
+        assert data['passed'] == data['total']
     if 'complete' in data:
         assert data['complete'] and data['planned_total'] == data['total'], 'original batch is incomplete'
         assert data['selected'] == [row['selection'] for row in data['results']]
@@ -62,6 +67,9 @@ for path in options.reports:
         assert name not in inputs or inputs[name] == expected
         inputs[name] = expected
     for row in data['results']:
+        if options.selection and row['selection'] not in options.selection:
+            origin.setdefault('omitted_selections', []).append({'selection': row['selection'], 'pass': row['pass'], 'assertions_pass': row['assertions_pass']})
+            continue
         assert row['selection'] not in results and row['assertions_pass'] and row['pass']
         for outcome in row['outcomes'].values():
             assert outcome['assertions_pass'] and outcome['status'] == 0
@@ -101,6 +109,9 @@ for path in options.reports:
             audited.append({'selection': row['selection'], **log, 'command': commands[-1], 'pass': True})
         results[row['selection']] = {**row, 'observation_source': origin}
 assert len(results) == options.expected_selections
+if options.selection:
+    assert len(set(options.selection)) == len(options.selection)
+    assert set(results) == set(options.selection)
 report = {'scope': 'Disjoint unchanged original GNU Tar selections on identical candidate bytes. All selected assertions pass, and every recorded candidate process log is hash-verified and reparsed. Original native findings remain unchanged. These are reviewed selections, not full-provider certification.',
           **metadata, 'inputs': inputs, 'source_reports': provenance,
           'driver_sha256': fingerprint(Path(__file__)), 'passed': len(results), 'total': len(results),

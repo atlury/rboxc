@@ -1,0 +1,273 @@
+#                             -*- compilation -*-
+221. xattr02.at:25: testing xattrs: change directory with -C option ...
+/opt/src/tar-1.35/tests/xattr02.at:28:
+mkdir v7
+(cd v7
+TEST_TAR_FORMAT=v7
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H v7"
+export TAR_OPTIONS
+rm -rf *
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfattr -n user.test -v ahoj $file
+  # check whether tar fails to store xattrs
+  err=$( tar --xattrs -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+mkdir dir
+mkdir dir/subdir
+mkdir dir/subdir/subsubdir
+genfile --file dir/file1
+genfile --file dir/subdir/file2
+
+setfattr -n user.test -v OurFile1Value dir/file1
+setfattr -n user.test -v OurFile2Value dir/subdir/file2
+setfattr -n user.test -v OurDirValue   dir/subdir/subsubdir
+
+tar --xattrs -cf archive.tar -C dir file1 -C subdir file2 subsubdir
+
+rm -rf dir
+
+tar --xattrs -xf archive.tar
+
+getfattr -h -d file1        | grep -v -e '^#' -e ^$
+getfattr -h -d file2        | grep -v -e '^#' -e ^$
+getfattr -h -d subsubdir    | grep -v -e '^#' -e ^$
+)
+/opt/src/tar-1.35/tests/xattr02.at:28:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfattr -n user.test -v ahoj $file
+  # check whether tar fails to store xattrs
+  err=$( tar --xattrs -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+mkdir dir
+mkdir dir/subdir
+mkdir dir/subdir/subsubdir
+genfile --file dir/file1
+genfile --file dir/subdir/file2
+
+setfattr -n user.test -v OurFile1Value dir/file1
+setfattr -n user.test -v OurFile2Value dir/subdir/file2
+setfattr -n user.test -v OurDirValue   dir/subdir/subsubdir
+
+tar --xattrs -cf archive.tar -C dir file1 -C subdir file2 subsubdir
+
+rm -rf dir
+
+tar --xattrs -xf archive.tar
+
+getfattr -h -d file1        | grep -v -e '^#' -e ^$
+getfattr -h -d file2        | grep -v -e '^#' -e ^$
+getfattr -h -d subsubdir    | grep -v -e '^#' -e ^$
+)
+/opt/src/tar-1.35/tests/xattr02.at:28:
+mkdir ustar
+(cd ustar
+TEST_TAR_FORMAT=ustar
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H ustar"
+export TAR_OPTIONS
+rm -rf *
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfattr -n user.test -v ahoj $file
+  # check whether tar fails to store xattrs
+  err=$( tar --xattrs -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+mkdir dir
+mkdir dir/subdir
+mkdir dir/subdir/subsubdir
+genfile --file dir/file1
+genfile --file dir/subdir/file2
+
+setfattr -n user.test -v OurFile1Value dir/file1
+setfattr -n user.test -v OurFile2Value dir/subdir/file2
+setfattr -n user.test -v OurDirValue   dir/subdir/subsubdir
+
+tar --xattrs -cf archive.tar -C dir file1 -C subdir file2 subsubdir
+
+rm -rf dir
+
+tar --xattrs -xf archive.tar
+
+getfattr -h -d file1        | grep -v -e '^#' -e ^$
+getfattr -h -d file2        | grep -v -e '^#' -e ^$
+getfattr -h -d subsubdir    | grep -v -e '^#' -e ^$
+)
+/opt/src/tar-1.35/tests/xattr02.at:28:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfattr -n user.test -v ahoj $file
+  # check whether tar fails to store xattrs
+  err=$( tar --xattrs -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+mkdir dir
+mkdir dir/subdir
+mkdir dir/subdir/subsubdir
+genfile --file dir/file1
+genfile --file dir/subdir/file2
+
+setfattr -n user.test -v OurFile1Value dir/file1
+setfattr -n user.test -v OurFile2Value dir/subdir/file2
+setfattr -n user.test -v OurDirValue   dir/subdir/subsubdir
+
+tar --xattrs -cf archive.tar -C dir file1 -C subdir file2 subsubdir
+
+rm -rf dir
+
+tar --xattrs -xf archive.tar
+
+getfattr -h -d file1        | grep -v -e '^#' -e ^$
+getfattr -h -d file2        | grep -v -e '^#' -e ^$
+getfattr -h -d subsubdir    | grep -v -e '^#' -e ^$
+)
+/opt/src/tar-1.35/tests/xattr02.at:28:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+
+  setfattr -n user.test -v test $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  getfattr $file &> /dev/null
+  if test "$?" != 0; then
+    exit 77
+  fi
+
+
+  file=$(TMPDIR=. mktemp fiXXXXXX)
+  setfattr -n user.test -v ahoj $file
+  # check whether tar fails to store xattrs
+  err=$( tar --xattrs -cf /dev/null $file 2>&1 >/dev/null | wc -l )
+  if test "$err" != "0"; then
+    exit 77
+  fi
+
+
+mkdir dir
+mkdir dir/subdir
+mkdir dir/subdir/subsubdir
+genfile --file dir/file1
+genfile --file dir/subdir/file2
+
+setfattr -n user.test -v OurFile1Value dir/file1
+setfattr -n user.test -v OurFile2Value dir/subdir/file2
+setfattr -n user.test -v OurDirValue   dir/subdir/subsubdir
+
+tar --xattrs -cf archive.tar -C dir file1 -C subdir file2 subsubdir
+
+rm -rf dir
+
+tar --xattrs -xf archive.tar
+
+getfattr -h -d file1        | grep -v -e '^#' -e ^$
+getfattr -h -d file2        | grep -v -e '^#' -e ^$
+getfattr -h -d subsubdir    | grep -v -e '^#' -e ^$
+)
+221. xattr02.at:25: 221. xattrs: change directory with -C option (xattr02.at:25): ok     (0m9.445s 0m0.754s)

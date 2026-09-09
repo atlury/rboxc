@@ -1,0 +1,22 @@
+#                             -*- compilation -*-
+65. exclude06.at:26: testing exclude: long files in pax archives ...
+/opt/src/tar-1.35/tests/exclude06.at:31:
+mkdir pax
+(cd pax
+TEST_TAR_FORMAT=pax
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H pax"
+export TAR_OPTIONS
+rm -rf *
+
+
+install-sh -d one/two/three/four/five/six/seven/eight/nine/ten/eleven/twelve/thirteen/fourteen/fifteen/sixteen/seventeen >/dev/null  || exit 77
+genfile --length 20 -f one/two/three/four/five/six/seven/eight/nine/ten/eleven/twelve/thirteen/fourteen/fifteen/sixteen/seventeen/1.txt
+genfile --length 20 -f one/two/three/four/five/six/seven/eight/nine/ten/eleven/twelve/thirteen/fourteen/fifteen/sixteen/seventeen/1.c
+
+tar cf archive.tar one/two/three/four/five/six/seven/eight/nine/ten/eleven/twelve/thirteen/fourteen/fifteen/sixteen/seventeen
+mkdir out
+tar -C out -xf archive.tar --exclude='*.txt' --warning=no-timestamp
+find out -type f
+)
+65. exclude06.at:26: 65. exclude: long files in pax archives (exclude06.at:26): ok     (0m0.011s 0m0.044s)

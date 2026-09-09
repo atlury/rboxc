@@ -1,0 +1,167 @@
+#                             -*- compilation -*-
+46. numeric.at:18: testing --numeric-owner basic tests ...
+/opt/src/tar-1.35/tests/numeric.at:29:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+MYUID=$(id -u) || exit 77
+MYGID=$(id -g) || exit 77
+MYUSR=$(id -un) || exit 77
+MYGRP=$(id -gn) || exit 77
+
+mkdir dir
+# Ensure correct group id on BSDs.
+chown :$MYGID dir >/dev/null 2>/dev/null
+genfile --file dir/file
+
+
+
+decho --create
+tar --create -vvf a dir --numeric-owner | awk '=="'"$MYUID/$MYGID"'" {print "OK"; next} {print}'
+tar --create -vvf a dir | awk '=="'"$MYUSR/$MYGRP"'" {print "OK"; next} {print}'
+
+
+decho --list
+tar --list -vvf a dir --numeric-owner | awk '=="'"$MYUID/$MYGID"'" {print "OK"; next} {print}'
+tar --list -vvf a dir | awk '=="'"$MYUSR/$MYGRP"'" {print "OK"; next} {print}'
+
+
+decho --diff
+tar --diff -vvf a dir --numeric-owner | awk '=="'"$MYUID/$MYGID"'" {print "OK"; next} {print}'
+tar --diff -vvf a dir | awk '=="'"$MYUSR/$MYGRP"'" {print "OK"; next} {print}'
+
+
+decho --extract
+tar --extract -vvf a dir --numeric-owner | awk '=="'"$MYUID/$MYGID"'" {print "OK"; next} {print}'
+tar --extract -vvf a dir | awk '=="'"$MYUSR/$MYGRP"'" {print "OK"; next} {print}'
+
+)
+/opt/src/tar-1.35/tests/numeric.at:29:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+MYUID=$(id -u) || exit 77
+MYGID=$(id -g) || exit 77
+MYUSR=$(id -un) || exit 77
+MYGRP=$(id -gn) || exit 77
+
+mkdir dir
+# Ensure correct group id on BSDs.
+chown :$MYGID dir >/dev/null 2>/dev/null
+genfile --file dir/file
+
+
+
+decho --create
+tar --create -vvf a dir --numeric-owner | awk '=="'"$MYUID/$MYGID"'" {print "OK"; next} {print}'
+tar --create -vvf a dir | awk '=="'"$MYUSR/$MYGRP"'" {print "OK"; next} {print}'
+
+
+decho --list
+tar --list -vvf a dir --numeric-owner | awk '=="'"$MYUID/$MYGID"'" {print "OK"; next} {print}'
+tar --list -vvf a dir | awk '=="'"$MYUSR/$MYGRP"'" {print "OK"; next} {print}'
+
+
+decho --diff
+tar --diff -vvf a dir --numeric-owner | awk '=="'"$MYUID/$MYGID"'" {print "OK"; next} {print}'
+tar --diff -vvf a dir | awk '=="'"$MYUSR/$MYGRP"'" {print "OK"; next} {print}'
+
+
+decho --extract
+tar --extract -vvf a dir --numeric-owner | awk '=="'"$MYUID/$MYGID"'" {print "OK"; next} {print}'
+tar --extract -vvf a dir | awk '=="'"$MYUSR/$MYGRP"'" {print "OK"; next} {print}'
+
+)
+/opt/src/tar-1.35/tests/numeric.at:29:
+mkdir ustar
+(cd ustar
+TEST_TAR_FORMAT=ustar
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H ustar"
+export TAR_OPTIONS
+rm -rf *
+
+MYUID=$(id -u) || exit 77
+MYGID=$(id -g) || exit 77
+MYUSR=$(id -un) || exit 77
+MYGRP=$(id -gn) || exit 77
+
+mkdir dir
+# Ensure correct group id on BSDs.
+chown :$MYGID dir >/dev/null 2>/dev/null
+genfile --file dir/file
+
+
+
+decho --create
+tar --create -vvf a dir --numeric-owner | awk '=="'"$MYUID/$MYGID"'" {print "OK"; next} {print}'
+tar --create -vvf a dir | awk '=="'"$MYUSR/$MYGRP"'" {print "OK"; next} {print}'
+
+
+decho --list
+tar --list -vvf a dir --numeric-owner | awk '=="'"$MYUID/$MYGID"'" {print "OK"; next} {print}'
+tar --list -vvf a dir | awk '=="'"$MYUSR/$MYGRP"'" {print "OK"; next} {print}'
+
+
+decho --diff
+tar --diff -vvf a dir --numeric-owner | awk '=="'"$MYUID/$MYGID"'" {print "OK"; next} {print}'
+tar --diff -vvf a dir | awk '=="'"$MYUSR/$MYGRP"'" {print "OK"; next} {print}'
+
+
+decho --extract
+tar --extract -vvf a dir --numeric-owner | awk '=="'"$MYUID/$MYGID"'" {print "OK"; next} {print}'
+tar --extract -vvf a dir | awk '=="'"$MYUSR/$MYGRP"'" {print "OK"; next} {print}'
+
+)
+/opt/src/tar-1.35/tests/numeric.at:29:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+MYUID=$(id -u) || exit 77
+MYGID=$(id -g) || exit 77
+MYUSR=$(id -un) || exit 77
+MYGRP=$(id -gn) || exit 77
+
+mkdir dir
+# Ensure correct group id on BSDs.
+chown :$MYGID dir >/dev/null 2>/dev/null
+genfile --file dir/file
+
+
+
+decho --create
+tar --create -vvf a dir --numeric-owner | awk '=="'"$MYUID/$MYGID"'" {print "OK"; next} {print}'
+tar --create -vvf a dir | awk '=="'"$MYUSR/$MYGRP"'" {print "OK"; next} {print}'
+
+
+decho --list
+tar --list -vvf a dir --numeric-owner | awk '=="'"$MYUID/$MYGID"'" {print "OK"; next} {print}'
+tar --list -vvf a dir | awk '=="'"$MYUSR/$MYGRP"'" {print "OK"; next} {print}'
+
+
+decho --diff
+tar --diff -vvf a dir --numeric-owner | awk '=="'"$MYUID/$MYGID"'" {print "OK"; next} {print}'
+tar --diff -vvf a dir | awk '=="'"$MYUSR/$MYGRP"'" {print "OK"; next} {print}'
+
+
+decho --extract
+tar --extract -vvf a dir --numeric-owner | awk '=="'"$MYUID/$MYGID"'" {print "OK"; next} {print}'
+tar --extract -vvf a dir | awk '=="'"$MYUSR/$MYGRP"'" {print "OK"; next} {print}'
+
+)
+46. numeric.at:18: 46. --numeric-owner basic tests (numeric.at:18): ok     (0m0.079s 0m0.222s)
