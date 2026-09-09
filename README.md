@@ -80,9 +80,36 @@ there where available.
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
 | Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 17 reviewed originals pass with clean Valgrind; broader acceptance open |
 | Less | 704 | Ten focused checks, one production terminal check and all 18 original screen replays pass across declared profiles |
-| Screen | 5.0.2 | Five option checks, both helper units and original attach/detach assertions pass in recorded profiles; daemon cleanup remains open |
+| Screen | 5.0.2 | All three original targets pass across declared profiles; daemon cleanup and socket recovery pass Valgrind |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
 | glibc | 2.43 | Both entries integrated; 50 focused checks, both getconf originals and three iconv buffer recipes pass |
+
+Screen's remaining daemon cleanup findings are resolved in the recorded Linux
+profile. It closes its owned server socket and successfully reopened standard
+streams after GNU's terminal restoration, preserves inherited handles in
+forked children, and handles failed reopens and socket replacement. Its ncurses
+parameter cache is released before the current terminal description.
+
+All three registered original targets are now covered across the declared
+helper and terminal profiles. The original attach/detach test and the socket
+recovery check pass with **12 clean candidate process logs**; **19 ownership
+contracts produce 26 clean parent/child logs**. The earlier native GNU findings,
+one incomplete native child log, and intermediate fixture failures remain
+preserved. `evidence/screen-owned-validation.json` independently audits the
+results and source transformations.
+
+This uses ncurses' exported internal `_nc_free_tparm` cleanup routine at exit.
+[evidence/screen-ncurses-cleanup-abi.json](evidence/screen-ncurses-cleanup-abi.json)
+records the host library hash, symbol version and upstream source reference.
+The public terminal cleanup API alone retains the shared parameter cache in
+this profile. Other termcap implementations require separate validation; see
+[ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
+
+The current 187-command candidate is **14,717,048 bytes**, at
+`target/screen-owned-candidate/release/rboxc`, with a byte-identical independent
+rebuild. All 428 Coreutils smoke checks, 11 dispatcher checks and five Screen
+option comparisons pass. The installed 133-command release remains unchanged;
+full GNU-wide acceptance remains open.
 
 Screen's original attach/detach test now passes natively and under Valgrind
 against both GNU and rboxc. Its private profile uses short Unix socket paths,
@@ -91,13 +118,14 @@ an owned argument-length array discarded by `ClearAction`; the helper now
 frees it with the argument strings. Six ownership contracts pass and the
 original terminal run confirms the eight leaked bytes are gone.
 
-Terminal acceptance remains open: the daemon retains four owned descriptors
-and 418 possibly-lost bytes in the terminal library. Seven Screen processes
+At the preceding key-binding checkpoint, the daemon retained four owned
+descriptors and 418 possibly-lost bytes in the terminal library; these findings
+are resolved by the newer daemon cleanup above. Seven Screen processes
 and two local test-dependency processes are clean in the final run.
 `evidence/screen-key-validation.json` audits those findings, the original
 assertions, source changes and preserved environment failures.
 
-The current 187-command candidate is **14,715,568 bytes**, at
+The preceding key-binding candidate is **14,715,568 bytes**, at
 `target/screen-key-candidate/release/rboxc`, with a byte-identical independent
 rebuild. All 428 Coreutils smoke checks, 11 dispatcher checks and five Screen
 option comparisons pass. Only the namespaced Screen process helper changed;

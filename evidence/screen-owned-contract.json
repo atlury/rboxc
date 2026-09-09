@@ -1,0 +1,763 @@
+{
+  "scope": "Nineteen ownership contracts cover borrowed standard streams, all three successfully reopened standard streams, repeated reopen/cleanup, descriptor reuse and fork inheritance. Socket cases use a private socketpair and the exact adapted static cleanup function. After checking inherited-handle preservation, the child harness disposes its copies. All parent and child logs must be clean.",
+  "passed": 19,
+  "total": 19,
+  "processes": 26,
+  "inputs": {
+    "/root/rboxc/tests/screen-daemon-contract.py": "347552afcd7042d89542d7ef092dc1f642d53e60f0e9adb38f9d4685b188faa4",
+    "/root/rboxc/scripts/screen_daemon_cleanup.py": "098e72ad7baffd06188f666ea4a61f4f3d2a4e2c4c026605969bfe14c0c3dce6",
+    "/root/rboxc/build/screen-daemon-cleanup/socket.c": "00406d837bb627ca10313c07a223c398cd034ddeff8f7af043f65380f2cee4f0",
+    "/root/rboxc/build/screen-owned-contract/streams.rs": "df877f54a338d1148ff2c4bf074292d47148a40ecc3a360183f44ad902fce01d",
+    "/root/rboxc/build/screen-owned-contract/socket-contract.c": "ebdb38a4ef855034eff8727c876614b2c794e55f91e95037e2a6d938a3d5a57b",
+    "/root/rboxc/target/screen-owned-candidate/release/deps/liblibc-7b57167feaadb5ab.rlib": "279bb99eca1188cfa828868374f390ba4783ad534e3e57d5e5d07905b2469424",
+    "/usr/lib/x86_64-linux-gnu/libtinfo.so.6.6": "085dbbe5dc38619276bdd0af37ae588969b1308baded09a2990ce8824a602912"
+  },
+  "rust_build": [
+    "rustup",
+    "run",
+    "nightly-2026-01-22",
+    "rustc",
+    "--edition=2021",
+    "-C",
+    "panic=abort",
+    "/root/rboxc/build/screen-owned-contract/streams.rs",
+    "--extern",
+    "libc=/root/rboxc/target/screen-owned-candidate/release/deps/liblibc-7b57167feaadb5ab.rlib",
+    "-L",
+    "dependency=/root/rboxc/target/screen-owned-candidate/release/deps",
+    "-l",
+    "tinfo",
+    "-o",
+    "/root/rboxc/build/screen-owned-contract/streams"
+  ],
+  "socket_compile": [
+    "gcc",
+    "-c",
+    "-iquote.",
+    "-DSCREENENCODINGS=\"/root/rboxc/build/oracle/screen/share/screen/utf8encodings\"",
+    "-DBUILD_DATE=\"2023-11-14 22:13:20\"",
+    "-g",
+    "-O2",
+    "-std=gnu17",
+    "-Wall",
+    "-Wextra",
+    "-iquote",
+    "/opt/src/screen-5.0.2",
+    "/root/rboxc/build/screen-owned-contract/socket-contract.c",
+    "-o",
+    "/root/rboxc/build/screen-owned-contract/socket-contract.o",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-iquote",
+    "/opt/src/screen-5.0.2"
+  ],
+  "artifacts": {
+    "build/screen-owned-contract/socket": "0b8485bccba808b89120dd07fa5269b104115d3da758817a44d26d8e4fdc5772",
+    "build/screen-owned-contract/socket-build.log": "da65c9b484b5fea2a2dcc47ce2824ab97ba6bc4a5c431617260ff1f4da84a611",
+    "build/screen-owned-contract/socket-contract.o": "7d19fed709e7a5d27d7385a8417ac2ba25f715c694249861a56339e93b2d8064",
+    "build/screen-owned-contract/streams": "5958c40539274d95559cf82bbf3a322a68bd6406e1ab4a13fc1ce73fe71c93aa",
+    "build/screen-owned-contract/rust-build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/socket-contract.c": "ebdb38a4ef855034eff8727c876614b2c794e55f91e95037e2a6d938a3d5a57b",
+    "build/screen-owned-contract/streams.rs": "df877f54a338d1148ff2c4bf074292d47148a40ecc3a360183f44ad902fce01d",
+    "build/screen-owned-contract/case-0/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-0/542164.log": "9f59497da013fe9988b9d49fbbef27f7932dab3ed6a5b2095c61b366815c27cf",
+    "build/screen-owned-contract/case-0/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-8/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-8/542320.log": "01cdc88dbc864f17269040898262b19692733565e646a184624ed4bd906bfc9b",
+    "build/screen-owned-contract/case-8/542312.log": "0c3063ac61b8edfc8a5128ead96ad05d419683f4d58532af2adcd09cd25ff88d",
+    "build/screen-owned-contract/case-8/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-18/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-18/542352.log": "1cce18363901dac1ed4134f6034fc969db7eab13d5bf0c619763ae9a589a64cb",
+    "build/screen-owned-contract/case-18/542353.log": "535638a7bb4d18010dd008f35ae1e5ce7329f488942e712128a2e2cfa1ec8eaf",
+    "build/screen-owned-contract/case-18/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-15/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-15/542348.log": "050a3eabc118bb419cfa524d5e70ed83654d540487a8544e173a8bb7fea9a130",
+    "build/screen-owned-contract/case-15/542349.log": "7be6cd4fc32642251ea01f94c2aa0552b74f5ae7b6e1a6d836b0f968d5cb32fa",
+    "build/screen-owned-contract/case-15/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-6/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-6/542285.log": "d1219673a5b8203cd6b203818ce828957f0c1ad636d93b40b77435da4a8f12d5",
+    "build/screen-owned-contract/case-6/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-1/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-1/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-1/542200.log": "22c0edadef2f093f175e7c564a1e74ea84da76f1cca4e9f14850bd7dd02e5af0",
+    "build/screen-owned-contract/case-5/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-5/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-5/542282.log": "994a1eaaedd0589b60945c0d75bc972e3dfe7d3b2aed468403cc23a1d8ede97e",
+    "build/screen-owned-contract/case-4/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-4/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-4/542279.log": "6c139f85f51df3eb4a2936382ac80c7056caef4b399bcdf60794968f090e3678",
+    "build/screen-owned-contract/case-14/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-14/542346.log": "957bbfd98509bcb3a9eba07fec49427717c9dbdb97aff9d7391a99217cf09549",
+    "build/screen-owned-contract/case-14/542347.log": "c3a5f7ec4ce8d1576fa399dadb790aa0ff6f1c00486b46a09860e8d317de03ed",
+    "build/screen-owned-contract/case-14/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-17/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-17/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-17/542351.log": "ef2768423cbe165e33b0893b5a31968549fdd928772a992f7389c10c3e219343",
+    "build/screen-owned-contract/case-9/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-9/542321.log": "e05744e3e0fe2f3a0a5de6a2219fb0151c7ec47cd3547b36d9b0ca16276ce6a1",
+    "build/screen-owned-contract/case-9/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-9/542329.log": "8f33c23e9bf2c5961ee82f1b1c065027dc457d3178200cc5c6549f0ef340eec1",
+    "build/screen-owned-contract/case-7/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-7/542304.log": "83c72d3b2ca93e2845d3ce419623730eee3898bef511783b38217a4fc56702af",
+    "build/screen-owned-contract/case-7/542311.log": "265e09e38aaf1c1d19f6ba46ce063fb9ad3d1011efccda58e0dd81013b5fdd13",
+    "build/screen-owned-contract/case-7/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-13/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-13/542343.log": "88b887cf94c3a819db8ae137974b682664810b827c63e947c9d6168b527f792d",
+    "build/screen-owned-contract/case-13/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-13/542342.log": "b5297cff8d1122b2470db76f45fbaa684372b1582dd02aceb37e99ba5d532dba",
+    "build/screen-owned-contract/case-12/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-12/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-12/542339.log": "74af817648f18d8a3925112a6f5d1841c0d4927765fdd95f9db36a478ff6382e",
+    "build/screen-owned-contract/case-16/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-16/542350.log": "2b4d75cfb479d6551d94b1b83fcab5213b62da199ff48b50d4f96ea4f119a7ba",
+    "build/screen-owned-contract/case-16/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-10/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-10/542332.log": "1123e79c485b5d006921106936bb8b9f02e2165dce5b41ed4def1c18c8f2ca9d",
+    "build/screen-owned-contract/case-10/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-3/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-3/542216.log": "b781ed4d2d5be5410fad76eb35287f83ecbee7a83b88889b07ce1361f5b0ae37",
+    "build/screen-owned-contract/case-3/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-11/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-11/542333.log": "df31a1fb739e94196b6154c7d5847a3a271293026a200d9be45c4c281f201ca6",
+    "build/screen-owned-contract/case-11/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-2/542209.log": "885b10ebf1e1b86c0a282614efd4ef55f98516cf3c826c00f42222a5c004f476",
+    "build/screen-owned-contract/case-2/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-owned-contract/case-2/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "results": [
+    {
+      "case": [
+        "streams",
+        "borrowed",
+        "0"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-owned-contract/case-0/542164.log",
+          "sha256": "9f59497da013fe9988b9d49fbbef27f7932dab3ed6a5b2095c61b366815c27cf",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542164"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "owned",
+        "0"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-owned-contract/case-1/542200.log",
+          "sha256": "22c0edadef2f093f175e7c564a1e74ea84da76f1cca4e9f14850bd7dd02e5af0",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542200"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "owned",
+        "1"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-owned-contract/case-2/542209.log",
+          "sha256": "885b10ebf1e1b86c0a282614efd4ef55f98516cf3c826c00f42222a5c004f476",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542209"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "owned",
+        "2"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-owned-contract/case-3/542216.log",
+          "sha256": "b781ed4d2d5be5410fad76eb35287f83ecbee7a83b88889b07ce1361f5b0ae37",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542216"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "reopen",
+        "0"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-owned-contract/case-4/542279.log",
+          "sha256": "6c139f85f51df3eb4a2936382ac80c7056caef4b399bcdf60794968f090e3678",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542279"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "reopen",
+        "1"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-owned-contract/case-5/542282.log",
+          "sha256": "994a1eaaedd0589b60945c0d75bc972e3dfe7d3b2aed468403cc23a1d8ede97e",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542282"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "reopen",
+        "2"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-owned-contract/case-6/542285.log",
+          "sha256": "d1219673a5b8203cd6b203818ce828957f0c1ad636d93b40b77435da4a8f12d5",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542285"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "fork",
+        "0"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-owned-contract/case-7/542304.log",
+          "sha256": "83c72d3b2ca93e2845d3ce419623730eee3898bef511783b38217a4fc56702af",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542304"
+          ],
+          "complete_exec_log": true
+        },
+        {
+          "path": "build/screen-owned-contract/case-7/542311.log",
+          "sha256": "265e09e38aaf1c1d19f6ba46ce063fb9ad3d1011efccda58e0dd81013b5fdd13",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 552
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542311"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "fork",
+        "1"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-owned-contract/case-8/542312.log",
+          "sha256": "0c3063ac61b8edfc8a5128ead96ad05d419683f4d58532af2adcd09cd25ff88d",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542312"
+          ],
+          "complete_exec_log": true
+        },
+        {
+          "path": "build/screen-owned-contract/case-8/542320.log",
+          "sha256": "01cdc88dbc864f17269040898262b19692733565e646a184624ed4bd906bfc9b",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 552
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542320"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "fork",
+        "2"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-owned-contract/case-9/542321.log",
+          "sha256": "e05744e3e0fe2f3a0a5de6a2219fb0151c7ec47cd3547b36d9b0ca16276ce6a1",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542321"
+          ],
+          "complete_exec_log": true
+        },
+        {
+          "path": "build/screen-owned-contract/case-9/542329.log",
+          "sha256": "8f33c23e9bf2c5961ee82f1b1c065027dc457d3178200cc5c6549f0ef340eec1",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 552
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542329"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "fail",
+        "0"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-owned-contract/case-10/542332.log",
+          "sha256": "1123e79c485b5d006921106936bb8b9f02e2165dce5b41ed4def1c18c8f2ca9d",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542332"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "fail",
+        "1"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-owned-contract/case-11/542333.log",
+          "sha256": "df31a1fb739e94196b6154c7d5847a3a271293026a200d9be45c4c281f201ca6",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542333"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "fail",
+        "2"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-owned-contract/case-12/542339.log",
+          "sha256": "74af817648f18d8a3925112a6f5d1841c0d4927765fdd95f9db36a478ff6382e",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542339"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "fork-reopen",
+        "0"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-owned-contract/case-13/542342.log",
+          "sha256": "b5297cff8d1122b2470db76f45fbaa684372b1582dd02aceb37e99ba5d532dba",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542342"
+          ],
+          "complete_exec_log": true
+        },
+        {
+          "path": "build/screen-owned-contract/case-13/542343.log",
+          "sha256": "88b887cf94c3a819db8ae137974b682664810b827c63e947c9d6168b527f792d",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 559
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542343"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "fork-reopen",
+        "1"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-owned-contract/case-14/542346.log",
+          "sha256": "957bbfd98509bcb3a9eba07fec49427717c9dbdb97aff9d7391a99217cf09549",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542346"
+          ],
+          "complete_exec_log": true
+        },
+        {
+          "path": "build/screen-owned-contract/case-14/542347.log",
+          "sha256": "c3a5f7ec4ce8d1576fa399dadb790aa0ff6f1c00486b46a09860e8d317de03ed",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 559
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542347"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "fork-reopen",
+        "2"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-owned-contract/case-15/542348.log",
+          "sha256": "050a3eabc118bb419cfa524d5e70ed83654d540487a8544e173a8bb7fea9a130",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542348"
+          ],
+          "complete_exec_log": true
+        },
+        {
+          "path": "build/screen-owned-contract/case-15/542349.log",
+          "sha256": "7be6cd4fc32642251ea01f94c2aa0552b74f5ae7b6e1a6d836b0f968d5cb32fa",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 559
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542349"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "terminal",
+        "0"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-owned-contract/case-16/542350.log",
+          "sha256": "2b4d75cfb479d6551d94b1b83fcab5213b62da199ff48b50d4f96ea4f119a7ba",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 693
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "542350"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "socket",
+        "owned"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-owned-contract/case-17/542351.log",
+          "sha256": "ef2768423cbe165e33b0893b5a31968549fdd928772a992f7389c10c3e219343",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {},
+          "exec_images": 1,
+          "log_pids": [
+            "542351"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "socket",
+        "fork"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-owned-contract/case-18/542352.log",
+          "sha256": "1cce18363901dac1ed4134f6034fc969db7eab13d5bf0c619763ae9a589a64cb",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {},
+          "exec_images": 1,
+          "log_pids": [
+            "542352"
+          ],
+          "complete_exec_log": true
+        },
+        {
+          "path": "build/screen-owned-contract/case-18/542353.log",
+          "sha256": "535638a7bb4d18010dd008f35ae1e5ce7329f488942e712128a2e2cfa1ec8eaf",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {},
+          "exec_images": 1,
+          "log_pids": [
+            "542353"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    }
+  ]
+}

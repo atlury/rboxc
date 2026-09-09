@@ -1,0 +1,491 @@
+{
+  "scope": "Twelve ownership contracts cover borrowed standard streams, all three successfully reopened standard streams, repeated reopen/cleanup, descriptor reuse and fork inheritance. Socket cases use a private socketpair and the exact adapted static cleanup function. After checking inherited-handle preservation, the child harness disposes its copies. All parent and child logs must be clean.",
+  "passed": 12,
+  "total": 12,
+  "processes": 16,
+  "inputs": {
+    "/root/rboxc/tests/screen-daemon-contract.py": "af4de861956565caeebfd338cff0a6c389e350537417d3028d0c8ceafbc1ac61",
+    "/root/rboxc/scripts/screen_daemon_cleanup.py": "357897569969b5c2dc9a8d2ccc8f94b34b8f7fa44a35b1e353b3566e6b922f43",
+    "/root/rboxc/build/screen-daemon-cleanup/socket.c": "00406d837bb627ca10313c07a223c398cd034ddeff8f7af043f65380f2cee4f0",
+    "/root/rboxc/build/screen-daemon-contract-child-disposal/streams.rs": "579955cd80b1b2871927a826c4de8a04a568dc1ef95a23671b77eef992b168b5",
+    "/root/rboxc/build/screen-daemon-contract-child-disposal/socket-contract.c": "ebdb38a4ef855034eff8727c876614b2c794e55f91e95037e2a6d938a3d5a57b",
+    "/root/rboxc/target/screen-daemon-candidate/release/deps/liblibc-7b57167feaadb5ab.rlib": "279bb99eca1188cfa828868374f390ba4783ad534e3e57d5e5d07905b2469424"
+  },
+  "rust_build": [
+    "rustup",
+    "run",
+    "nightly-2026-01-22",
+    "rustc",
+    "--edition=2021",
+    "-C",
+    "panic=abort",
+    "/root/rboxc/build/screen-daemon-contract-child-disposal/streams.rs",
+    "--extern",
+    "libc=/root/rboxc/target/screen-daemon-candidate/release/deps/liblibc-7b57167feaadb5ab.rlib",
+    "-L",
+    "dependency=/root/rboxc/target/screen-daemon-candidate/release/deps",
+    "-l",
+    "tinfo",
+    "-o",
+    "/root/rboxc/build/screen-daemon-contract-child-disposal/streams"
+  ],
+  "socket_compile": [
+    "gcc",
+    "-c",
+    "-iquote.",
+    "-DSCREENENCODINGS=\"/root/rboxc/build/oracle/screen/share/screen/utf8encodings\"",
+    "-DBUILD_DATE=\"2023-11-14 22:13:20\"",
+    "-g",
+    "-O2",
+    "-std=gnu17",
+    "-Wall",
+    "-Wextra",
+    "-iquote",
+    "/opt/src/screen-5.0.2",
+    "/root/rboxc/build/screen-daemon-contract-child-disposal/socket-contract.c",
+    "-o",
+    "/root/rboxc/build/screen-daemon-contract-child-disposal/socket-contract.o",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-iquote",
+    "/opt/src/screen-5.0.2"
+  ],
+  "artifacts": {
+    "build/screen-daemon-contract-child-disposal/socket": "15cf866c6c396465b949e973900e1851db4c0cc826e744bd1dbba57c269bb2f7",
+    "build/screen-daemon-contract-child-disposal/socket-build.log": "03c63e262fd22b4b81bd6fd765152866d06ca26f79b6db4cdbe9d17fe74fb05f",
+    "build/screen-daemon-contract-child-disposal/socket-contract.o": "8488344ab7b00516dedac19238de20e2f8371b8c4936eefe880d2fa82ad40be0",
+    "build/screen-daemon-contract-child-disposal/streams": "7457871a8e513b9f28c4e4497f6be5ce55b0dbf069418629499c41f25cb2ecfe",
+    "build/screen-daemon-contract-child-disposal/rust-build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/socket-contract.c": "ebdb38a4ef855034eff8727c876614b2c794e55f91e95037e2a6d938a3d5a57b",
+    "build/screen-daemon-contract-child-disposal/streams.rs": "579955cd80b1b2871927a826c4de8a04a568dc1ef95a23671b77eef992b168b5",
+    "build/screen-daemon-contract-child-disposal/case-0/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-0/539493.log": "ea4c1172aa3b204f48c26d2e00350837f51b34cc39383aae729600f2033fbcfb",
+    "build/screen-daemon-contract-child-disposal/case-0/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-8/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-8/539504.log": "79ce4d07c9d77400b9b5683fa89cf73a9b1c4e7636dd9b0a049c6a1ca3839051",
+    "build/screen-daemon-contract-child-disposal/case-8/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-8/539503.log": "191aae2f3590f2bc035215f653a56dbb16cc5a7644df65cb732a4ddd3234aa0b",
+    "build/screen-daemon-contract-child-disposal/case-6/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-6/539499.log": "60e7fff49421ed42983cfe06067dc1af08f2cf7a761cf43489fa85ff667af759",
+    "build/screen-daemon-contract-child-disposal/case-6/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-1/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-1/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-1/539494.log": "b4f8a5589e7e81d6ba2da6e2a26604df13b0e9532e65d6b1a0645810aba922f2",
+    "build/screen-daemon-contract-child-disposal/case-5/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-5/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-5/539498.log": "97c34f434d54e84e906eeb83886d1ce615d004ae5850bd2e7e59513eab876ae2",
+    "build/screen-daemon-contract-child-disposal/case-4/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-4/539497.log": "78e7a56e280355d43db1b7ed2e13f219012539efd7ceed5924d2ce7716a4e9dc",
+    "build/screen-daemon-contract-child-disposal/case-4/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-9/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-9/539505.log": "130788e08437f3b7cf4f827351ba554ebc0daee57f1cfe131ab06e3665b8695a",
+    "build/screen-daemon-contract-child-disposal/case-9/539506.log": "3b38d4551fb3aa1ed4f1f05415c3ec3b9ca086282fb482016dca94bda0e1cdc9",
+    "build/screen-daemon-contract-child-disposal/case-9/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-7/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-7/539502.log": "5601aac2a5e3010ce9f2519da7cb720fb9c3f35316db9cc7268fde9361607d4e",
+    "build/screen-daemon-contract-child-disposal/case-7/539501.log": "0f89c94ba3ac2069d0599c3b56e88d4cf53a98e1694e841016f67d46196f7eda",
+    "build/screen-daemon-contract-child-disposal/case-7/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-10/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-10/539507.log": "21fa7a726df350e2df210ef8f2e7a7497f119da675429fd7c14a1f219206fdbd",
+    "build/screen-daemon-contract-child-disposal/case-10/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-3/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-3/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-3/539496.log": "347b0097be0bfdb6363f888cf41edf9d3244c0ac27270e063dfa5565a33abc65",
+    "build/screen-daemon-contract-child-disposal/case-11/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-11/539508.log": "87c982c98de47e1b5a1cd7a4abd44baa47afc806615084aa7e2711ae411526d8",
+    "build/screen-daemon-contract-child-disposal/case-11/539509.log": "a2fdb4ed34ad06945e9e84777a87cbd42726aeb110ea46907da9e3e0fe514e14",
+    "build/screen-daemon-contract-child-disposal/case-11/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-2/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-daemon-contract-child-disposal/case-2/539495.log": "b814100467e6ce144006feee3102d4f6fa18aafe5989f2da57d9d598ebb7e1d8",
+    "build/screen-daemon-contract-child-disposal/case-2/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "results": [
+    {
+      "case": [
+        "streams",
+        "borrowed",
+        "0"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-daemon-contract-child-disposal/case-0/539493.log",
+          "sha256": "ea4c1172aa3b204f48c26d2e00350837f51b34cc39383aae729600f2033fbcfb",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "539493"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "owned",
+        "0"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-daemon-contract-child-disposal/case-1/539494.log",
+          "sha256": "b4f8a5589e7e81d6ba2da6e2a26604df13b0e9532e65d6b1a0645810aba922f2",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "539494"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "owned",
+        "1"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-daemon-contract-child-disposal/case-2/539495.log",
+          "sha256": "b814100467e6ce144006feee3102d4f6fa18aafe5989f2da57d9d598ebb7e1d8",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "539495"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "owned",
+        "2"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-daemon-contract-child-disposal/case-3/539496.log",
+          "sha256": "347b0097be0bfdb6363f888cf41edf9d3244c0ac27270e063dfa5565a33abc65",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "539496"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "reopen",
+        "0"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-daemon-contract-child-disposal/case-4/539497.log",
+          "sha256": "78e7a56e280355d43db1b7ed2e13f219012539efd7ceed5924d2ce7716a4e9dc",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "539497"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "reopen",
+        "1"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-daemon-contract-child-disposal/case-5/539498.log",
+          "sha256": "97c34f434d54e84e906eeb83886d1ce615d004ae5850bd2e7e59513eab876ae2",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "539498"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "reopen",
+        "2"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-daemon-contract-child-disposal/case-6/539499.log",
+          "sha256": "60e7fff49421ed42983cfe06067dc1af08f2cf7a761cf43489fa85ff667af759",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "539499"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "fork",
+        "0"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-daemon-contract-child-disposal/case-7/539501.log",
+          "sha256": "0f89c94ba3ac2069d0599c3b56e88d4cf53a98e1694e841016f67d46196f7eda",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "539501"
+          ],
+          "complete_exec_log": true
+        },
+        {
+          "path": "build/screen-daemon-contract-child-disposal/case-7/539502.log",
+          "sha256": "5601aac2a5e3010ce9f2519da7cb720fb9c3f35316db9cc7268fde9361607d4e",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 552
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "539502"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "fork",
+        "1"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-daemon-contract-child-disposal/case-8/539503.log",
+          "sha256": "191aae2f3590f2bc035215f653a56dbb16cc5a7644df65cb732a4ddd3234aa0b",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "539503"
+          ],
+          "complete_exec_log": true
+        },
+        {
+          "path": "build/screen-daemon-contract-child-disposal/case-8/539504.log",
+          "sha256": "79ce4d07c9d77400b9b5683fa89cf73a9b1c4e7636dd9b0a049c6a1ca3839051",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 552
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "539504"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "fork",
+        "2"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-daemon-contract-child-disposal/case-9/539505.log",
+          "sha256": "130788e08437f3b7cf4f827351ba554ebc0daee57f1cfe131ab06e3665b8695a",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "539505"
+          ],
+          "complete_exec_log": true
+        },
+        {
+          "path": "build/screen-daemon-contract-child-disposal/case-9/539506.log",
+          "sha256": "3b38d4551fb3aa1ed4f1f05415c3ec3b9ca086282fb482016dca94bda0e1cdc9",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 552
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "539506"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "socket",
+        "owned"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-daemon-contract-child-disposal/case-10/539507.log",
+          "sha256": "21fa7a726df350e2df210ef8f2e7a7497f119da675429fd7c14a1f219206fdbd",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {},
+          "exec_images": 1,
+          "log_pids": [
+            "539507"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "socket",
+        "fork"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-daemon-contract-child-disposal/case-11/539508.log",
+          "sha256": "87c982c98de47e1b5a1cd7a4abd44baa47afc806615084aa7e2711ae411526d8",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {},
+          "exec_images": 1,
+          "log_pids": [
+            "539508"
+          ],
+          "complete_exec_log": true
+        },
+        {
+          "path": "build/screen-daemon-contract-child-disposal/case-11/539509.log",
+          "sha256": "a2fdb4ed34ad06945e9e84777a87cbd42726aeb110ea46907da9e3e0fe514e14",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {},
+          "exec_images": 1,
+          "log_pids": [
+            "539509"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    }
+  ]
+}

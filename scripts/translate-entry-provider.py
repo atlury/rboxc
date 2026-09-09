@@ -193,6 +193,9 @@ if name == 'patch':
     anchor = '        if exiting == 0 {\n            free((*f).from.alloc'
     assert text.count(anchor) == 1
     text = text.replace(anchor, anchor.replace('exiting == 0', 'exiting >= 0'))
+if name == 'screen':
+    from screen_daemon_cleanup import rust_adapter
+    text = rust_adapter(text)
 notice = re.match(r'\s*(/\*.*?\*/)', source.read_text(), re.S)[1]
 target = ROOT/f'src/generated/applet_{name}.rs'
 target.write_text('// Generated from pinned GNU '+name+' '+pin['version']+' by scripts/translate-entry-provider.py.\n'

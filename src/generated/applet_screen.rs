@@ -3393,19 +3393,19 @@ pub unsafe extern "C" fn single_binary_main_screen(
             0 as ::core::ffi::c_int
         };
     }
-    if freopen(
+    if rboxc_screen_owned_freopen(
         b"/dev/null\0".as_ptr() as *const ::core::ffi::c_char,
         b"r\0".as_ptr() as *const ::core::ffi::c_char,
         stdin,
     )
     .is_null()
-        || freopen(
+        || rboxc_screen_owned_freopen(
             b"/dev/null\0".as_ptr() as *const ::core::ffi::c_char,
             b"w\0".as_ptr() as *const ::core::ffi::c_char,
             stdout,
         )
         .is_null()
-        || freopen(
+        || rboxc_screen_owned_freopen(
             b"/dev/null\0".as_ptr() as *const ::core::ffi::c_char,
             b"w\0".as_ptr() as *const ::core::ffi::c_char,
             stderr,
@@ -4991,3 +4991,58 @@ pub const BUILD_DATE: [::core::ffi::c_char; 20] = unsafe {
 };
 pub const r#true: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
 pub const r#false: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+
+extern "C" {
+    #[link_name = "atexit"]
+    fn rboxc_screen_atexit(callback: unsafe extern "C" fn()) -> ::core::ffi::c_int;
+    #[link_name = "cur_term"]
+    static mut RBOXC_SCREEN_CUR_TERM: *mut ::core::ffi::c_void;
+    #[link_name = "del_curterm"]
+    fn rboxc_screen_del_curterm(term: *mut ::core::ffi::c_void) -> ::core::ffi::c_int;
+    // This behavior-first Linux profile uses the recorded ncurses ABI.
+    #[link_name = "_nc_free_tparm"]
+    fn rboxc_screen_free_tparm(term: *mut ::core::ffi::c_void);
+}
+static mut RBOXC_SCREEN_STREAM_OWNER: ::core::ffi::c_int = -1;
+static mut RBOXC_SCREEN_STREAMS: [*mut FILE; 3] = [::core::ptr::null_mut(); 3];
+static mut RBOXC_SCREEN_STREAM_CLEANUP_REGISTERED: bool = false;
+unsafe extern "C" fn rboxc_screen_release_streams() {
+    if RBOXC_SCREEN_STREAM_OWNER != getpid() { return; }
+    let saved_errno = *libc::__errno_location();
+    // Screen uses the termcap API in this command process. Release its current
+    // terminfo object only after GNU has restored and flushed the terminal.
+    if !RBOXC_SCREEN_CUR_TERM.is_null() {
+        // Other cached terminal descriptions can keep ncurses' shared parameter
+        // cache alive after del_curterm. No terminal operations follow this exit.
+        rboxc_screen_free_tparm(RBOXC_SCREEN_CUR_TERM);
+        rboxc_screen_del_curterm(RBOXC_SCREEN_CUR_TERM);
+    }
+    for slot in 0..3 {
+        let stream = RBOXC_SCREEN_STREAMS[slot];
+        RBOXC_SCREEN_STREAMS[slot] = ::core::ptr::null_mut();
+        if !stream.is_null() { libc::fclose(stream.cast()); }
+    }
+    *libc::__errno_location() = saved_errno;
+}
+unsafe fn rboxc_screen_owned_freopen(path: *const ::core::ffi::c_char,
+    mode: *const ::core::ffi::c_char, stream: *mut FILE) -> *mut FILE {
+    let slot = if stream == stdin { 0 } else if stream == stdout { 1 } else { 2 };
+    if RBOXC_SCREEN_STREAM_OWNER != getpid() {
+        RBOXC_SCREEN_STREAMS = [::core::ptr::null_mut(); 3];
+    }
+    // freopen closes the old association even when opening the new file fails.
+    RBOXC_SCREEN_STREAMS[slot] = ::core::ptr::null_mut();
+    let result = freopen(path, mode, stream);
+    if !result.is_null() {
+        RBOXC_SCREEN_STREAM_OWNER = getpid();
+        RBOXC_SCREEN_STREAMS[slot] = result;
+        if !RBOXC_SCREEN_STREAM_CLEANUP_REGISTERED {
+            if rboxc_screen_atexit(rboxc_screen_release_streams) != 0 {
+                rboxc_screen_release_streams();
+                libc::_exit(2);
+            }
+            RBOXC_SCREEN_STREAM_CLEANUP_REGISTERED = true;
+        }
+    }
+    result
+}

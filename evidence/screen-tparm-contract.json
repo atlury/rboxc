@@ -1,0 +1,523 @@
+{
+  "scope": "Thirteen ownership contracts cover borrowed standard streams, all three successfully reopened standard streams, repeated reopen/cleanup, descriptor reuse and fork inheritance. Socket cases use a private socketpair and the exact adapted static cleanup function. After checking inherited-handle preservation, the child harness disposes its copies. All parent and child logs must be clean.",
+  "passed": 13,
+  "total": 13,
+  "processes": 17,
+  "inputs": {
+    "/root/rboxc/tests/screen-daemon-contract.py": "75c365e61e51a3037e967449ab5386d44a818fae04ec1d3730d9e6c5879feade",
+    "/root/rboxc/scripts/screen_daemon_cleanup.py": "f8070d93018754de008587650d37d591b32705b3f46d94bd132e7f994f9aa884",
+    "/root/rboxc/build/screen-daemon-cleanup/socket.c": "00406d837bb627ca10313c07a223c398cd034ddeff8f7af043f65380f2cee4f0",
+    "/root/rboxc/build/screen-tparm-contract/streams.rs": "acd19db956ad38860803b495eca284b3d221211f335957c006707ed8d30559a4",
+    "/root/rboxc/build/screen-tparm-contract/socket-contract.c": "ebdb38a4ef855034eff8727c876614b2c794e55f91e95037e2a6d938a3d5a57b",
+    "/root/rboxc/target/screen-tparm-candidate/release/deps/liblibc-7b57167feaadb5ab.rlib": "279bb99eca1188cfa828868374f390ba4783ad534e3e57d5e5d07905b2469424",
+    "/usr/lib/x86_64-linux-gnu/libtinfo.so.6.6": "085dbbe5dc38619276bdd0af37ae588969b1308baded09a2990ce8824a602912"
+  },
+  "rust_build": [
+    "rustup",
+    "run",
+    "nightly-2026-01-22",
+    "rustc",
+    "--edition=2021",
+    "-C",
+    "panic=abort",
+    "/root/rboxc/build/screen-tparm-contract/streams.rs",
+    "--extern",
+    "libc=/root/rboxc/target/screen-tparm-candidate/release/deps/liblibc-7b57167feaadb5ab.rlib",
+    "-L",
+    "dependency=/root/rboxc/target/screen-tparm-candidate/release/deps",
+    "-l",
+    "tinfo",
+    "-o",
+    "/root/rboxc/build/screen-tparm-contract/streams"
+  ],
+  "socket_compile": [
+    "gcc",
+    "-c",
+    "-iquote.",
+    "-DSCREENENCODINGS=\"/root/rboxc/build/oracle/screen/share/screen/utf8encodings\"",
+    "-DBUILD_DATE=\"2023-11-14 22:13:20\"",
+    "-g",
+    "-O2",
+    "-std=gnu17",
+    "-Wall",
+    "-Wextra",
+    "-iquote",
+    "/opt/src/screen-5.0.2",
+    "/root/rboxc/build/screen-tparm-contract/socket-contract.c",
+    "-o",
+    "/root/rboxc/build/screen-tparm-contract/socket-contract.o",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-iquote",
+    "/opt/src/screen-5.0.2"
+  ],
+  "artifacts": {
+    "build/screen-tparm-contract/socket": "e9eb9a32e8a5a28e96ba847e6f0ea708a4c70412f99b78600e6d37f3d3ea9313",
+    "build/screen-tparm-contract/socket-build.log": "d340cadb998b0e53e1a93b16bd2d83f17b79f8f9f7efdf64132aacff13002966",
+    "build/screen-tparm-contract/socket-contract.o": "27f089062eb672a2055e2ec364ac47a7faf4b1f7c7fa47106cc6bc88a2c85746",
+    "build/screen-tparm-contract/streams": "9f2ab3c6edd4dd6b2bbe23644cbb788a9aaa7b6c3edf1ba0e79bd7d0bf462ec3",
+    "build/screen-tparm-contract/rust-build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/socket-contract.c": "ebdb38a4ef855034eff8727c876614b2c794e55f91e95037e2a6d938a3d5a57b",
+    "build/screen-tparm-contract/streams.rs": "acd19db956ad38860803b495eca284b3d221211f335957c006707ed8d30559a4",
+    "build/screen-tparm-contract/case-0/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-0/540158.log": "8330c17987ef0d5cf05721a0fc94e5d049a09286a5116fe070f0809963c6ced8",
+    "build/screen-tparm-contract/case-0/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-8/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-8/540287.log": "337e0a8b49ce0a4a0fb3333d6aae6faf0a495fb0bda55cacad4fd1f08900a39f",
+    "build/screen-tparm-contract/case-8/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-8/540279.log": "8a918940e3e4095043ff5fe50faaab50ea6fe21dc6460d23ddc2881603bdac78",
+    "build/screen-tparm-contract/case-6/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-6/540252.log": "ad6f1a5b6e88ef93e0ab4b68ebd071bde75153e8eebd9e5261e6126fda0e7872",
+    "build/screen-tparm-contract/case-6/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-1/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-1/540168.log": "0f6f06f167943736861f1b24e0e5f55e92c82fe0b4ae3a6c2dcfadc9f7765b82",
+    "build/screen-tparm-contract/case-1/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-5/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-5/540249.log": "469a7f0ca1718d0ca233b341599ad5fdada9b1baa3dca7406eeaf15147814dbe",
+    "build/screen-tparm-contract/case-5/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-4/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-4/540246.log": "782b1eaafe537b3977d3d4d7ac2110a12fb7223c8d687b912d18ee09836b800d",
+    "build/screen-tparm-contract/case-4/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-9/540290.log": "c568519840189da091bc6a5fd444ea73471eb1b159a2ae0659ef0d9d3dfcff27",
+    "build/screen-tparm-contract/case-9/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-9/540288.log": "14084f40f88db35c8f6848b002de5b581df61c2ba0775dfc3e69a05ae273ab5d",
+    "build/screen-tparm-contract/case-9/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-7/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-7/540265.log": "3c19c0afe11155e0ee563fa08feee584d3dd11e6e3bbdb90eadec64146232d3e",
+    "build/screen-tparm-contract/case-7/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-7/540278.log": "a20b1c9ca0008655eb39d862f4fed0f1f893a567cfa16a24cc1ef40cfd2dc26d",
+    "build/screen-tparm-contract/case-12/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-12/540297.log": "80a4d78a426a0429b54a7d25284fba1857b29cce1d93b0c6f861285fbbb8c919",
+    "build/screen-tparm-contract/case-12/540298.log": "35fc7ee6a03daf5df600ab405f3ac5730861489d745059107617a615d77e57d9",
+    "build/screen-tparm-contract/case-12/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-10/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-10/540291.log": "cafa4bf62c5a91e69537e2e9546cff4b67bc8d481ee36c10a0ff3ebb97c2466e",
+    "build/screen-tparm-contract/case-10/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-3/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-3/540203.log": "965867d50c39358dbe88563c524378172d9103360ea0a56b299d0ab2d58e30ac",
+    "build/screen-tparm-contract/case-3/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-11/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-11/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-11/540294.log": "5740c5f199ed137fe520fd3c19f07e0b7a84c48e86f1328a6b3ef12e53577345",
+    "build/screen-tparm-contract/case-2/stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build/screen-tparm-contract/case-2/540176.log": "8db177c6eb112f75b759e30e89b478aed10e91693b1e89c30b7dd0ec84eb21ac",
+    "build/screen-tparm-contract/case-2/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "results": [
+    {
+      "case": [
+        "streams",
+        "borrowed",
+        "0"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-tparm-contract/case-0/540158.log",
+          "sha256": "8330c17987ef0d5cf05721a0fc94e5d049a09286a5116fe070f0809963c6ced8",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "540158"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "owned",
+        "0"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-tparm-contract/case-1/540168.log",
+          "sha256": "0f6f06f167943736861f1b24e0e5f55e92c82fe0b4ae3a6c2dcfadc9f7765b82",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "540168"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "owned",
+        "1"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-tparm-contract/case-2/540176.log",
+          "sha256": "8db177c6eb112f75b759e30e89b478aed10e91693b1e89c30b7dd0ec84eb21ac",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "540176"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "owned",
+        "2"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-tparm-contract/case-3/540203.log",
+          "sha256": "965867d50c39358dbe88563c524378172d9103360ea0a56b299d0ab2d58e30ac",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "540203"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "reopen",
+        "0"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-tparm-contract/case-4/540246.log",
+          "sha256": "782b1eaafe537b3977d3d4d7ac2110a12fb7223c8d687b912d18ee09836b800d",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "540246"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "reopen",
+        "1"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-tparm-contract/case-5/540249.log",
+          "sha256": "469a7f0ca1718d0ca233b341599ad5fdada9b1baa3dca7406eeaf15147814dbe",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "540249"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "reopen",
+        "2"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-tparm-contract/case-6/540252.log",
+          "sha256": "ad6f1a5b6e88ef93e0ab4b68ebd071bde75153e8eebd9e5261e6126fda0e7872",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "540252"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "fork",
+        "0"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-tparm-contract/case-7/540265.log",
+          "sha256": "3c19c0afe11155e0ee563fa08feee584d3dd11e6e3bbdb90eadec64146232d3e",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "540265"
+          ],
+          "complete_exec_log": true
+        },
+        {
+          "path": "build/screen-tparm-contract/case-7/540278.log",
+          "sha256": "a20b1c9ca0008655eb39d862f4fed0f1f893a567cfa16a24cc1ef40cfd2dc26d",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 552
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "540278"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "fork",
+        "1"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-tparm-contract/case-8/540279.log",
+          "sha256": "8a918940e3e4095043ff5fe50faaab50ea6fe21dc6460d23ddc2881603bdac78",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "540279"
+          ],
+          "complete_exec_log": true
+        },
+        {
+          "path": "build/screen-tparm-contract/case-8/540287.log",
+          "sha256": "337e0a8b49ce0a4a0fb3333d6aae6faf0a495fb0bda55cacad4fd1f08900a39f",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 552
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "540287"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "fork",
+        "2"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-tparm-contract/case-9/540288.log",
+          "sha256": "14084f40f88db35c8f6848b002de5b581df61c2ba0775dfc3e69a05ae273ab5d",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 544
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "540288"
+          ],
+          "complete_exec_log": true
+        },
+        {
+          "path": "build/screen-tparm-contract/case-9/540290.log",
+          "sha256": "c568519840189da091bc6a5fd444ea73471eb1b159a2ae0659ef0d9d3dfcff27",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 552
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "540290"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "streams",
+        "terminal",
+        "0"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-tparm-contract/case-10/540291.log",
+          "sha256": "cafa4bf62c5a91e69537e2e9546cff4b67bc8d481ee36c10a0ff3ebb97c2466e",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 693
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "540291"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "socket",
+        "owned"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-tparm-contract/case-11/540294.log",
+          "sha256": "5740c5f199ed137fe520fd3c19f07e0b7a84c48e86f1328a6b3ef12e53577345",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {},
+          "exec_images": 1,
+          "log_pids": [
+            "540294"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    {
+      "case": [
+        "socket",
+        "fork"
+      ],
+      "pass": true,
+      "status": 0,
+      "memory": [
+        {
+          "path": "build/screen-tparm-contract/case-12/540297.log",
+          "sha256": "80a4d78a426a0429b54a7d25284fba1857b29cce1d93b0c6f861285fbbb8c919",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {},
+          "exec_images": 1,
+          "log_pids": [
+            "540297"
+          ],
+          "complete_exec_log": true
+        },
+        {
+          "path": "build/screen-tparm-contract/case-12/540298.log",
+          "sha256": "35fc7ee6a03daf5df600ab405f3ac5730861489d745059107617a615d77e57d9",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {},
+          "exec_images": 1,
+          "log_pids": [
+            "540298"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    }
+  ]
+}
