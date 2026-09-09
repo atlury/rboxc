@@ -115,7 +115,7 @@ for row in original['results']:
     if row['locale_profile']:
         locale=json.loads((ROOT/row['locale_profile']).read_text())
         for path,h in locale['inputs'].items():assert fingerprint(Path(path))==h
-        assert locale['driver_sha256']==fingerprint(ROOT/'scripts/prepare-gawk-locales.py')
+        assert locale['driver_sha256']==fingerprint(ROOT/locale.get('preparation_driver','scripts/prepare-gawk-locales.py'))
         assert fingerprint(ROOT/locale['build_log'])==locale['build_log_sha256']
         base=Path(locale['runtime_path'])
         assert (base/locale['alias']).readlink()==Path(locale['name'])

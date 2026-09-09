@@ -74,7 +74,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 436 reviewed originals pass; three original failures match GNU |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 441 reviewed originals pass; three original failures match GNU |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -231,7 +231,26 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-Five further unchanged Gawk recipes pass for pipe input/output, expression
+Five further unchanged Gawk recipes pass for directory entries, fixed-width
+fields, message extraction, POSIX string comparisons and string-length updates.
+The directory profile uses the pinned native `readdir` extension and GNU recipe
+helpers; both selected AWK programs are instrumented. The two locale recipes use
+a private English UTF-8 collection compiled from the pinned glibc 2.43 data and
+verified before execution. The first locale probe and its diagnosis are retained
+in `evidence/gawk-english-locale-initial.json`.
+
+`evidence/gawk-directory-locale-coverage.json` records **441 passing original
+recipes, three unchanged GNU baseline failures and 553 clean processes**:
+456 original Gawk invocations, twelve shell children and 85 focused cases.
+Three auxiliary inputs are verified as already executed by passing recipes;
+they add no duplicate tests or processes. Nine exclusions and 178 inputs awaiting
+individual accounting remain. The audit verifies the exact compiled Russian
+locale used by earlier reports and explicitly records that the host `locale`
+and `localedef` tools have since changed; historical build hashes are retained.
+These reports keep their original candidate hashes. Full acceptance and release
+activation remain open.
+
+Five preceding unchanged Gawk recipes pass for pipe input/output, expression
 precedence and child exit statuses. The driver requires the exact twelve shell
 child command headers and invocation counts; both Gawk and its children must
 have complete, clean Valgrind summaries. `evidence/gawk-shell-coverage.json`

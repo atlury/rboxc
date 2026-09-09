@@ -30,7 +30,8 @@ for row in manifest['inputs']:
     assert fingerprint(source/row['path']) == row['sha256']
 archives = [ROOT/'tests/gawk-original.py', ROOT/'evidence/raw/gawk-array-driver.py',
             ROOT/'evidence/raw/gawk-language-time-driver.py',
-            ROOT/'evidence/raw/gawk-working-fixtures-driver.py']
+            ROOT/'evidence/raw/gawk-working-fixtures-driver.py',
+            ROOT/'evidence/raw/gawk-shell-driver.py']
 driver_versions = {fingerprint(p): str(p.relative_to(ROOT)) for p in archives}
 focused_path = ROOT/'evidence/gawk-source-behavior.json'
 focused = json.loads(focused_path.read_text())
@@ -41,6 +42,7 @@ assert focused['driver_sha256'] == fingerprint(ROOT/'tests/gawk-behavior.py')
 candidate_logs = {}
 native_logs = {}
 report_refs = {}
+locale_preparation_changes = {}
 seen = set()
 
 def check_inputs(data):
@@ -109,6 +111,24 @@ for filename in sorted({r['evidence'] for r in reviewed.values()}):
             assert fingerprint(source/'test'/name) == expected
         assert result.get('working_files', {}) == row.get('working_files', {})
         assert result.get('extension_profile') == row.get('extension_profile')
+        locale_profile=row.get('locale_profile')
+        assert result.get('locale_profile')==locale_profile
+        if locale_profile:
+            locale=json.loads((ROOT/locale_profile).read_text())
+            assert locale['driver_sha256']==fingerprint(ROOT/locale.get('preparation_driver','scripts/prepare-gawk-locales.py'))
+            assert fingerprint(ROOT/locale['build_log'])==locale['build_log_sha256']
+            assert locale['probe']=={'status':0,'stdout':'UTF-8\n','stderr':''}
+            assert (Path(locale['runtime_path'])/locale['alias']).readlink()==Path(locale['name'])
+            for locale_input,expected in locale['inputs'].items():
+                actual=fingerprint(Path(locale_input))
+                if actual!=expected:
+                    # Historical preparation tools are not runtime test inputs.
+                    # Require the exact compiled collection above/below, retain
+                    # build provenance, and expose replaced host build tools.
+                    assert locale_input in ('/usr/bin/localedef','/usr/bin/locale')
+                    locale_preparation_changes.setdefault(locale_profile,{})[locale_input]={'recorded_build_sha256':expected,'current_host_sha256':actual}
+            for name,expected in locale['files'].items():
+                assert fingerprint(Path(locale['runtime_path'])/locale['name']/name)==expected
         children=row.get('child_commands',{})
         assert result.get('child_commands',{})==children
         baseline = row.get('expected_baseline_output')
@@ -139,6 +159,20 @@ for filename in sorted({r['evidence'] for r in reviewed.values()}):
                              'total': data['total'], 'driver_archive': driver_versions[data['driver_sha256']]}
 assert seen == set(reviewed)
 assert len(candidate_logs) == len(native_logs)
+auxiliary_inputs={}
+for row in manifest['inputs']:
+    if row['state']!='covered-original-auxiliary':continue
+    owner=reviewed[row['covered_by']]
+    name=Path(row['path']).name
+    assert not row['reviewed'] and owner['fixtures'][name]==row['sha256']
+    assert row['evidence']==owner['evidence']
+    report=json.loads((ROOT/owner['evidence']).read_text())
+    result=next(r for r in report['results'] if r['selection']==owner['target'])
+    assert result['pass']
+    for key in ('gnu-valgrind','rboxc-valgrind'):
+        assert any(re.search(r'Command: gawk .*?-f (?:[^\n ]*/)?'+re.escape(name)+r'(?: |\n)',
+            (ROOT/m['log']).read_text()) for m in result['outcomes'][key]['memory'])
+    auxiliary_inputs[row['path']]={'sha256':row['sha256'],'covered_by':owner['target'],'report':row['evidence']}
 counts = Counter(r['state'] for r in manifest['inputs'])
 result = {'scope': 'Distinct reviewed Gawk recipes on one immutable candidate. Every current inventory '
           'input, report dependency and raw Valgrind log is verified. Historical driver versions are '
@@ -146,6 +180,8 @@ result = {'scope': 'Distinct reviewed Gawk recipes on one immutable candidate. E
           'shared with GNU, native findings, exclusions and pending inputs remain separate; full acceptance is open.',
           'binary': focused['binary'], 'binary_sha256': binary_hash,
           'manifest_sha256': fingerprint(manifest_path), 'input_states': dict(counts),
+          'covered_auxiliary_inputs':auxiliary_inputs,
+          'historical_locale_preparation_tool_changes':locale_preparation_changes,
           'original_selections': len(reviewed),
           'original_passed': sum(r['passed'] for r in report_refs.values()),
           'baseline_failures': sum(bool(r.get('expected_baseline_output')) for r in reviewed.values()),

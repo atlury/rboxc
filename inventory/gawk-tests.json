@@ -1,6 +1,6 @@
 {
   "provider": "GNU Gawk 5.4.1",
-  "scope": "All 634 original AWK inputs inventoried; 439 recipes reviewed, including nine native-extension interoperation selections: 436 pass and three assertion failures match GNU. Nine historical crash/memory reproductions are excluded; 186 inputs still await individual accounting, including helper fixtures and optional profiles. Getlnbuf also executes the pending gtlnbufv auxiliary input. Five pipe and exit-status recipes account for twelve shell children separately. Separate reports retain their selected scopes and original failures; full acceptance remains open.",
+  "scope": "All 634 original AWK inputs inventoried; 444 recipes reviewed, including ten native-extension interoperation selections: 441 pass and three assertion failures match GNU. Three further inputs are executed auxiliary programs of passing recipes and add no duplicate recipe/process counts. Nine historical crash/memory reproductions are excluded; 178 inputs still await individual accounting and optional profiles. Five pipe and exit-status recipes account for twelve shell children separately. Separate reports retain their selected scopes and original failures; full acceptance remains open.",
   "registration_sha256": "447e3fdd76fe4ebb4b39427465aa727ed421a5818e568a00e00f2c5a90830ade",
   "inputs": [
     {
@@ -882,7 +882,11 @@
       "path": "test/checknegtime.awk",
       "sha256": "42dcbdc03d0c6d63364b311fcdabf97b73eb956ed2eee1c75110ba5b5fc7ad0d",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "covered-original-auxiliary",
+      "covered_by": "negtime",
+      "evidence": "evidence/gawk-language-expanded-original.json",
+      "audit": "evidence/gawk-directory-locale-coverage.json",
+      "review": "Complete unchanged finite auxiliary program reviewed. The parent recipe executes this program with AWKPROG under both GNU and rboxc Valgrind profiles; command headers and original passing assertions are verified by the combined audit. This is input accounting and adds no recipe or process count."
     },
     {
       "path": "test/childin.awk",
@@ -2484,8 +2488,17 @@
     {
       "path": "test/fwtest2.awk",
       "sha256": "b7a51b4798333e9497b52de4ab22b4e9c6c84165d3df1aa61b314b917e15f6a5",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "fwtest2",
+      "fixtures": {
+        "fwtest2.ok": "f902e9f9a72fbd99ac1d3f61134d03d2518ca962cb691ec50fe2cba029508252",
+        "fwtest2.in": "c4bf9f95dae48878cec50fdb961a4f525ff43dc9e23fc4c5f653e28e777f75a0"
+      },
+      "configured_recipe_sha256": "1f34ad64ca83f8def473a7cba3450ed52f672e0d1834b3c600cb9289732cddcb",
+      "evidence": "evidence/gawk-directory-locale-original.json",
+      "audit": "evidence/gawk-directory-locale-memory-audit.json",
+      "review": "Complete finite original program, supplied fixtures and configured recipe reviewed. Twelve fixed-width numeric records, message extraction line wrapping, shrinking string lengths and POSIX string comparisons are checked against original expected output. No Gawk child commands."
     },
     {
       "path": "test/fwtest3.awk",
@@ -2580,8 +2593,16 @@
     {
       "path": "test/genpot.awk",
       "sha256": "696c75421d2b078b127030f242bbe66e6595384e51662c5a42a5867f6514029d",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "genpot",
+      "fixtures": {
+        "genpot.ok": "2f694ace3587c0d9b46795e8105f2f0c6120f8acef3525f2b374ec839d9561a1"
+      },
+      "configured_recipe_sha256": "44e1d38efe0f76869e2e82597c9aa8fb7d46698e9e2c5875f8e865fc084228fc",
+      "evidence": "evidence/gawk-directory-locale-original.json",
+      "audit": "evidence/gawk-directory-locale-memory-audit.json",
+      "review": "Complete finite original program, supplied fixtures and configured recipe reviewed. Twelve fixed-width numeric records, message extraction line wrapping, shrinking string lengths and POSIX string comparisons are checked against original expected output. No Gawk child commands."
     },
     {
       "path": "test/gensub.awk",
@@ -2953,7 +2974,11 @@
       "path": "test/gtlnbufv.awk",
       "sha256": "ef0d73d5dbd3dd3173774b5801ae35c52a3f922924e82245a3f052ce5519fc1a",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "covered-original-auxiliary",
+      "covered_by": "getlnbuf",
+      "evidence": "evidence/gawk-pattern-original.json",
+      "audit": "evidence/gawk-directory-locale-coverage.json",
+      "review": "Complete unchanged finite auxiliary program reviewed. The parent recipe executes this program with AWKPROG under both GNU and rboxc Valgrind profiles; command headers and original passing assertions are verified by the combined audit. This is input accounting and adds no recipe or process count."
     },
     {
       "path": "test/hello.awk",
@@ -5083,8 +5108,17 @@
     {
       "path": "test/posix_compare.awk",
       "sha256": "554f4c37786a1529ce2b4bcaf2721f313f621a6fc3bdf36b730f499b17f979a9",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "posix_compare",
+      "fixtures": {
+        "posix_compare.ok": "eed214df1831ed5208491c58d6ded34791ad05b32357010e1190019cf55ab2e0"
+      },
+      "configured_recipe_sha256": "d483b6be532be9643fd7cf43713325b74bb98191b94abd25641794807743b307",
+      "evidence": "evidence/gawk-directory-locale-original.json",
+      "audit": "evidence/gawk-directory-locale-memory-audit.json",
+      "review": "Complete finite original program, supplied fixtures and configured recipe reviewed. Twelve fixed-width numeric records, message extraction line wrapping, shrinking string lengths and POSIX string comparisons are checked against original expected output. No Gawk child commands.",
+      "locale_profile": "evidence/gawk-english-locales.json"
     },
     {
       "path": "test/poundbang.awk",
@@ -5622,14 +5656,44 @@
     {
       "path": "test/readdir.awk",
       "sha256": "f54e2c7fb4218933caab0f9eed2f1d88d8f74b7323a3022bd9f823dec9524981",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "readdir",
+      "fixtures": {
+        "readdir0.awk": "2be85fe6f49cd51f4f5e7f5e67942f8499ad55d4267c2ce1d660a47cc083cb70"
+      },
+      "configured_recipe_sha256": "430e432be5cc5bfe04a672bef31c8795f2ca32f51c230fe815dd950d62db7c20",
+      "evidence": "evidence/gawk-directory-locale-original.json",
+      "audit": "evidence/gawk-directory-locale-memory-audit.json",
+      "extension_profile": {
+        "scope": "Pinned GNU native extension helpers with the GNU or translated Gawk entry; private test-only library lookup.",
+        "libraries": {
+          "readdir.so": {
+            "path": "/root/rboxc/build/gnu-gawk/extension/.libs/readdir.so",
+            "sha256": "0c07c7dc8e8f6bebf1697ed587a0e4125d5560b5051bb2e834e352e270ece298"
+          }
+        },
+        "inputs": {
+          "/opt/src/gawk-5.4.1/extension/readdir.c": "e0981e96b63ee9dd662751e4ada01dc6702966b14b56d8fb84d0f581916b5516",
+          "/opt/src/gawk-5.4.1/extension/ext_custom.h": "70293c4c5e662cd2980b7d29112134aa2102347960471dcb16fd677c3e70af07",
+          "/opt/src/gawk-5.4.1/gawkapi.h": "3480eb870c9b88cca3f4df58e069ba91c944954d7f1610944ef557350c8b0713",
+          "/opt/src/gawk-5.4.1/gettext.h": "d9d2efcd8865ed25b0976aee699b4f82f88fc9acf2b706886027b4a6f5daadf7",
+          "/root/rboxc/build/gnu-gawk/config.h": "2b3a38ed3f2a47cd81af88f0082d073fadfe7530bd3bf00d42f28b78d9df58a0",
+          "/root/rboxc/build/gnu-gawk/extension/Makefile": "862d1946e6d089d1549d1e0c5ac25ccae045b3cbf5408cee00fe3de13a8d7a12",
+          "/root/rboxc/build/gnu-gawk/extension/.libs/readdir.o": "f9ed4fd5fa8bd82761fbc7daf077a2fab918c7b8bb943cdb46fba0dca034d7d3"
+        }
+      },
+      "review": "Complete unchanged directory extension program, verification program and recipe reviewed. Both selected AWK programs are instrumented; the recipe compares source-directory inode/name/type records against pinned GNU ls and sort. Literal awk in the preliminary filesystem notice is a fingerprinted native GNU recipe helper outside instrumentation. Test-only native readdir extension is pinned; no extension is bundled by this profile."
     },
     {
       "path": "test/readdir0.awk",
       "sha256": "2be85fe6f49cd51f4f5e7f5e67942f8499ad55d4267c2ce1d660a47cc083cb70",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "covered-original-auxiliary",
+      "covered_by": "readdir",
+      "evidence": "evidence/gawk-directory-locale-original.json",
+      "audit": "evidence/gawk-directory-locale-coverage.json",
+      "review": "Complete unchanged finite directory verification program reviewed and executed by the readdir recipe under both GNU and rboxc Valgrind profiles. This input adds no separate recipe or process count."
     },
     {
       "path": "test/readdir_retest.awk",
@@ -7631,8 +7695,17 @@
     {
       "path": "test/widesub4.awk",
       "sha256": "793012749ad944e5a4d261796e229180ac0c5930e82a9b1aa6ee2ea8574ff692",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "widesub4",
+      "fixtures": {
+        "widesub4.ok": "109c73d9672e4430e597a769dbdf921bf7a39657f74de1f95ea277bdd2eae7fe"
+      },
+      "configured_recipe_sha256": "169969820412be0208634e6ce4519f38f6f351b29e38da250cc4d8c7bb654891",
+      "evidence": "evidence/gawk-directory-locale-original.json",
+      "audit": "evidence/gawk-directory-locale-memory-audit.json",
+      "review": "Complete finite original program, supplied fixtures and configured recipe reviewed. Twelve fixed-width numeric records, message extraction line wrapping, shrinking string lengths and POSIX string comparisons are checked against original expected output. No Gawk child commands.",
+      "locale_profile": "evidence/gawk-english-locales.json"
     },
     {
       "path": "test/wjposer1.awk",
