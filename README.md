@@ -2894,7 +2894,40 @@ original `recho` helper is shared and is not counted as a port.
 [evidence/bash-dollars-validation.json](evidence/bash-dollars-validation.json)
 verifies every child, original output, source hash and process log.
 [evidence/bash-dollars-coverage.json](evidence/bash-dollars-coverage.json)
-now records 54 strict recipes (55 scripts), 13,185 clean candidate logs,
+recorded 54 strict recipes (55 scripts), 13,185 clean candidate logs,
 six memory/signal profiles, seven assertion baselines, 16 recipes pending review,
 three held mixed-input recipes and two orchestration recipes. Full Bash
 acceptance remains open.
+
+
+Bash's `failglob` error path now releases its unfinished word list, completed
+expansions, discarded input words and empty glob vector before its existing
+nonlocal exit. This leak also occurs in native GNU Bash 5.3; the translated
+Rust entry is unchanged and only the adapted `subst.o` helper changes.
+All **16 focused comparisons** preserve GNU output and status, with **18 clean
+candidate process images**. The previous candidate's findings remain recorded.
+
+The unchanged `glob-test` and file-predicate `test` recipes now pass their
+complete original output checks normally and under Valgrind. Their harness
+uses UID/GID 65534, no effective capabilities, private writable fixtures,
+matching pipe/terminal ownership, and private files-only account lookup.
+Initial terminal/pipe permission mismatches affected GNU and rboxc equally
+and remain preserved. Of **210 candidate process images, 208 are clean**.
+The two remaining observations are the shared native `locale -a` helper's
+306 directly lost bytes (271 indirectly lost) and an incomplete log from a
+child that `test1.sub` terminates during its original FIFO check. Neither
+whole recipe is counted as a strict Valgrind pass.
+[evidence/bash-failglob-validation.json](evidence/bash-failglob-validation.json)
+verifies the cleanup, both original suites, process logs, initial observations
+and private execution profile.
+
+The byte-identical failglob candidate and independent rebuild are
+**14,725,432 bytes**, SHA-256
+`4d3e12833d7cec5ddf8b31deffd34b880f40fd086000a0c1ad66055a76e9ed08`.
+Its 44 Bash behavior checks, 69 builtin-adapter checks, 428 Coreutils smoke
+checks and 11 complete provider-dispatch checks pass. The installed executable
+is unchanged. Current
+[evidence/bash-failglob-coverage.json](evidence/bash-failglob-coverage.json)
+accounts for 54 strict recipes (55 scripts), 13,185 clean strict process logs,
+eight memory/signal profiles, seven assertion baselines, 14 recipes pending
+review, three held mixed-input recipes and two orchestration recipes.

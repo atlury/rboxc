@@ -117,6 +117,8 @@ def prepare_archives(root,provider,mapping):
         prepare_sigchld_cleanup(root, adapted)
         from bash_multibyte_cleanup import prepare as prepare_multibyte_cleanup
         prepare_multibyte_cleanup(root, adapted)
+        from bash_failglob_cleanup import prepare as prepare_failglob_cleanup
+        prepare_failglob_cleanup(root, adapted)
     if provider=='gawk':
         from gawk_cleanup import prepare
         adapted=prepare(root)

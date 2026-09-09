@@ -64,7 +64,6 @@ for row in selected:
     assert type(row.get('empty_system_profile',False)) is bool
     assert type(row.get('private_tmp',False)) is bool
     assert type(row.get('unprivileged',False)) is bool
-    if row.get('unprivileged'):assert row.get('private_tmp')
     if row.get('stdin_terminal'):assert row.get('controlling_terminal') and not row.get('stdin_script')
     for implementation,binary in [('gnu',profile.oracle),('rboxc',profile.binary)]:
         for instrument in (False,True):

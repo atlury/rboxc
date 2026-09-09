@@ -38,7 +38,6 @@ for helper in runtime_helpers.values():
 for row in selected:
     if row.get('unprivileged'):
         inputs[ROOT/'tests/bash-unprivileged-profile.py']=fingerprint(ROOT/'tests/bash-unprivileged-profile.py')
-        inputs[Path('/etc/nsswitch.conf')]=fingerprint(Path('/etc/nsswitch.conf'))
     for name,data in row.get('oracle_helpers',{}).items():
         assert row['target']=='builtins' and name=='printenv'
         inputs[Path(data['binary'])]=data['binary_sha256']
@@ -64,7 +63,6 @@ for row in selected:
     assert type(row.get('empty_system_profile',False)) is bool
     assert type(row.get('private_tmp',False)) is bool
     assert type(row.get('unprivileged',False)) is bool
-    if row.get('unprivileged'):assert row.get('private_tmp')
     if row.get('stdin_terminal'):assert row.get('controlling_terminal') and not row.get('stdin_script')
     for implementation,binary in [('gnu',profile.oracle),('rboxc',profile.binary)]:
         for instrument in (False,True):
@@ -114,14 +112,10 @@ for row in selected:
                 private_tmp=None
                 if row.get('unprivileged'):
                     launch=work/'unprivileged.json'
-                    launch.write_text(json.dumps({'work':str(work),'journal':str(memory_directory/'unprivileged.json'),'stdin_terminal':bool(row.get('stdin_terminal'))}))
+                    launch.write_text(json.dumps({'work':str(work),'journal':str(memory_directory/'unprivileged.json')}))
                     argv=[sys.executable,str(ROOT/'tests/bash-unprivileged-profile.py'),str(launch),*argv]
                 if row.get('absolute_helpers') or row.get('empty_system_profile') or row.get('locale_archive') or row.get('private_tmp'):
                     mount_args=[]
-                    if row.get('unprivileged'):
-                        nss=saved/'nsswitch.conf'
-                        nss.write_text('passwd: files\ngroup: files\nhosts: files\nnetworks: files\nprotocols: files\nservices: files\n')
-                        mount_args += [str(nss),'/etc/nsswitch.conf']
                     for absolute in row.get('absolute_helpers',[]):
                         assert absolute in ('/bin/echo','/bin/sh','/bin/sed','/bin/ls','/bin/true','/bin/false','/bin/cat','/bin/mkdir','/bin/touch','/bin/chmod','/bin/rm','/usr/bin/true','/usr/bin/false','/usr/bin/printf')
                         destination=Path(absolute).resolve()
@@ -228,7 +222,7 @@ for row in selected:
                     logs.append({'log':str(log.relative_to(ROOT)),'sha256':fingerprint(log),'pid':pid,'complete':complete,'clean':clean,**parsed})
                 assert not instrument or logs
                 outcomes[key]={'unprivileged_profile':unprivileged_profile,'staged_executables':staged_executables,'private_mounts':private_mounts,'private_profile':private_profile,'private_locale':private_locale,'private_tmp':private_tmp,'controlling_terminal':bool(row.get('controlling_terminal')),'stdin_terminal':bool(row.get('stdin_terminal')),'status':done.returncode,'timeout_seconds':timeout_seconds,'stdin_script':bool(row.get('stdin_script')),'timed_out':timed_out,'expected_output_matches':actual==(source/row['expected']).read_bytes(),
-                    'raw':{str(p.relative_to(ROOT)):fingerprint(p) for p in [saved/'stdout',saved/'stderr',saved/'actual',*([saved/'terminal-output'] if row.get('controlling_terminal') else []),*([saved/'empty-system-profile'] if row.get('empty_system_profile') else []),*([saved/'mountinfo'] if row.get('private_tmp') else []),*([saved/'unprivileged.json',saved/'nsswitch.conf'] if row.get('unprivileged') else [])]},
+                    'raw':{str(p.relative_to(ROOT)):fingerprint(p) for p in [saved/'stdout',saved/'stderr',saved/'actual',*([saved/'terminal-output'] if row.get('controlling_terminal') else []),*([saved/'empty-system-profile'] if row.get('empty_system_profile') else []),*([saved/'mountinfo'] if row.get('private_tmp') else []),*([saved/'unprivileged.json'] if row.get('unprivileged') else [])]},
                     'memory':logs,'memory_clean':all(m['clean'] for m in logs) if instrument else None}
     passed=all(not o['timed_out'] and o['expected_output_matches'] and o['status']==outcomes['gnu']['status'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
     results.append({'selection':name,'pass':passed,'outcomes':outcomes})

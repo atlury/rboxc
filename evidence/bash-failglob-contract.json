@@ -1,0 +1,1460 @@
+{
+  "runtime_helpers": {
+    "/root/rboxc/target/bash-failglob-candidate/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174"
+  },
+  "binary": "/root/rboxc/target/bash-failglob-candidate/release/rboxc",
+  "binary_sha256": "4d3e12833d7cec5ddf8b31deffd34b880f40fd086000a0c1ad66055a76e9ed08",
+  "gnu_binary_sha256": "bd47035bca2886f8d61f564ae38ca9c807a8b0b98e914d28f909fb7b1bb1366f",
+  "driver_sha256": "8eec1500e8775592217dc9963b9d07468d5ed1303516ee75f36cbb7acd9e7101",
+  "scope": "Sixteen finite failglob contexts with original GNU diagnostics and status comparisons; full child memory tracing. File fixtures contain two ordinary matches in each of two directories.",
+  "results": [
+    {
+      "name": "no-match",
+      "script": "shopt -s failglob\nprintf \"%s\\n\" absent*\nprintf \"after\\n\"\n",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/no-match-gnu-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/no-match-gnu-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/no-match-gnu-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/no-match-gnu-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/no-match-gnu-valgrind-1176596.log",
+              "sha256": "6303269aa611964a39d75a97658e1e2ac88be109913fb26345cf91a9ff642bac",
+              "errors": 4,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 40,
+                "indirectly lost": 88,
+                "possibly lost": 0,
+                "still reachable": 47274
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1176596"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/no-match-rboxc-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/no-match-rboxc-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/no-match-rboxc-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/no-match-rboxc-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/no-match-rboxc-valgrind-1176717.log",
+              "sha256": "702844e95f4ed97812d1d7d178b215f7e3db86390860531aaf4e69c0a34de422",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47569
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1176717"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": true
+        }
+      },
+      "behavior_pass": true,
+      "pass": true
+    },
+    {
+      "name": "literal-prefix",
+      "script": "shopt -s failglob\nprintf \"%s\\n\" \"two words\" absent*\nprintf \"after\\n\"\n",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/literal-prefix-gnu-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/literal-prefix-gnu-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/literal-prefix-gnu-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/literal-prefix-gnu-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/literal-prefix-gnu-valgrind-1176835.log",
+              "sha256": "cbb7efffab7f8c370865b3c852e76e16588e8a76122c0a58a9b9ac35582dba0c",
+              "errors": 4,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 40,
+                "indirectly lost": 139,
+                "possibly lost": 0,
+                "still reachable": 47346
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1176835"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/literal-prefix-rboxc-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/literal-prefix-rboxc-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/literal-prefix-rboxc-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/literal-prefix-rboxc-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/literal-prefix-rboxc-valgrind-1176945.log",
+              "sha256": "9fb31c55dc0513ef65afa43be4935a08c6658e3c4817eb05e3c78d0d88a71d3f",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47677
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1176945"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": true
+        }
+      },
+      "behavior_pass": true,
+      "pass": true
+    },
+    {
+      "name": "remaining-words",
+      "script": "shopt -s failglob\nprintf \"%s\\n\" absent* \"tail words\" file_a\nprintf \"after\\n\"\n",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/remaining-words-gnu-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/remaining-words-gnu-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/remaining-words-gnu-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/remaining-words-gnu-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/remaining-words-gnu-valgrind-1176961.log",
+              "sha256": "85348b7b57a783c83c6c229332ea819457a555efe81c6cdd2c606ce1f91302cf",
+              "errors": 4,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 40,
+                "indirectly lost": 376,
+                "possibly lost": 0,
+                "still reachable": 47426
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1176961"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/remaining-words-rboxc-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/remaining-words-rboxc-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/remaining-words-rboxc-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/remaining-words-rboxc-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/remaining-words-rboxc-valgrind-1176964.log",
+              "sha256": "1346cc14c9f537c50acd37fbb9c77127e6ef5c65e7ce1069f3d1b4d21bbe4f5f",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47781
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1176964"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": true
+        }
+      },
+      "behavior_pass": true,
+      "pass": true
+    },
+    {
+      "name": "one-match",
+      "script": "shopt -s failglob\nprintf \"%s\\n\" file_a* absent*\nprintf \"after\\n\"\n",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/one-match-gnu-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/one-match-gnu-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/one-match-gnu-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/one-match-gnu-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/one-match-gnu-valgrind-1176968.log",
+              "sha256": "0e5843adfc151d69fe13929ebf34a3f796994cbb9a66efe8af2290eb51aea014",
+              "errors": 4,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 56,
+                "indirectly lost": 255,
+                "possibly lost": 0,
+                "still reachable": 47306
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1176968"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/one-match-rboxc-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/one-match-rboxc-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/one-match-rboxc-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/one-match-rboxc-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/one-match-rboxc-valgrind-1176971.log",
+              "sha256": "9c57670615222302e319bf3ad97ff4e806c4f48d41356ba58a74a1ceb6ac68bc",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47673
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1176971"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": true
+        }
+      },
+      "behavior_pass": true,
+      "pass": true
+    },
+    {
+      "name": "multiple-matches",
+      "script": "shopt -s failglob\nprintf \"%s\\n\" file_* absent* tail\nprintf \"after\\n\"\n",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/multiple-matches-gnu-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/multiple-matches-gnu-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/multiple-matches-gnu-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/multiple-matches-gnu-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/multiple-matches-gnu-valgrind-1176975.log",
+              "sha256": "ed12d750be0504c83a8ed9178d7fee650eb63e218d7359ec5741401c8a7e5ce2",
+              "errors": 4,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 56,
+                "indirectly lost": 438,
+                "possibly lost": 0,
+                "still reachable": 47346
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1176975"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/multiple-matches-rboxc-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/multiple-matches-rboxc-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/multiple-matches-rboxc-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/multiple-matches-rboxc-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/multiple-matches-rboxc-valgrind-1176978.log",
+              "sha256": "c9f819b50eaca961e3193ac6c4c6564f59dbe976666dba14c44e60c8c68d7749",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47773
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1176978"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": true
+        }
+      },
+      "behavior_pass": true,
+      "pass": true
+    },
+    {
+      "name": "two-patterns",
+      "script": "shopt -s failglob\nprintf \"%s\\n\" file_* dir/* absent* tail\nprintf \"after\\n\"\n",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/two-patterns-gnu-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/two-patterns-gnu-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/two-patterns-gnu-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/two-patterns-gnu-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/two-patterns-gnu-valgrind-1176982.log",
+              "sha256": "a69503af1dc3d11043d9f877c1b406a2ebb2f642ef0d48e9cceeab7ea2236348",
+              "errors": 4,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 56,
+                "indirectly lost": 662,
+                "possibly lost": 0,
+                "still reachable": 47358
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1176982"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/two-patterns-rboxc-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/two-patterns-rboxc-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/two-patterns-rboxc-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/two-patterns-rboxc-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/two-patterns-rboxc-valgrind-1176985.log",
+              "sha256": "66cc216332651b87d606540ace79faf699ff8aec3903a2a016d302f7849cfb81",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47875
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1176985"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": true
+        }
+      },
+      "behavior_pass": true,
+      "pass": true
+    },
+    {
+      "name": "brace-patterns",
+      "script": "shopt -s failglob\nprintf \"%s\\n\" {file_*,dir/*} absent* tail\nprintf \"after\\n\"\n",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/brace-patterns-gnu-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/brace-patterns-gnu-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/brace-patterns-gnu-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/brace-patterns-gnu-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/brace-patterns-gnu-valgrind-1176989.log",
+              "sha256": "823da039f80f7d2bc049ec75dd2263dbc59e22cf13452d23ef5f45baa5ff174d",
+              "errors": 4,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 56,
+                "indirectly lost": 662,
+                "possibly lost": 0,
+                "still reachable": 47330
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1176989"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/brace-patterns-rboxc-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/brace-patterns-rboxc-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/brace-patterns-rboxc-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/brace-patterns-rboxc-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/brace-patterns-rboxc-valgrind-1176992.log",
+              "sha256": "22f055823473167aa9a18b76dcbfa20bda2cdae45bde723e4d3a5b6f601f51b5",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47845
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1176992"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": true
+        }
+      },
+      "behavior_pass": true,
+      "pass": true
+    },
+    {
+      "name": "nullglob-precedence",
+      "script": "shopt -s failglob\nshopt -s nullglob\nprintf \"%s\\n\" file_* absent*\nprintf \"after\\n\"\n",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520333a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/nullglob-precedence-gnu-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/nullglob-precedence-gnu-stderr": "0f56e55acffc775f04510b2e265c9af5376d61a345cc5adf83a2b078a000222f"
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520333a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/nullglob-precedence-gnu-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/nullglob-precedence-gnu-valgrind-stderr": "0f56e55acffc775f04510b2e265c9af5376d61a345cc5adf83a2b078a000222f"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/nullglob-precedence-gnu-valgrind-1176996.log",
+              "sha256": "940bae6b9ba66afeacc34e8e7743710f64532cc16839e1eb9a20ce0210ef4694",
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 56,
+                "indirectly lost": 294,
+                "possibly lost": 0,
+                "still reachable": 47415
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1176996"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520333a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/nullglob-precedence-rboxc-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/nullglob-precedence-rboxc-stderr": "0f56e55acffc775f04510b2e265c9af5376d61a345cc5adf83a2b078a000222f"
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520333a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/nullglob-precedence-rboxc-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/nullglob-precedence-rboxc-valgrind-stderr": "0f56e55acffc775f04510b2e265c9af5376d61a345cc5adf83a2b078a000222f"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/nullglob-precedence-rboxc-valgrind-1177003.log",
+              "sha256": "4ac54b9b246090d56c5f54489ebf8c2ad2586775795ce33c0349a4863cce2088",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47781
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177003"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": true
+        }
+      },
+      "behavior_pass": true,
+      "pass": true
+    },
+    {
+      "name": "function",
+      "script": "shopt -s failglob\nf() { printf \"%s\\n\" file_* absent* tail; }\nf\nprintf \"after\\n\"\n",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/function-gnu-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/function-gnu-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/function-gnu-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/function-gnu-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/function-gnu-valgrind-1177006.log",
+              "sha256": "e54430bc122a57c3b8d39da97cbc6d43a8a5d5c9f719735a4d589bb4d596a688",
+              "errors": 4,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 56,
+                "indirectly lost": 438,
+                "possibly lost": 0,
+                "still reachable": 48898
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177006"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/function-rboxc-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/function-rboxc-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/function-rboxc-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/function-rboxc-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/function-rboxc-valgrind-1177009.log",
+              "sha256": "961e8bd047f4f821ccdf4a4207adb7786a76332c22d436bb42b45ab721557cc5",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49874
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177009"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": true
+        }
+      },
+      "behavior_pass": true,
+      "pass": true
+    },
+    {
+      "name": "subshell",
+      "script": "shopt -s failglob\n( printf \"%s\\n\" file_* absent* tail )\nprintf \"after\\n\"\n",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/subshell-gnu-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/subshell-gnu-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/subshell-gnu-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/subshell-gnu-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/subshell-gnu-valgrind-1177031.log",
+              "sha256": "c4d3cfb51c4726a480738af4a1d1fced93bb547c2dba73fdffe3d9fdd7fbce25",
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47474
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177031"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/subshell-gnu-valgrind-1177050.log",
+              "sha256": "2072e4f2930a10097def736c3eb36c4686cf58e220884dcadec52528b7c3fb27",
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 40,
+                "indirectly lost": 296,
+                "possibly lost": 0,
+                "still reachable": 47463
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177050"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/subshell-rboxc-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/subshell-rboxc-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/subshell-rboxc-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/subshell-rboxc-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/subshell-rboxc-valgrind-1177054.log",
+              "sha256": "37fdc76499657fbc134ba0809e1b3047497ce3f0641c6e9eec8c683a1e96efec",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47673
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177054"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/subshell-rboxc-valgrind-1177056.log",
+              "sha256": "d766ba593d768f13495246e11ff5259c5f6eb817b03f00b34c9e1069c340cb25",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47801
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177056"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": true
+        }
+      },
+      "behavior_pass": true,
+      "pass": true
+    },
+    {
+      "name": "substitution",
+      "script": "shopt -s failglob\nresult=$(printf \"%s\\n\" file_* absent* tail)\nprintf \"result:<%s>\\n\" \"$result\"\nprintf \"after\\n\"\n",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "726573756c743a3c3e0a61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/substitution-gnu-stdout": "fb57ec54c811bf9efdc1a9c62eab63689b51fab08741e7bdf0707917e3a1ac9c",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/substitution-gnu-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "726573756c743a3c3e0a61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/substitution-gnu-valgrind-stdout": "fb57ec54c811bf9efdc1a9c62eab63689b51fab08741e7bdf0707917e3a1ac9c",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/substitution-gnu-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/substitution-gnu-valgrind-1177060.log",
+              "sha256": "747b1fdab43668c80eaf17f4a2f0fbde0e9041ea62108d2c5cb8c2cbe262ad71",
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48983
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177060"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/substitution-gnu-valgrind-1177062.log",
+              "sha256": "0f25c858bd93473c5c55e4275a3ddc9ab4b8dddf39f99b180da9dedc13f8e047",
+              "errors": 4,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 56,
+                "indirectly lost": 399,
+                "possibly lost": 0,
+                "still reachable": 49392
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177062"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "726573756c743a3c3e0a61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/substitution-rboxc-stdout": "fb57ec54c811bf9efdc1a9c62eab63689b51fab08741e7bdf0707917e3a1ac9c",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/substitution-rboxc-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "726573756c743a3c3e0a61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/substitution-rboxc-valgrind-stdout": "fb57ec54c811bf9efdc1a9c62eab63689b51fab08741e7bdf0707917e3a1ac9c",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/substitution-rboxc-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/substitution-rboxc-valgrind-1177065.log",
+              "sha256": "2344ae464cbb6cd0de761c0c8ea735cfcfd8b92f15ca26c06da4a0a9a14a0b14",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49367
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177065"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/substitution-rboxc-valgrind-1177087.log",
+              "sha256": "35ac14ff0f7e315c1bbe2cedb1d0a692845d9aef25d829ceb52739c311611560",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50353
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177087"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": true
+        }
+      },
+      "behavior_pass": true,
+      "pass": true
+    },
+    {
+      "name": "group",
+      "script": "shopt -s failglob\n{ printf \"%s\\n\" file_* absent* tail; }\nprintf \"after\\n\"\n",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/group-gnu-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/group-gnu-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/group-gnu-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/group-gnu-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/group-gnu-valgrind-1177090.log",
+              "sha256": "6d849c765c4b50b94099e7fbe45e887b5c65ad68ada907a4195cd4696b9bc470",
+              "errors": 4,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 56,
+                "indirectly lost": 438,
+                "possibly lost": 0,
+                "still reachable": 47356
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177090"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/group-rboxc-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/group-rboxc-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/group-rboxc-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/group-rboxc-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/group-rboxc-valgrind-1177093.log",
+              "sha256": "eeaaf23da1926dfff9ed920f7c6286ba17b8b76a0253be801a98dac353e82487",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47778
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177093"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": true
+        }
+      },
+      "behavior_pass": true,
+      "pass": true
+    },
+    {
+      "name": "temporary-assignment",
+      "script": "shopt -s failglob\nVALUE=example printf \"%s\\n\" file_* absent* tail\nprintf \"after\\n\"\n",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/temporary-assignment-gnu-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/temporary-assignment-gnu-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/temporary-assignment-gnu-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/temporary-assignment-gnu-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/temporary-assignment-gnu-valgrind-1177097.log",
+              "sha256": "9cf9c91f98c8f80a77e35067b9ad364eba82d2ec3d74163038d6fec37222ca9e",
+              "errors": 4,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 56,
+                "indirectly lost": 438,
+                "possibly lost": 0,
+                "still reachable": 47438
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177097"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/temporary-assignment-rboxc-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/temporary-assignment-rboxc-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/temporary-assignment-rboxc-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/temporary-assignment-rboxc-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/temporary-assignment-rboxc-valgrind-1177100.log",
+              "sha256": "8631bad120362b5ed4eef8f00a4f8cf24e001c4bf4e20336966cea18b8f8f18c",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47851
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177100"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": true
+        }
+      },
+      "behavior_pass": true,
+      "pass": true
+    },
+    {
+      "name": "eval",
+      "script": "shopt -s failglob\neval 'printf \"%s\\n\" file_* absent* tail'\nprintf \"after\\n\"\n",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/eval-gnu-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/eval-gnu-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/eval-gnu-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/eval-gnu-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/eval-gnu-valgrind-1177103.log",
+              "sha256": "095a6238d4cb79d4862bef0026ae2b6ba39cfe9aa7926d250d5c257e34432f65",
+              "errors": 4,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 56,
+                "indirectly lost": 438,
+                "possibly lost": 0,
+                "still reachable": 48392
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177103"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/eval-rboxc-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/eval-rboxc-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f636173652e73683a206c696e6520323a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/eval-rboxc-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/eval-rboxc-valgrind-stderr": "46679fc4ee525a02507bb695f3c1c7e70785819877424cbd0757e724228a415c"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/eval-rboxc-valgrind-1177129.log",
+              "sha256": "f9590775fd94d0ab50d2f4ce73e63a99424052fe88434e5c15cc11135b5f2373",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49452
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177129"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": true
+        }
+      },
+      "behavior_pass": true,
+      "pass": true
+    },
+    {
+      "name": "source",
+      "script": "shopt -s failglob\n. ./source.inc\nprintf \"after\\n\"\n",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f736f757263652e696e633a206c696e6520313a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/source-gnu-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/source-gnu-stderr": "7cdc1ec56000e9196e621135b17542bd4339d73d3d5c2914a398b90230d0ae2a"
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f736f757263652e696e633a206c696e6520313a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/source-gnu-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/source-gnu-valgrind-stderr": "7cdc1ec56000e9196e621135b17542bd4339d73d3d5c2914a398b90230d0ae2a"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/source-gnu-valgrind-1177134.log",
+              "sha256": "24bb370328275002ddae284a6bdb051862f0ed8e3b786e385e42676d66b1116f",
+              "errors": 4,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 56,
+                "indirectly lost": 438,
+                "possibly lost": 0,
+                "still reachable": 48973
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177134"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f736f757263652e696e633a206c696e6520313a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/source-rboxc-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/source-rboxc-stderr": "7cdc1ec56000e9196e621135b17542bd4339d73d3d5c2914a398b90230d0ae2a"
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a",
+          "stderr": "2e2f736f757263652e696e633a206c696e6520313a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/source-rboxc-valgrind-stdout": "7b9a72466d3960eb2aacccfc848939453490db0678bd4725def3f789b891c919",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/source-rboxc-valgrind-stderr": "7cdc1ec56000e9196e621135b17542bd4339d73d3d5c2914a398b90230d0ae2a"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/source-rboxc-valgrind-1177163.log",
+              "sha256": "83c33e3c65311ba6299d054afaedfdcde3f461e507d6ae1d6b2edb625ba1d552",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50251
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177163"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": true
+        }
+      },
+      "behavior_pass": true,
+      "pass": true
+    },
+    {
+      "name": "exit-trap",
+      "script": "shopt -s failglob\ntrap 'printf \"exit:%s\\n\" \"$?\"' EXIT\nprintf '%s\\n' file_* absent* tail\nprintf \"after\\n\"\n",
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61667465720a657869743a300a",
+          "stderr": "2e2f636173652e73683a206c696e6520333a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/exit-trap-gnu-stdout": "f5f5a2d4fceaa18f36104d0bb97b308fef99a416d0a2d6d79e25722733bd6de3",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/exit-trap-gnu-stderr": "0f56e55acffc775f04510b2e265c9af5376d61a345cc5adf83a2b078a000222f"
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a657869743a300a",
+          "stderr": "2e2f636173652e73683a206c696e6520333a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/exit-trap-gnu-valgrind-stdout": "f5f5a2d4fceaa18f36104d0bb97b308fef99a416d0a2d6d79e25722733bd6de3",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/exit-trap-gnu-valgrind-stderr": "0f56e55acffc775f04510b2e265c9af5376d61a345cc5adf83a2b078a000222f"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/exit-trap-gnu-valgrind-1177169.log",
+              "sha256": "e3e24ebf5753041b20fb266269e174096865c9700b1a6de924f6aae77f502cc9",
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 56,
+                "indirectly lost": 438,
+                "possibly lost": 0,
+                "still reachable": 48198
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177169"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": false
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61667465720a657869743a300a",
+          "stderr": "2e2f636173652e73683a206c696e6520333a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/exit-trap-rboxc-stdout": "f5f5a2d4fceaa18f36104d0bb97b308fef99a416d0a2d6d79e25722733bd6de3",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/exit-trap-rboxc-stderr": "0f56e55acffc775f04510b2e265c9af5376d61a345cc5adf83a2b078a000222f"
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61667465720a657869743a300a",
+          "stderr": "2e2f636173652e73683a206c696e6520333a206e6f206d617463683a20616273656e742a0a",
+          "raw": {
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/exit-trap-rboxc-valgrind-stdout": "f5f5a2d4fceaa18f36104d0bb97b308fef99a416d0a2d6d79e25722733bd6de3",
+            "evidence/raw/bash-failglob-contract/run-_ua6smsa/exit-trap-rboxc-valgrind-stderr": "0f56e55acffc775f04510b2e265c9af5376d61a345cc5adf83a2b078a000222f"
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-failglob-contract/run-_ua6smsa/exit-trap-rboxc-valgrind-1177175.log",
+              "sha256": "c7ee2e66e20811ed5c98f1e3dce14910716f7a06264f75d8f025bb086101e851",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48765
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "1177175"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "clean": true
+        }
+      },
+      "behavior_pass": true,
+      "pass": true
+    }
+  ],
+  "passed": 16,
+  "total": 16,
+  "planned_total": 16,
+  "complete": true
+}
