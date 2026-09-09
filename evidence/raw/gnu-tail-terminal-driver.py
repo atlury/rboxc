@@ -203,20 +203,6 @@ def main():
         test_shell = row.get('test_shell', '/bin/sh')
         assert test_shell in ('/bin/sh', '/bin/bash'), 'unsupported test shell'
         context = {**execution_context, 'definition': row, 'shell': fingerprint(Path(test_shell))}
-        if row.get('gdb_tail_profile'):
-            assert row['script'] in ('tests/tail/inotify-race.sh', 'tests/tail/inotify-race2.sh')
-            assert row['full_suite'] and not instrument and row['commands'] == ['tail', 'sleep', 'timeout']
-            c_source = SOURCE/'src/tail.c'
-            rust_source = ROOT/'src/generated/applet_tail.rs'
-            c_lines = [i for i, line in enumerate(c_source.read_text().splitlines(), 1)
-                       if line.startswith('tail_forever_inotify')]
-            rust_lines = [i for i, line in enumerate(rust_source.read_text().splitlines(), 1)
-                          if line == '    wd_to_name = hash_initialize(']
-            assert len(c_lines) == len(rust_lines) == 1
-            context['gdb_tail_profile'] = {'driver_sha256': fingerprint(ROOT/'tests/gnu/gdb-tail-profile.py'),
-                'gdb_sha256': fingerprint(Path('/usr/bin/gdb')), 'gnu_line': c_lines[0],
-                'sources': {'gnu': {'path': str(c_source), 'line': c_lines[0], 'sha256': fingerprint(c_source)},
-                            'rboxc': {'path': str(rust_source), 'line': rust_lines[0], 'sha256': fingerprint(rust_source)}}}
         memory_limit = row.get('address_space_limit_bytes')
         if memory_limit is not None:
             assert row['script'] == 'tests/od/big-w.sh' and memory_limit == 1024**3
@@ -317,17 +303,6 @@ def main():
                         (elf_input_build/'src'/name).symlink_to(candidate)
                 commands = row.get('commands', [row['command']])
                 assert row['command'] in commands
-                if row.get('gdb_tail_profile'):
-                    profile = context['gdb_tail_profile']; source_map = profile['sources'][implementation]
-                    config = run/'gdb-tail-profile.json'
-                    config.write_text(json.dumps({'run': str(run), 'script': row['script'],
-                        'implementation': implementation, 'gnu_line': profile['gnu_line'],
-                        'gdb_sha256': profile['gdb_sha256'], 'break_source': source_map['path'],
-                        'break_source_sha256': source_map['sha256'], 'break_line': source_map['line']}))
-                    wrapper = run/'src/gdb'
-                    wrapper.write_text('#!/bin/sh\nexec '+shlex.join([sys.executable,
-                        str(ROOT/'tests/gnu/gdb-tail-profile.py'), str(config)])+' "$@"\n')
-                    wrapper.chmod(0o755)
                 stdbuf_library = None
                 if 'stdbuf' in commands:
                     stdbuf_library = (BUILD/'src/libstdbuf.so' if implementation == 'gnu'
@@ -576,13 +551,6 @@ def main():
                     outcomes[implementation]['mount_namespace'] = {
                         'parent': parent_mount_namespace, 'child': child_namespace,
                         'private_propagation': True, 'parent_unchanged': True}
-                if row.get('gdb_tail_profile'):
-                    events_path = run/'gdb-tail-profile.jsonl'
-                    events = [json.loads(line) for line in events_path.read_text().splitlines()] if events_path.exists() else []
-                    evidence_path = ROOT/'evidence/raw'/f'reviewed-gdb-tail-{run.name}-{implementation}.json'
-                    evidence_path.write_text(json.dumps(events, indent=2)+'\n')
-                    outcomes[implementation]['gdb_tail_profile'] = {'events': events,
-                        'log': str(evidence_path.relative_to(ROOT)), 'sha256': fingerprint(evidence_path)}
                 if row.get('terminal'):
                     profiles = re.findall(rb'^RBOXC_TERMINAL_PROFILE (.+)$', completed.stderr, re.M)
                     outcomes[implementation]['terminal_profile'] = json.loads(profiles[0]) if profiles else None

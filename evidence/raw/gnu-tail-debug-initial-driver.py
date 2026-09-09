@@ -205,7 +205,7 @@ def main():
         context = {**execution_context, 'definition': row, 'shell': fingerprint(Path(test_shell))}
         if row.get('gdb_tail_profile'):
             assert row['script'] in ('tests/tail/inotify-race.sh', 'tests/tail/inotify-race2.sh')
-            assert row['full_suite'] and not instrument and row['commands'] == ['tail', 'sleep', 'timeout']
+            assert row['full_suite'] and not instrument and row['commands'] == ['tail', 'sleep']
             c_source = SOURCE/'src/tail.c'
             rust_source = ROOT/'src/generated/applet_tail.rs'
             c_lines = [i for i, line in enumerate(c_source.read_text().splitlines(), 1)

@@ -2326,11 +2326,11 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. The current
-[evidence/gnu-remaining-shell-coverage.json](evidence/gnu-remaining-shell-coverage.json)
-extends the preserved suite checkpoints: **644 scripts passed**, 32 have
-selected coverage, five are skipped, 29 are excluded and 23 remain pending.
-Excluding the 29 exclusions, 644/704 scripts (91.5%) have whole-script passes;
-60/704 (8.5%) remain partial, pending or skipped. This measures script coverage,
+[evidence/gnu-tail-profiles-coverage.json](evidence/gnu-tail-profiles-coverage.json)
+extends the preserved suite checkpoints: **646 scripts passed**, 32 have
+selected coverage, five are skipped, 29 are excluded and 21 remain pending.
+Excluding the 29 exclusions, 646/704 scripts (91.8%) have whole-script passes;
+58/704 (8.2%) remain partial, pending or skipped. This measures script coverage,
 not remaining engineering effort or complete Valgrind acceptance.
 
 All 197 reviewed `env -S` cases pass normally against GNU. The original table
@@ -2515,12 +2515,33 @@ check in `ln/backup-suffix-traversal.sh`, and the nonterminal polling/inotify
 stdin-follow checks in `tail/follow-stdin.sh`. Their **nine candidate process
 images** are clean. Exact source intervals and retained assertions are verified
 in [evidence/gnu-remaining-shell-validation.json](evidence/gnu-remaining-shell-validation.json).
-Historical reproduction sections remain unexecuted; the separate tail terminal
-branch still needs its own profile. All 32 partial entries have normal and
-instrumented evidence for their recorded selections: 30 pass under Valgrind,
-with the same two instrumentation profiles open. The full ledger has 591
-passed scripts, 30 passed selections, 40 open profiles, 43 pending and 29
-exclusions under Valgrind.
+Historical reproduction sections remain unexecuted. This checkpoint recorded
+30 passing Valgrind selections and two open instrumentation profiles.
+
+The ordinary `tail/follow-stdin.sh` selection now also passes its three terminal
+input modes and mixed terminal/file diagnostic check, using a private controlling
+terminal. Valgrind remains **open**: three short-timeout candidate logs lack final
+summaries, and terminating the final blocked read produces matching GNU/Rboxc
+reports of two errors and 16,432 definitely lost bytes. The three earlier
+nonterminal/version images remain clean; their narrower passing selection is
+preserved separately. These findings are not suppressed or counted as passes.
+
+Both whole `tail/inotify-race.sh` and `tail/inotify-race2.sh` originals pass on a
+separate optimized candidate with debug information. The adapter maps GNU's
+source breakpoint to translated Rust immediately before watch initialization;
+original append/replacement assertions remain unchanged. The initial fixture
+skips from a missing `timeout` helper remain recorded. The debug candidate is
+57,773,832 bytes, SHA-256
+`e529989411a5995591e123d40834ab4425df824d7d7e5a08deb0e83697b42ead`,
+and an independent rebuild is byte-identical. It uses the same production source
+with `CARGO_PROFILE_RELEASE_DEBUG=2` and `CARGO_PROFILE_RELEASE_STRIP=none` on
+`nightly-2026-01-22`; it does not replace the smaller release candidate.
+Debugger/Valgrind integration remains pending. The
+[evidence/gnu-tail-profiles-validation.json](evidence/gnu-tail-profiles-validation.json)
+audit pins source mappings, debugger invocations, retained shell assertions,
+terminal process findings and both builds. The current Valgrind ledger has
+591 passed scripts, 29 passed selections, 41 open profiles, 43 pending and 29
+exclusions.
 
 Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
