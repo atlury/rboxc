@@ -93,6 +93,8 @@ def prepare_archives(root,provider,mapping):
         prepare_globstar_cleanup(root, adapted)
         from bash_assignment_cleanup import prepare as prepare_assignment_cleanup
         prepare_assignment_cleanup(root, adapted)
+        from bash_arithmetic_cleanup import prepare as prepare_arithmetic_cleanup
+        prepare_arithmetic_cleanup(root, adapted)
     if provider=='gawk':
         from gawk_cleanup import prepare
         adapted=prepare(root)

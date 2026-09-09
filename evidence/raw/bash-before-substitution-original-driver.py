@@ -23,7 +23,7 @@ selected=[{**r,**case,'selection':r['target']+':'+case['script'] if r.get('scrip
           for r in selected for case in r.get('script_cases',[{}])]
 helpers={'sed':ROOT/'build/gnu-sed/sed/sed','grep':ROOT/'build/gnu-grep/src/grep',
          'diff':ROOT/'build/gnu-diffutils/src/diff','awk':ROOT/'build/gnu-gawk/gawk',
-         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('od','mktemp','touch','chmod','rm','cat','tr','mkdir','printenv','sleep','date','wc','seq','tee','expr','ls','ln','cp','uname')}}
+         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('od','mktemp','touch','chmod','rm','cat','tr','mkdir','printenv','sleep','date','wc','seq','tee','expr','ls','ln')}}
 fixed_helpers=inventory.get('fixed_test_helpers',{})
 runtime_helpers=inventory.get('runtime_test_helpers',{})
 inputs={p:fingerprint(p) for p in [Path(__file__),manifest,profile.oracle,*helpers.values()]}
@@ -43,8 +43,6 @@ assert all(fingerprint(p)==h for p,h in inputs.items())
 results=[]
 for row in selected:
     outcomes={};name=row['selection']
-    timeout_seconds=row.get('timeout_seconds',180)
-    assert type(timeout_seconds) is int and 1<=timeout_seconds<=900
     for implementation,binary in [('gnu',profile.oracle),('rboxc',profile.binary)]:
         for instrument in (False,True):
             key=implementation+('-valgrind' if instrument else '')
@@ -55,8 +53,7 @@ for row in selected:
                 for n,p in helpers.items():(work/'exec'/n).symlink_to(p if implementation=='gnu' else profile.binary)
                 for n,h in fixed_helpers.items():(work/'exec'/n).symlink_to(ROOT/h['binary'])
                 for n in row['fixtures']:shutil.copy2(source/n,work/n)
-                argv=[str(alias),'--noprofile','--norc']
-                if not row.get('stdin_script'):argv+=['./'+row['script']]
+                argv=[str(alias),'--noprofile','--norc','./'+row['script']]
                 if instrument:argv=['/usr/bin/valgrind','--leak-check=full','--show-leak-kinds=all',
                     '--track-fds=yes','--trace-children=yes','--log-file='+str(saved/'process-%p.log'),*argv]
                 env={'PATH':str(work/'exec')+':/usr/bin:/bin','THIS_SH':str(alias),'HOME':directory,
@@ -67,7 +64,7 @@ for row in selected:
                 if row.get('absolute_helpers'):
                     mount_args=[]
                     for absolute in row['absolute_helpers']:
-                        assert absolute in ('/bin/echo','/bin/cat','/bin/mkdir','/bin/touch','/bin/chmod','/bin/rm','/usr/bin/true','/usr/bin/false')
+                        assert absolute in ('/bin/echo','/bin/mkdir','/bin/touch','/bin/chmod','/bin/rm','/usr/bin/true','/usr/bin/false')
                         destination=Path(absolute).resolve()
                         assert str(destination) in row['host_inputs']
                         replacement=ROOT/'build/gnu-coreutils/src/coreutils' if implementation=='gnu' else profile.binary
@@ -76,14 +73,12 @@ for row in selected:
                     argv=['/usr/bin/unshare','--mount','--propagation','private','/bin/sh','-c',
                         'while [ "$1" != -- ]; do /usr/bin/mount --bind "$1" "$2" || exit 77; shift 2; done; shift; exec "$@"',
                         'bash-private-helpers',*mount_args,'--',*argv]
-                script_input=(work/row['script']).open('rb') if row.get('stdin_script') else None
-                process=subprocess.Popen(argv,cwd=work,env=env,stdin=script_input if script_input is not None else subprocess.DEVNULL,stdout=subprocess.PIPE,
+                process=subprocess.Popen(argv,cwd=work,env=env,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE if row['output_mode'] in ('stdout','drop-expect-stdout') else subprocess.STDOUT,
                     start_new_session=True)
-                if script_input is not None:script_input.close()
                 timed_out=False
                 try:
-                    stdout,stderr=process.communicate(timeout=timeout_seconds)
+                    stdout,stderr=process.communicate(timeout=180)
                 except subprocess.TimeoutExpired:
                     timed_out=True
                     try:os.killpg(process.pid,signal.SIGTERM)
@@ -110,7 +105,7 @@ for row in selected:
                     clean=complete and parsed['errors']==0 and parsed['non_inherited_descriptors']==0 and not any(parsed['heap_bytes'].get(k,0) for k in ('definitely lost','indirectly lost','possibly lost'))
                     logs.append({'log':str(log.relative_to(ROOT)),'sha256':fingerprint(log),'pid':pid,'complete':complete,'clean':clean,**parsed})
                 assert not instrument or logs
-                outcomes[key]={'private_mounts':private_mounts,'status':done.returncode,'timeout_seconds':timeout_seconds,'stdin_script':bool(row.get('stdin_script')),'timed_out':timed_out,'expected_output_matches':actual==(source/row['expected']).read_bytes(),
+                outcomes[key]={'private_mounts':private_mounts,'status':done.returncode,'timed_out':timed_out,'expected_output_matches':actual==(source/row['expected']).read_bytes(),
                     'raw':{str(p.relative_to(ROOT)):fingerprint(p) for p in (saved/'stdout',saved/'stderr',saved/'actual')},
                     'memory':logs,'memory_clean':all(m['clean'] for m in logs) if instrument else None}
     passed=all(not o['timed_out'] and o['expected_output_matches'] and o['status']==outcomes['gnu']['status'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']

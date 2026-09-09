@@ -19,6 +19,7 @@ parser.add_argument('--original', type=Path, required=True)
 parser.add_argument('--inventory-snapshot', type=Path, required=True)
 parser.add_argument('--driver-snapshot', type=Path)
 parser.add_argument('--memory-open',nargs='*',default=[],help='Explicit failing memory profiles to audit and exclude from strict counts')
+parser.add_argument('--assertion-baseline',nargs='*',default=[],help='GNU and candidate share a profile-specific assertion difference; exclude the entire script')
 parser.add_argument('--report-name', required=True)
 args = parser.parse_args()
 assert re.fullmatch(r'[a-z0-9-]+', args.report_name)
@@ -26,6 +27,7 @@ target = ROOT/'evidence'/(args.report_name+'.json')
 assert not target.exists()
 report = json.loads(args.original.read_text())
 assert set(args.memory_open)<={r['selection'] for r in report['results'] if not r['pass']}
+assert set(args.assertion_baseline)<={r['selection'] for r in report['results'] if not r['pass']}
 assert report['complete'] and report['total'] == report['planned_total'] == len(report['results'])
 assert report['passed'] == sum(r['pass'] for r in report['results'])
 assert fingerprint(Path(report['binary'])) == report['binary_sha256']
@@ -47,27 +49,36 @@ raw = {}
 for result in report['results']:
     row = rows[result['selection']]
     intrinsic_open = row.get('state')=='reviewed-original-intrinsic-descriptor-open'
-    allow_open = intrinsic_open or result['selection'] in args.memory_open
+    baseline = result['selection'] in args.assertion_baseline
+    allow_open = intrinsic_open or result['selection'] in args.memory_open or baseline
     assert result['pass'] == (not allow_open)
     if intrinsic_open: assert result['selection']=='set-x'
     expected = source/row['expected']
     assert fingerprint(expected) == row['fixtures'][row['expected']]
+    if baseline:
+        assert any(not result['outcomes'][k]['expected_output_matches'] for k in ('gnu','gnu-valgrind'))
     for key, outcome in result['outcomes'].items():
         assert not outcome.get('timed_out',False)
-        assert outcome['expected_output_matches']
-        assert outcome['status'] == result['outcomes']['gnu']['status']
+        assert outcome.get('timeout_seconds',180)==row.get('timeout_seconds',180)
+        assert outcome.get('stdin_script',False)==bool(row.get('stdin_script'))
+        reference = result['outcomes']['gnu-valgrind' if key.endswith('-valgrind') and baseline else 'gnu']
+        if not baseline: assert outcome['expected_output_matches']
+        assert outcome['status'] == reference['status']
         for path, digest in outcome['raw'].items():
             assert fingerprint(ROOT/path) == digest
             raw[path] = digest
         output = next(ROOT/p for p in outcome['raw'] if p.endswith('/stdout')).read_bytes()
         if row['output_mode'] in ('drop-expect','drop-expect-stdout'):
             output = b''.join(line for line in output.splitlines(keepends=True) if not line.startswith(b'expect'))
-        assert output == expected.read_bytes()
+        assert outcome['expected_output_matches'] == (output == expected.read_bytes())
+        if baseline:
+            reference_output = next(ROOT/p for p in reference['raw'] if p.endswith('/actual')).read_bytes()
+            assert output == reference_output
         assert next(ROOT/p for p in outcome['raw'] if p.endswith('/actual')).read_bytes() == output
         mounts = outcome.get('private_mounts', [])
         assert [m['original'] for m in mounts] == row.get('absolute_helpers', [])
         for mount in mounts:
-            assert mount['original'] in ('/bin/echo','/bin/mkdir','/bin/touch','/bin/chmod','/bin/rm','/usr/bin/true','/usr/bin/false')
+            assert mount['original'] in ('/bin/echo','/bin/cat','/bin/mkdir','/bin/touch','/bin/chmod','/bin/rm','/usr/bin/true','/usr/bin/false')
             assert str(Path(mount['original']).resolve()) == mount['destination']
             assert fingerprint(Path(mount['destination'])) == row['host_inputs'][mount['destination']]
             replacement = ROOT/'build/gnu-coreutils/src/coreutils' if key.startswith('gnu') else Path(report['binary'])
@@ -108,12 +119,12 @@ for result in report['results']:
                 collection.append({'selection': result['selection'], 'log': memory['log'], 'sha256': memory['sha256']})
             raw[memory['log']] = memory['sha256']
 assert len({p['log'] for p in clean+open_processes}) == len(clean)+len(open_processes)
-assert len({r['selection'] for r in open_findings})==sum(not r['pass'] for r in report['results'])
-target.write_text(json.dumps({'scope':'Selected complete original Bash scripts and nested fixtures match unchanged GNU expected output and GNU exit status. Every raw process log is reparsed, and no timeout is accepted. Explicitly listed memory-open profiles and the historical intrinsic trace-close profile, if selected, retain all findings and their entire process families are excluded from strict counts. Private helper mounts leave host files unchanged. Native findings remain separate. This is batch evidence, not GNU-wide completion.',
+assert {r['selection'] for r in open_findings}|set(args.assertion_baseline)=={r['selection'] for r in report['results'] if not r['pass']}
+target.write_text(json.dumps({'scope':'Strict original scripts match unchanged GNU expected output and exit status. Explicit assertion baselines require candidate output and status to equal GNU separately with and without instrumentation; their entire families remain outside strict counts. Every raw process log is reparsed, and no timeout is accepted. Explicit memory-open profiles retain every finding. Private helper mounts leave host files unchanged. Native findings remain separate. This is batch evidence, not GNU-wide completion.',
     'binary':report['binary'], 'binary_sha256':report['binary_sha256'],
     'original':str(args.original), 'original_sha256':fingerprint(args.original),
     'inventory_snapshot':str(args.inventory_snapshot), 'inventory_sha256':fingerprint(args.inventory_snapshot),
     'original_groups':report.get('original_groups',report['total']),'original_scripts':report['total'], 'strict_original_passes':report['passed'],'clean_candidate_processes':len(clean),
-    'open_processes':open_processes,'open_findings':open_findings,'explicit_memory_open':args.memory_open,
+    'open_processes':open_processes,'open_findings':open_findings,'explicit_memory_open':args.memory_open,'assertion_baselines':args.assertion_baseline,
     'driver_sha256':fingerprint(Path(__file__)), 'processes':clean, 'raw':raw}, indent=2)+'\n')
 print('Audited', report['total'], 'original Bash scripts and', len(clean), 'clean candidate processes')

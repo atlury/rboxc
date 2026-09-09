@@ -1,0 +1,2709 @@
+{
+  "runtime_helpers": {
+    "/root/rboxc/target/bash-arithmetic-cleanup-candidate/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174",
+    "/root/rboxc/build/gnu-coreutils/src/libstdbuf.so": "ab0f38c3557ced06f914416c765a68c1ebf00c6cdacbe24c9ab9ec60e49a6ea4"
+  },
+  "binary": "/root/rboxc/target/bash-arithmetic-cleanup-candidate/release/rboxc",
+  "binary_sha256": "27afaa0287da4c9cb1535a567a03e47dac428deaab87a32099be2dfd317645bf",
+  "gnu_binary_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+  "inputs": {
+    "/root/rboxc/build/gnu-bash/bash": "bd47035bca2886f8d61f564ae38ca9c807a8b0b98e914d28f909fb7b1bb1366f",
+    "/root/rboxc/target/bash-arithmetic-cleanup-candidate/release/rboxc": "27afaa0287da4c9cb1535a567a03e47dac428deaab87a32099be2dfd317645bf",
+    "/root/rboxc/tests/bash-arithmetic-contract.py": "daf2dded3ba403488c2e7fae3e3580a029a0145469f672bbde2be24eb16b1704"
+  },
+  "scope": "Eight bounded arithmetic and array-index contracts through four shell aliases compare original GNU output, status and private file effects. Ordinary diagnostics exercise caller ownership through arithmetic commands, substitutions, assignment, functions and EXIT traps. Native GNU memory findings remain separate",
+  "complete": true,
+  "planned_total": 32,
+  "passed": 32,
+  "total": 32,
+  "results": [
+    {
+      "name": "bash:normal-index",
+      "command": "bash",
+      "args": [
+        "-c",
+        "a=([2]=four); printf \"%s\\n\" \"$((a[1+1]+1))\"; ((a[2]++)); declare -p a"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "stderr": "",
+          "raw_stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "stderr": "",
+          "raw_stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/0-gnu-valgrind/process-846921.log",
+              "sha256": "2038bc699e786b4eb7ebd5206ea5b77b051601401578b6cc75f5a49faaf8e5f0",
+              "pid": "846921",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46621
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "stderr": "",
+          "raw_stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "stderr": "",
+          "raw_stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/0-rboxc-valgrind/process-847396.log",
+              "sha256": "797557c66e5492665a84fcad0ec7ad4658b76189b62075d5cb87902054ef9b37",
+              "pid": "847396",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47141
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:assignment-index",
+      "command": "bash",
+      "args": [
+        "-c",
+        "declare -a a; key=\"~-2\"; a[$key]=42; printf \"after:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "61667465723a300a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "61667465723a300a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/1-gnu-valgrind/process-848031.log",
+              "sha256": "9d978c15e1802db2c59e9d750ddb792fe6cb521ada5e6860a511aa7fedafe1d8",
+              "pid": "848031",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46774
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "61667465723a300a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "61667465723a300a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/1-rboxc-valgrind/process-848106.log",
+              "sha256": "88b9dbe1ea7ddab80f5fe9d5b06978218680302c290b6d4fd89a5968948fa7b9",
+              "pid": "848106",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47030
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:command-index",
+      "command": "bash",
+      "args": [
+        "-c",
+        "declare -a a; key=\"x+\"; ((a[$key]++)); printf \"after:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d627437726e7667742f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d366671746d306c742f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/2-gnu-valgrind/process-848154.log",
+              "sha256": "fc3bad6772ad368fd4d15e08f8f7b41fe3e5fd371103008376933b8dc936e52f",
+              "pid": "848154",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46622
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d73786b7a6d6838622f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6c5f62395f35746e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/2-rboxc-valgrind/process-848180.log",
+              "sha256": "32d2fb1c47f79d266c14ca363ace5b70274b6f64a5d6d1c9b9e87d28d7b96ca9",
+              "pid": "848180",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46846
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:substitution-index",
+      "command": "bash",
+      "args": [
+        "-c",
+        "declare -a a; key=\"x+\"; printf \"%s\\n\" \"$((a[$key]))\"; printf \"after:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d746b726e306f6e5f2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d356167733238316a2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/3-gnu-valgrind/process-848215.log",
+              "sha256": "2b157f32def5a156542631db5c7bdf9683be72fb2f99baf5bebfc441bd8e465e",
+              "pid": "848215",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 5,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 266,
+                "indirectly lost": 272,
+                "possibly lost": 0,
+                "still reachable": 46740
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d7a786f62646164682f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d396c3366387877672f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/3-rboxc-valgrind/process-848243.log",
+              "sha256": "acf4e6da4c172c453a30f1476df2e18ed5d4bd1935c6b8fafaeb4d4650d97170",
+              "pid": "848243",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47003
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:legacy-index",
+      "command": "bash",
+      "args": [
+        "-c",
+        "declare -a a; key=\"x+\"; printf \"%s\\n\" \"$[a[$key]]\"; printf \"after:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6b3439676f71396d2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6b727171716362312f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/4-gnu-valgrind/process-848297.log",
+              "sha256": "1c1447bf3f40975817fbe9994f9104e1d27fa5819338863ff7bba08785cb588e",
+              "pid": "848297",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 5,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 264,
+                "indirectly lost": 272,
+                "possibly lost": 0,
+                "still reachable": 46730
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d62747831747176702f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d7865615f693277392f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/4-rboxc-valgrind/process-848313.log",
+              "sha256": "620f04b817dfed5f7d0211c9920de57b470813d415efed8ef514580a96626b17",
+              "pid": "848313",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46997
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:function-index",
+      "command": "bash",
+      "args": [
+        "-c",
+        "f(){ local -a a; local key=\"x+\"; ((a[$key]++)); printf unreachable; }; f; printf \"outer:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d7368356575306e7a2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d717067647574346f2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/5-gnu-valgrind/process-848346.log",
+              "sha256": "41096d833906782bc0ba4b368a95029a7c1b4de3c11da3a8c5b59b8bc1480add",
+              "pid": "848346",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49257
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d63797969377262662f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d3468756d6f68656b2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/5-rboxc-valgrind/process-848365.log",
+              "sha256": "b5c2c1b751884ddc7a66cced15a0fee03eef6c93357d2cf1acadafe9b0276ce3",
+              "pid": "848365",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49721
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:exit-trap-index",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap 'printf exit' EXIT; declare -a a; key='x+'; printf '%s\\n' \"$((a[$key]))\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "65786974",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "65786974",
+          "raw_stderr": "2f746d702f72626f78632d626173682d613563357863736f2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "65786974",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "65786974",
+          "raw_stderr": "2f746d702f72626f78632d626173682d3736626b306163672f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/6-gnu-valgrind/process-848401.log",
+              "sha256": "c652cd8189c577739d9575ffd87a8ee9cc208460cb17913610f468b2ea8d24d1",
+              "pid": "848401",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 282,
+                "indirectly lost": 381,
+                "possibly lost": 0,
+                "still reachable": 47377
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "65786974",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "65786974",
+          "raw_stderr": "2f746d702f72626f78632d626173682d786a366b726231312f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "65786974",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "65786974",
+          "raw_stderr": "2f746d702f72626f78632d626173682d786a6b6166746a7a2f657865632f626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/6-rboxc-valgrind/process-848626.log",
+              "sha256": "d2e937d7d260cc411b1ef2e5f376e642b07556e72c8994f684d846cbf3cf3800",
+              "pid": "848626",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47901
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:associative-normal",
+      "command": "bash",
+      "args": [
+        "-c",
+        "declare -A a; key=\"a b\"; a[$key]=3; ((a[$key]++)); printf \"%s\\n\" \"${a[$key]}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "340a",
+          "stderr": "",
+          "raw_stdout": "340a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "340a",
+          "stderr": "",
+          "raw_stdout": "340a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/7-gnu-valgrind/process-848655.log",
+              "sha256": "257c90174510b95aa1de5810d8cf231e2b2cb33278a1e89ec1a64d2855d011ac",
+              "pid": "848655",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55083
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "340a",
+          "stderr": "",
+          "raw_stdout": "340a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "340a",
+          "stderr": "",
+          "raw_stdout": "340a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/7-rboxc-valgrind/process-848681.log",
+              "sha256": "612f720b671ad60b7531b1097056c16f734a49b51232a014a52cd6da4e24145c",
+              "pid": "848681",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55363
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:normal-index",
+      "command": "sh",
+      "args": [
+        "-c",
+        "a=([2]=four); printf \"%s\\n\" \"$((a[1+1]+1))\"; ((a[2]++)); declare -p a"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "stderr": "",
+          "raw_stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "stderr": "",
+          "raw_stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/8-gnu-valgrind/process-848719.log",
+              "sha256": "c47f854d32c499ebfdcd41350c7354bfedb8e7f30621226f500d0d8228e7b5cc",
+              "pid": "848719",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46737
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "stderr": "",
+          "raw_stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "stderr": "",
+          "raw_stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/8-rboxc-valgrind/process-848771.log",
+              "sha256": "0e33aa8b73f36de3dd1d271fbb423adc8b293a5fece142632050ee46a43dcf0c",
+              "pid": "848771",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47257
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:assignment-index",
+      "command": "sh",
+      "args": [
+        "-c",
+        "declare -a a; key=\"~-2\"; a[$key]=42; printf \"after:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "61667465723a300a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "61667465723a300a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/9-gnu-valgrind/process-848842.log",
+              "sha256": "cf0dadf0ded43ba3a3a4c9c0ad9cdd6128685b257f9ab1373f616946cfbbf49e",
+              "pid": "848842",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46890
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "61667465723a300a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "61667465723a300a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/9-rboxc-valgrind/process-848872.log",
+              "sha256": "604f3616caad31ce21eac06b95bb5c1749a45b39bd3282af8e07952f0e318e14",
+              "pid": "848872",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47146
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:command-index",
+      "command": "sh",
+      "args": [
+        "-c",
+        "declare -a a; key=\"x+\"; ((a[$key]++)); printf \"after:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d35357a7564736f302f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d78326a74743976672f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/10-gnu-valgrind/process-848950.log",
+              "sha256": "0d1b8785765adfe31abd627bde53f9d91de8e693f8981baf3c5b2f7058ed433e",
+              "pid": "848950",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46738
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d68616c7a686738632f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d39376b67797935722f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/10-rboxc-valgrind/process-849018.log",
+              "sha256": "69ac089bb3f06956be72e464d8097b8bedd4f6fab6562be86cc6e04679048e85",
+              "pid": "849018",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46962
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:substitution-index",
+      "command": "sh",
+      "args": [
+        "-c",
+        "declare -a a; key=\"x+\"; printf \"%s\\n\" \"$((a[$key]))\"; printf \"after:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d37737a6b6c3374352f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6677617a747561662f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/11-gnu-valgrind/process-849060.log",
+              "sha256": "78f331d34c36db7886f94d10bfd412c7e3df7044d5b14a95b206595bcae9671c",
+              "pid": "849060",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 5,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 266,
+                "indirectly lost": 272,
+                "possibly lost": 0,
+                "still reachable": 46856
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d327168396d5f74642f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6c33726d3962726c2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/11-rboxc-valgrind/process-849093.log",
+              "sha256": "80ef28d5dd73a32f59ab6e5887771c3a6d992452a09887b2d2ebc3fdbfa6c076",
+              "pid": "849093",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47119
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:legacy-index",
+      "command": "sh",
+      "args": [
+        "-c",
+        "declare -a a; key=\"x+\"; printf \"%s\\n\" \"$[a[$key]]\"; printf \"after:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d3077656f7169796f2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6c626e67326c365f2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/12-gnu-valgrind/process-849136.log",
+              "sha256": "2f494560d18795def324671ed8254661341f667607e1c8c4296f9fa6c344030b",
+              "pid": "849136",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 5,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 264,
+                "indirectly lost": 272,
+                "possibly lost": 0,
+                "still reachable": 46846
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d37786f7969636e732f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d78636a65677673662f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/12-rboxc-valgrind/process-849166.log",
+              "sha256": "ddd916ca065252ea8c8fff172d720489f12beb7dc3fd819e0a255cccac600b38",
+              "pid": "849166",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47113
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:function-index",
+      "command": "sh",
+      "args": [
+        "-c",
+        "f(){ local -a a; local key=\"x+\"; ((a[$key]++)); printf unreachable; }; f; printf \"outer:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d38743564736433702f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d716d70367a74666a2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/13-gnu-valgrind/process-849207.log",
+              "sha256": "71ab7cce809c455d424e0f9d9eeb2e8d6a05b85453a0fd8315a589dffc3dbd8e",
+              "pid": "849207",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49371
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d35663736303877672f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d78336361657368652f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/13-rboxc-valgrind/process-849239.log",
+              "sha256": "88c549aaef0eb34ca17f89ffc609c6464abfcee38a466aa7f78b9275bb04cc92",
+              "pid": "849239",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49835
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:exit-trap-index",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap 'printf exit' EXIT; declare -a a; key='x+'; printf '%s\\n' \"$((a[$key]))\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "65786974",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "65786974",
+          "raw_stderr": "2f746d702f72626f78632d626173682d746972313577666a2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "65786974",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "65786974",
+          "raw_stderr": "2f746d702f72626f78632d626173682d3065693372326b392f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/14-gnu-valgrind/process-849280.log",
+              "sha256": "ee92bfcbc84ed8b5a797cf996d627609a6923256bd0ac779ed8730a394502999",
+              "pid": "849280",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 282,
+                "indirectly lost": 381,
+                "possibly lost": 0,
+                "still reachable": 47493
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "65786974",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "65786974",
+          "raw_stderr": "2f746d702f72626f78632d626173682d69703372326339722f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "65786974",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "65786974",
+          "raw_stderr": "2f746d702f72626f78632d626173682d61366d76716679312f657865632f73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/14-rboxc-valgrind/process-849305.log",
+              "sha256": "9766b7c6175aeda8b62ff0299945354d22c8942145bac0891eb6b27fa54c41f3",
+              "pid": "849305",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48017
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:associative-normal",
+      "command": "sh",
+      "args": [
+        "-c",
+        "declare -A a; key=\"a b\"; a[$key]=3; ((a[$key]++)); printf \"%s\\n\" \"${a[$key]}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "340a",
+          "stderr": "",
+          "raw_stdout": "340a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "340a",
+          "stderr": "",
+          "raw_stdout": "340a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/15-gnu-valgrind/process-849330.log",
+              "sha256": "b8565c9c24eca21b5d5307a0cc5d2f08ba9f2160431c64a31d19decdcfed6623",
+              "pid": "849330",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55199
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "340a",
+          "stderr": "",
+          "raw_stdout": "340a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "340a",
+          "stderr": "",
+          "raw_stdout": "340a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/15-rboxc-valgrind/process-849388.log",
+              "sha256": "970895ec1dfb69face18cb1e21a704496602722e6eb320a13b4645a345cd672a",
+              "pid": "849388",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55479
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:normal-index",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "a=([2]=four); printf \"%s\\n\" \"$((a[1+1]+1))\"; ((a[2]++)); declare -p a"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "stderr": "",
+          "raw_stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "stderr": "",
+          "raw_stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/16-gnu-valgrind/process-849579.log",
+              "sha256": "46543e110ced252d1e3bd357fe7e3d93a731409115542e5d280dc51cb569c549",
+              "pid": "849579",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46623
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "stderr": "",
+          "raw_stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "stderr": "",
+          "raw_stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/16-rboxc-valgrind/process-849601.log",
+              "sha256": "d86b06f0d06916a9a6d884423ed61eb80d40ba65f1de47e8ec07b06e3366d378",
+              "pid": "849601",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47143
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:assignment-index",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "declare -a a; key=\"~-2\"; a[$key]=42; printf \"after:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "61667465723a300a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "61667465723a300a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/17-gnu-valgrind/process-849628.log",
+              "sha256": "f8ebc869c27c099ed16b4f5780827b761a78bafb4269402efce1eac1fa02d683",
+              "pid": "849628",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46776
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "61667465723a300a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "61667465723a300a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/17-rboxc-valgrind/process-849654.log",
+              "sha256": "ce1bd5a9276c2cddff8d012e1cfbdd05fbe5ff8c8895f59745a75c3771e45644",
+              "pid": "849654",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47032
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:command-index",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "declare -a a; key=\"x+\"; ((a[$key]++)); printf \"after:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d3071356f357137792f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6375347a316b716a2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/18-gnu-valgrind/process-849710.log",
+              "sha256": "c4726780c89c5a06afbb13622d81e4b0e792e1c04e6f5e7b666abb596216505e",
+              "pid": "849710",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46624
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d7879717576326f642f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d78757939636372672f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/18-rboxc-valgrind/process-849757.log",
+              "sha256": "c16028b73e63398308329de4e82ee3d14eea81252958d2bb3395dfd40b9eeb6b",
+              "pid": "849757",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46848
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:substitution-index",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "declare -a a; key=\"x+\"; printf \"%s\\n\" \"$((a[$key]))\"; printf \"after:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d746335726872355f2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d73726235776a33362f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/19-gnu-valgrind/process-849790.log",
+              "sha256": "1764aace8f02da1ff3da6ab27fb3a45b79b9f019c2934455da7beb097b7ff4c1",
+              "pid": "849790",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 5,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 266,
+                "indirectly lost": 272,
+                "possibly lost": 0,
+                "still reachable": 46742
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d7961646d61386d322f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d35766f6c6c66685f2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/19-rboxc-valgrind/process-849818.log",
+              "sha256": "0c824f96ea2de73759a0afaeb5828fee9a1532e675665daa28e7baec24f9784f",
+              "pid": "849818",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47005
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:legacy-index",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "declare -a a; key=\"x+\"; printf \"%s\\n\" \"$[a[$key]]\"; printf \"after:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6664756b6c7064622f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d666275696d3463762f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/20-gnu-valgrind/process-849852.log",
+              "sha256": "fa99e9815555e8860f18eec238ba88b5103661b5f07f8d8be52559be2861de58",
+              "pid": "849852",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 5,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 264,
+                "indirectly lost": 272,
+                "possibly lost": 0,
+                "still reachable": 46732
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d7266366d3039306d2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d77356f6a6c716c352f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/20-rboxc-valgrind/process-849878.log",
+              "sha256": "c88a72c9b6ec717c95850ea7a76722d613e5ebc085083698737841e4afcf8d8a",
+              "pid": "849878",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46999
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:function-index",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "f(){ local -a a; local key=\"x+\"; ((a[$key]++)); printf unreachable; }; f; printf \"outer:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d35315f316f386b672f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6a66323731347a632f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/21-gnu-valgrind/process-849930.log",
+              "sha256": "be34da72f27bf97e4812a7e20fd35c3f6d3d85c289e1853ac2b837e061aa1937",
+              "pid": "849930",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49260
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d66716c3133636d622f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6d6a767672686e6e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/21-rboxc-valgrind/process-849960.log",
+              "sha256": "1669b16b2ebc659b8465aebdae1a5090251c165ba54f893a7fda3eec549881ac",
+              "pid": "849960",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49724
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:exit-trap-index",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap 'printf exit' EXIT; declare -a a; key='x+'; printf '%s\\n' \"$((a[$key]))\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "65786974",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "65786974",
+          "raw_stderr": "2f746d702f72626f78632d626173682d356138613066647a2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "65786974",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "65786974",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6362377a313673342f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/22-gnu-valgrind/process-849998.log",
+              "sha256": "0f3710c53363c441c363bdc26d4fdf4093d9fba8724e2d9c4798953a69a03e33",
+              "pid": "849998",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 282,
+                "indirectly lost": 381,
+                "possibly lost": 0,
+                "still reachable": 47379
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "65786974",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "65786974",
+          "raw_stderr": "2f746d702f72626f78632d626173682d71623133353531342f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "65786974",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "65786974",
+          "raw_stderr": "2f746d702f72626f78632d626173682d72793663745f5f382f657865632f2d626173683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/22-rboxc-valgrind/process-850027.log",
+              "sha256": "4b58e9998a410ab76e2ca3139bd0eeac3bfc4f43ac6e7a73e4bc9adfed6cc80f",
+              "pid": "850027",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47903
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:associative-normal",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "declare -A a; key=\"a b\"; a[$key]=3; ((a[$key]++)); printf \"%s\\n\" \"${a[$key]}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "340a",
+          "stderr": "",
+          "raw_stdout": "340a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "340a",
+          "stderr": "",
+          "raw_stdout": "340a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/23-gnu-valgrind/process-850063.log",
+              "sha256": "c87edd57db829cdc2c47f1e46daff23d71dadb9fc20daa3cee9706105b3ece73",
+              "pid": "850063",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55085
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "340a",
+          "stderr": "",
+          "raw_stdout": "340a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "340a",
+          "stderr": "",
+          "raw_stdout": "340a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/23-rboxc-valgrind/process-850091.log",
+              "sha256": "34b2300e54a5c529fe35f29d00ce82202c43dbe1190d38e07829c04b3f2d5ac9",
+              "pid": "850091",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55365
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:normal-index",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "a=([2]=four); printf \"%s\\n\" \"$((a[1+1]+1))\"; ((a[2]++)); declare -p a"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "stderr": "",
+          "raw_stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "stderr": "",
+          "raw_stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/24-gnu-valgrind/process-850130.log",
+              "sha256": "22d77913e70dafe84587354ea56c35272e2397746d5b36ca6601e45703bc8010",
+              "pid": "850130",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46619
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "stderr": "",
+          "raw_stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "stderr": "",
+          "raw_stdout": "310a6465636c617265202d6120613d285b325d3d223122290a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/24-rboxc-valgrind/process-850159.log",
+              "sha256": "c84b0a15d4dad7d8def4c3ff432db926d63152714cdd315f530c6f13f6a85fb5",
+              "pid": "850159",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47139
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:assignment-index",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "declare -a a; key=\"~-2\"; a[$key]=42; printf \"after:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "61667465723a300a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "61667465723a300a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/25-gnu-valgrind/process-850195.log",
+              "sha256": "95225c688316c33f8e3f447f8fc5b2d597d0e16c027a723da1c1647e058ecb96",
+              "pid": "850195",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46772
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "61667465723a300a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "61667465723a300a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/25-rboxc-valgrind/process-850221.log",
+              "sha256": "c6b9b0a1d89ef3aadd9d7e5c1c8b4f579f1927d09947a666a856c6bcd8472ebf",
+              "pid": "850221",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47028
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:command-index",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "declare -a a; key=\"x+\"; ((a[$key]++)); printf \"after:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d307075683168766e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d61736f3777396d5f2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/26-gnu-valgrind/process-850244.log",
+              "sha256": "bcf1a7e47e5346eafe3c6cd4b4dfbf62fd26abbeefe97e28ee8c93840fc37212",
+              "pid": "850244",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46620
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d39326135616b6a372f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d696476756f7177312f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/26-rboxc-valgrind/process-850264.log",
+              "sha256": "6edda6c09d3c379eac78e1358600b092c05f0f6c4fa2a27510eb4334508beaca",
+              "pid": "850264",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46844
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:substitution-index",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "declare -a a; key=\"x+\"; printf \"%s\\n\" \"$((a[$key]))\"; printf \"after:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d5f386a7978715f6c2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d367430357a6471302f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/27-gnu-valgrind/process-850290.log",
+              "sha256": "21137224d310268799dac078f55a8fb372a0fc69723523af89674ef072b71462",
+              "pid": "850290",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 5,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 266,
+                "indirectly lost": 272,
+                "possibly lost": 0,
+                "still reachable": 46738
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d69397931376c62742f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d795f7469353636652f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/27-rboxc-valgrind/process-850314.log",
+              "sha256": "d826d555d592451e863ed3137e7b71e1df59a35df1a6d1da44c1a2855b88d649",
+              "pid": "850314",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47001
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:legacy-index",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "declare -a a; key=\"x+\"; printf \"%s\\n\" \"$[a[$key]]\"; printf \"after:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6661327667766c632f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6c6469686b6a34312f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/28-gnu-valgrind/process-850341.log",
+              "sha256": "3adfbe1b5fbe36f0005b4d1198f4fd0f53644b33abea0f03ef13f48091e4f6fd",
+              "pid": "850341",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 5,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 264,
+                "indirectly lost": 272,
+                "possibly lost": 0,
+                "still reachable": 46728
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d37356a726b7876752f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d386c636a5f3930732f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/28-rboxc-valgrind/process-850359.log",
+              "sha256": "d0bde301436d316cfb03519bde7939ec92f8aa59fe8c159dde8345f7036ce654",
+              "pid": "850359",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46995
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:function-index",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "f(){ local -a a; local key=\"x+\"; ((a[$key]++)); printf unreachable; }; f; printf \"outer:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d32663978763876632f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d697a7064673263322f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/29-gnu-valgrind/process-850386.log",
+              "sha256": "1b0b17deafb77d8113dc2668104928e5671cf87a88b526a1697c842b6c1c09d5",
+              "pid": "850386",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49254
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d37357364306c696f2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d323976786c396d762f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/29-rboxc-valgrind/process-850405.log",
+              "sha256": "0e3944803bdc774fc348015f23e28433a88eeaad076abf4eea186b57803a8479",
+              "pid": "850405",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49718
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:exit-trap-index",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap 'printf exit' EXIT; declare -a a; key='x+'; printf '%s\\n' \"$((a[$key]))\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "65786974",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "65786974",
+          "raw_stderr": "2f746d702f72626f78632d626173682d656a7269397a34792f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "65786974",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "65786974",
+          "raw_stderr": "2f746d702f72626f78632d626173682d34767273645f63312f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/30-gnu-valgrind/process-850430.log",
+              "sha256": "0d7d962994aac828e27966e731f021ceffb38463444897ac4a966651d9e4c536",
+              "pid": "850430",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 282,
+                "indirectly lost": 381,
+                "possibly lost": 0,
+                "still reachable": 47375
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "65786974",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "65786974",
+          "raw_stderr": "2f746d702f72626f78632d626173682d3165696a347774612f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "65786974",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "raw_stdout": "65786974",
+          "raw_stderr": "2f746d702f72626f78632d626173682d65383232677174662f657865632f2d73683a206c696e6520313a20782b3a2061726974686d657469632073796e746178206572726f723a206f706572616e6420657870656374656420286572726f7220746f6b656e20697320222b22290a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/30-rboxc-valgrind/process-850600.log",
+              "sha256": "c753706f566e7e3cb9c45d68ad4e420ce1f2ffd3dea1f95e8d187cc1ce4c07d3",
+              "pid": "850600",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47899
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:associative-normal",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "declare -A a; key=\"a b\"; a[$key]=3; ((a[$key]++)); printf \"%s\\n\" \"${a[$key]}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "340a",
+          "stderr": "",
+          "raw_stdout": "340a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "340a",
+          "stderr": "",
+          "raw_stdout": "340a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/31-gnu-valgrind/process-850721.log",
+              "sha256": "5cb0689d6761de1f236d2d59d0a2972db0b218651a86f247aee7365e1fb53446",
+              "pid": "850721",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55081
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "340a",
+          "stderr": "",
+          "raw_stdout": "340a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "340a",
+          "stderr": "",
+          "raw_stdout": "340a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-arithmetic-cleanup-contract/run-l_ac_p66/31-rboxc-valgrind/process-850742.log",
+              "sha256": "7c4ad7580147949c77c2cd51c84dad52d701404eae9ec297680f3e5604426daf",
+              "pid": "850742",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55361
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

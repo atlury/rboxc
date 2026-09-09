@@ -105,13 +105,32 @@ The public terminal cleanup API alone retains the shared parameter cache in
 this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
-The current 187-command candidate is **14,721,656 bytes**, at
-`target/bash-assignment-cleanup-candidate/release/rboxc`, SHA-256
-`7d11967a6f33885c22ca3563e33cf386fe74fbe8ad53eedd8adc13193e143d72`.
+The current 187-command candidate is **14,721,912 bytes**, at
+`target/bash-arithmetic-cleanup-candidate/release/rboxc`, SHA-256
+`27afaa0287da4c9cb1535a567a03e47dac428deaab87a32099be2dfd317645bf`.
 An independent rebuild is byte-identical. All 428 Coreutils smoke checks,
 11 dispatcher checks, 44 focused Bash comparisons and 69 shell-adapter checks
-pass. Bash has **46 strict scripts from 45 original recipes**, with **1743 clean
+pass. The preceding complete Bash ledger records **46 strict scripts from 45
+original recipes**, with **1743 clean
 candidate process logs** across their recorded immutable candidates.
+
+The quotearray original additionally passes unchanged on this candidate.
+Arithmetic command/substitution strings and array-element names retain owners
+while nested index diagnostics unwind the caller. Five related original scripts
+and 32 arithmetic contracts pass, with 490 clean process logs across those six
+originals. [evidence/bash-arithmetic-cleanup-validation.json](evidence/bash-arithmetic-cleanup-validation.json)
+audits the three changed helpers and byte-identical rebuild.
+
+Seven additional original recipes have reviewed profiles. Script input passes
+using the original shared stdin offset. Command-substitution and POSIX expansion
+assertions match GNU but retain cleanup findings; the redirection original has
+matching GNU/Rboxc terminal and Valgrind resource-limit baseline differences.
+[evidence/bash-next-seven-array-redirection-validation.json](evidence/bash-next-seven-array-redirection-validation.json),
+[evidence/bash-next-seven-substitution-validation.json](evidence/bash-next-seven-substitution-validation.json)
+and [evidence/bash-next-seven-posix-expansion-validation.json](evidence/bash-next-seven-posix-expansion-validation.json)
+retain all completed initial results. The 6856-assertion IFS matrix is still
+running; these seven recipes have not yet been incorporated into the complete
+coverage ledger. Pending and baseline results are not strict passes.
 
 The exp-tests original now passes unchanged, with 249 clean process logs.
 Arithmetic lookahead tokens, assignment values and expanded array lists retain
