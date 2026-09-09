@@ -78,7 +78,7 @@ there where available.
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
-| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 38 original recipes (39 scripts) pass on their recorded candidates with 1070 clean process logs; two further scripts match assertions with memory/descriptor findings |
+| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 39 original recipes (40 scripts) pass on the current candidate with 1171 clean process logs; lastpipe assertions pass with an explicit default-SIGPIPE profile |
 | Less | 704 | Ten focused checks, one production terminal check and all 18 original screen replays pass across declared profiles |
 | Screen | 5.0.2 | All three original targets pass across declared profiles; daemon cleanup and socket recovery pass Valgrind |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
@@ -105,19 +105,31 @@ The public terminal cleanup API alone retains the shared parameter cache in
 this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
-The current 187-command candidate is **14,720,536 bytes**, at
-`target/bash-pipe-owner-final-candidate/release/rboxc`, SHA-256
-`0d1981ee5d346e63afce0fe0d27c36ebffb27812c046afd95fe83a239b698433`.
+The current 187-command candidate is **14,721,424 bytes**, at
+`target/bash-subshell-cleanup-candidate/release/rboxc`, SHA-256
+`a337963b6c2e2d665f254fa59fe41fb6ea079c74c43f05cdded2891681d688e2`.
 An independent rebuild is byte-identical. All 428 Coreutils smoke checks,
 11 dispatcher checks, 44 focused Bash comparisons and 69 shell-adapter checks
-pass. Bash now has **39 strict scripts from 38 original recipes**, with
-**1070 clean candidate process logs** across their recorded immutable candidates.
-The posixexp2 original now passes unchanged with 50 clean process logs: pipe
-creation records ownership when it reuses a closed standard descriptor, and
-normal close clears that record. Seventeen native and Valgrind contracts cover
-all combinations of closed standard slots, normal and exit cleanup, and pipe
-creation failure. [evidence/bash-pipe-owner-validation.json](evidence/bash-pipe-owner-validation.json)
-audits this increment; earlier scripts retain their actual tested binary hashes.
+pass. All 41 reviewed original Bash scripts were rerun: **40 scripts from 39
+recipes pass strictly**, with **1171 clean candidate process logs**.
+
+Lastpipe backup descriptors and frozen job-table entries now receive their
+required cleanup. The existing errexit frame discard now releases known heap
+payloads without restoring abandoned stack state. The original set-e script
+passes with 101 clean process logs, and 32 contracts retain GNU output/status
+through functions, subshells, nested eval, EXIT/ERR traps and pipelines.
+[evidence/bash-subshell-cleanup-validation.json](evidence/bash-subshell-cleanup-validation.json)
+audits the changes and full reviewed regression. Lastpipe matches all original
+assertions; its remaining finding is the expected default SIGPIPE child with
+standard descriptors 0/1 still open at signal termination. The kernel releases
+these descriptors. Signal behavior is unchanged, and the entire 51-process
+family remains outside strict Valgrind counts.
+
+The preceding pipe-ownership increment made posixexp2 pass unchanged with 50
+clean logs. Seventeen native and Valgrind contracts cover all combinations of
+closed standard slots, normal and exit cleanup, and pipe creation failure.
+[evidence/bash-pipe-owner-validation.json](evidence/bash-pipe-owner-validation.json)
+retains that evidence against its actual candidate hash.
 
 The preceding parser candidate passed 38 scripts with 1020 clean process logs.
 Discarded lexer words and saved compound-assignment parser state receive their
@@ -128,11 +140,9 @@ retains that complete 41-script regression. The earlier trace cleanup and seven
 close/descriptor-reuse contracts remain in
 [evidence/bash-owned-close-validation.json](evidence/bash-owned-close-validation.json).
 
-Lastpipe and set-e still match GNU assertions but have open pipeline/subshell
-cleanup findings; their 152 process logs remain outside strict counts. The runner
-bounds each private process group and preserves timeout output; absolute
-true/false helpers use private mounts and host files remain unchanged. Two
-recipe dispatchers are accounted as orchestration; 45 recipes remain pending
+The runner bounds each private process group and preserves timeout output;
+absolute true/false helpers use private mounts and host files remain unchanged.
+Two recipe dispatchers are accounted as orchestration; 45 recipes remain pending
 and one mixed reproduction recipe remains held. Full Bash/GNU acceptance is open.
 
 The preceding trap candidate, SHA-256

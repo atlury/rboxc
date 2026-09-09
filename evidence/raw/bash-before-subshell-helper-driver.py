@@ -71,7 +71,7 @@ def defined_symbols(paths):
 
 def symbol_map(root,provider):
     symbols=defined_symbols(native_inputs(root,provider))
-    if provider=='bash':symbols.update(('add_unwind_protect_owned','discard_unwind_frame_heap'))
+    if provider=='bash':symbols.add('add_unwind_protect_owned')
     assert 'main' not in symbols
     symbols |= defined_symbols([root/f'build/gnu-{PROVIDERS[provider]}'/ENTRY_OBJECTS[provider]])-{'main'}
     return {s:f'rboxc_{provider}_'+s for s in sorted(symbols)}
@@ -87,8 +87,6 @@ def prepare_archives(root,provider,mapping):
         prepare_trap_restart(root, adapted)
         from bash_parser_cleanup import prepare as prepare_parser_cleanup
         prepare_parser_cleanup(root, adapted)
-        from bash_subshell_cleanup import prepare as prepare_subshell_cleanup
-        prepare_subshell_cleanup(root, adapted)
     if provider=='gawk':
         from gawk_cleanup import prepare
         adapted=prepare(root)
@@ -122,6 +120,6 @@ def prepare_archives(root,provider,mapping):
         if source.suffix=='.a':subprocess.run(['ranlib',temporary],check=True)
         temporary.replace(target);outputs.append(target)
     expected=defined_symbols(native_inputs(root,provider))
-    if provider=='bash':expected.update(('add_unwind_protect_owned','discard_unwind_frame_heap'))
+    if provider=='bash':expected.add('add_unwind_protect_owned')
     assert defined_symbols(outputs)=={mapping[s] for s in expected}
     return outputs,definitions
