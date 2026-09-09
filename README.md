@@ -78,7 +78,7 @@ there where available.
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
-| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 44 original recipes (45 scripts) pass on their recorded candidates with 1494 clean process logs; lastpipe has a default-SIGPIPE profile and exp-tests has an array-assignment heap finding |
+| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 45 original recipes (46 scripts) pass on their recorded candidates with 1743 clean process logs; lastpipe retains a default-SIGPIPE profile |
 | Less | 704 | Ten focused checks, one production terminal check and all 18 original screen replays pass across declared profiles |
 | Screen | 5.0.2 | All three original targets pass across declared profiles; daemon cleanup and socket recovery pass Valgrind |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
@@ -105,24 +105,30 @@ The public terminal cleanup API alone retains the shared parameter cache in
 this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
-The current 187-command candidate is **14,721,424 bytes**, at
-`target/bash-globstar-cleanup-candidate/release/rboxc`, SHA-256
-`c4db42383944596d9c2402077dbf35a6928c629331049c84df3281d694eb0bac`.
+The current 187-command candidate is **14,721,656 bytes**, at
+`target/bash-assignment-cleanup-candidate/release/rboxc`, SHA-256
+`7d11967a6f33885c22ca3563e33cf386fe74fbe8ad53eedd8adc13193e143d72`.
 An independent rebuild is byte-identical. All 428 Coreutils smoke checks,
 11 dispatcher checks, 44 focused Bash comparisons and 69 shell-adapter checks
-pass. Bash has **45 strict scripts from 44 original recipes**, with **1494 clean
+pass. Bash has **46 strict scripts from 45 original recipes**, with **1743 clean
 candidate process logs** across their recorded immutable candidates.
 
-Six additional original recipes cover completion, conditional expressions,
-recursive pathname matching, quoting and parameter expansion. All six match
-GNU's unchanged expected output. The globstar original exposed discarded path
-strings, empty placeholders and a current-directory list node; their ownership
-is now released in GNU's existing cleanup paths. Globstar and four related
-pattern originals pass with 46 clean process logs on this candidate.
-[evidence/bash-globstar-cleanup-validation.json](evidence/bash-globstar-cleanup-validation.json)
-audits that isolated glob archive and preserves the initial findings. The
-exp-tests original retains a 70-byte invalid-array-index heap finding; its entire
-249-process family remains outside strict counts.
+The exp-tests original now passes unchanged, with 249 clean process logs.
+Arithmetic lookahead tokens, assignment values and expanded array lists retain
+owners through ordinary invalid-index diagnostics. Five related original scripts
+and 32 contracts through four shell aliases pass; all six originals have 487
+clean process logs on this candidate.
+[evidence/bash-assignment-cleanup-validation.json](evidence/bash-assignment-cleanup-validation.json)
+audits the three changed helpers, original assertions and shared checks.
+[evidence/bash-assignment-cleanup-coverage.json](evidence/bash-assignment-cleanup-coverage.json)
+records each original result against the candidate that actually ran it.
+
+The preceding globstar candidate passed the original recursive pathname tests
+and four related pattern scripts with 46 clean process logs. Discarded path
+strings, empty placeholders and a current-directory list node now receive
+cleanup. Six newly reviewed recipes matched GNU's unchanged expected output;
+the initial globstar and exp-tests findings remain preserved in
+[evidence/bash-globstar-cleanup-validation.json](evidence/bash-globstar-cleanup-validation.json).
 
 The preceding subshell candidate passed all 41 reviewed original assertions,
 with 40 strict scripts and 1171 clean logs. Lastpipe backup descriptors and frozen
