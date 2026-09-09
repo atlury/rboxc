@@ -2807,3 +2807,16 @@ The upstream repository is [atlury/rboxc](https://github.com/atlury/rboxc).
 Incremental commits preserve implementation and evidence separately from
 installed-release certification. Native build trees and raw test logs remain
 local and require separate backups.
+
+The unchanged GNU Inetutils 2.8 `tests/inetd.sh` now passes normally and under
+Valgrind for both GNU and the 14,724,536-byte candidate. Each run checks ten
+IPv4/IPv6 service connections and five daemon reloads. The daemon runs as
+`nobody` in private network, mount and PID namespaces containing only loopback;
+all child processes are reaped. GNU's address-reporting helpers are retained.
+The initial skipped setup is preserved. Each instrumented implementation has
+13 clean process images and one daemon image with a redundant startup close
+and five open descriptors at its original SIGTERM exit. There are no lost heap
+bytes; strict memory acceptance remains open.
+[evidence/inetd-private-original-validation.json](evidence/inetd-private-original-validation.json)
+verifies these assertions, source hashes, namespace boundaries and process logs.
+This advances service coverage without claiming completion of Inetutils.
