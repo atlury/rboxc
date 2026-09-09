@@ -2326,9 +2326,9 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. The current
-[evidence/gnu-native-resource-coverage.json](evidence/gnu-native-resource-coverage.json)
-extends the preserved suite checkpoints: **644 scripts passed**, 29 have
-selected coverage, five are skipped, 29 are excluded and 26 remain pending.
+[evidence/gnu-remaining-shell-coverage.json](evidence/gnu-remaining-shell-coverage.json)
+extends the preserved suite checkpoints: **644 scripts passed**, 32 have
+selected coverage, five are skipped, 29 are excluded and 23 remain pending.
 Excluding the 29 exclusions, 644/704 scripts (91.5%) have whole-script passes;
 60/704 (8.5%) remain partial, pending or skipped. This measures script coverage,
 not remaining engineering effort or complete Valgrind acceptance.
@@ -2486,7 +2486,7 @@ on the recorded expr-cleanup candidate. Three historical cases remain held.
 [evidence/gnu-date-expanded-validation.json](evidence/gnu-date-expanded-validation.json)
 verifies the source, names, locale files and complete process summaries.
 
-All **29 partial entries now have normal and Valgrind execution evidence**:
+At that checkpoint, all **29 partial entries have normal and Valgrind execution evidence**:
 17 Perl selections contain **4,475 selected cases**, with 109 historical cases
 held; 12 shell selections retain their exact recorded omitted source ranges.
 All selected normal assertions pass. Under Valgrind, 27 selections pass and
@@ -2508,6 +2508,19 @@ passes under Valgrind with **12 clean candidate timeout/sleep process images**.
 pins all original sources, calibrated/exercised limits, locale data, assertions
 and timer process summaries. The ledger now has 591 passed scripts, 27 passed
 selections, 40 open profiles, 46 pending and 29 exclusions under Valgrind.
+
+Three additional ordinary shell selections pass normally and under Valgrind:
+the Unicode-processing prefix of `ptx-overrun.sh`, the normal `.backup` suffix
+check in `ln/backup-suffix-traversal.sh`, and the nonterminal polling/inotify
+stdin-follow checks in `tail/follow-stdin.sh`. Their **nine candidate process
+images** are clean. Exact source intervals and retained assertions are verified
+in [evidence/gnu-remaining-shell-validation.json](evidence/gnu-remaining-shell-validation.json).
+Historical reproduction sections remain unexecuted; the separate tail terminal
+branch still needs its own profile. All 32 partial entries have normal and
+instrumented evidence for their recorded selections: 30 pass under Valgrind,
+with the same two instrumentation profiles open. The full ledger has 591
+passed scripts, 30 passed selections, 40 open profiles, 43 pending and 29
+exclusions under Valgrind.
 
 Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are

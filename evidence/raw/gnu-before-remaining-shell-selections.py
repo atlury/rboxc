@@ -5,14 +5,6 @@ import hashlib
 # Each excluded interval starts and ends at a unique original line. Everything
 # else, including GNU's assertions and final Exit, remains byte-for-byte intact.
 EXCLUDED = {
-    'tests/ptx/ptx-overrun.sh': [
-        ('# Trigger a heap-clobbering bug in ptx', 'Exit $fail\n')],
-    'tests/ln/backup-suffix-traversal.sh': [
-        ('# Test 1: Command line suffix with path traversal attempt',
-         '# Test 3: Verify normal suffixes still work')],
-    'tests/tail/follow-stdin.sh': [
-        ('# Before coreutils-8.26 this would induce an UMR under UBSAN',
-         'Exit $fail\n')],
     'tests/shred/shred-passes.sh': [
         ('# Trigger an issue in shred before v8.27', 'Exit $fail\n')],
     'tests/od/od-N.sh': [
