@@ -2326,7 +2326,7 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. The current
-[evidence/gnu-tr-expanded-coverage.json](evidence/gnu-tr-expanded-coverage.json)
+[evidence/gnu-numfmt-expanded-coverage.json](evidence/gnu-numfmt-expanded-coverage.json)
 extends the preserved suite checkpoints: **640 scripts passed**, 29 have
 selected coverage, five are skipped, 29 are excluded and 30 remain pending.
 Excluding the 29 exclusions, 640/704 scripts (90.9%) have whole-script passes;
@@ -2437,6 +2437,20 @@ clean under Valgrind; the six omitted historical assertion cases remain held.
 verifies the exact source/generator, case names, assertions and raw summaries.
 Its ledger has 590 passed scripts, 26 passed selections, 39 open profiles,
 49 pending and 29 exclusions under Valgrind.
+
+The `numfmt` selection expands from 51 to **556/557 cases**, including the
+original French UTF-8 grouping checks and the native 18-digit numeric profile.
+All 556 assertions pass normally. All **561 candidate Valgrind process images**
+are memory-clean, but five precision-sensitive assertions fail identically in
+GNU and Rboxc under instrumentation. A separate comparison preserves their
+exact normal and instrumented outputs; the audit pins Valgrind's documented
+64-bit representation of 80-bit `long double` values. Original assertions are
+unchanged and this strict Valgrind selection remains **open**.
+[evidence/gnu-numfmt-expanded-validation.json](evidence/gnu-numfmt-expanded-validation.json)
+and [evidence/numfmt-expanded-instrumentation.json](evidence/numfmt-expanded-instrumentation.json)
+record this limitation, the single held historical delimiter case, and all raw
+process summaries. The ledger now has 590 passed scripts, 26 passed selections,
+40 open profiles, 48 pending and 29 exclusions under Valgrind.
 
 Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
