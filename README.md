@@ -78,7 +78,7 @@ there where available.
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
-| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 23 original recipes (24 scripts) pass across recorded candidates; one deliberate descriptor-close profile remains open |
+| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 25 original recipes (26 scripts) pass on the current candidate; one deliberate descriptor-close profile remains open |
 | Less | 704 | Ten focused checks, one production terminal check and all 18 original screen replays pass across declared profiles |
 | Screen | 5.0.2 | All three original targets pass across declared profiles; daemon cleanup and socket recovery pass Valgrind |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
@@ -105,14 +105,21 @@ The public terminal cleanup API alone retains the shared parameter cache in
 this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
-The current 187-command candidate is **14,717,992 bytes**, at
-`target/gawk-format-lifetime-candidate/release/rboxc`, SHA-256
-`df802022e1d85caf26f6d514459110657e06e6bf0e44407f0573e93f8e74652e`.
+The current 187-command candidate is **14,718,304 bytes**, at
+`target/bash-return-trap-candidate/release/rboxc`, SHA-256
+`50c3aae0478a7a6631bf268c92dc27e76b5ff420383e4a29b28c398e95b8d43a`.
 An independent rebuild is byte-identical. All 428 Coreutils smoke checks,
-11 dispatcher checks, 85 focused Gawk comparisons and 18 formatting ownership
-contracts pass. A 539-recipe Gawk checkpoint was rerun on these bytes; subsequent batches bring reviewed coverage to 561 recipes on the same candidate.
-Earlier Tar and Screen evidence retains its actual candidate hashes. The installed
-133-command release remains unchanged; full GNU-wide acceptance remains open.
+11 dispatcher checks, 44 focused Bash comparisons and 69 shell-adapter checks
+pass. All 27 reviewed Bash scripts were rerun: 26 pass strictly with 717 clean
+candidate process logs; the trace script retains its deliberate closed-descriptor
+finding. Twenty-eight of 32 RETURN ownership contracts pass, improving twelve
+previous allocation failures; four interpreter-restart cases retain their earlier
+parser/status allocation findings. Those four are outside strict counts.
+Gawk's 561 reviewed recipes remain pinned to the preserved preceding
+`target/gawk-format-lifetime-candidate/release/rboxc` candidate, SHA-256
+`df802022e1d85caf26f6d514459110657e06e6bf0e44407f0573e93f8e74652e`.
+Earlier Tar and Screen evidence also retains its actual candidate hashes. The
+installed 133-command release is unchanged; full GNU-wide acceptance remains open.
 
 Screen's original attach/detach test now passes natively and under Valgrind
 against both GNU and rboxc. Its private profile uses short Unix socket paths,
@@ -2201,6 +2208,16 @@ and source hashes in `inventory/gnu-cp-tests.json`; they are not counted as pass
 Build products and raw test logs stay outside Git; source, scripts, pins, and
 result summaries are committed. `evidence/status.json` records the binary hash
 and current results.
+
+The Bash RETURN-trap fix retains the active handler's borrowed command string
+while freeing superseded restoration copies before replacement or reset. Only
+its isolated `trap.o` helper changes; translated Rust entries and pinned GNU
+sources remain unchanged. Both debug-support originals now pass with clean
+candidate logs. `evidence/bash-return-trap-validation.json` verifies the identical
+rebuild, all reviewed originals and shared checks, and the twelve repaired
+ownership cases through four aliases. Initial findings are preserved. Interpreter
+restart from a RETURN handler still loses saved parser and status allocations;
+that separate cleanup is the next unit.
 
 Five further Bash scripts pass from four original recipes: both directory-stack scripts, command/function printing, dynamic variables and additional tilde expansion. Their 21 candidate process logs are clean. The existing files-only passwd profile avoids host SSSD findings for an undefined directory-stack tilde lookup. The trace recipe also matches original output, but deliberately closes descriptor 4 after unsetting BASH_XTRACEFD has already closed it; its five process logs and one expected close finding remain outside strict counts. Reviewed Bash coverage is now 24 recipes containing 25 scripts, with 23 recipes/24 scripts passing strictly across recorded candidates.
 
