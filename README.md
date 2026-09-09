@@ -2326,7 +2326,7 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. The current
-[evidence/gnu-numfmt-expanded-coverage.json](evidence/gnu-numfmt-expanded-coverage.json)
+[evidence/gnu-unexpand-expanded-coverage.json](evidence/gnu-unexpand-expanded-coverage.json)
 extends the preserved suite checkpoints: **640 scripts passed**, 29 have
 selected coverage, five are skipped, 29 are excluded and 30 remain pending.
 Excluding the 29 exclusions, 640/704 scripts (90.9%) have whole-script passes;
@@ -2451,6 +2451,16 @@ and [evidence/numfmt-expanded-instrumentation.json](evidence/numfmt-expanded-ins
 record this limitation, the single held historical delimiter case, and all raw
 process summaries. The ledger now has 590 passed scripts, 26 passed selections,
 40 open profiles, 48 pending and 29 exclusions under Valgrind.
+
+The `unexpand` selection now includes its final ordinary out-of-range tab-stop
+diagnostic: **54/60 cases pass**, with all 55 candidate process images clean
+under Valgrind. Four historical nontermination cases and two memory-error
+cases remain held. [evidence/gnu-unexpand-expanded-validation.json](evidence/gnu-unexpand-expanded-validation.json)
+verifies the added selection without changing the ledger totals.
+A source/name audit also confirms that the existing `cksum-base64`, `md5sum`,
+`sha1sum`, `od` and `paste` Perl selections already contain all **119 ordinary
+cases**, with eight historical cases held. This adds no runtime passes:
+[evidence/gnu-unchanged-perl-selection-review.json](evidence/gnu-unchanged-perl-selection-review.json).
 
 Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are

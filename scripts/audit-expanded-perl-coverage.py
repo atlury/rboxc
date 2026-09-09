@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit source-reviewed pr/numfmt/tr/date expansions against immutable runs."""
+"""Audit source-reviewed ordinary Perl expansions against immutable runs."""
 # SPDX-License-Identifier: GPL-3.0-or-later
 import argparse
 from collections import Counter
@@ -19,6 +19,7 @@ PROFILES = {
     'numfmt': ('tests/numfmt/numfmt.pl', 556, 557, 561, r'delim-7'),
     'tr': ('tests/tr/tr.pl', 128, 134, 129, r'(empty-eq|empty-cc|no-abort-1)\.[rp]'),
     'date': ('tests/date/date.pl', 993, 996, 994, r'(dbg_)?wide-fmt|invalid-TZ-crash'),
+    'unexpand': ('tests/unexpand/unexpand.pl', 54, 60, 55, r'infloop-[1-4]|blanks-ext[12]'),
 }
 parser = argparse.ArgumentParser()
 parser.add_argument('command', choices=PROFILES)
