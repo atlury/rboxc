@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Audit distinct current-candidate Gawk coverage across preserved checkpoints."""
 # SPDX-License-Identifier: GPL-3.0-or-later
-import argparse
 from collections import Counter
 import importlib.util
 import json
@@ -15,11 +14,7 @@ from comparison_profile import fingerprint
 spec = importlib.util.spec_from_file_location('reviewed', ROOT/'tests/gnu/reviewed-original.py')
 runner = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runner)
-parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--report-name', default='gawk-current-coverage')
-options = parser.parse_args()
-assert re.fullmatch(r'[a-z0-9-]+', options.report_name)
-target = ROOT/'evidence'/(options.report_name+'.json')
+target = ROOT/'evidence/gawk-current-coverage.json'
 assert not target.exists(), 'preserve previous coverage audits'
 manifest_path = ROOT/'inventory/gawk-tests.json'
 manifest = json.loads(manifest_path.read_text())

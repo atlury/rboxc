@@ -74,7 +74,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 423 reviewed originals pass; three original failures match GNU |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 431 reviewed originals pass; three original failures match GNU |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -231,7 +231,18 @@ candidate memory and descriptor checks. The remaining original inputs are
 inventoried for review; Gawk is not certified complete. This configuration adds
 GNU's readline dependency.
 
-Gawk's argument and `BEGINFILE` originals also pass with their normal build
+Eight further unchanged Gawk recipes pass for nested and custom sorting,
+typed-pattern substitution, shortest matches, byte-locale matching, lexicon
+records and repeated file reading. The file-reading recipe runs both original
+programs against its unchanged input. `evidence/gawk-pattern-coverage.json`
+audits **431 distinct passing originals, three GNU baseline failures and 530
+clean candidate processes** on the preserved Gawk ownership candidate: 445
+original invocations plus 85 focused cases counted once. Nine exclusions and
+191 inputs awaiting individual accounting remain; one of those inputs is the
+auxiliary program already exercised by the file-reading recipe. The current
+187-command candidate and installed 133-command release are unchanged.
+
+Gawk's preceding argument and `BEGINFILE` originals also pass with their normal build
 fixtures supplied privately: pinned GNU `cp` copies the input, and a private
 copy of the configured GNU Makefile is read as data. Programs, recipes and
 assertions remain unchanged. `evidence/gawk-current-coverage.json` audits all
