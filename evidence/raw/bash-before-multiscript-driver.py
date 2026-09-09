@@ -18,12 +18,9 @@ if profile.options.commands:
     assert set(profile.options.commands)<={r['target'] for r in selected}
     selected=[r for r in selected if r['target'] in profile.options.commands]
 assert selected
-selected_groups=sorted(r['target'] for r in selected)
-selected=[{**r,**case,'selection':r['target']+':'+case['script'] if r.get('script_cases') else r['target']}
-          for r in selected for case in r.get('script_cases',[{}])]
 helpers={'sed':ROOT/'build/gnu-sed/sed/sed','grep':ROOT/'build/gnu-grep/src/grep',
          'diff':ROOT/'build/gnu-diffutils/src/diff','awk':ROOT/'build/gnu-gawk/gawk',
-         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('od','mktemp','touch','chmod','rm','cat','tr','mkdir','printenv','sleep','date')}}
+         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('od','mktemp','touch','chmod','rm','cat','tr','mkdir','printenv')}}
 fixed_helpers=inventory.get('fixed_test_helpers',{})
 runtime_helpers=inventory.get('runtime_test_helpers',{})
 inputs={p:fingerprint(p) for p in [Path(__file__),manifest,profile.oracle,*helpers.values()]}
@@ -42,7 +39,7 @@ for row in selected:
 assert all(fingerprint(p)==h for p,h in inputs.items())
 results=[]
 for row in selected:
-    outcomes={};name=row['selection']
+    outcomes={};name=row['target']
     for implementation,binary in [('gnu',profile.oracle),('rboxc',profile.binary)]:
         for instrument in (False,True):
             key=implementation+('-valgrind' if instrument else '')
@@ -100,7 +97,7 @@ for row in selected:
     report={**profile.metadata(),'inputs':{str(p):h for p,h in inputs.items()},
         'environment_profile':{r['target']:r['runtime_helpers'] for r in selected if r.get('runtime_helpers')},
         'scope':'Reviewed complete Bash scripts and their nested dependencies execute unchanged in private directories. Compare original expected files using the output mode/filter from the original run recipe, and compare exit status with GNU. Trace shell children and command helpers: pinned native GNU tools for the oracle, integrated tools for the candidate. Original fixed test helpers are shared and never counted as ports. Preserve native GNU memory findings. Other original scripts remain open.',
-        'selected_groups':selected_groups,'original_groups':len(selected_groups),'complete':len(results)==len(selected),'planned_total':len(selected),'passed':sum(r['pass'] for r in results),'total':len(results),'results':results}
+        'complete':len(results)==len(selected),'planned_total':len(selected),'passed':sum(r['pass'] for r in results),'total':len(results),'results':results}
     profile.report.write_text(json.dumps(report,indent=2)+'\n')
     print('PASS' if passed else 'OPEN',name,flush=True)
 raise SystemExit(report['passed']!=report['total'])

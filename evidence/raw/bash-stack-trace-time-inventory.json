@@ -1,6 +1,6 @@
 {
   "provider": "GNU Bash 5.3",
-  "scope": "All 88 top-level original run recipes are inventoried. Twenty-four recipes containing twenty-five complete scripts are reviewed: twenty-three recipes/twenty-four scripts pass strictly across recorded candidates, and the trace recipe matches assertions with one deliberate closed-descriptor Valgrind finding. All nested dependencies are reviewed. Sixty-three recipes remain pending and one mixed reproduction recipe remains held. Private absolute helpers and files-only passwd profiles retain unchanged originals and preserve initial host findings. Full Bash acceptance remains open.",
+  "scope": "Top-level original run recipes inventoried; nineteen complete ordinary conformance scripts and all nested dependencies reviewed and validated. Alias/type use private absolute-helper mounts after preserved host/Valgrind startup failures. Other recipes and interactive profiles remain open; explicit reproduction inputs are not executed.",
   "inputs": [
     {
       "target": "alias",
@@ -221,7 +221,7 @@
       "recipe": "run-cprint",
       "recipe_sha256": "98e0451bb03f8d81606d41a28af31051ffc82cd128853f4631ee2b3e4331777c",
       "reviewed": true,
-      "state": "reviewed-original-pass",
+      "state": "reviewed-awaiting-original-validation",
       "script": "cprint.tests",
       "expected": "cprint.right",
       "output_mode": "merged",
@@ -229,9 +229,7 @@
         "cprint.tests": "31ade4a9088a45ebafe917290104f5d6fd7cfabc79412ffddd0beeeadd1b4321",
         "cprint.right": "e1e37b4c1b141079166e47134d1b33852e82089f25f4d508c93ce412881c1247"
       },
-      "review": "Complete original program, expected output and run recipe reviewed. Command/function printing, fixed loops, three-second total delays and local time comparisons use original bounds. Date succeeds through the pinned helper so fallback interpreters are not selected; their fixed time-only expressions were also reviewed. No remote operations or historical memory-corruption reproductions occur.",
-      "evidence": "evidence/bash-stack-trace-time-original.json",
-      "audit": "evidence/bash-stack-trace-time-validation.json"
+      "review": "Complete original program, expected output and run recipe reviewed. Command/function printing, fixed loops, three-second total delays and local time comparisons use original bounds. Date succeeds through the pinned helper so fallback interpreters are not selected; their fixed time-only expressions were also reviewed. No remote operations or historical memory-corruption reproductions occur."
     },
     {
       "target": "dbg-support",
@@ -252,7 +250,7 @@
       "recipe": "run-dirstack",
       "recipe_sha256": "96de096d33901a8d369b28e4fdf8261950e164bc09a45c0b1fa16183589dabdd",
       "reviewed": true,
-      "state": "reviewed-original-pass",
+      "state": "reviewed-awaiting-original-validation",
       "fixtures": {
         "dstack.tests": "641eed4e6b5eae8b9d9e32dfa1b179de679974b828f83183b93465f7b1f1c140",
         "dstack.right": "8e2bc08d6fd891da4acbda2830c6c9f77b6eb93ed75e81f98eccf1c3da545e53",
@@ -274,9 +272,7 @@
       ],
       "runtime_helpers": [
         "nss-files"
-      ],
-      "evidence": "evidence/bash-stack-trace-time-original.json",
-      "audit": "evidence/bash-stack-trace-time-validation.json"
+      ]
     },
     {
       "target": "dollars",
@@ -290,7 +286,7 @@
       "recipe": "run-dynvar",
       "recipe_sha256": "05d0d255b80691cd1f9b34dc2758bf3f54eb8104db097d5106e8e0be43b45ca6",
       "reviewed": true,
-      "state": "reviewed-original-pass",
+      "state": "reviewed-awaiting-original-validation",
       "script": "dynvar.tests",
       "expected": "dynvar.right",
       "output_mode": "merged",
@@ -298,9 +294,7 @@
         "dynvar.tests": "7e8e7cb5b1ecab69c3dc903ca8d730d01e38863f48bcd4b1e6062d95855a3e25",
         "dynvar.right": "be5577a358924c571663a207e73087b2e13dbdf43b29a9b7b21a9825856dce2d"
       },
-      "review": "Complete original program, expected output and run recipe reviewed. Command/function printing, fixed loops, three-second total delays and local time comparisons use original bounds. Date succeeds through the pinned helper so fallback interpreters are not selected; their fixed time-only expressions were also reviewed. No remote operations or historical memory-corruption reproductions occur.",
-      "evidence": "evidence/bash-stack-trace-time-original.json",
-      "audit": "evidence/bash-stack-trace-time-validation.json"
+      "review": "Complete original program, expected output and run recipe reviewed. Command/function printing, fixed loops, three-second total delays and local time comparisons use original bounds. Date succeeds through the pinned helper so fallback interpreters are not selected; their fixed time-only expressions were also reviewed. No remote operations or historical memory-corruption reproductions occur."
     },
     {
       "target": "errors",
@@ -746,9 +740,7 @@
       "review": "Complete original run recipe, scripts, nested children and expected output reviewed. Directory-stack cases only visit standard local directories and return to the private working directory; tilde examples expand strings without visiting invented home paths; trace output uses a private file and bounded loops. Invalid descriptor and option diagnostics are ordinary conformance assertions. Original assertions pass; unset BASH_XTRACEFD closes descriptor 4, then the explicit exec 4<&- closes it again. Native GNU and Rboxc both retain the resulting Valgrind descriptor finding; no suppression or strict pass is claimed.",
       "script": "set-x.tests",
       "expected": "set-x.right",
-      "output_mode": "merged",
-      "evidence": "evidence/bash-stack-trace-time-original.json",
-      "audit": "evidence/bash-stack-trace-time-validation.json"
+      "output_mode": "merged"
     },
     {
       "target": "shopt",
@@ -809,7 +801,7 @@
       "recipe": "run-tilde2",
       "recipe_sha256": "9265272cf6f26357f586f4abdd2fb48cfdf8c31ed68ee37c6c16ea7bfc215b4f",
       "reviewed": true,
-      "state": "reviewed-original-pass",
+      "state": "reviewed-awaiting-original-validation",
       "fixtures": {
         "tilde2.tests": "22322f7a32d71088f713bb36e57b18710182bcd46a3e75fb6f10781b0d0f8d27",
         "tilde2.right": "0a4c366a61a40aa2d2a53c19c0b53585874b4c4c88fbf2d2c3d5f3b89b41d6e3",
@@ -818,9 +810,7 @@
       "review": "Complete original run recipe, scripts, nested children and expected output reviewed. Directory-stack cases only visit standard local directories and return to the private working directory; tilde examples expand strings without visiting invented home paths; trace output uses a private file and bounded loops. Invalid descriptor and option diagnostics are ordinary conformance assertions.",
       "script": "tilde2.tests",
       "expected": "tilde2.right",
-      "output_mode": "stdout",
-      "evidence": "evidence/bash-stack-trace-time-original.json",
-      "audit": "evidence/bash-stack-trace-time-validation.json"
+      "output_mode": "stdout"
     },
     {
       "target": "trap",

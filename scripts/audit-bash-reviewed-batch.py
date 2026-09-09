@@ -24,12 +24,14 @@ assert re.fullmatch(r'[a-z0-9-]+', args.report_name)
 target = ROOT/'evidence'/(args.report_name+'.json')
 assert not target.exists()
 report = json.loads(args.original.read_text())
-assert report['complete'] and report['passed'] == report['total'] == report['planned_total']
+assert report['complete'] and report['total'] == report['planned_total'] == len(report['results'])
+assert report['passed'] == sum(r['pass'] for r in report['results'])
 assert fingerprint(Path(report['binary'])) == report['binary_sha256']
 assert fingerprint(ROOT/'build/gnu-bash/bash') == report['gnu_binary_sha256']
 assert fingerprint(args.inventory_snapshot) == report['inputs'][str(ROOT/'inventory/bash-tests.json')]
 inventory = json.loads(args.inventory_snapshot.read_text())
-rows = {r['target']: r for r in inventory['inputs'] if r['reviewed']}
+rows = {(r['target']+':'+case['script'] if r.get('script_cases') else r['target']):{**r,**case}
+        for r in inventory['inputs'] if r['reviewed'] for case in r.get('script_cases',[{}])}
 for path, digest in {**report['inputs'], **report['runtime_helpers']}.items():
     actual = Path(path)
     if actual == ROOT/'inventory/bash-tests.json': actual = args.inventory_snapshot
@@ -37,10 +39,14 @@ for path, digest in {**report['inputs'], **report['runtime_helpers']}.items():
     assert fingerprint(actual) == digest, path
 source = Path('/opt/src/bash-5.3/tests')
 clean = []
+open_processes = []
+open_findings = []
 raw = {}
 for result in report['results']:
     row = rows[result['selection']]
-    assert result['pass']
+    allow_open = row.get('state')=='reviewed-original-intrinsic-descriptor-open'
+    assert result['pass'] == (not allow_open)
+    if allow_open: assert result['selection']=='set-x'
     expected = source/row['expected']
     assert fingerprint(expected) == row['fixtures'][row['expected']]
     for key, outcome in result['outcomes'].items():
@@ -78,16 +84,27 @@ for result in report['results']:
                 errors[-1].start() > images[-1].start() and fds[-1].start() > images[-1].start())
             assert memory['complete'] == complete
             if key == 'rboxc-valgrind':
-                assert complete and memory['clean'] and outcome['memory_clean']
-                assert parsed['errors'] == parsed['non_inherited_descriptors'] == 0
+                assert complete and parsed['non_inherited_descriptors'] == 0
                 assert not any(parsed['heap_bytes'].get(k,0) for k in ('definitely lost','indirectly lost','possibly lost'))
-                clean.append({'selection': result['selection'], 'log': memory['log'], 'sha256': memory['sha256']})
+                if not memory['clean']:
+                    assert allow_open and parsed['errors']==1
+                    assert re.search(r'Command: [^\n]+/exec/bash \./set-x1\.sub\n', text)
+                    assert re.search(r'File descriptor 4: [^\n]+/bash-trace-[0-9]+ is already closed', text)
+                    assert 'rboxc_bash_owned_close' in text and 'rboxc_bash_xtrace_reset' in text
+                    assert 'Previously closed' in text and 'fclose' in text
+                    open_findings.append({'selection':result['selection'],'log':memory['log'],'sha256':memory['sha256']})
+                else:
+                    assert parsed['errors']==0
+                collection = open_processes if allow_open else clean
+                collection.append({'selection': result['selection'], 'log': memory['log'], 'sha256': memory['sha256']})
             raw[memory['log']] = memory['sha256']
-assert len({p['log'] for p in clean}) == len(clean)
-target.write_text(json.dumps({'scope':'Selected complete original Bash scripts and nested fixtures match unchanged GNU expected output and GNU exit status. Every raw process log is reparsed. Explicit absolute helper paths use private mounts; their original host files are unchanged. Native helper findings are retained separately. This is batch evidence, not GNU-wide completion.',
+assert len({p['log'] for p in clean+open_processes}) == len(clean)+len(open_processes)
+assert len(open_findings)==sum(not r['pass'] for r in report['results'])
+target.write_text(json.dumps({'scope':'Selected complete original Bash scripts and nested fixtures match unchanged GNU expected output and GNU exit status. Every raw process log is reparsed. The explicit close of an already closed trace descriptor, when selected, is verified as an intrinsic Valgrind finding and excluded with its whole profile from strict counts. Explicit absolute helper paths use private mounts; their original host files are unchanged. Native helper findings are retained separately. This is batch evidence, not GNU-wide completion.',
     'binary':report['binary'], 'binary_sha256':report['binary_sha256'],
     'original':str(args.original), 'original_sha256':fingerprint(args.original),
     'inventory_snapshot':str(args.inventory_snapshot), 'inventory_sha256':fingerprint(args.inventory_snapshot),
-    'original_scripts':report['total'], 'clean_candidate_processes':len(clean),
+    'original_groups':report.get('original_groups',report['total']),'original_scripts':report['total'], 'strict_original_passes':report['passed'],'clean_candidate_processes':len(clean),
+    'open_processes':open_processes,'open_findings':open_findings,
     'driver_sha256':fingerprint(Path(__file__)), 'processes':clean, 'raw':raw}, indent=2)+'\n')
 print('Audited', report['total'], 'original Bash scripts and', len(clean), 'clean candidate processes')
