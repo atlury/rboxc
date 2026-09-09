@@ -1,0 +1,122 @@
+{
+  "scope": "reviewed original GNU scripts and selected compatibility cases; unreviewed tests remain open",
+  "passed": 1,
+  "total": 1,
+  "results": [
+    {
+      "script": "tests/nproc/nproc-quota.sh",
+      "command": "nproc",
+      "sha256": "ea4544cedcecdfd93ee5f1dd4fb6c520a81746a2a0bbcb6db37bec1054cba4d6",
+      "clean_environment": true,
+      "timeout_seconds": 1800,
+      "valgrind": true,
+      "valgrind_reason": "Separate adapted-fixture profile closes the injected policy FILE after its existing scheduler lookup. Original quota inputs/assertions and private chroot remain. Unmodified helper results remain separately recorded.",
+      "elf_input_commands": [
+        "nproc"
+      ],
+      "nproc_quota_chroot": true,
+      "nproc_policy_profile": true,
+      "full_suite": true,
+      "gnu": {
+        "status": 0,
+        "log": "evidence/raw/reviewed-tests-nproc-nproc-quota.sh-gnu-rboxc-upstream-7j547hnc.log",
+        "binary_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+        "runner_source_sha256": "fdb6747d64447d3b622fe06caece7340bd683c3a3f506fcfe3a57c6ad29dd64a",
+        "config_header_sha256": "c4b4aaf3a68f46c2b8ba6e5f390e55321627551abdccd26cffe1491774690751",
+        "watchdog": {
+          "path": "/usr/lib/cargo/bin/coreutils/timeout",
+          "sha256": "48893b0fb21436b54619db80486e83ef39dfccaf1aefe83dfa00c02d6146e8c0"
+        },
+        "test_shell": "/bin/sh",
+        "elapsed_seconds": 0.408,
+        "nproc_policy_profile": {
+          "record": {
+            "original_source": "#include <stdio.h>\n#include <errno.h>\n#define __USE_GNU  /* For SCHED_DEADLINE.  */\n#include <sched.h>\n\nint\nsched_getscheduler (pid_t pid)\n{\n  fclose (fopen (\"preloaded\",\"w\")); /* marker for preloaded interception */\n  FILE *policyf = fopen (\"/proc/self/sched\", \"r\");\n  int policy;\n  #define fscanfmt fscanf  /* Avoid syntax check.  */\n  if (pid == 0 && fscanfmt (policyf, \"policy : %d\", &policy) == 1)\n  {\n     switch (policy)\n       {\n         case 0:  return SCHED_OTHER;\n         case 1:  return SCHED_FIFO;\n         case 2:  return SCHED_RR;\n         case 6:  return SCHED_DEADLINE;\n         case -1: errno = EINVAL; return -1;\n         default: return SCHED_OTHER;\n       }\n  }\n  else\n    {\n      errno = ENOSYS;\n      return -1;\n    }\n}\n",
+            "adapted_source": "#include <stdio.h>\n#include <errno.h>\n#define __USE_GNU  /* For SCHED_DEADLINE.  */\n#include <sched.h>\n\nint\nsched_getscheduler (pid_t pid)\n{\n  fclose (fopen (\"preloaded\",\"w\")); /* marker for preloaded interception */\n  FILE *policyf = fopen (\"/proc/self/sched\", \"r\");\n  int policy;\n  #define fscanfmt fscanf  /* Avoid syntax check.  */\n  int matched = pid == 0 && fscanfmt (policyf, \"policy : %d\", &policy) == 1;\n  fclose (policyf);\n  if (matched)\n  {\n     switch (policy)\n       {\n         case 0:  return SCHED_OTHER;\n         case 1:  return SCHED_FIFO;\n         case 2:  return SCHED_RR;\n         case 6:  return SCHED_DEADLINE;\n         case -1: errno = EINVAL; return -1;\n         default: return SCHED_OTHER;\n       }\n  }\n  else\n    {\n      errno = ENOSYS;\n      return -1;\n    }\n}\n",
+            "original_sha256": "3e68fabf49fc24630ab6305672820ac26075eb26acb13929304f6071bfee88ea",
+            "adapted_sha256": "1e84a063a46eb10d57af2eb788690c54875ce0aabe19358f93a7fea4061ce57a",
+            "original_arguments": [
+              "-Wall",
+              "-shared",
+              "--std=gnu99",
+              "-fPIC",
+              "-O2",
+              "k.c",
+              "-o",
+              "k.so",
+              "-ldl"
+            ],
+            "fixture": "/tmp/rboxc-upstream-7j547hnc/gt-nproc-quota.sh.yJon",
+            "effective_arguments": [
+              "-Wall",
+              "-shared",
+              "--std=gnu99",
+              "-fPIC",
+              "-O2",
+              "k.policy-closed.c",
+              "-o",
+              "k.so",
+              "-ldl"
+            ]
+          },
+          "log": "evidence/raw/reviewed-nproc-policy-rboxc-upstream-7j547hnc-gnu.json",
+          "sha256": "1ce8627010273e0aae49f16acde2720df4035fbcf589429c7719d3b790087f23"
+        },
+        "elf_input_binaries": {
+          "nproc": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4"
+        }
+      },
+      "rboxc": {
+        "status": 0,
+        "log": "evidence/raw/reviewed-tests-nproc-nproc-quota.sh-rboxc-rboxc-upstream-0drq1wnm.log",
+        "binary_sha256": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28",
+        "runner_source_sha256": "fdb6747d64447d3b622fe06caece7340bd683c3a3f506fcfe3a57c6ad29dd64a",
+        "config_header_sha256": "c4b4aaf3a68f46c2b8ba6e5f390e55321627551abdccd26cffe1491774690751",
+        "watchdog": {
+          "path": "/usr/lib/cargo/bin/coreutils/timeout",
+          "sha256": "48893b0fb21436b54619db80486e83ef39dfccaf1aefe83dfa00c02d6146e8c0"
+        },
+        "test_shell": "/bin/sh",
+        "elapsed_seconds": 0.408,
+        "nproc_policy_profile": {
+          "record": {
+            "original_source": "#include <stdio.h>\n#include <errno.h>\n#define __USE_GNU  /* For SCHED_DEADLINE.  */\n#include <sched.h>\n\nint\nsched_getscheduler (pid_t pid)\n{\n  fclose (fopen (\"preloaded\",\"w\")); /* marker for preloaded interception */\n  FILE *policyf = fopen (\"/proc/self/sched\", \"r\");\n  int policy;\n  #define fscanfmt fscanf  /* Avoid syntax check.  */\n  if (pid == 0 && fscanfmt (policyf, \"policy : %d\", &policy) == 1)\n  {\n     switch (policy)\n       {\n         case 0:  return SCHED_OTHER;\n         case 1:  return SCHED_FIFO;\n         case 2:  return SCHED_RR;\n         case 6:  return SCHED_DEADLINE;\n         case -1: errno = EINVAL; return -1;\n         default: return SCHED_OTHER;\n       }\n  }\n  else\n    {\n      errno = ENOSYS;\n      return -1;\n    }\n}\n",
+            "adapted_source": "#include <stdio.h>\n#include <errno.h>\n#define __USE_GNU  /* For SCHED_DEADLINE.  */\n#include <sched.h>\n\nint\nsched_getscheduler (pid_t pid)\n{\n  fclose (fopen (\"preloaded\",\"w\")); /* marker for preloaded interception */\n  FILE *policyf = fopen (\"/proc/self/sched\", \"r\");\n  int policy;\n  #define fscanfmt fscanf  /* Avoid syntax check.  */\n  int matched = pid == 0 && fscanfmt (policyf, \"policy : %d\", &policy) == 1;\n  fclose (policyf);\n  if (matched)\n  {\n     switch (policy)\n       {\n         case 0:  return SCHED_OTHER;\n         case 1:  return SCHED_FIFO;\n         case 2:  return SCHED_RR;\n         case 6:  return SCHED_DEADLINE;\n         case -1: errno = EINVAL; return -1;\n         default: return SCHED_OTHER;\n       }\n  }\n  else\n    {\n      errno = ENOSYS;\n      return -1;\n    }\n}\n",
+            "original_sha256": "3e68fabf49fc24630ab6305672820ac26075eb26acb13929304f6071bfee88ea",
+            "adapted_sha256": "1e84a063a46eb10d57af2eb788690c54875ce0aabe19358f93a7fea4061ce57a",
+            "original_arguments": [
+              "-Wall",
+              "-shared",
+              "--std=gnu99",
+              "-fPIC",
+              "-O2",
+              "k.c",
+              "-o",
+              "k.so",
+              "-ldl"
+            ],
+            "fixture": "/tmp/rboxc-upstream-0drq1wnm/gt-nproc-quota.sh.PG9A",
+            "effective_arguments": [
+              "-Wall",
+              "-shared",
+              "--std=gnu99",
+              "-fPIC",
+              "-O2",
+              "k.policy-closed.c",
+              "-o",
+              "k.so",
+              "-ldl"
+            ]
+          },
+          "log": "evidence/raw/reviewed-nproc-policy-rboxc-upstream-0drq1wnm-rboxc.json",
+          "sha256": "e1aabea258f9acef6132690dbdf744cd5038363523474c6f029cfe4939e90e25"
+        },
+        "elf_input_binaries": {
+          "nproc": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28"
+        }
+      },
+      "pass": true,
+      "state": "pass"
+    }
+  ]
+}

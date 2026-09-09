@@ -2326,7 +2326,7 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. The current
-[evidence/gnu-printf-bounded-output-coverage.json](evidence/gnu-printf-bounded-output-coverage.json)
+[evidence/gnu-fixture-stream-cleanup-coverage.json](evidence/gnu-fixture-stream-cleanup-coverage.json)
 extends the preserved suite checkpoints: **648 scripts passed**, 32 have
 selected coverage, five are skipped, 29 are excluded and 19 remain pending.
 Excluding the 29 exclusions, 648/704 scripts (92.0%) have whole-script passes;
@@ -2591,6 +2591,20 @@ with a write-error diagnostic at calibrated virtual-memory limits of 18,004 and
 audit verifies the exact source, calibration, exercised limits and status/output
 assertions. These native limits cannot accommodate Valgrind startup; the separate
 instrumented resource profile remains pending.
+
+Two explicit fixture cleanup profiles now pass normally and under Valgrind.
+`dd/nocache_fail.sh` closes its injected marker stream before returning the same
+ENOTSUP error. `nproc/nproc-quota.sh` closes its injected policy stream after the
+same scheduler lookup. Only generated fixture C code changes; the original
+shell assertions and production binaries remain unchanged. Source hashes and
+exact compiler input substitutions are recorded. The candidate contributes
+**22 clean process logs**, including 16 isolated quota invocations. The
+[evidence/gnu-fixture-stream-cleanup-validation.json](evidence/gnu-fixture-stream-cleanup-validation.json)
+audit retains the unmodified helpers' one-descriptor/472-byte findings separately.
+These results have their own `passed-adapted-fixture` category: the current
+Valgrind ledger has 591 passed scripts, 29 passed selections, two adapted fixture
+passes, 40 open profiles, 42 pending and 29 exclusions. Native whole-script
+counts are unchanged; neither unmodified helper profile becomes a strict pass.
 
 Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are

@@ -5365,11 +5365,9 @@
     ],
     "sha256": "6b112baad4c4bfa1d96a74de53048765ca0f610ead76223cca9e85f3c79fc21a",
     "clean_environment": true,
-    "valgrind": true,
+    "valgrind": false,
     "timeout_seconds": 300,
-    "valgrind_scope_note": "Separate adapted-fixture profile: close only the injected helper marker FILE before returning the same ENOTSUP. Original shell assertions and candidate code unchanged. Unmodified native and instrumented evidence retained separately.",
-    "dd_marker_profile": true,
-    "full_suite": true
+    "valgrind_scope_note": "Original injected posix_fadvise helper deliberately leaves its evidence FILE open; original assertions run natively."
   },
   {
     "script": "tests/dd/partial-write.sh",
@@ -11314,13 +11312,11 @@
     "clean_environment": true,
     "timeout_seconds": 1800,
     "valgrind": true,
-    "valgrind_reason": "Separate adapted-fixture profile closes the injected policy FILE after its existing scheduler lookup. Original quota inputs/assertions and private chroot remain. Unmodified helper results remain separately recorded.",
+    "valgrind_reason": "Stage the real nproc ELF and Valgrind runtime in the original disposable chroot; private mount and PID namespaces provide procfs with only the test process quota inputs replaced.",
     "elf_input_commands": [
       "nproc"
     ],
-    "nproc_quota_chroot": true,
-    "nproc_policy_profile": true,
-    "full_suite": true
+    "nproc_quota_chroot": true
   },
   {
     "script": "tests/sort/sort-compress-proc.sh",

@@ -206,20 +206,6 @@ def main():
         test_shell = row.get('test_shell', '/bin/sh')
         assert test_shell in ('/bin/sh', '/bin/bash'), 'unsupported test shell'
         context = {**execution_context, 'definition': row, 'shell': fingerprint(Path(test_shell))}
-        if row.get('nproc_policy_profile'):
-            assert row['script'] == 'tests/nproc/nproc-quota.sh' and row.get('nproc_quota_chroot')
-            stub = (SOURCE/row['script']).read_text().split("cat > k.c <<'EOF' || framework_failure_\n", 1)[1].split('\nEOF\n', 1)[0]+'\n'
-            context['nproc_policy_profile'] = {'driver_sha256': fingerprint(ROOT/'tests/gnu/nproc-policy-compiler.py'),
-                'compiler': str(Path('/usr/bin/cc').resolve(strict=True)),
-                'compiler_sha256': fingerprint(Path('/usr/bin/cc')),
-                'source_sha256': hashlib.sha256(stub.encode()).hexdigest()}
-        if row.get('dd_marker_profile'):
-            assert row['script'] == 'tests/dd/nocache_fail.sh' and row['commands'] == ['dd']
-            stub = (SOURCE/row['script']).read_text().split("cat > k.c <<'EOF' || framework_failure_\n", 1)[1].split('\nEOF\n', 1)[0]+'\n'
-            context['dd_marker_profile'] = {'driver_sha256': fingerprint(ROOT/'tests/gnu/dd-marker-compiler.py'),
-                'compiler': str(Path('/usr/bin/cc').resolve(strict=True)),
-                'compiler_sha256': fingerprint(Path('/usr/bin/cc')),
-                'source_sha256': hashlib.sha256(stub.encode()).hexdigest()}
         if row.get('gdb_tail_profile'):
             assert row['script'] in ('tests/tail/inotify-race.sh', 'tests/tail/inotify-race2.sh')
             assert row['full_suite'] and not instrument and row['commands'] == ['tail', 'sleep', 'timeout']
@@ -446,22 +432,6 @@ def main():
                     'RBOXC_FULL_SUITE': '1' if row.get('full_suite') else '',
                     'VERBOSE': 'yes', 'RBOXC_APPROVED_CASES': ','.join(row.get('cases', [])),
                 }
-                if row.get('nproc_policy_profile'):
-                    config = run/'nproc-policy-config.json'
-                    config.write_text(json.dumps({'run': str(run), **context['nproc_policy_profile']}))
-                    wrapper = run/'src/nproc-policy-cc'
-                    wrapper.write_text('#!/bin/sh\nexec '+shlex.join([sys.executable,
-                        str(ROOT/'tests/gnu/nproc-policy-compiler.py'), str(config)])+' "$@"\n')
-                    wrapper.chmod(0o755)
-                    environment['CC'] = str(wrapper)
-                if row.get('dd_marker_profile'):
-                    config = run/'dd-marker-config.json'
-                    config.write_text(json.dumps({'run': str(run), **context['dd_marker_profile']}))
-                    wrapper = run/'src/dd-marker-cc'
-                    wrapper.write_text('#!/bin/sh\nexec '+shlex.join([sys.executable,
-                        str(ROOT/'tests/gnu/dd-marker-compiler.py'), str(config)])+' "$@"\n')
-                    wrapper.chmod(0o755)
-                    environment['CC'] = str(wrapper)
                 for key in ('POSIXLY_CORRECT', 'VERSION_CONTROL', 'SIMPLE_BACKUP_SUFFIX'):
                     environment.pop(key, None)
                 if row.get('shared_runtime'):
@@ -572,20 +542,6 @@ def main():
                                             'watchdog': {'path': str(watchdog), 'sha256': watchdog_hash},
                                             'test_shell': test_shell,
                                             'elapsed_seconds': round(time.monotonic()-started, 3)}
-                if row.get('nproc_policy_profile'):
-                    journal = run/'nproc-policy-profile.json'
-                    record = json.loads(journal.read_text()) if journal.exists() else None
-                    evidence = ROOT/'evidence/raw'/f'reviewed-nproc-policy-{run.name}-{implementation}.json'
-                    evidence.write_text(json.dumps(record, indent=2)+'\n')
-                    outcomes[implementation]['nproc_policy_profile'] = {'record': record,
-                        'log': str(evidence.relative_to(ROOT)), 'sha256': fingerprint(evidence)}
-                if row.get('dd_marker_profile'):
-                    journal = run/'dd-marker-profile.json'
-                    record = json.loads(journal.read_text()) if journal.exists() else None
-                    evidence = ROOT/'evidence/raw'/f'reviewed-dd-marker-{run.name}-{implementation}.json'
-                    evidence.write_text(json.dumps(record, indent=2)+'\n')
-                    outcomes[implementation]['dd_marker_profile'] = {'record': record,
-                        'log': str(evidence.relative_to(ROOT)), 'sha256': fingerprint(evidence)}
                 if memory_limit is not None:
                     outcomes[implementation]['address_space_profile'] = context['address_space_profile']
                 if row.get('shell_selection'):

@@ -1,0 +1,143 @@
+{
+  "scope": "reviewed original GNU scripts and selected compatibility cases; unreviewed tests remain open",
+  "passed": 1,
+  "total": 1,
+  "results": [
+    {
+      "script": "tests/dd/nocache_fail.sh",
+      "command": "dd",
+      "commands": [
+        "dd"
+      ],
+      "sha256": "6b112baad4c4bfa1d96a74de53048765ca0f610ead76223cca9e85f3c79fc21a",
+      "clean_environment": true,
+      "valgrind": true,
+      "timeout_seconds": 300,
+      "valgrind_scope_note": "Separate adapted-fixture profile: close only the injected helper marker FILE before returning the same ENOTSUP. Original shell assertions and candidate code unchanged. Unmodified native and instrumented evidence retained separately.",
+      "dd_marker_profile": true,
+      "full_suite": true,
+      "gnu": {
+        "status": 0,
+        "log": "evidence/raw/reviewed-vg-tests-dd-nocache_fail.sh-gnu-rboxc-upstream-d5x59ll6.log",
+        "binary_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+        "runner_source_sha256": "b5db62a1f99ae7ac2039c847af79ffc749a774f8a04b4adb312508b29e2921f8",
+        "config_header_sha256": "c4b4aaf3a68f46c2b8ba6e5f390e55321627551abdccd26cffe1491774690751",
+        "watchdog": {
+          "path": "/usr/lib/cargo/bin/coreutils/timeout",
+          "sha256": "48893b0fb21436b54619db80486e83ef39dfccaf1aefe83dfa00c02d6146e8c0"
+        },
+        "test_shell": "/bin/sh",
+        "elapsed_seconds": 1.509,
+        "dd_marker_profile": {
+          "record": {
+            "original_source": "#include <errno.h>\n#include <fcntl.h>\n#include <stdio.h>\n#include <sys/types.h>\n\nint posix_fadvise (int fd, off_t offset, off_t len, int advice)\n{\n  fopen (\"called\", \"w\");\n  return ENOTSUP;  /* Simulate non standard error indication.  */\n}\n",
+            "adapted_source": "#include <errno.h>\n#include <fcntl.h>\n#include <stdio.h>\n#include <sys/types.h>\n\nint posix_fadvise (int fd, off_t offset, off_t len, int advice)\n{\n  FILE *marker = fopen (\"called\", \"w\");\n  if (marker) fclose (marker);\n  return ENOTSUP;  /* Simulate non standard error indication.  */\n}\n",
+            "original_sha256": "5a956c7fcd831c2d018a67b80863b3e8433bebee2cd3a22f0280598dda2593c4",
+            "adapted_sha256": "2f796f30f583cb7f747118caad8f7b003225e2dd93254ef6dc36db3310c29be0",
+            "original_arguments": [
+              "-Wall",
+              "-shared",
+              "--std=gnu99",
+              "-fPIC",
+              "-O2",
+              "k.c",
+              "-o",
+              "k.so",
+              "-ldl"
+            ],
+            "fixture": "/tmp/rboxc-upstream-d5x59ll6/gt-nocache_fail.sh.iNVe",
+            "effective_arguments": [
+              "-Wall",
+              "-shared",
+              "--std=gnu99",
+              "-fPIC",
+              "-O2",
+              "k.marker-closed.c",
+              "-o",
+              "k.so",
+              "-ldl"
+            ]
+          },
+          "log": "evidence/raw/reviewed-dd-marker-rboxc-upstream-d5x59ll6-gnu.json",
+          "sha256": "6733b15451515d817d9a2422467656f3099b03ddd1306cc9c97f1aa811537d00"
+        },
+        "memory": [
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-d5x59ll6-gnu/1159016.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-d5x59ll6-gnu/1159078.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          }
+        ]
+      },
+      "rboxc": {
+        "status": 0,
+        "log": "evidence/raw/reviewed-vg-tests-dd-nocache_fail.sh-rboxc-rboxc-upstream-o8iwwl0i.log",
+        "binary_sha256": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28",
+        "runner_source_sha256": "b5db62a1f99ae7ac2039c847af79ffc749a774f8a04b4adb312508b29e2921f8",
+        "config_header_sha256": "c4b4aaf3a68f46c2b8ba6e5f390e55321627551abdccd26cffe1491774690751",
+        "watchdog": {
+          "path": "/usr/lib/cargo/bin/coreutils/timeout",
+          "sha256": "48893b0fb21436b54619db80486e83ef39dfccaf1aefe83dfa00c02d6146e8c0"
+        },
+        "test_shell": "/bin/sh",
+        "elapsed_seconds": 1.711,
+        "dd_marker_profile": {
+          "record": {
+            "original_source": "#include <errno.h>\n#include <fcntl.h>\n#include <stdio.h>\n#include <sys/types.h>\n\nint posix_fadvise (int fd, off_t offset, off_t len, int advice)\n{\n  fopen (\"called\", \"w\");\n  return ENOTSUP;  /* Simulate non standard error indication.  */\n}\n",
+            "adapted_source": "#include <errno.h>\n#include <fcntl.h>\n#include <stdio.h>\n#include <sys/types.h>\n\nint posix_fadvise (int fd, off_t offset, off_t len, int advice)\n{\n  FILE *marker = fopen (\"called\", \"w\");\n  if (marker) fclose (marker);\n  return ENOTSUP;  /* Simulate non standard error indication.  */\n}\n",
+            "original_sha256": "5a956c7fcd831c2d018a67b80863b3e8433bebee2cd3a22f0280598dda2593c4",
+            "adapted_sha256": "2f796f30f583cb7f747118caad8f7b003225e2dd93254ef6dc36db3310c29be0",
+            "original_arguments": [
+              "-Wall",
+              "-shared",
+              "--std=gnu99",
+              "-fPIC",
+              "-O2",
+              "k.c",
+              "-o",
+              "k.so",
+              "-ldl"
+            ],
+            "fixture": "/tmp/rboxc-upstream-o8iwwl0i/gt-nocache_fail.sh.lgM1",
+            "effective_arguments": [
+              "-Wall",
+              "-shared",
+              "--std=gnu99",
+              "-fPIC",
+              "-O2",
+              "k.marker-closed.c",
+              "-o",
+              "k.so",
+              "-ldl"
+            ]
+          },
+          "log": "evidence/raw/reviewed-dd-marker-rboxc-upstream-o8iwwl0i-rboxc.json",
+          "sha256": "1d5a12f9414a43cdeb0f7a0f0bd40ec67ba4c280c6a4d9073febf20417023192"
+        },
+        "memory": [
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-o8iwwl0i-rboxc/1159114.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-o8iwwl0i-rboxc/1159128.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          }
+        ]
+      },
+      "pass": true,
+      "state": "pass"
+    }
+  ]
+}

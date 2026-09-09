@@ -1,0 +1,1274 @@
+{
+  "scope": "reviewed original GNU scripts and selected compatibility cases; unreviewed tests remain open",
+  "passed": 1,
+  "total": 1,
+  "results": [
+    {
+      "script": "tests/nproc/nproc-quota.sh",
+      "command": "nproc",
+      "sha256": "ea4544cedcecdfd93ee5f1dd4fb6c520a81746a2a0bbcb6db37bec1054cba4d6",
+      "clean_environment": true,
+      "timeout_seconds": 1800,
+      "valgrind": true,
+      "valgrind_reason": "Separate adapted-fixture profile closes the injected policy FILE after its existing scheduler lookup. Original quota inputs/assertions and private chroot remain. Unmodified helper results remain separately recorded.",
+      "elf_input_commands": [
+        "nproc"
+      ],
+      "nproc_quota_chroot": true,
+      "nproc_policy_profile": true,
+      "full_suite": true,
+      "gnu": {
+        "status": 0,
+        "log": "evidence/raw/reviewed-vg-tests-nproc-nproc-quota.sh-gnu-rboxc-upstream-kk_0b9gr.log",
+        "binary_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+        "runner_source_sha256": "fdb6747d64447d3b622fe06caece7340bd683c3a3f506fcfe3a57c6ad29dd64a",
+        "config_header_sha256": "c4b4aaf3a68f46c2b8ba6e5f390e55321627551abdccd26cffe1491774690751",
+        "watchdog": {
+          "path": "/usr/lib/cargo/bin/coreutils/timeout",
+          "sha256": "48893b0fb21436b54619db80486e83ef39dfccaf1aefe83dfa00c02d6146e8c0"
+        },
+        "test_shell": "/bin/sh",
+        "elapsed_seconds": 15.127,
+        "nproc_policy_profile": {
+          "record": {
+            "original_source": "#include <stdio.h>\n#include <errno.h>\n#define __USE_GNU  /* For SCHED_DEADLINE.  */\n#include <sched.h>\n\nint\nsched_getscheduler (pid_t pid)\n{\n  fclose (fopen (\"preloaded\",\"w\")); /* marker for preloaded interception */\n  FILE *policyf = fopen (\"/proc/self/sched\", \"r\");\n  int policy;\n  #define fscanfmt fscanf  /* Avoid syntax check.  */\n  if (pid == 0 && fscanfmt (policyf, \"policy : %d\", &policy) == 1)\n  {\n     switch (policy)\n       {\n         case 0:  return SCHED_OTHER;\n         case 1:  return SCHED_FIFO;\n         case 2:  return SCHED_RR;\n         case 6:  return SCHED_DEADLINE;\n         case -1: errno = EINVAL; return -1;\n         default: return SCHED_OTHER;\n       }\n  }\n  else\n    {\n      errno = ENOSYS;\n      return -1;\n    }\n}\n",
+            "adapted_source": "#include <stdio.h>\n#include <errno.h>\n#define __USE_GNU  /* For SCHED_DEADLINE.  */\n#include <sched.h>\n\nint\nsched_getscheduler (pid_t pid)\n{\n  fclose (fopen (\"preloaded\",\"w\")); /* marker for preloaded interception */\n  FILE *policyf = fopen (\"/proc/self/sched\", \"r\");\n  int policy;\n  #define fscanfmt fscanf  /* Avoid syntax check.  */\n  int matched = pid == 0 && fscanfmt (policyf, \"policy : %d\", &policy) == 1;\n  fclose (policyf);\n  if (matched)\n  {\n     switch (policy)\n       {\n         case 0:  return SCHED_OTHER;\n         case 1:  return SCHED_FIFO;\n         case 2:  return SCHED_RR;\n         case 6:  return SCHED_DEADLINE;\n         case -1: errno = EINVAL; return -1;\n         default: return SCHED_OTHER;\n       }\n  }\n  else\n    {\n      errno = ENOSYS;\n      return -1;\n    }\n}\n",
+            "original_sha256": "3e68fabf49fc24630ab6305672820ac26075eb26acb13929304f6071bfee88ea",
+            "adapted_sha256": "1e84a063a46eb10d57af2eb788690c54875ce0aabe19358f93a7fea4061ce57a",
+            "original_arguments": [
+              "-Wall",
+              "-shared",
+              "--std=gnu99",
+              "-fPIC",
+              "-O2",
+              "k.c",
+              "-o",
+              "k.so",
+              "-ldl"
+            ],
+            "fixture": "/tmp/rboxc-upstream-kk_0b9gr/gt-nproc-quota.sh.p4w1",
+            "effective_arguments": [
+              "-Wall",
+              "-shared",
+              "--std=gnu99",
+              "-fPIC",
+              "-O2",
+              "k.policy-closed.c",
+              "-o",
+              "k.so",
+              "-ldl"
+            ]
+          },
+          "log": "evidence/raw/reviewed-nproc-policy-rboxc-upstream-kk_0b9gr-gnu.json",
+          "sha256": "fc3c978fea6ada9acaac37cc8ea2958e87e684e296e5a0469d613dfd1d7404e4"
+        },
+        "elf_input_binaries": {
+          "nproc": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4"
+        },
+        "quota_chroots": [
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc",
+              "--version"
+            ],
+            "nproc_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": null,
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159444.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "max 100000\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159456.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "1000000 1\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159466.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "100000 0\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159476.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "100000 100000\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": "64",
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159486.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "100000 100000\n",
+            "scheduler": "policy   :   1\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159496.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "100000 100000\n",
+            "scheduler": "policy   :   2\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159506.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "100000 100000\n",
+            "scheduler": "policy   :   6\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159516.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "100000 100000\n",
+            "scheduler": "policy   :  -1\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159526.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "40000 100000\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159536.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "50000 100000\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159547.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "100000 100000\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159557.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "140000 100000\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159567.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "1 1000000\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159577.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "150000 100000\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159587.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "150000 100000\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": "10"
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159597.log"
+          }
+        ],
+        "quota_profile_sha256": "9cb028ae636f176b2dca43e78ae88637f91c81adbb5801b2628e1c6823a9f070",
+        "quota_invocations": 16,
+        "case_count_pass": true,
+        "memory": [
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/1159218.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/1159391.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/1159453.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/1159454.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/quota-1159444.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/quota-1159456.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/quota-1159466.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/quota-1159476.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/quota-1159486.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/quota-1159496.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/quota-1159506.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/quota-1159516.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/quota-1159526.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/quota-1159536.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/quota-1159547.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/quota-1159557.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/quota-1159567.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/quota-1159577.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/quota-1159587.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-kk_0b9gr-gnu/quota-1159597.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          }
+        ]
+      },
+      "rboxc": {
+        "status": 0,
+        "log": "evidence/raw/reviewed-vg-tests-nproc-nproc-quota.sh-rboxc-rboxc-upstream-5kvvyp_8.log",
+        "binary_sha256": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28",
+        "runner_source_sha256": "fdb6747d64447d3b622fe06caece7340bd683c3a3f506fcfe3a57c6ad29dd64a",
+        "config_header_sha256": "c4b4aaf3a68f46c2b8ba6e5f390e55321627551abdccd26cffe1491774690751",
+        "watchdog": {
+          "path": "/usr/lib/cargo/bin/coreutils/timeout",
+          "sha256": "48893b0fb21436b54619db80486e83ef39dfccaf1aefe83dfa00c02d6146e8c0"
+        },
+        "test_shell": "/bin/sh",
+        "elapsed_seconds": 17.23,
+        "nproc_policy_profile": {
+          "record": {
+            "original_source": "#include <stdio.h>\n#include <errno.h>\n#define __USE_GNU  /* For SCHED_DEADLINE.  */\n#include <sched.h>\n\nint\nsched_getscheduler (pid_t pid)\n{\n  fclose (fopen (\"preloaded\",\"w\")); /* marker for preloaded interception */\n  FILE *policyf = fopen (\"/proc/self/sched\", \"r\");\n  int policy;\n  #define fscanfmt fscanf  /* Avoid syntax check.  */\n  if (pid == 0 && fscanfmt (policyf, \"policy : %d\", &policy) == 1)\n  {\n     switch (policy)\n       {\n         case 0:  return SCHED_OTHER;\n         case 1:  return SCHED_FIFO;\n         case 2:  return SCHED_RR;\n         case 6:  return SCHED_DEADLINE;\n         case -1: errno = EINVAL; return -1;\n         default: return SCHED_OTHER;\n       }\n  }\n  else\n    {\n      errno = ENOSYS;\n      return -1;\n    }\n}\n",
+            "adapted_source": "#include <stdio.h>\n#include <errno.h>\n#define __USE_GNU  /* For SCHED_DEADLINE.  */\n#include <sched.h>\n\nint\nsched_getscheduler (pid_t pid)\n{\n  fclose (fopen (\"preloaded\",\"w\")); /* marker for preloaded interception */\n  FILE *policyf = fopen (\"/proc/self/sched\", \"r\");\n  int policy;\n  #define fscanfmt fscanf  /* Avoid syntax check.  */\n  int matched = pid == 0 && fscanfmt (policyf, \"policy : %d\", &policy) == 1;\n  fclose (policyf);\n  if (matched)\n  {\n     switch (policy)\n       {\n         case 0:  return SCHED_OTHER;\n         case 1:  return SCHED_FIFO;\n         case 2:  return SCHED_RR;\n         case 6:  return SCHED_DEADLINE;\n         case -1: errno = EINVAL; return -1;\n         default: return SCHED_OTHER;\n       }\n  }\n  else\n    {\n      errno = ENOSYS;\n      return -1;\n    }\n}\n",
+            "original_sha256": "3e68fabf49fc24630ab6305672820ac26075eb26acb13929304f6071bfee88ea",
+            "adapted_sha256": "1e84a063a46eb10d57af2eb788690c54875ce0aabe19358f93a7fea4061ce57a",
+            "original_arguments": [
+              "-Wall",
+              "-shared",
+              "--std=gnu99",
+              "-fPIC",
+              "-O2",
+              "k.c",
+              "-o",
+              "k.so",
+              "-ldl"
+            ],
+            "fixture": "/tmp/rboxc-upstream-5kvvyp_8/gt-nproc-quota.sh.nABB",
+            "effective_arguments": [
+              "-Wall",
+              "-shared",
+              "--std=gnu99",
+              "-fPIC",
+              "-O2",
+              "k.policy-closed.c",
+              "-o",
+              "k.so",
+              "-ldl"
+            ]
+          },
+          "log": "evidence/raw/reviewed-nproc-policy-rboxc-upstream-5kvvyp_8-rboxc.json",
+          "sha256": "3b8221fafdd0ea21f1c7601569f8ac7119fdefd6772498def72aa759f1a70f08"
+        },
+        "elf_input_binaries": {
+          "nproc": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28"
+        },
+        "quota_chroots": [
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc",
+              "--version"
+            ],
+            "nproc_sha256": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": null,
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159670.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "max 100000\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159682.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "1000000 1\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159692.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "100000 0\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159702.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "100000 100000\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": "64",
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159712.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "100000 100000\n",
+            "scheduler": "policy   :   1\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159722.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "100000 100000\n",
+            "scheduler": "policy   :   2\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159732.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "100000 100000\n",
+            "scheduler": "policy   :   6\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159742.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "100000 100000\n",
+            "scheduler": "policy   :  -1\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159752.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "40000 100000\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159762.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "50000 100000\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159772.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "100000 100000\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159782.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "140000 100000\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159792.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "1 1000000\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159802.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "150000 100000\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": null
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159812.log"
+          },
+          {
+            "private_mount_namespace": "mnt:[4026533471]",
+            "private_pid_namespace": "pid:[4026533475]",
+            "parent_mount_namespace": "mnt:[4026531832]",
+            "parent_pid_namespace": "pid:[4026531836]",
+            "private_pid": 1,
+            "command": [
+              "/nproc"
+            ],
+            "nproc_sha256": "46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28",
+            "preload_sha256": "1d004867d8627bb93fd06f8d26b87c8cffa02a27779adea24a956ae9b162ffe0",
+            "quota": "150000 100000\n",
+            "scheduler": "policy   :   0\n",
+            "thread_overrides": {
+              "OMP_NUM_THREADS": null,
+              "OMP_THREAD_LIMIT": "10"
+            },
+            "valgrind_runtime": {
+              "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b",
+              "/usr/libexec/valgrind/memcheck-amd64-linux": "cff90a9f9b4ed5a6c73537e2d6110b097a463ba3adf1aa3055cbce3419c39186",
+              "/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": "084a1c02c0842b8e2dafbac7ddcbee0b27547d77a3c75b73bf1916ff723dd523",
+              "/usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so": "7ebb98da78c4be177fd3a2ea58098ebb645c6583192400f1f1ee9755f77941e9",
+              "/usr/libexec/valgrind/default.supp": "7b440af776e3766468ef2c1ff5b57c2478a089202f2312c1348912643ed23546",
+              "/usr/lib/debug/.build-id/6b/2f4bfcb50bb93f530e1992b8a9d112650bdae7.debug": "913db5822bbb5b5475452c802cf12714a01541c235c81c8c1a41d3b0ae08c462",
+              "/usr/lib/debug/.build-id/06/6527e430a32768d82741e00b81eebb1a872294.debug": "0fed08294a2cfaa72973626cc62d918aca58c74bdd390bcb02cf4d274314da0a"
+            },
+            "log": "quota-1159822.log"
+          }
+        ],
+        "quota_profile_sha256": "9cb028ae636f176b2dca43e78ae88637f91c81adbb5801b2628e1c6823a9f070",
+        "quota_invocations": 16,
+        "case_count_pass": true,
+        "memory": [
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/1159638.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/1159654.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/1159679.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/1159680.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/quota-1159670.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/quota-1159682.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/quota-1159692.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/quota-1159702.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/quota-1159712.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/quota-1159722.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/quota-1159732.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/quota-1159742.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/quota-1159752.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/quota-1159762.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/quota-1159772.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/quota-1159782.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/quota-1159792.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/quota-1159802.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/quota-1159812.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          },
+          {
+            "log": "evidence/raw/reviewed-vg-rboxc-upstream-5kvvyp_8-rboxc/quota-1159822.log",
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {}
+          }
+        ]
+      },
+      "pass": true,
+      "state": "pass"
+    }
+  ]
+}
