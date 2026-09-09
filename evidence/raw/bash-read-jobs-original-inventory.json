@@ -471,8 +471,8 @@
         "exp13.sub": "dde578a82ebb499b4d0685af725502ab1d70009a3073b85a6c22841ccd9eda34"
       },
       "review": "Complete original script, recipe and all referenced subsidiary scripts reviewed. Bounded quoting, conditional diagnostics, completion registrations or private-directory pathname expansion. Completion registrations containing ps/remote-tool names are printed, never invoked. No original expected output is changed; fixed recho is the already pinned GNU test helper. Globstar needs the pinned GNU/candidate ls and ln helpers in the private PATH.",
-      "evidence": "evidence/bash-parameter-descriptor-original.json",
-      "audit": "evidence/bash-parameter-descriptor-original-validation.json"
+      "evidence": "evidence/bash-exit-scope-status-original.json",
+      "audit": "evidence/bash-exit-scope-status-original-validation.json"
     },
     {
       "target": "exportfunc",
@@ -714,8 +714,8 @@
       "timeout_seconds": 300,
       "review": "Original recipe, main script, every active subsidiary and sourced fixture read in full. Fixed local scope, history replay or POSIX assertions only. Original history.list command replay and the posix2 generated shebang require a private /bin/sh bind to the selected Bash implementation. History interactive children intentionally use their original piped/here-string input. Varenv needs private env and absolute true/echo helpers; its fixed RANDOM inequality remains an unchanged probabilistic assertion.",
       "controlling_terminal": true,
-      "evidence": "evidence/bash-parameter-descriptor-original.json",
-      "audit": "evidence/bash-parameter-descriptor-original-validation.json"
+      "evidence": "evidence/bash-terminal-history-original.json",
+      "audit": "evidence/bash-terminal-history-validation.json"
     },
     {
       "target": "ifs",
@@ -826,7 +826,7 @@
       "recipe": "run-jobs",
       "recipe_sha256": "10d3ff2b2cfbaff7db8417648f526a74eaeec730b1a6ace50d22f829e8c5757c",
       "reviewed": true,
-      "state": "reviewed-original-assertions-memory-open",
+      "state": "reviewed-ready",
       "script": "jobs.tests",
       "expected": "jobs.right",
       "fixtures": {
@@ -851,10 +851,7 @@
       "host_inputs": {
         "/usr/bin/dash": "c626229526bb58ec2d0f585f3c3ae1412e6f973b4353385042d11c38d8426917"
       },
-      "review": "Main, original recipe and all nine subsidiaries read. Fixed local sleep jobs, wait/fg/bg/disown/monitor state and signals sent only to owned children or the test shell. Private controlling terminal and selected /bin/sh implementation. Original SIGKILL cases can intentionally prevent instrumented child logs from completing; such families remain outside strict coverage. Disowned finite sleeps retain their original lifetimes.",
-      "evidence": "evidence/bash-duplicated-descriptor-jobs.json",
-      "audit": "evidence/bash-duplicated-descriptor-jobs-validation.json",
-      "memory_profile": "All four original assertions/statuses match. Six original SIGKILL child profiles have matching GNU/candidate command inventories and incomplete logs; two default-SIGHUP children retain descriptor findings. The entire process family remains outside strict memory coverage."
+      "review": "Main, original recipe and all nine subsidiaries read. Fixed local sleep jobs, wait/fg/bg/disown/monitor state and signals sent only to owned children or the test shell. Private controlling terminal and selected /bin/sh implementation. Original SIGKILL cases can intentionally prevent instrumented child logs from completing; such families remain outside strict coverage. Disowned finite sleeps retain their original lifetimes."
     },
     {
       "target": "lastpipe",
@@ -1102,7 +1099,7 @@
       "recipe": "run-posixexp",
       "recipe_sha256": "df929c43b3d443b45e975e4fd5351b2466ae6ecc9c1ad69e92fff9ef4f910cdc",
       "reviewed": true,
-      "state": "reviewed-original-pass",
+      "state": "reviewed-original-assertions-memory-open",
       "script": "posixexp.tests",
       "expected": "posixexp.right",
       "output_mode": "combined",
@@ -1120,8 +1117,8 @@
       },
       "timeout_seconds": 600,
       "review": "Main script, original recipe, and every referenced active subsidiary script read in full. Ordinary array-key quoting, allocated redirections, command substitution parsing/scope, or fixed POSIX expansion assertions. Every write uses private TMPDIR; hardcoded echo/cat need the existing private mount helper profile. Comsub-posix4.sub is commented out and is not claimed executed. Vredir includes a six-descriptor limit and /dev/tty access with no controlling terminal, whose original behavior must be compared explicitly; no historical crash/hang reproduction was selected.",
-      "evidence": "evidence/bash-parameter-descriptor-original.json",
-      "audit": "evidence/bash-parameter-descriptor-original-validation.json"
+      "evidence": "evidence/bash-next-seven-posix-expansion.json",
+      "audit": "evidence/bash-next-seven-posix-expansion-validation.json"
     },
     {
       "target": "posixexp2",
@@ -1259,15 +1256,15 @@
       },
       "timeout_seconds": 180,
       "review": "Main script, original recipe, and every referenced active subsidiary script read in full. Ordinary array-key quoting, allocated redirections, command substitution parsing/scope, or fixed POSIX expansion assertions. Every write uses private TMPDIR; hardcoded echo/cat need the existing private mount helper profile. Comsub-posix4.sub is commented out and is not claimed executed. Vredir includes a six-descriptor limit and /dev/tty access with no controlling terminal, whose original behavior must be compared explicitly; no historical crash/hang reproduction was selected.",
-      "evidence": "evidence/bash-parameter-descriptor-original.json",
-      "audit": "evidence/bash-parameter-descriptor-original-validation.json"
+      "evidence": "evidence/bash-exit-scope-status-original.json",
+      "audit": "evidence/bash-exit-scope-status-original-validation.json"
     },
     {
       "target": "read",
       "recipe": "run-read",
       "recipe_sha256": "06b07577d8dbad5ef60899f105029d97b186c9452fde6303d699051603025eb4",
       "reviewed": true,
-      "state": "reviewed-original-baseline-open",
+      "state": "reviewed-ready",
       "script": "read.tests",
       "expected": "read.right",
       "fixtures": {
@@ -1288,10 +1285,7 @@
       "timeout_seconds": 900,
       "controlling_terminal": true,
       "stdin_terminal": true,
-      "review": "Main, original recipe and all ten subsidiaries read. Ordinary read delimiter, IFS, descriptor, timer and readline behavior; all paths and FIFO are private. A private controlling terminal also supplies original stdin, with no injected input, for unchanged read timeout assertions. The original 2001-iteration timer loop is retained, and every process log is preserved.",
-      "evidence": "evidence/bash-duplicated-descriptor-read.json",
-      "audit": "evidence/bash-duplicated-descriptor-read-validation.json",
-      "baseline": "Normal GNU and candidate output matches the original. Valgrind produces identical partial reads for two one-millisecond timers in both implementations; no output is filtered or normalized. All 4136 candidate process logs are clean. The entire script remains outside strict expected-output coverage."
+      "review": "Main, original recipe and all ten subsidiaries read. Ordinary read delimiter, IFS, descriptor, timer and readline behavior; all paths and FIFO are private. A private controlling terminal also supplies original stdin, with no injected input, for unchanged read timeout assertions. The original 2001-iteration timer loop is retained, and every process log is preserved."
     },
     {
       "target": "redir",
@@ -1315,8 +1309,8 @@
       },
       "review": "Complete ordinary expansion/here-string conformance script and referenced sub-scripts reviewed; unchanged GNU expected output retained. Tilde fixture only visits /usr and /tmp and returns to its private directory.",
       "state": "reviewed-original-pass",
-      "evidence": "evidence/bash-parameter-descriptor-original.json",
-      "audit": "evidence/bash-parameter-descriptor-original-validation.json"
+      "evidence": "evidence/bash-subshell-cleanup-batch-0.json",
+      "audit": "evidence/bash-subshell-cleanup-batch-0-validation.json"
     },
     {
       "target": "rsh",

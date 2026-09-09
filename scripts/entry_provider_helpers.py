@@ -101,6 +101,10 @@ def prepare_archives(root,provider,mapping):
         prepare_exit_scope_cleanup(root, adapted)
         from bash_terminal_cleanup import prepare as prepare_terminal_cleanup
         prepare_terminal_cleanup(root, adapted)
+        from bash_parameter_cleanup import prepare as prepare_parameter_cleanup
+        prepare_parameter_cleanup(root, adapted)
+        from bash_redirection_command_cleanup import prepare as prepare_redirection_command_cleanup
+        prepare_redirection_command_cleanup(root, adapted)
     if provider=='gawk':
         from gawk_cleanup import prepare
         adapted=prepare(root)

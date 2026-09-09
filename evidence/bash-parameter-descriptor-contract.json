@@ -1,0 +1,3380 @@
+{
+  "runtime_helpers": {
+    "/root/rboxc/target/bash-parameter-descriptor-cleanup-candidate/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174"
+  },
+  "binary": "/root/rboxc/target/bash-parameter-descriptor-cleanup-candidate/release/rboxc",
+  "binary_sha256": "e0ab5d913b7693adbe2fbfa96b99bae29dd7b4bc6247c0d6f41e446b72335e15",
+  "gnu_binary_sha256": "bd47035bca2886f8d61f564ae38ca9c807a8b0b98e914d28f909fb7b1bb1366f",
+  "inputs": {
+    "/root/rboxc/build/gnu-bash/bash": "bd47035bca2886f8d61f564ae38ca9c807a8b0b98e914d28f909fb7b1bb1366f",
+    "/root/rboxc/target/bash-parameter-descriptor-cleanup-candidate/release/rboxc": "e0ab5d913b7693adbe2fbfa96b99bae29dd7b4bc6247c0d6f41e446b72335e15",
+    "/root/rboxc/tests/bash-parameter-contract.py": "86db27143e1dff8624093882ff860af36ad9b86b1f88996b6769565b48af2ab1"
+  },
+  "scope": "Ten ordinary brace length and pattern contracts through four aliases compare GNU output, exit status and file effects. Scalar, indexed/associative array and positional values cover owned versus borrowed inputs. Unset-variable diagnostics and EXIT from nested substitution must release abandoned caller allocations while preserving GNU state. All process logs remain recorded.",
+  "complete": true,
+  "planned_total": 40,
+  "passed": 40,
+  "total": 40,
+  "results": [
+    {
+      "name": "bash:length-unset",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -u; printf \"%s\\n\" \"${#absent}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d75767a66333671342f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d3571756c63725f362f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/0-gnu-valgrind/process-945539.log",
+              "sha256": "8f74a3ef7494710832bce5161d9e99281655eecc02018e1d6ed67e102fad4963",
+              "pid": "945539",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 272,
+                "indirectly lost": 284,
+                "possibly lost": 0,
+                "still reachable": 45903
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d72736369746878792f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d646f7a7772326b652f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/0-rboxc-valgrind/process-945553.log",
+              "sha256": "8e058d11da04ea267b8e63d4d6babac540f93d1f0257ca07a8e4968f9477a743",
+              "pid": "945553",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46724
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:length-reference",
+      "command": "bash",
+      "args": [
+        "-c",
+        "declare -n ref=absent; set -u; printf \"%s\\n\" \"${#ref}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d39646d6c753037392f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6262616876316a7a2f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/1-gnu-valgrind/process-945572.log",
+              "sha256": "011093e31496a3c4885923a2180ba8e756207cea4aa2400dcf6cedcd8603bdba",
+              "pid": "945572",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 7,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 277,
+                "indirectly lost": 281,
+                "possibly lost": 0,
+                "still reachable": 46340
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d3278626c776b70612f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d716f7369767164782f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/1-rboxc-valgrind/process-945592.log",
+              "sha256": "bdd47975941ea3936cf91e2ecbdea538d3cc84f0165683c9062efe95c39319db",
+              "pid": "945592",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47068
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:length-values",
+      "command": "bash",
+      "args": [
+        "-c",
+        "v=prefix; a=(first second); printf \"%s:%s:%s\\n\" \"${#v}\" \"${#a[1]}\" \"${#a[@]}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "363a363a320a",
+          "stderr": "",
+          "raw_stdout": "363a363a320a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "363a363a320a",
+          "stderr": "",
+          "raw_stdout": "363a363a320a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/2-gnu-valgrind/process-945609.log",
+              "sha256": "0f7c35060b52aaf31d1fa368c712bf3178f724561626d2ead6232a0aff7085a1",
+              "pid": "945609",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46676
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "363a363a320a",
+          "stderr": "",
+          "raw_stdout": "363a363a320a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "363a363a320a",
+          "stderr": "",
+          "raw_stdout": "363a363a320a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/2-rboxc-valgrind/process-945617.log",
+              "sha256": "287bb1c5d05f017171b55466313eb869933349348f08a18fdc2405f657346fca",
+              "pid": "945617",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47284
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:scalar-pattern",
+      "command": "bash",
+      "args": [
+        "-c",
+        "v=prefixsuffix; printf \"%s:%s\\n\" \"${v#pre}\" \"${v%suffix}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "6669787375666669783a7072656669780a",
+          "stderr": "",
+          "raw_stdout": "6669787375666669783a7072656669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "6669787375666669783a7072656669780a",
+          "stderr": "",
+          "raw_stdout": "6669787375666669783a7072656669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/3-gnu-valgrind/process-945632.log",
+              "sha256": "56d85d96a7e8058d11979bb8158aa2eb362423be5fabf85456aa260b2fc86a79",
+              "pid": "945632",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46142
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "6669787375666669783a7072656669780a",
+          "stderr": "",
+          "raw_stdout": "6669787375666669783a7072656669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "6669787375666669783a7072656669780a",
+          "stderr": "",
+          "raw_stdout": "6669787375666669783a7072656669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/3-rboxc-valgrind/process-945643.log",
+              "sha256": "8f05dd492c7cd9fc9adb930f2b9073c045b909f8dd2270d44775ce4ecd898a78",
+              "pid": "945643",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47262
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:array-pattern",
+      "command": "bash",
+      "args": [
+        "-c",
+        "a=(prefix preword); printf \"[%s]\\n\" \"${a[@]#pre}\" \"${a[1]#pre}\"; declare -A m=([key]=prefix); printf \"%s\\n\" \"${m[key]#pre}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/4-gnu-valgrind/process-945664.log",
+              "sha256": "09048ea030ed1f7f34c95f60d8e5540876a113c7736206be2f3bb92a07244088",
+              "pid": "945664",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55420
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/4-rboxc-valgrind/process-945692.log",
+              "sha256": "015d6d6fabcdab4b98ebb0bfba382fdd104e9edba11aa2cd83f49371a7b90024",
+              "pid": "945692",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 56716
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:positional-pattern",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -- prefix preword; printf \"[%s]\\n\" \"${@#pre}\"; printf \"[%s]\\n\" \"${*#pre}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/5-gnu-valgrind/process-945773.log",
+              "sha256": "f4b3f82a587422cbae5eb1514492aa16ec58902305674d7ddfd677aa8d962f94",
+              "pid": "945773",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46639
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/5-rboxc-valgrind/process-945809.log",
+              "sha256": "ae5e01c2342ca332c1efb208d9c91f600647c8c71f18640eebdd03a014be90cc",
+              "pid": "945809",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47631
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:pattern-unset",
+      "command": "bash",
+      "args": [
+        "-c",
+        "v=prefix; set -u; printf \"%s\\n\" \"${v#${absent}}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d616463727174756a2f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d7968633273666c782f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/6-gnu-valgrind/process-945857.log",
+              "sha256": "d0bb1f066de1fe9e7b6652ce149e2d5c140b3caf1d64243acd193cc180fdd6f9",
+              "pid": "945857",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 8,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 302,
+                "indirectly lost": 288,
+                "possibly lost": 0,
+                "still reachable": 46112
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d35787176613268392f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6a377565693979322f657865632f626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/6-rboxc-valgrind/process-945892.log",
+              "sha256": "699e20bf6fa37447f44bc448e00b20e3eec9b66373265507c15cd1da04359df5",
+              "pid": "945892",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47039
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:pattern-exit",
+      "command": "bash",
+      "args": [
+        "-c",
+        "v=prefix; trap 'printf \"scope:%s:%s\\n\" \"$v\" \"$?\" >&2' EXIT; printf \"%s\\n\" \"${v#${ exit 7; }}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a7072656669783a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a7072656669783a370a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a7072656669783a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a7072656669783a370a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/7-gnu-valgrind/process-945941.log",
+              "sha256": "d5aa5b14937ab338bd87499a13e51a5e356dabfa326bf3e8df584a3ddcd27c4f",
+              "pid": "945941",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 21,
+              "non_inherited_descriptors": 3,
+              "heap_bytes": {
+                "definitely lost": 573,
+                "indirectly lost": 590,
+                "possibly lost": 0,
+                "still reachable": 49317
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a7072656669783a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a7072656669783a370a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a7072656669783a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a7072656669783a370a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/7-rboxc-valgrind/process-945976.log",
+              "sha256": "fa1debb6e208a68ab8074882fcc5ecb3604b101f493a70e08489f9fa7a356c46",
+              "pid": "945976",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51445
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:rhs-value",
+      "command": "bash",
+      "args": [
+        "-c",
+        "unset v; printf \"[%s]\\n\" \"${v:=value}\" \"$v\"; printf \"[%s]\\n\" \"${v:+other}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "stderr": "",
+          "raw_stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "stderr": "",
+          "raw_stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/8-gnu-valgrind/process-946022.log",
+              "sha256": "bf71eff567ed89aa6fae7d3bb9ba88c7e40751ee891755ee4561df5e96077824",
+              "pid": "946022",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46676
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "stderr": "",
+          "raw_stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "stderr": "",
+          "raw_stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/8-rboxc-valgrind/process-946055.log",
+              "sha256": "86680245c1fabd32c73936562f85ffc3910675afb423a67ccc2d3ce41879c0c0",
+              "pid": "946055",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47652
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:rhs-exit",
+      "command": "bash",
+      "args": [
+        "-c",
+        "v=outer; trap 'printf \"scope:%s:%s\\n\" \"$v\" \"$?\" >&2' EXIT; printf \"%s\\n\" \"${missing:-${ exit 7; }}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a6f757465723a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a6f757465723a370a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a6f757465723a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a6f757465723a370a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/9-gnu-valgrind/process-946101.log",
+              "sha256": "385ee1f2a7243227660ca58ea6de9a349ce1eb51104fec3e140214f81ee20405",
+              "pid": "946101",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 20,
+              "non_inherited_descriptors": 3,
+              "heap_bytes": {
+                "definitely lost": 569,
+                "indirectly lost": 604,
+                "possibly lost": 0,
+                "still reachable": 49915
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a6f757465723a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a6f757465723a370a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a6f757465723a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a6f757465723a370a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/9-rboxc-valgrind/process-946139.log",
+              "sha256": "5ac83039b9e5518246729391424a53e7e1fc616bcc7f8873375703a476a3ba57",
+              "pid": "946139",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51819
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:length-unset",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -u; printf \"%s\\n\" \"${#absent}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d3375386776726e762f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d336a6732776171632f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/10-gnu-valgrind/process-946179.log",
+              "sha256": "1e369c4de9fc3885513534bb124c160310d1ce59c41ccb7aa121cabb7507bcb5",
+              "pid": "946179",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 272,
+                "indirectly lost": 284,
+                "possibly lost": 0,
+                "still reachable": 46019
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d7176755f773873792f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d727339327478327a2f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/10-rboxc-valgrind/process-946210.log",
+              "sha256": "a33fc1086bc3a2d4629c072a8c70a9eeda908b3672df60bbd14f6feb4b11713d",
+              "pid": "946210",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46840
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:length-reference",
+      "command": "sh",
+      "args": [
+        "-c",
+        "declare -n ref=absent; set -u; printf \"%s\\n\" \"${#ref}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d357a6130386a74632f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d7970726e32696a302f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/11-gnu-valgrind/process-946251.log",
+              "sha256": "5360fd59dcdc44316d7e3403aecb5452a8ea015a20ba5c024d127a187d507cee",
+              "pid": "946251",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 7,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 277,
+                "indirectly lost": 281,
+                "possibly lost": 0,
+                "still reachable": 46456
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d76797470666d69612f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d31653338346d69712f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/11-rboxc-valgrind/process-946280.log",
+              "sha256": "67053d7761445547d4b73746792492b7831c0da41a06c2c1672bb179d7244e23",
+              "pid": "946280",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47184
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:length-values",
+      "command": "sh",
+      "args": [
+        "-c",
+        "v=prefix; a=(first second); printf \"%s:%s:%s\\n\" \"${#v}\" \"${#a[1]}\" \"${#a[@]}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "363a363a320a",
+          "stderr": "",
+          "raw_stdout": "363a363a320a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "363a363a320a",
+          "stderr": "",
+          "raw_stdout": "363a363a320a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/12-gnu-valgrind/process-946358.log",
+              "sha256": "02b3ae21c094ffe36fce5256607e9c9c5fd6349f0839df8ce0ba062fe4fc1c46",
+              "pid": "946358",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46792
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "363a363a320a",
+          "stderr": "",
+          "raw_stdout": "363a363a320a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "363a363a320a",
+          "stderr": "",
+          "raw_stdout": "363a363a320a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/12-rboxc-valgrind/process-946392.log",
+              "sha256": "041068d9abc8688d000f09a79f282d69f6e29fd545a435870476abf2203b2ab7",
+              "pid": "946392",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47400
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:scalar-pattern",
+      "command": "sh",
+      "args": [
+        "-c",
+        "v=prefixsuffix; printf \"%s:%s\\n\" \"${v#pre}\" \"${v%suffix}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "6669787375666669783a7072656669780a",
+          "stderr": "",
+          "raw_stdout": "6669787375666669783a7072656669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "6669787375666669783a7072656669780a",
+          "stderr": "",
+          "raw_stdout": "6669787375666669783a7072656669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/13-gnu-valgrind/process-946437.log",
+              "sha256": "8ed845251b9b59978e00ae8ed093f14d01cb73c5ff18ec929c603aea0e17e228",
+              "pid": "946437",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46258
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "6669787375666669783a7072656669780a",
+          "stderr": "",
+          "raw_stdout": "6669787375666669783a7072656669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "6669787375666669783a7072656669780a",
+          "stderr": "",
+          "raw_stdout": "6669787375666669783a7072656669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/13-rboxc-valgrind/process-946470.log",
+              "sha256": "8d7e95935abc7957f41a1c3d85df2e595a800153cd792eaf7e1163239f3f75ab",
+              "pid": "946470",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47378
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:array-pattern",
+      "command": "sh",
+      "args": [
+        "-c",
+        "a=(prefix preword); printf \"[%s]\\n\" \"${a[@]#pre}\" \"${a[1]#pre}\"; declare -A m=([key]=prefix); printf \"%s\\n\" \"${m[key]#pre}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/14-gnu-valgrind/process-946512.log",
+              "sha256": "eb48ceb901578a45ae632ed99465ae88cb1c1312c526889d416d2cd5c6d0f475",
+              "pid": "946512",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55536
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/14-rboxc-valgrind/process-946545.log",
+              "sha256": "13c774523ec456827b687702587a60e5e577958b8d93756841e3313f27032c08",
+              "pid": "946545",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 56832
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:positional-pattern",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -- prefix preword; printf \"[%s]\\n\" \"${@#pre}\"; printf \"[%s]\\n\" \"${*#pre}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/15-gnu-valgrind/process-946591.log",
+              "sha256": "89fec5b17760305a704e7758b33ffbcbd146389913ef5849c4206f4b10e1bd55",
+              "pid": "946591",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46755
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/15-rboxc-valgrind/process-946622.log",
+              "sha256": "62372a7e57f6bb9e9cd0c68a417620d269b9469339b182232a778db59743f94a",
+              "pid": "946622",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47747
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:pattern-unset",
+      "command": "sh",
+      "args": [
+        "-c",
+        "v=prefix; set -u; printf \"%s\\n\" \"${v#${absent}}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d666c71615f6862752f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d76377331646d34762f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/16-gnu-valgrind/process-946665.log",
+              "sha256": "95eb161b1934bd83a65d244197ad2ffe6ebe34c16a87062db7b6b6ba28d58a66",
+              "pid": "946665",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 8,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 302,
+                "indirectly lost": 288,
+                "possibly lost": 0,
+                "still reachable": 46228
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d637279616e6e736d2f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6b79377a306862782f657865632f73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/16-rboxc-valgrind/process-946695.log",
+              "sha256": "3bd56b03007a7ba2bb041ee50003445f5dd6dd571574c53c52ed5528df768a9e",
+              "pid": "946695",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47155
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:pattern-exit",
+      "command": "sh",
+      "args": [
+        "-c",
+        "v=prefix; trap 'printf \"scope:%s:%s\\n\" \"$v\" \"$?\" >&2' EXIT; printf \"%s\\n\" \"${v#${ exit 7; }}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a7072656669783a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a7072656669783a370a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a7072656669783a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a7072656669783a370a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/17-gnu-valgrind/process-946747.log",
+              "sha256": "94155f576780f3abf98d6decfe0f3e2a665bb379437f6d62351d3ac7d7a68b46",
+              "pid": "946747",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 21,
+              "non_inherited_descriptors": 3,
+              "heap_bytes": {
+                "definitely lost": 573,
+                "indirectly lost": 590,
+                "possibly lost": 0,
+                "still reachable": 49401
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a7072656669783a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a7072656669783a370a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a7072656669783a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a7072656669783a370a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/17-rboxc-valgrind/process-946822.log",
+              "sha256": "548c32637f9a440ef541dc073758619aa8397805e92cd92b784ee87be4e4e470",
+              "pid": "946822",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51465
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:rhs-value",
+      "command": "sh",
+      "args": [
+        "-c",
+        "unset v; printf \"[%s]\\n\" \"${v:=value}\" \"$v\"; printf \"[%s]\\n\" \"${v:+other}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "stderr": "",
+          "raw_stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "stderr": "",
+          "raw_stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/18-gnu-valgrind/process-946882.log",
+              "sha256": "457b71f380d83e6d2c465a3e5e407ee550a0df4d917bb1b33e1c3e755c9a64c6",
+              "pid": "946882",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46792
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "stderr": "",
+          "raw_stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "stderr": "",
+          "raw_stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/18-rboxc-valgrind/process-946914.log",
+              "sha256": "c8ce0176a835a266d3515baeafad843f4b943b0df79178e5f79799fecd6236b8",
+              "pid": "946914",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47768
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:rhs-exit",
+      "command": "sh",
+      "args": [
+        "-c",
+        "v=outer; trap 'printf \"scope:%s:%s\\n\" \"$v\" \"$?\" >&2' EXIT; printf \"%s\\n\" \"${missing:-${ exit 7; }}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a6f757465723a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a6f757465723a370a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a6f757465723a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a6f757465723a370a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/19-gnu-valgrind/process-946955.log",
+              "sha256": "04953d154fcb712a1f01ba2fd58900827cc876fb0bb9db8a536f349d37f5f599",
+              "pid": "946955",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 20,
+              "non_inherited_descriptors": 3,
+              "heap_bytes": {
+                "definitely lost": 569,
+                "indirectly lost": 604,
+                "possibly lost": 0,
+                "still reachable": 49999
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a6f757465723a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a6f757465723a370a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a6f757465723a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a6f757465723a370a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/19-rboxc-valgrind/process-946987.log",
+              "sha256": "bbb75ab2c70788f701a5f33f4f654bdc28eef6c65dcda4b7a2ae646fa683fe66",
+              "pid": "946987",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51887
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:length-unset",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -u; printf \"%s\\n\" \"${#absent}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d75776e7577735f692f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d756d3878617131342f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/20-gnu-valgrind/process-947032.log",
+              "sha256": "d191b428d04f6e3708aee0ee1bf07f85b654bb8796e09fb3feb4ac3b69f067ff",
+              "pid": "947032",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 272,
+                "indirectly lost": 284,
+                "possibly lost": 0,
+                "still reachable": 45905
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d726d736d706f68712f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d31346f7066376d5f2f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/20-rboxc-valgrind/process-947062.log",
+              "sha256": "118d2dbb052cc574860109f8cca6fb19618d63ab5839b03e165b59115c246fa0",
+              "pid": "947062",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46726
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:length-reference",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "declare -n ref=absent; set -u; printf \"%s\\n\" \"${#ref}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d636f6633736c6b392f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d653663766b7532672f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/21-gnu-valgrind/process-947117.log",
+              "sha256": "05e01b36560e080c109ad82414fba92b695165cf1d68aed340205b7d329b301f",
+              "pid": "947117",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 7,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 277,
+                "indirectly lost": 281,
+                "possibly lost": 0,
+                "still reachable": 46342
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d686b7276766a617a2f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d70336d616a7477762f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/21-rboxc-valgrind/process-947148.log",
+              "sha256": "f7ac72b093160e3af21b252107bd758e739dce0627b2d7f0c049cdeb40f9b7a6",
+              "pid": "947148",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47070
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:length-values",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "v=prefix; a=(first second); printf \"%s:%s:%s\\n\" \"${#v}\" \"${#a[1]}\" \"${#a[@]}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "363a363a320a",
+          "stderr": "",
+          "raw_stdout": "363a363a320a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "363a363a320a",
+          "stderr": "",
+          "raw_stdout": "363a363a320a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/22-gnu-valgrind/process-947184.log",
+              "sha256": "0c58f5eac800d4441e2d34064c7503b4030aa0295d30b5c008483faa7642b002",
+              "pid": "947184",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46678
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "363a363a320a",
+          "stderr": "",
+          "raw_stdout": "363a363a320a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "363a363a320a",
+          "stderr": "",
+          "raw_stdout": "363a363a320a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/22-rboxc-valgrind/process-947215.log",
+              "sha256": "7d2fe616e4bb2d8654af6019dafa81ec7e64010598306c2e3cf09245587cefc8",
+              "pid": "947215",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47286
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:scalar-pattern",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "v=prefixsuffix; printf \"%s:%s\\n\" \"${v#pre}\" \"${v%suffix}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "6669787375666669783a7072656669780a",
+          "stderr": "",
+          "raw_stdout": "6669787375666669783a7072656669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "6669787375666669783a7072656669780a",
+          "stderr": "",
+          "raw_stdout": "6669787375666669783a7072656669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/23-gnu-valgrind/process-947257.log",
+              "sha256": "6db5282e8dc58716f26cd9f9b280fdb2b4dfca5cf565fbdc5c91a5ed375d8042",
+              "pid": "947257",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46144
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "6669787375666669783a7072656669780a",
+          "stderr": "",
+          "raw_stdout": "6669787375666669783a7072656669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "6669787375666669783a7072656669780a",
+          "stderr": "",
+          "raw_stdout": "6669787375666669783a7072656669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/23-rboxc-valgrind/process-947290.log",
+              "sha256": "ed247fa63e5439e586d1004ce2c0d0319665efb04372cd25b97673220417c867",
+              "pid": "947290",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47264
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:array-pattern",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "a=(prefix preword); printf \"[%s]\\n\" \"${a[@]#pre}\" \"${a[1]#pre}\"; declare -A m=([key]=prefix); printf \"%s\\n\" \"${m[key]#pre}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/24-gnu-valgrind/process-947328.log",
+              "sha256": "fdebf22cd088c677119600407c83f869a9fae221a05abc4cf7647e332cdfe2ac",
+              "pid": "947328",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55422
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/24-rboxc-valgrind/process-947397.log",
+              "sha256": "04e6e2405b79ca5331ac63d80c3832880f680b5eb9b7370589417abc073c68bb",
+              "pid": "947397",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 56718
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:positional-pattern",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -- prefix preword; printf \"[%s]\\n\" \"${@#pre}\"; printf \"[%s]\\n\" \"${*#pre}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/25-gnu-valgrind/process-947453.log",
+              "sha256": "bf57755d893778ea9235fcaa601bcac08d302b29e7cb180fcb9c5e2d51ee6a3f",
+              "pid": "947453",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46641
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/25-rboxc-valgrind/process-947510.log",
+              "sha256": "be6ad21c1d14ed360f70b621a89f9a53a1dd3cafe32effc9f61447681dfe29f5",
+              "pid": "947510",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47633
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:pattern-unset",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "v=prefix; set -u; printf \"%s\\n\" \"${v#${absent}}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d647833706131326b2f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d5f656835656531772f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/26-gnu-valgrind/process-947550.log",
+              "sha256": "08d7f2fb6f7890c9de6cb232c36352fa7e0d5ff73d41fc06a03af7c963d84818",
+              "pid": "947550",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 8,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 302,
+                "indirectly lost": 288,
+                "possibly lost": 0,
+                "still reachable": 46114
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6572696471777a622f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d7933777a6b6c33732f657865632f2d626173683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/26-rboxc-valgrind/process-947589.log",
+              "sha256": "552bc049677cb88651c9ad525246eb3e3158b48d508f42649af7873ecc00652f",
+              "pid": "947589",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47041
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:pattern-exit",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "v=prefix; trap 'printf \"scope:%s:%s\\n\" \"$v\" \"$?\" >&2' EXIT; printf \"%s\\n\" \"${v#${ exit 7; }}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a7072656669783a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a7072656669783a370a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a7072656669783a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a7072656669783a370a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/27-gnu-valgrind/process-947643.log",
+              "sha256": "d65105e8c0aec60a1c7681c1894072c6f0f9fc286c6f6f1ed0ecfd67cba215c6",
+              "pid": "947643",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 21,
+              "non_inherited_descriptors": 3,
+              "heap_bytes": {
+                "definitely lost": 573,
+                "indirectly lost": 590,
+                "possibly lost": 0,
+                "still reachable": 49319
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a7072656669783a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a7072656669783a370a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a7072656669783a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a7072656669783a370a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/27-rboxc-valgrind/process-947676.log",
+              "sha256": "2e2f68dca4764d03697609b0641bccbe31e8711fef31f87e7362014040176238",
+              "pid": "947676",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51447
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:rhs-value",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "unset v; printf \"[%s]\\n\" \"${v:=value}\" \"$v\"; printf \"[%s]\\n\" \"${v:+other}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "stderr": "",
+          "raw_stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "stderr": "",
+          "raw_stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/28-gnu-valgrind/process-947721.log",
+              "sha256": "0817de8ea421225288721245ab7b9a01b6cbcfecb04ff0bf22324389a629d343",
+              "pid": "947721",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46678
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "stderr": "",
+          "raw_stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "stderr": "",
+          "raw_stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/28-rboxc-valgrind/process-947757.log",
+              "sha256": "c68f527bdacf8174381a1c8d1371982963405324bf307ba6e9691b5300962a1b",
+              "pid": "947757",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47654
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:rhs-exit",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "v=outer; trap 'printf \"scope:%s:%s\\n\" \"$v\" \"$?\" >&2' EXIT; printf \"%s\\n\" \"${missing:-${ exit 7; }}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a6f757465723a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a6f757465723a370a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a6f757465723a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a6f757465723a370a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/29-gnu-valgrind/process-947799.log",
+              "sha256": "d8625cfed63dcf439618855d18b742896070decd9f6dddb31b04f0780bd9bd66",
+              "pid": "947799",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 20,
+              "non_inherited_descriptors": 3,
+              "heap_bytes": {
+                "definitely lost": 569,
+                "indirectly lost": 604,
+                "possibly lost": 0,
+                "still reachable": 49917
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a6f757465723a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a6f757465723a370a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a6f757465723a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a6f757465723a370a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/29-rboxc-valgrind/process-947853.log",
+              "sha256": "fd8aa7a4a23820574fea5dfadffda58aa4ebe30983dee3d3d51bddd3bf159b2c",
+              "pid": "947853",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51821
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:length-unset",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -u; printf \"%s\\n\" \"${#absent}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d737938777369716e2f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d66726a716d746d7a2f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/30-gnu-valgrind/process-947915.log",
+              "sha256": "ba22b8e036a61ef66f40f56fe96c1db53ffc0a4c5c4f71cc669c09e2cb0ca178",
+              "pid": "947915",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 272,
+                "indirectly lost": 284,
+                "possibly lost": 0,
+                "still reachable": 45901
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6c326b74336e726d2f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d7766726538796a762f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/30-rboxc-valgrind/process-947939.log",
+              "sha256": "c90c0951bf14b5692286ef65b31d3a6705d14c498f7c6c9a8c869f8f251a1d8a",
+              "pid": "947939",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46722
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:length-reference",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "declare -n ref=absent; set -u; printf \"%s\\n\" \"${#ref}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d7a737764306f786b2f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d36656133376a305f2f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/31-gnu-valgrind/process-947984.log",
+              "sha256": "249d5e84580c875fb851fe2711c5d1412a755105049721b0ff86c48c2ab0aff1",
+              "pid": "947984",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 7,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 277,
+                "indirectly lost": 281,
+                "possibly lost": 0,
+                "still reachable": 46338
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d72616b70677835322f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6162633869696f382f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/31-rboxc-valgrind/process-948019.log",
+              "sha256": "8b870b44b7620228b5c52d34c274233f42e7cec9e853ab05c005e47a147e265d",
+              "pid": "948019",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47066
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:length-values",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "v=prefix; a=(first second); printf \"%s:%s:%s\\n\" \"${#v}\" \"${#a[1]}\" \"${#a[@]}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "363a363a320a",
+          "stderr": "",
+          "raw_stdout": "363a363a320a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "363a363a320a",
+          "stderr": "",
+          "raw_stdout": "363a363a320a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/32-gnu-valgrind/process-948080.log",
+              "sha256": "c6fa9d6dd16d46d53ce7a1b234ce199910d21095d672c019b8785ee178c8d9ab",
+              "pid": "948080",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46674
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "363a363a320a",
+          "stderr": "",
+          "raw_stdout": "363a363a320a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "363a363a320a",
+          "stderr": "",
+          "raw_stdout": "363a363a320a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/32-rboxc-valgrind/process-948110.log",
+              "sha256": "9561eda51f8718b49a3100eb7e8273d86448bcf7290bc16755947df4d0689eec",
+              "pid": "948110",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47282
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:scalar-pattern",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "v=prefixsuffix; printf \"%s:%s\\n\" \"${v#pre}\" \"${v%suffix}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "6669787375666669783a7072656669780a",
+          "stderr": "",
+          "raw_stdout": "6669787375666669783a7072656669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "6669787375666669783a7072656669780a",
+          "stderr": "",
+          "raw_stdout": "6669787375666669783a7072656669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/33-gnu-valgrind/process-948152.log",
+              "sha256": "208b26d7cb374a83a32085cec45f88561da394d5e6c6d5760bdb330fd9e1dd8c",
+              "pid": "948152",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46140
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "6669787375666669783a7072656669780a",
+          "stderr": "",
+          "raw_stdout": "6669787375666669783a7072656669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "6669787375666669783a7072656669780a",
+          "stderr": "",
+          "raw_stdout": "6669787375666669783a7072656669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/33-rboxc-valgrind/process-948180.log",
+              "sha256": "11a637e2c61598927883474622c906dc1275246ba327252b355e9602c0ddd983",
+              "pid": "948180",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47260
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:array-pattern",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "a=(prefix preword); printf \"[%s]\\n\" \"${a[@]#pre}\" \"${a[1]#pre}\"; declare -A m=([key]=prefix); printf \"%s\\n\" \"${m[key]#pre}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/34-gnu-valgrind/process-948227.log",
+              "sha256": "bb6b4bc47669508fd410923bf2afb876aac6a7832c53ab81634a5769f46461d8",
+              "pid": "948227",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55418
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b776f72645d0a6669780a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/34-rboxc-valgrind/process-948260.log",
+              "sha256": "94d3c3f29e25ea79c4541fc7381a576c97a037f755c3a66e42836cd94fb4b1e8",
+              "pid": "948260",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 56714
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:positional-pattern",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -- prefix preword; printf \"[%s]\\n\" \"${@#pre}\"; printf \"[%s]\\n\" \"${*#pre}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/35-gnu-valgrind/process-948305.log",
+              "sha256": "c0c5d24384453021e6a64674e74cb6877eacf1dc47537962621460f6c9dad66d",
+              "pid": "948305",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46637
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "stderr": "",
+          "raw_stdout": "5b6669785d0a5b776f72645d0a5b66697820776f72645d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/35-rboxc-valgrind/process-948334.log",
+              "sha256": "d6bcc2157fd3ea8f0ce5ce764d2606fad9d88fc3495f232dabc541008a3bfad3",
+              "pid": "948334",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47629
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:pattern-unset",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "v=prefix; set -u; printf \"%s\\n\" \"${v#${absent}}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d77726539323764392f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d36646631315f62692f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/36-gnu-valgrind/process-948374.log",
+              "sha256": "2570a7916435b53d5fc33ac5f06a65b5b009f4d146be25f7085293bdf16fa836",
+              "pid": "948374",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 8,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 302,
+                "indirectly lost": 288,
+                "possibly lost": 0,
+                "still reachable": 46110
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d5f747a7362695f662f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 127,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d68623475376236652f657865632f2d73683a206c696e6520313a20616273656e743a20756e626f756e64207661726961626c650a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/36-rboxc-valgrind/process-948402.log",
+              "sha256": "3829602ea3ebaf5ebd703acedad93959675130fabdd31dfa39831cc0514d3c7b",
+              "pid": "948402",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47037
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:pattern-exit",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "v=prefix; trap 'printf \"scope:%s:%s\\n\" \"$v\" \"$?\" >&2' EXIT; printf \"%s\\n\" \"${v#${ exit 7; }}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a7072656669783a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a7072656669783a370a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a7072656669783a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a7072656669783a370a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/37-gnu-valgrind/process-948479.log",
+              "sha256": "3b818f2de11f4c0c5dd047c63d16ec6878cba6e7fed52df9e75fd824af8da63d",
+              "pid": "948479",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 21,
+              "non_inherited_descriptors": 3,
+              "heap_bytes": {
+                "definitely lost": 573,
+                "indirectly lost": 590,
+                "possibly lost": 0,
+                "still reachable": 49315
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a7072656669783a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a7072656669783a370a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a7072656669783a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a7072656669783a370a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/37-rboxc-valgrind/process-948512.log",
+              "sha256": "47e0a7047907aa65495426bad56c4b22f0f2dc30f15b461d0e6fbd8cdf61b88b",
+              "pid": "948512",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51443
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:rhs-value",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "unset v; printf \"[%s]\\n\" \"${v:=value}\" \"$v\"; printf \"[%s]\\n\" \"${v:+other}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "stderr": "",
+          "raw_stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "stderr": "",
+          "raw_stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/38-gnu-valgrind/process-948554.log",
+              "sha256": "ac37a66df0020b6c2bd3cd5cde2c1e3eaf48cb7d6045b692e8bf5502c99b14d3",
+              "pid": "948554",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46674
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "stderr": "",
+          "raw_stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "stderr": "",
+          "raw_stdout": "5b76616c75655d0a5b76616c75655d0a5b6f746865725d0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/38-rboxc-valgrind/process-948588.log",
+              "sha256": "68029fd500c5ce56e25210dc2bebe44e2f43f1647daa3fea9a2eb91ce11e464b",
+              "pid": "948588",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47650
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:rhs-exit",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "v=outer; trap 'printf \"scope:%s:%s\\n\" \"$v\" \"$?\" >&2' EXIT; printf \"%s\\n\" \"${missing:-${ exit 7; }}\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a6f757465723a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a6f757465723a370a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a6f757465723a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a6f757465723a370a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/39-gnu-valgrind/process-948637.log",
+              "sha256": "97bdb3f95e1b26ad741b61335c3685400b8503b0d08e9450c38bd966fe441635",
+              "pid": "948637",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 20,
+              "non_inherited_descriptors": 3,
+              "heap_bytes": {
+                "definitely lost": 569,
+                "indirectly lost": 604,
+                "possibly lost": 0,
+                "still reachable": 49913
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a6f757465723a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a6f757465723a370a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "73636f70653a6f757465723a370a",
+          "raw_stdout": "",
+          "raw_stderr": "73636f70653a6f757465723a370a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-parameter-descriptor-contract/run-9z1fmyza/39-rboxc-valgrind/process-948670.log",
+              "sha256": "903c5eb62bcefc3231ed08d66feac0974916cb16f193eae469c9e71f8e809730",
+              "pid": "948670",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51817
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

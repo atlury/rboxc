@@ -109,7 +109,6 @@ static void track_bash_standard(int fd) {
   }
   errno = saved;
 }
-void rboxc_bash_track_backup(int fd);
 int rboxc_bash_owned_dup2(int from, int to) {
   int result, saved = errno;
   /* Preserve an invalid source's EBADF result without duplicating a descriptor
@@ -119,10 +118,7 @@ int rboxc_bash_owned_dup2(int from, int to) {
   errno = saved;
   result = dup2(from, to);
   saved = errno;
-  if (result >= 0 && from != to) {
-    if (to < 3) track_bash_standard(to);
-    else rboxc_bash_track_backup(to);
-  }
+  if (result >= 0 && from != to) track_bash_standard(to);
   errno = saved;
   return result;
 }
@@ -138,8 +134,8 @@ int rboxc_bash_owned_pipe(int fds[2]) {
   return result;
 }
 
-/* Redirection backups and duplicated targets survive fork but belong to the
-   shell that created them. Forget normal closes and finalize owners abandoned by a
+/* Redirection backup descriptors survive fork but belong to the shell that
+   created them. Forget normal closes and finalize backups abandoned by a
    command-substitution child. Never restore its parent's redirections. */
 struct bash_backup {
   int fd;

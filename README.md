@@ -78,7 +78,7 @@ there where available.
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
-| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 52 original recipes (53 scripts) pass on their recorded candidates with 12275 clean process logs; four memory/signal profiles and three instrumentation/environment baselines remain open |
+| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 53 original recipes (54 scripts) pass on their recorded candidates with 12765 clean process logs; four memory/signal profiles and four instrumentation/environment baselines remain open |
 | Less | 704 | Ten focused checks, one production terminal check and all 18 original screen replays pass across declared profiles |
 | Screen | 5.0.2 | All three original targets pass across declared profiles; daemon cleanup and socket recovery pass Valgrind |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
@@ -105,16 +105,32 @@ The public terminal cleanup API alone retains the shared parameter cache in
 this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
-The current 187-command candidate is **14,722,352 bytes**, at
-`target/bash-terminal-cleanup-candidate/release/rboxc`, SHA-256
-`27d1ec465c58ed342334c5e79b0370f1698be957df6a1452b010b633b6449891`.
+The current 187-command candidate is **14,723,016 bytes**, at
+`target/bash-parameter-descriptor-cleanup-candidate/release/rboxc`, SHA-256
+`e0ab5d913b7693adbe2fbfa96b99bae29dd7b4bc6247c0d6f41e446b72335e15`.
 An independent rebuild is byte-identical. All 428 Coreutils smoke checks,
 11 dispatcher checks, 44 focused Bash comparisons and 69 shell-adapter checks
-pass. Bash has **53 strict scripts from 52 original recipes**, with **12275 clean
+pass. Bash has **54 strict scripts from 53 original recipes**, with **12765 clean
 candidate process logs** across their recorded immutable candidates.
-[evidence/bash-terminal-cleanup-coverage.json](evidence/bash-terminal-cleanup-coverage.json)
-accounts for 60 reviewed scripts and all 88 original recipes; 24 recipes remain
+[evidence/bash-parameter-descriptor-coverage.json](evidence/bash-parameter-descriptor-coverage.json)
+accounts for 62 reviewed scripts and all 88 original recipes; 22 recipes remain
 pending, two are orchestration and three are held outside execution.
+
+
+Brace length, pattern and RHS expansion now retain heap owners through
+nested diagnostics and EXIT. External redirection failures release their
+command strings, and duplicated nonstandard descriptors retain exit ownership
+until an ordinary close or process exit. The complete POSIX expansion recipe
+now passes with 490 clean candidate process logs. Five related originals pass
+with 880 clean logs; 60 shell contracts and 31 direct descriptor checks also
+pass. The unchanged read recipe has 4136 clean candidate logs, resolving its
+4003 FIFO descriptor findings. Its two one-millisecond timer differences match
+GNU under Valgrind, so the whole recipe remains outside strict output counts.
+The jobs recipe matches all four original output/status profiles; its six
+intentional killed-child logs and two default-SIGHUP findings remain open.
+[evidence/bash-parameter-descriptor-validation.json](evidence/bash-parameter-descriptor-validation.json)
+audits the two changed GNU helpers, runtime wrapper, rebuild, raw logs and
+preserved intermediate findings.
 
 Interactive Bash now retains exit ownership of its allocated terminal while
 leaving borrowed stderr unchanged. Eight contracts check four shell aliases
@@ -132,7 +148,7 @@ including the initial eleven terminal descriptor findings. The printf recipe
 and all subsidiaries have been read; its mixed historical loop-reproduction
 inputs remain unexecuted, while ordinary formatting can be covered separately.
 
-No-fork substitution files and saved stdout now retain exit owners. Anonymous
+At the preceding EXIT-scope checkpoint, no-fork substitution files and saved stdout gained exit owners. Anonymous
 file records and assignment descriptors live on the heap, and explicit heap
 cleanup releases expansion, getopt and saved PIPESTATUS data while EXIT traps
 retain GNU's function scope. The unchanged comsub2 original passes; all five
@@ -149,7 +165,8 @@ Seven additional original recipes now have complete recorded runs. The unchanged
 [evidence/bash-next-seven-ifs-matrix-validation.json](evidence/bash-next-seven-ifs-matrix-validation.json)
 reparses every original log. Script input passes using the original shared stdin
 offset, and quotearray passes after arithmetic caller ownership cleanup.
-Comsub-posix and posixexp match GNU assertions but retain cleanup findings.
+Comsub-posix retains cleanup findings. Posixexp's earlier findings are resolved
+by the parameter ownership candidate described above.
 Vredir matches GNU separately with and without instrumentation, including the
 missing-terminal and Valgrind descriptor-limit differences from the original
 expected file. These profiles remain outside strict counts; their initial

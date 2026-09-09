@@ -21,6 +21,7 @@ parser.add_argument('--driver-snapshot', type=Path)
 parser.add_argument('--memory-open',nargs='*',default=[],help='Explicit failing memory profiles to audit and exclude from strict counts')
 parser.add_argument('--assertion-baseline',nargs='*',default=[],help='GNU and candidate share a profile-specific assertion difference; exclude the entire script')
 parser.add_argument('--private-directory-baseline',nargs='*',default=[],help='For an assertion baseline only, compare the diagnostic using the private directory recorded in its process commands')
+parser.add_argument('--killed-child-open',nargs='*',default=[],help='Preserve incomplete logs from the original jobs recipe; never include these families in strict counts')
 parser.add_argument('--report-name', required=True)
 args = parser.parse_args()
 assert re.fullmatch(r'[a-z0-9-]+', args.report_name)
@@ -30,6 +31,8 @@ report = json.loads(args.original.read_text())
 assert set(args.memory_open)<={r['selection'] for r in report['results'] if not r['pass']}
 assert set(args.assertion_baseline)<={r['selection'] for r in report['results'] if not r['pass']}
 assert set(args.private_directory_baseline)<=set(args.assertion_baseline)
+assert set(args.killed_child_open)<=set(args.memory_open)
+assert set(args.killed_child_open)<={'jobs'}
 assert report['complete'] and report['total'] == report['planned_total'] == len(report['results'])
 assert report['passed'] == sum(r['pass'] for r in report['results'])
 assert fingerprint(Path(report['binary'])) == report['binary_sha256']
@@ -49,6 +52,7 @@ open_processes = []
 open_findings = []
 raw = {}
 private_directories = {}
+incomplete_commands = {}
 
 def baseline_output(result,key):
     outcome=result['outcomes'][key]
@@ -82,6 +86,7 @@ for result in report['results']:
         assert outcome.get('timeout_seconds',180)==row.get('timeout_seconds',180)
         assert outcome.get('stdin_script',False)==bool(row.get('stdin_script'))
         assert outcome.get('controlling_terminal',False)==bool(row.get('controlling_terminal'))
+        assert outcome.get('stdin_terminal',False)==bool(row.get('stdin_terminal'))
         assert any(p.endswith('/terminal-output') for p in outcome['raw'])==bool(row.get('controlling_terminal'))
         reference = result['outcomes']['gnu-valgrind' if key.endswith('-valgrind') and baseline else 'gnu']
         if not baseline: assert outcome['expected_output_matches']
@@ -124,8 +129,12 @@ for result in report['results']:
             lost = any(parsed['heap_bytes'].get(k,0) for k in ('definitely lost','indirectly lost','possibly lost'))
             actual_clean = complete and parsed['errors']==0 and parsed['non_inherited_descriptors']==0 and not lost
             assert memory['clean'] == actual_clean
+            if not complete and result['selection'] in args.killed_child_open:
+                command,=re.findall(r'^==[0-9]+== Command: /tmp/rboxc-bash-original-[a-z0-9_]{8}/exec/(.*)',text,re.M)
+                assert command in ('sleep 60','sleep 30','sleep 300','sleep 350','sleep 400','bash --noprofile --norc ./jobs.tests')
+                incomplete_commands.setdefault(key,[]).append(command)
             if key == 'rboxc-valgrind':
-                assert complete
+                assert complete or result['selection'] in args.killed_child_open
                 if not allow_open: assert actual_clean
                 if not memory['clean']:
                     assert allow_open
@@ -142,6 +151,9 @@ for result in report['results']:
                 collection.append({'selection': result['selection'], 'log': memory['log'], 'sha256': memory['sha256']})
             raw[memory['log']] = memory['sha256']
 assert len({p['log'] for p in clean+open_processes}) == len(clean)+len(open_processes)
+if args.killed_child_open:
+    expected=sorted(['sleep 60','sleep 30','sleep 300','sleep 350','sleep 400','bash --noprofile --norc ./jobs.tests'])
+    assert sorted(incomplete_commands['gnu-valgrind'])==sorted(incomplete_commands['rboxc-valgrind'])==expected
 assert {r['selection'] for r in open_findings}|set(args.assertion_baseline)=={r['selection'] for r in report['results'] if not r['pass']}
 target.write_text(json.dumps({'scope':'Strict original scripts match unchanged GNU expected output and exit status. Explicit assertion baselines require candidate output and status to equal GNU separately with and without instrumentation; their entire families remain outside strict counts. Every raw process log is reparsed, and no timeout is accepted. Explicit memory-open profiles retain every finding. Private helper mounts leave host files unchanged. Native findings remain separate. This is batch evidence, not GNU-wide completion.',
     'binary':report['binary'], 'binary_sha256':report['binary_sha256'],
@@ -150,5 +162,6 @@ target.write_text(json.dumps({'scope':'Strict original scripts match unchanged G
     'original_groups':report.get('original_groups',report['total']),'original_scripts':report['total'], 'strict_original_passes':report['passed'],'clean_candidate_processes':len(clean),
     'open_processes':open_processes,'open_findings':open_findings,'explicit_memory_open':args.memory_open,'assertion_baselines':args.assertion_baseline,
     'private_directory_baselines':args.private_directory_baseline,'private_directories':private_directories,
+    'killed_child_open':args.killed_child_open,'incomplete_commands':incomplete_commands,
     'driver_sha256':fingerprint(Path(__file__)), 'processes':clean, 'raw':raw}, indent=2)+'\n')
 print('Audited', report['total'], 'original Bash scripts and', len(clean), 'clean candidate processes')
