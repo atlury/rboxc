@@ -1,6 +1,6 @@
 {
   "provider": "GNU Gawk 5.4.1",
-  "scope": "All 634 original AWK inputs inventoried; 476 recipes reviewed, including ten native-extension interoperation selections: 473 pass and three assertion failures match GNU. Four further inputs are executed or included auxiliary programs of passing recipes and add no duplicate recipe/process counts. Nine historical crash/memory reproductions are excluded; 145 inputs still await individual accounting and optional profiles. Nine pipe, sorting and exit-status recipes account for seventeen shell children and five native helper children separately. Separate reports retain their selected scopes and original failures; full acceptance remains open.",
+  "scope": "All 634 original AWK inputs inventoried; 481 recipes reviewed, including fifteen native-extension interoperation selections: 478 pass and three assertion failures match GNU. Six further inputs are executed or included auxiliary programs of passing recipes and add no duplicate recipe/process counts. Nine historical crash/memory reproductions are excluded; 138 inputs still await individual accounting and optional profiles. Eleven pipe, sorting, extension and exit-status recipes account for twenty shell children and seven native helper children separately. Separate reports retain their selected scopes and original failures; full acceptance remains open.",
   "registration_sha256": "447e3fdd76fe4ebb4b39427465aa727ed421a5818e568a00e00f2c5a90830ade",
   "inputs": [
     {
@@ -117,8 +117,43 @@
     {
       "path": "test/apiterm.awk",
       "sha256": "8350f4601632026b52734b3b3374a0dca812d191bd95a712ce111de4b38fcb74",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-extension-original-pass",
+      "target": "apiterm",
+      "review": "Full original programs, configured Make recipe and supplied fixtures reviewed. Ordinary extension API path strings, input-pipe/file state, directory field reparsing, and array/symbol serialization round trips. The 6403-byte rwarray input contains ordinary fixed dictionary words. State and child cleanup files are confined to private test directories; directory enumeration is read-only. Native extension and declared shell/helper children are pinned separately.",
+      "fixtures": {
+        "apiterm.in": "52f97780698e55ebcb8325dde3d318912a2b9829b622f88314d4d3cb2e98b710",
+        "apiterm.ok": "9f21af38e4298dc7ede839a65698408af0735697101926c7e6ca7348999fcc70"
+      },
+      "configured_recipe_sha256": "c9b74426e2971e591bf652b018593c500464cd0c9c567575af79951e8bd44a8e",
+      "extension_profile": {
+        "scope": "Pinned GNU native extension helpers with the GNU or translated Gawk entry; private test-only library lookup.",
+        "libraries": {
+          "filefuncs.so": {
+            "path": "/root/rboxc/build/gnu-gawk/extension/.libs/filefuncs.so",
+            "sha256": "5d0ff47bff41d7b72ab06bf9d91d43f24c77154fa8b811f9b86fd0825f998f45"
+          }
+        },
+        "inputs": {
+          "/opt/src/gawk-5.4.1/extension/filefuncs.c": "a847860a78d43c3eb4dc4b53e71bf382a30bb340b6decc117c78804bb55fe227",
+          "/opt/src/gawk-5.4.1/extension/ext_custom.h": "70293c4c5e662cd2980b7d29112134aa2102347960471dcb16fd677c3e70af07",
+          "/opt/src/gawk-5.4.1/gawkapi.h": "3480eb870c9b88cca3f4df58e069ba91c944954d7f1610944ef557350c8b0713",
+          "/opt/src/gawk-5.4.1/gettext.h": "d9d2efcd8865ed25b0976aee699b4f82f88fc9acf2b706886027b4a6f5daadf7",
+          "/opt/src/gawk-5.4.1/extension/gawkfts.c": "4c0b2b8d8767a6276debfc468bc233abccb86cae41ce93b359e4d9a20557c29a",
+          "/opt/src/gawk-5.4.1/extension/gawkfts.h": "41925fa51e4ac52aaf679b49cfa01d77bc3ef25471b7302cd344157f7a1ab839",
+          "/opt/src/gawk-5.4.1/extension/gawkdirfd.h": "c16d17e5baa0b2b780e9dfcb29ca87dd8f3cdcbb6eeeeb3b9c052bf27b54d102",
+          "/opt/src/gawk-5.4.1/extension/stack.c": "bdcee0132971c4b44cb4cdbe40fd9ca59c101218d6df3de83eefc9c1c3b7b18b",
+          "/opt/src/gawk-5.4.1/extension/stack.h": "17319501b7e30c1e925fcce50f614b083b9751610ff586a20fa01c094f7939e1",
+          "/root/rboxc/build/gnu-gawk/config.h": "2b3a38ed3f2a47cd81af88f0082d073fadfe7530bd3bf00d42f28b78d9df58a0",
+          "/root/rboxc/build/gnu-gawk/extension/Makefile": "862d1946e6d089d1549d1e0c5ac25ccae045b3cbf5408cee00fe3de13a8d7a12",
+          "/root/rboxc/build/gnu-gawk/extension/.libs/filefuncs.o": "1af931a04651af2c286317cdcc18eab291e836042652cda68fd72f79df28465c",
+          "/root/rboxc/build/gnu-gawk/gawkapi.o": "c154ac8f1e56a497a649f3554ac42054296a22570628808450ceb6d881473a05"
+        }
+      },
+      "child_commands": {},
+      "child_dependencies": {},
+      "evidence": "evidence/gawk-extension-state-original.json",
+      "audit": "evidence/gawk-extension-state-memory-audit.json"
     },
     {
       "path": "test/ar2fn_elnew_sc.awk",
@@ -876,7 +911,10 @@
       "path": "test/check_retest.awk",
       "sha256": "ba2080372a36ce38d2261f2c2c45342459bffa733e06f2945f93d521b29cfe81",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "covered-original-auxiliary",
+      "covered_by": "readdir_retest",
+      "evidence": "evidence/gawk-extension-state-original.json",
+      "review": "Complete ordinary auxiliary program and supplying recipe reviewed. Executed under both GNU and candidate Valgrind profiles by the unchanged passing parent recipe; no separate recipe or duplicate process is counted."
     },
     {
       "path": "test/checknegtime.awk",
@@ -2713,8 +2751,38 @@
     {
       "path": "test/getfile.awk",
       "sha256": "48277ea4d0249b93443b30c79609e5ab039c0f4d9a8e0a476fa65b2b440da047",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-extension-original-pass",
+      "target": "getfile",
+      "review": "Full original programs, configured Make recipe and supplied fixtures reviewed. Ordinary extension API path strings, input-pipe/file state, directory field reparsing, and array/symbol serialization round trips. The 6403-byte rwarray input contains ordinary fixed dictionary words. State and child cleanup files are confined to private test directories; directory enumeration is read-only. Native extension and declared shell/helper children are pinned separately.",
+      "fixtures": {
+        "getfile.ok": "9c7879e5ba4b70c57568bfdb68df009e7b156fea73a14cb2d53518b1bdd1fc47"
+      },
+      "configured_recipe_sha256": "fc280590e4c43043dd93d63478d84eb719938a7dbfe6c672b8afd7254162ff76",
+      "extension_profile": {
+        "scope": "Pinned unchanged GNU native extension helper with the GNU or translated Gawk entry; private test-only library lookup.",
+        "libraries": {
+          "testext.so": {
+            "path": "/root/rboxc/build/gnu-gawk/extension/.libs/testext.so",
+            "sha256": "79ec244680bc9c89da8b652f858878473a03f93330d555a6dbd0815082968f8f"
+          }
+        },
+        "inputs": {
+          "/opt/src/gawk-5.4.1/extension/testext.c": "bb3038d3ad091ee8153eaf693a42159179d5906af3ae91f3a2e29b246ef818ad",
+          "/opt/src/gawk-5.4.1/extension/ext_custom.h": "70293c4c5e662cd2980b7d29112134aa2102347960471dcb16fd677c3e70af07",
+          "/opt/src/gawk-5.4.1/gawkapi.h": "3480eb870c9b88cca3f4df58e069ba91c944954d7f1610944ef557350c8b0713",
+          "/opt/src/gawk-5.4.1/gettext.h": "d9d2efcd8865ed25b0976aee699b4f82f88fc9acf2b706886027b4a6f5daadf7",
+          "/root/rboxc/build/gnu-gawk/config.h": "2b3a38ed3f2a47cd81af88f0082d073fadfe7530bd3bf00d42f28b78d9df58a0",
+          "/root/rboxc/build/gnu-gawk/extension/Makefile": "862d1946e6d089d1549d1e0c5ac25ccae045b3cbf5408cee00fe3de13a8d7a12",
+          "/root/rboxc/build/gnu-gawk/extension/.libs/testext.o": "26b054ba5a6cbaba60049360f2be711bce76f65b21c9f685df0f5f41a9db45d8"
+        }
+      },
+      "child_commands": {
+        "/bin/sh -c echo\\ hello;\\ echo\\ goodbye": 1
+      },
+      "child_dependencies": {},
+      "evidence": "evidence/gawk-extension-state-original.json",
+      "audit": "evidence/gawk-extension-state-memory-audit.json"
     },
     {
       "path": "test/getline.awk",
@@ -5902,14 +5970,46 @@
     {
       "path": "test/readall1.awk",
       "sha256": "f942c6abd25e3469cb6329ba044fd8137617072e35bc9e3d650f7859aafb43b6",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-extension-original-pass",
+      "target": "readall",
+      "review": "Full original programs, configured Make recipe and supplied fixtures reviewed. Ordinary extension API path strings, input-pipe/file state, directory field reparsing, and array/symbol serialization round trips. The 6403-byte rwarray input contains ordinary fixed dictionary words. State and child cleanup files are confined to private test directories; directory enumeration is read-only. Native extension and declared shell/helper children are pinned separately.",
+      "fixtures": {
+        "readall.ok": "d395e5d175731d2839015630d2167632b6c0bb17e8dd28d8d40fa3a1b31ca930",
+        "readall2.awk": "30fbf831d37694bbdd7f499ad976a4041bceb14af2b4d8863ad80b0f74609666"
+      },
+      "configured_recipe_sha256": "7358c7933d496f6cd441fe428559ca958a176d4b5648709d3f9edfa918f38f33",
+      "extension_profile": {
+        "scope": "Pinned unchanged GNU native extension helper with the GNU or translated Gawk entry; private test-only library lookup.",
+        "libraries": {
+          "rwarray.so": {
+            "path": "/root/rboxc/build/gnu-gawk/extension/.libs/rwarray.so",
+            "sha256": "7575784da54c0ca639e35ebc4d95d52f4e12913db655222555c61b3d79ae203d"
+          }
+        },
+        "inputs": {
+          "/opt/src/gawk-5.4.1/extension/rwarray.c": "50916830ce13b22e988e2396c929a5a91c8bbd0372ed6f001d2f371d88c563e2",
+          "/opt/src/gawk-5.4.1/extension/ext_custom.h": "70293c4c5e662cd2980b7d29112134aa2102347960471dcb16fd677c3e70af07",
+          "/opt/src/gawk-5.4.1/gawkapi.h": "3480eb870c9b88cca3f4df58e069ba91c944954d7f1610944ef557350c8b0713",
+          "/opt/src/gawk-5.4.1/gettext.h": "d9d2efcd8865ed25b0976aee699b4f82f88fc9acf2b706886027b4a6f5daadf7",
+          "/root/rboxc/build/gnu-gawk/config.h": "2b3a38ed3f2a47cd81af88f0082d073fadfe7530bd3bf00d42f28b78d9df58a0",
+          "/root/rboxc/build/gnu-gawk/extension/Makefile": "862d1946e6d089d1549d1e0c5ac25ccae045b3cbf5408cee00fe3de13a8d7a12",
+          "/root/rboxc/build/gnu-gawk/extension/.libs/rwarray.o": "bc1c7fee680b3a77c84e0a9a2768e1d1e6288ba532b3483527f10227cbe65272"
+        }
+      },
+      "child_commands": {},
+      "child_dependencies": {},
+      "evidence": "evidence/gawk-extension-state-original.json",
+      "audit": "evidence/gawk-extension-state-memory-audit.json"
     },
     {
       "path": "test/readall2.awk",
       "sha256": "30fbf831d37694bbdd7f499ad976a4041bceb14af2b4d8863ad80b0f74609666",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "covered-original-auxiliary",
+      "covered_by": "readall",
+      "evidence": "evidence/gawk-extension-state-original.json",
+      "review": "Complete ordinary auxiliary program and supplying recipe reviewed. Executed under both GNU and candidate Valgrind profiles by the unchanged passing parent recipe; no separate recipe or duplicate process is counted."
     },
     {
       "path": "test/readbuf.awk",
@@ -5970,8 +6070,36 @@
     {
       "path": "test/readdir_retest.awk",
       "sha256": "9457d908356d3bfb36c68184a52da1f013af315f64ec95d34cd1038a38085d51",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-extension-original-pass",
+      "target": "readdir_retest",
+      "review": "Full original programs, configured Make recipe and supplied fixtures reviewed. Ordinary extension API path strings, input-pipe/file state, directory field reparsing, and array/symbol serialization round trips. The 6403-byte rwarray input contains ordinary fixed dictionary words. State and child cleanup files are confined to private test directories; directory enumeration is read-only. Native extension and declared shell/helper children are pinned separately.",
+      "fixtures": {
+        "check_retest.awk": "ba2080372a36ce38d2261f2c2c45342459bffa733e06f2945f93d521b29cfe81"
+      },
+      "configured_recipe_sha256": "cf32126ae4b2d858fb46e2359be23f3b1cff6523ee766d536661138f345307b9",
+      "extension_profile": {
+        "scope": "Pinned GNU native extension helpers with the GNU or translated Gawk entry; private test-only library lookup.",
+        "libraries": {
+          "readdir.so": {
+            "path": "/root/rboxc/build/gnu-gawk/extension/.libs/readdir.so",
+            "sha256": "0c07c7dc8e8f6bebf1697ed587a0e4125d5560b5051bb2e834e352e270ece298"
+          }
+        },
+        "inputs": {
+          "/opt/src/gawk-5.4.1/extension/readdir.c": "e0981e96b63ee9dd662751e4ada01dc6702966b14b56d8fb84d0f581916b5516",
+          "/opt/src/gawk-5.4.1/extension/ext_custom.h": "70293c4c5e662cd2980b7d29112134aa2102347960471dcb16fd677c3e70af07",
+          "/opt/src/gawk-5.4.1/gawkapi.h": "3480eb870c9b88cca3f4df58e069ba91c944954d7f1610944ef557350c8b0713",
+          "/opt/src/gawk-5.4.1/gettext.h": "d9d2efcd8865ed25b0976aee699b4f82f88fc9acf2b706886027b4a6f5daadf7",
+          "/root/rboxc/build/gnu-gawk/config.h": "2b3a38ed3f2a47cd81af88f0082d073fadfe7530bd3bf00d42f28b78d9df58a0",
+          "/root/rboxc/build/gnu-gawk/extension/Makefile": "862d1946e6d089d1549d1e0c5ac25ccae045b3cbf5408cee00fe3de13a8d7a12",
+          "/root/rboxc/build/gnu-gawk/extension/.libs/readdir.o": "f9ed4fd5fa8bd82761fbc7daf077a2fab918c7b8bb943cdb46fba0dca034d7d3"
+        }
+      },
+      "child_commands": {},
+      "child_dependencies": {},
+      "evidence": "evidence/gawk-extension-state-original.json",
+      "audit": "evidence/gawk-extension-state-memory-audit.json"
     },
     {
       "path": "test/readfile2.awk",
@@ -6589,8 +6717,51 @@
     {
       "path": "test/rwarray.awk",
       "sha256": "e73397022cc538cc20e84042659d7059bcc9709091198bdac9f8ec2662e3068b",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-extension-original-pass",
+      "target": "rwarray",
+      "review": "Full original programs, configured Make recipe and supplied fixtures reviewed. Ordinary extension API path strings, input-pipe/file state, directory field reparsing, and array/symbol serialization round trips. The 6403-byte rwarray input contains ordinary fixed dictionary words. State and child cleanup files are confined to private test directories; directory enumeration is read-only. Native extension and declared shell/helper children are pinned separately.",
+      "fixtures": {
+        "rwarray.in": "0b0d55908b5a8f84e8f35b49c11ac06fa287bb351fb372615585058e85e88a4c",
+        "rwarray.ok": "37cc37f48a221a415b26932e3601ea8f5e80fced11a4a542ef9876c76b168a1f"
+      },
+      "configured_recipe_sha256": "301c90763d198e3a9a424927a598e2f766232ee397949e74bc36789a32519344",
+      "extension_profile": {
+        "scope": "Pinned unchanged GNU native extension helper with the GNU or translated Gawk entry; private test-only library lookup.",
+        "libraries": {
+          "rwarray.so": {
+            "path": "/root/rboxc/build/gnu-gawk/extension/.libs/rwarray.so",
+            "sha256": "7575784da54c0ca639e35ebc4d95d52f4e12913db655222555c61b3d79ae203d"
+          }
+        },
+        "inputs": {
+          "/opt/src/gawk-5.4.1/extension/rwarray.c": "50916830ce13b22e988e2396c929a5a91c8bbd0372ed6f001d2f371d88c563e2",
+          "/opt/src/gawk-5.4.1/extension/ext_custom.h": "70293c4c5e662cd2980b7d29112134aa2102347960471dcb16fd677c3e70af07",
+          "/opt/src/gawk-5.4.1/gawkapi.h": "3480eb870c9b88cca3f4df58e069ba91c944954d7f1610944ef557350c8b0713",
+          "/opt/src/gawk-5.4.1/gettext.h": "d9d2efcd8865ed25b0976aee699b4f82f88fc9acf2b706886027b4a6f5daadf7",
+          "/root/rboxc/build/gnu-gawk/config.h": "2b3a38ed3f2a47cd81af88f0082d073fadfe7530bd3bf00d42f28b78d9df58a0",
+          "/root/rboxc/build/gnu-gawk/extension/Makefile": "862d1946e6d089d1549d1e0c5ac25ccae045b3cbf5408cee00fe3de13a8d7a12",
+          "/root/rboxc/build/gnu-gawk/extension/.libs/rwarray.o": "bc1c7fee680b3a77c84e0a9a2768e1d1e6288ba532b3483527f10227cbe65272"
+        }
+      },
+      "child_commands": {
+        "/bin/sh -c cmp\\ orig.out\\ new.out": 1,
+        "cmp orig.out new.out": 1,
+        "/bin/sh -c rm\\ -f\\ orig.bin\\ orig.out\\ new.out": 1,
+        "rm -f orig.bin orig.out new.out": 1
+      },
+      "child_dependencies": {
+        "cmp": {
+          "path": "/root/rboxc/build/gnu-diffutils/src/cmp",
+          "sha256": "e2c1733e5f839d4c9d6fc9cd711914df74c4b580e0a85b6d86b5f49b8337c03b"
+        },
+        "rm": {
+          "path": "/root/rboxc/build/gnu-coreutils/src/coreutils",
+          "sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4"
+        }
+      },
+      "evidence": "evidence/gawk-extension-state-original.json",
+      "audit": "evidence/gawk-extension-state-memory-audit.json"
     },
     {
       "path": "test/sandbox1.awk",
