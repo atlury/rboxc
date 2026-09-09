@@ -1,0 +1,3093 @@
+{
+  "runtime_helpers": {
+    "/root/rboxc/target/bash-exit-scope-status-candidate/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174",
+    "/root/rboxc/build/gnu-coreutils/src/libstdbuf.so": "ab0f38c3557ced06f914416c765a68c1ebf00c6cdacbe24c9ab9ec60e49a6ea4"
+  },
+  "binary": "/root/rboxc/target/bash-exit-scope-status-candidate/release/rboxc",
+  "binary_sha256": "ce93145125f3959115af4c432e172c6c323df68a245c7a1317087e525e06ba7e",
+  "gnu_binary_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+  "inputs": {
+    "/root/rboxc/build/gnu-bash/bash": "bd47035bca2886f8d61f564ae38ca9c807a8b0b98e914d28f909fb7b1bb1366f",
+    "/root/rboxc/target/bash-exit-scope-status-candidate/release/rboxc": "ce93145125f3959115af4c432e172c6c323df68a245c7a1317087e525e06ba7e",
+    "/root/rboxc/tests/bash-errexit-contract.py": "5706e0bb5d2d25aec7eab30a8cd654b86029a5a6f90eda849b18e5590bf75cc5"
+  },
+  "scope": "Eight bounded errexit contracts through four shell aliases compare native GNU and the immutable candidate: local function state, explicit subshell bodies, nested eval, EXIT/ERR traps, conditional suppression, inherited substitution errors and lastpipe failure. Exact output/status and all child Valgrind summaries are retained. These are ordinary shell control-flow inputs.",
+  "complete": true,
+  "planned_total": 32,
+  "passed": 32,
+  "total": 32,
+  "results": [
+    {
+      "name": "bash:function",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -e; f(){ local x=inside; false; printf unreachable; }; f; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/0-gnu-valgrind/process-900531.log",
+              "sha256": "ce1e1fff255f9768c8c6f78247c375f427ef076f035a78736829747db108ddf1",
+              "pid": "900531",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 8,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 208,
+                "indirectly lost": 1681,
+                "possibly lost": 0,
+                "still reachable": 48408
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/0-rboxc-valgrind/process-900596.log",
+              "sha256": "4aa526777dae872ad252290a1c12a97031b0afcc7d597fc346d22b38ba669080",
+              "pid": "900596",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49758
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:function-subshell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -e; f() (false; printf unreachable); f; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/1-gnu-valgrind/process-900693.log",
+              "sha256": "ae3d9559096c8598897485042183f96473cecec8de020c80e2f8bac27be7917e",
+              "pid": "900693",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 160,
+                "indirectly lost": 1030,
+                "possibly lost": 0,
+                "still reachable": 47855
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/1-gnu-valgrind/process-900719.log",
+              "sha256": "824d0b86596e6078313c5eb119beea1fb6425f310a1a697810976f511c97e1f3",
+              "pid": "900719",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49560
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/1-rboxc-valgrind/process-900806.log",
+              "sha256": "c660c0064bf5f205e6b42f2d0bcda2e91bcf1a64be35d42be71fc8d2482f8973",
+              "pid": "900806",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48552
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/1-rboxc-valgrind/process-900974.log",
+              "sha256": "06e0d50575c0e8b7f0db5a7000473414128f420bd176f3b50c31afe45558b513",
+              "pid": "900974",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50392
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:nested-eval",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -e; f(){ local x=inside; g; }; g(){ eval \"false; printf unreachable\"; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/2-gnu-valgrind/process-900987.log",
+              "sha256": "67b8096d6ac392dd63adfd7da4702b25a4ecee9c98f497f27a6b2985f4b11728",
+              "pid": "900987",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 64,
+                "indirectly lost": 301,
+                "possibly lost": 0,
+                "still reachable": 50949
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/2-rboxc-valgrind/process-901004.log",
+              "sha256": "415e066a91104adcf264b0716d768086d04d1a3d5453c0cc32816bbdb328d1b7",
+              "pid": "901004",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52713
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:exit-local",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -e; trap 'printf \"exit:%s:%s\\n\" \"$?\" \"${x-unset}\"' EXIT; f(){ local x=inside; false; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "657869743a313a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "657869743a313a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "657869743a313a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "657869743a313a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/3-gnu-valgrind/process-901027.log",
+              "sha256": "46edd61ce1001d76cdd6e94fa99ca5957ef9abe2a888232bc47f833b8f2c34df",
+              "pid": "901027",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 176,
+                "indirectly lost": 1398,
+                "possibly lost": 0,
+                "still reachable": 48907
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "657869743a313a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "657869743a313a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "657869743a313a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "657869743a313a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/3-rboxc-valgrind/process-901068.log",
+              "sha256": "9789c00c247704417e768dc5567fc303512e9e6661970ad4a3d243779c6c5fc1",
+              "pid": "901068",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50123
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:error-trap",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -eE; trap 'printf \"error:%s\\n\" \"$?\"' ERR; f(){ local x=inside; false; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "6572726f723a310a",
+          "stderr": "",
+          "raw_stdout": "6572726f723a310a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "6572726f723a310a",
+          "stderr": "",
+          "raw_stdout": "6572726f723a310a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/4-gnu-valgrind/process-901090.log",
+              "sha256": "a57f1d614c02c0e515b5bcdfb5cc351724ef4204bcbfbd01dec317a400d94a13",
+              "pid": "901090",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 176,
+                "indirectly lost": 1383,
+                "possibly lost": 0,
+                "still reachable": 48787
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "6572726f723a310a",
+          "stderr": "",
+          "raw_stdout": "6572726f723a310a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "6572726f723a310a",
+          "stderr": "",
+          "raw_stdout": "6572726f723a310a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/4-rboxc-valgrind/process-901111.log",
+              "sha256": "08e1767bfcffd0ce2d3ef393f87ee4a2d28a6af037bb9b74070d8119a8331dae",
+              "pid": "901111",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50739
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:conditional-ignore",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -e; f(){ local x=inside; false; printf \"continued:%s\\n\" \"$x\"; }; if f; then printf \"outer:%s\\n\" \"${x-unset}\"; fi"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/5-gnu-valgrind/process-901134.log",
+              "sha256": "3a3b64d88e2528c106276ede516a6bcc36067016ecdfcb3703fff688f1b59f6c",
+              "pid": "901134",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49126
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/5-rboxc-valgrind/process-901151.log",
+              "sha256": "afcde8c7a424b34afdc5ea022894e2f740e935a48fa014f05588e9955f6fb65b",
+              "pid": "901151",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50166
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:substitution",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -e; shopt -s inherit_errexit; f(){ local x=inside; false; printf unreachable; }; value=$(f); printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/6-gnu-valgrind/process-901195.log",
+              "sha256": "244901bda66c48f29b5eb9c54b96090489503dfaa2e19ac452f871e48e50a879",
+              "pid": "901195",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48912
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/6-gnu-valgrind/process-901204.log",
+              "sha256": "9250b6a786377ac608d471bc2016073ef20e89ae2ab62c22913fe50419239799",
+              "pid": "901204",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 7,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 176,
+                "indirectly lost": 522,
+                "possibly lost": 0,
+                "still reachable": 52284
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/6-rboxc-valgrind/process-901212.log",
+              "sha256": "3cdd3486e790ab31642a74e98131aa1e4861d14c5250cfda95088ab02d6f0afe",
+              "pid": "901212",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49728
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/6-rboxc-valgrind/process-901278.log",
+              "sha256": "de81343207beb6343f0eea379c514ffc0ef6535ca355c52ac30a641534dd8556",
+              "pid": "901278",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53858
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:lastpipe-failure",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -e; shopt -s lastpipe; f(){ local x=inside; printf \"item\\n\" | { read -r x; false; }; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/7-gnu-valgrind/process-901290.log",
+              "sha256": "ccbfaf838911f827441ca3252175db70406841b6aabf72fe11e7bf56b74d20e9",
+              "pid": "901290",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 9,
+              "non_inherited_descriptors": 2,
+              "heap_bytes": {
+                "definitely lost": 176,
+                "indirectly lost": 2200,
+                "possibly lost": 0,
+                "still reachable": 49901
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/7-gnu-valgrind/process-901319.log",
+              "sha256": "5d07e54016b30be7a98c23d75359a1ca4e4b67f04a01e0bbbfecd4900f952fa4",
+              "pid": "901319",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52161
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/7-rboxc-valgrind/process-901328.log",
+              "sha256": "cb5b03ba99ec38de3d8105393a4af567bdef77718c54d98c1c50d23445dcad22",
+              "pid": "901328",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51485
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/7-rboxc-valgrind/process-901349.log",
+              "sha256": "7103e5769a46389fcf5c2995a9a84bd5d01131c0a94710a7fa5da34945c48b61",
+              "pid": "901349",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53249
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:function",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -e; f(){ local x=inside; false; printf unreachable; }; f; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/8-gnu-valgrind/process-901373.log",
+              "sha256": "e3436c615384cc10b48b8c2c06ac88155b7447bb2ade33a00662ae30d948765f",
+              "pid": "901373",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 8,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 208,
+                "indirectly lost": 1679,
+                "possibly lost": 0,
+                "still reachable": 48520
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/8-rboxc-valgrind/process-901389.log",
+              "sha256": "a4596237d39421ec8a5245bb23e273a5d073369f98839db5e7f9ee9e9b33ff98",
+              "pid": "901389",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49870
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:function-subshell",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -e; f() (false; printf unreachable); f; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/9-gnu-valgrind/process-901411.log",
+              "sha256": "1efd8849af32e3ca79d483a234b2292f0ba2c02c169eb4240bbc3ab57afdc491",
+              "pid": "901411",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 160,
+                "indirectly lost": 1028,
+                "possibly lost": 0,
+                "still reachable": 47967
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/9-gnu-valgrind/process-901446.log",
+              "sha256": "31097749bca5c050de37174abbc22cd9b7457b05bfee7beaf26bc000c42a78b4",
+              "pid": "901446",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49670
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/9-rboxc-valgrind/process-901469.log",
+              "sha256": "3aa5d18d2f6ce73c036061e5343f28a70e0799d9ba46ea92dc1fee782b9fe796",
+              "pid": "901469",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48664
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/9-rboxc-valgrind/process-901482.log",
+              "sha256": "b7190d30d8f511b8c9049427ea090d060da2ec3694723ac503edaba486b1fe0c",
+              "pid": "901482",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50502
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:nested-eval",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -e; f(){ local x=inside; g; }; g(){ eval \"false; printf unreachable\"; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/10-gnu-valgrind/process-901491.log",
+              "sha256": "230c1827414d1f1076aededa79b8fffbefa54aac5587ca4523dff3668f11a882",
+              "pid": "901491",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 64,
+                "indirectly lost": 301,
+                "possibly lost": 0,
+                "still reachable": 51061
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/10-rboxc-valgrind/process-901517.log",
+              "sha256": "025a7486611ccbfadb74de50fd13d7350ce0dcc232af3571c8d77b58b049f900",
+              "pid": "901517",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52825
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:exit-local",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -e; trap 'printf \"exit:%s:%s\\n\" \"$?\" \"${x-unset}\"' EXIT; f(){ local x=inside; false; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "657869743a313a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "657869743a313a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "657869743a313a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "657869743a313a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/11-gnu-valgrind/process-901551.log",
+              "sha256": "03be936a244acaa0bf674cdf74e7d811ec9b4cec5b296ab5d22da95492ed4f29",
+              "pid": "901551",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 176,
+                "indirectly lost": 1396,
+                "possibly lost": 0,
+                "still reachable": 49019
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "657869743a313a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "657869743a313a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "657869743a313a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "657869743a313a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/11-rboxc-valgrind/process-901571.log",
+              "sha256": "47ef5a3d784b0991f796954805913c6c0867838a6c86f70f91022270fbc96388",
+              "pid": "901571",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50235
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:error-trap",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -eE; trap 'printf \"error:%s\\n\" \"$?\"' ERR; f(){ local x=inside; false; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "6572726f723a310a",
+          "stderr": "",
+          "raw_stdout": "6572726f723a310a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "6572726f723a310a",
+          "stderr": "",
+          "raw_stdout": "6572726f723a310a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/12-gnu-valgrind/process-901593.log",
+              "sha256": "812a8f115593840a593ce266da20e80148dcff18946c6a90fb191bfbb386f7f4",
+              "pid": "901593",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 176,
+                "indirectly lost": 1381,
+                "possibly lost": 0,
+                "still reachable": 48899
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "6572726f723a310a",
+          "stderr": "",
+          "raw_stdout": "6572726f723a310a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "6572726f723a310a",
+          "stderr": "",
+          "raw_stdout": "6572726f723a310a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/12-rboxc-valgrind/process-901628.log",
+              "sha256": "6ac690abbba1e120ee380123598259f90b8e0aad5d9778045ed0f353ad720c34",
+              "pid": "901628",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50851
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:conditional-ignore",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -e; f(){ local x=inside; false; printf \"continued:%s\\n\" \"$x\"; }; if f; then printf \"outer:%s\\n\" \"${x-unset}\"; fi"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/13-gnu-valgrind/process-901641.log",
+              "sha256": "167d6bb4cab230102088b232ec8f211a768dc110384718390135be49d44e5efa",
+              "pid": "901641",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49240
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/13-rboxc-valgrind/process-901656.log",
+              "sha256": "0a271ee204790977b689e207ac4609cef313cdf6dfe87738ae971bd67a52e452",
+              "pid": "901656",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50280
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:substitution",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -e; shopt -s inherit_errexit; f(){ local x=inside; false; printf unreachable; }; value=$(f); printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/14-gnu-valgrind/process-901811.log",
+              "sha256": "30df1b352632e31ca09ff169ea7a070b8d8637b9f2fcaedccd7ddfce9111233f",
+              "pid": "901811",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49063
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/14-gnu-valgrind/process-901827.log",
+              "sha256": "103e39f705bf07fbe541ee50a511b1b84ce33c55b7b0cad084c65545a88cf1a2",
+              "pid": "901827",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 7,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 176,
+                "indirectly lost": 522,
+                "possibly lost": 0,
+                "still reachable": 52431
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/14-rboxc-valgrind/process-901833.log",
+              "sha256": "dbe817975cfc3a9ef6699b857ee5ccdee54358686f382579fc17d0dd9d473445",
+              "pid": "901833",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49879
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/14-rboxc-valgrind/process-901849.log",
+              "sha256": "793435138ef7b0d3bc6867f69889c3629838003661c956b64b765cc1d083c2a7",
+              "pid": "901849",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54005
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:lastpipe-failure",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -e; shopt -s lastpipe; f(){ local x=inside; printf \"item\\n\" | { read -r x; false; }; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/15-gnu-valgrind/process-901863.log",
+              "sha256": "738f8095d272b9172fd07c9f40430a893fb3b8a78090d2589f54b07c8eaf495c",
+              "pid": "901863",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 9,
+              "non_inherited_descriptors": 2,
+              "heap_bytes": {
+                "definitely lost": 176,
+                "indirectly lost": 2198,
+                "possibly lost": 0,
+                "still reachable": 50066
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/15-gnu-valgrind/process-901879.log",
+              "sha256": "07838dfb984a4eebd211c5830b5486c0f476927e7f960adc5ccd8dddd276f6c2",
+              "pid": "901879",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52324
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/15-rboxc-valgrind/process-901883.log",
+              "sha256": "3b0cfaa66b9b81e88a2f67349fe617681c5939194012dac1074f59340e2f2548",
+              "pid": "901883",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51650
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/15-rboxc-valgrind/process-901898.log",
+              "sha256": "545f63a11dc065d80856e4103ca313672ed0b04eebf69eae58dd33f4ef1924c5",
+              "pid": "901898",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53412
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:function",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -e; f(){ local x=inside; false; printf unreachable; }; f; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/16-gnu-valgrind/process-901905.log",
+              "sha256": "81d3774b8501e07407ffdb73172b72a681a7c7a4302e4b244c1985242aafdfdb",
+              "pid": "901905",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 8,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 208,
+                "indirectly lost": 1682,
+                "possibly lost": 0,
+                "still reachable": 48412
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/16-rboxc-valgrind/process-901920.log",
+              "sha256": "b9e94cb11a512f64254b425345686d4145dad4a107160822289a975cf18e26cf",
+              "pid": "901920",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49762
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:function-subshell",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -e; f() (false; printf unreachable); f; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/17-gnu-valgrind/process-901939.log",
+              "sha256": "f03f2e6d3232ede4304edb6ae7082e28023df07aa65f2d0bd7cb454f2cfb636e",
+              "pid": "901939",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 160,
+                "indirectly lost": 1031,
+                "possibly lost": 0,
+                "still reachable": 47859
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/17-gnu-valgrind/process-901948.log",
+              "sha256": "409b90467969d96ca3e0e96d23ad4f3b368f01b684abcc05519cef6eaefeb4fe",
+              "pid": "901948",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49565
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/17-rboxc-valgrind/process-901953.log",
+              "sha256": "7f1fbf96a71292009ee4677858df68938fc3fe8575845e19cd1d44492e600dce",
+              "pid": "901953",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48556
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/17-rboxc-valgrind/process-901972.log",
+              "sha256": "a8b05d2d30324b40a90463043c58115786f68387a01f58f597992efe0fd70047",
+              "pid": "901972",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50397
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:nested-eval",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -e; f(){ local x=inside; g; }; g(){ eval \"false; printf unreachable\"; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/18-gnu-valgrind/process-901979.log",
+              "sha256": "2937d6f2b2cbc08cfb2ea788407648d5b2b00cb103c7b5561bda8fa773056f75",
+              "pid": "901979",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 64,
+                "indirectly lost": 301,
+                "possibly lost": 0,
+                "still reachable": 50953
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/18-rboxc-valgrind/process-901989.log",
+              "sha256": "4f7be6e07eb5c476e2043b6c40c373fc85820d971f11dee072d41cab3325046a",
+              "pid": "901989",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52717
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:exit-local",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -e; trap 'printf \"exit:%s:%s\\n\" \"$?\" \"${x-unset}\"' EXIT; f(){ local x=inside; false; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "657869743a313a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "657869743a313a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "657869743a313a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "657869743a313a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/19-gnu-valgrind/process-902011.log",
+              "sha256": "4d3eee7188b5a706e3653160d3ab9008fbb29606f6dc53dcd7e8414095f8193a",
+              "pid": "902011",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 176,
+                "indirectly lost": 1399,
+                "possibly lost": 0,
+                "still reachable": 48911
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "657869743a313a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "657869743a313a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "657869743a313a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "657869743a313a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/19-rboxc-valgrind/process-902022.log",
+              "sha256": "969debb1ea311d5b179c123013c9b1cdb3d462083045169ca6f0c5afbe5b2abb",
+              "pid": "902022",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50127
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:error-trap",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -eE; trap 'printf \"error:%s\\n\" \"$?\"' ERR; f(){ local x=inside; false; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "6572726f723a310a",
+          "stderr": "",
+          "raw_stdout": "6572726f723a310a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "6572726f723a310a",
+          "stderr": "",
+          "raw_stdout": "6572726f723a310a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/20-gnu-valgrind/process-902041.log",
+              "sha256": "f8fae70e339eb924cde3f8476fbae7263cff3caf36c624e51f1873cd40bf7686",
+              "pid": "902041",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 176,
+                "indirectly lost": 1384,
+                "possibly lost": 0,
+                "still reachable": 48791
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "6572726f723a310a",
+          "stderr": "",
+          "raw_stdout": "6572726f723a310a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "6572726f723a310a",
+          "stderr": "",
+          "raw_stdout": "6572726f723a310a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/20-rboxc-valgrind/process-902056.log",
+              "sha256": "39a0e33cbdead772d2d66f4eb20a4b47995e01c2f65bb30c92d791c20ca8097b",
+              "pid": "902056",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50743
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:conditional-ignore",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -e; f(){ local x=inside; false; printf \"continued:%s\\n\" \"$x\"; }; if f; then printf \"outer:%s\\n\" \"${x-unset}\"; fi"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/21-gnu-valgrind/process-902080.log",
+              "sha256": "b87c376fbcd6cf00856c89a80c91307d57d3d2a2e9498a3e8c6d51aa745f1083",
+              "pid": "902080",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49129
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/21-rboxc-valgrind/process-902090.log",
+              "sha256": "7555c0847a07f4f35323c1c73b5d9b85b5119f1e13d66a6b64d13c6d51248d87",
+              "pid": "902090",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50169
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:substitution",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -e; shopt -s inherit_errexit; f(){ local x=inside; false; printf unreachable; }; value=$(f); printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/22-gnu-valgrind/process-902111.log",
+              "sha256": "358acb27a20a5a3db006f4896aba19587f85de6e3212847e3ad242cc11ae3897",
+              "pid": "902111",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48915
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/22-gnu-valgrind/process-902121.log",
+              "sha256": "ff018a5e8e484dd0df75a005548140bac1b5c47f09b26cdbfb6bee99757cd9b1",
+              "pid": "902121",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 7,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 176,
+                "indirectly lost": 522,
+                "possibly lost": 0,
+                "still reachable": 52289
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/22-rboxc-valgrind/process-902128.log",
+              "sha256": "7f00c72feffa707a66aac2d060067e01e4b8e14d3e2fb3c84c47e858f703d3b0",
+              "pid": "902128",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49731
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/22-rboxc-valgrind/process-902189.log",
+              "sha256": "c32e3d5e990fdbb3248e8521bb169df77654fcfa7995e1b1a143988033f18124",
+              "pid": "902189",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53863
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:lastpipe-failure",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -e; shopt -s lastpipe; f(){ local x=inside; printf \"item\\n\" | { read -r x; false; }; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/23-gnu-valgrind/process-902200.log",
+              "sha256": "9957808e755d613a68148298c671986f1b4f083194e9c4b9b71133edeadfa573",
+              "pid": "902200",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 9,
+              "non_inherited_descriptors": 2,
+              "heap_bytes": {
+                "definitely lost": 176,
+                "indirectly lost": 2201,
+                "possibly lost": 0,
+                "still reachable": 49905
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/23-gnu-valgrind/process-902213.log",
+              "sha256": "52be4193dacd87c06652d4f02193aba1e20f9baadaba249e89651e54b43256c3",
+              "pid": "902213",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52166
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/23-rboxc-valgrind/process-902217.log",
+              "sha256": "170f49ca1fa29c82fd924f58932c883fd1c78df7d063b5932358fb5707aab461",
+              "pid": "902217",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51489
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/23-rboxc-valgrind/process-902232.log",
+              "sha256": "cb25687981aa8434bcc65822ee895747621213bc0651eba4e6851e442eb8b0d8",
+              "pid": "902232",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53254
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:function",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -e; f(){ local x=inside; false; printf unreachable; }; f; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/24-gnu-valgrind/process-902241.log",
+              "sha256": "1fc45752cf1789169e4adaad472dbcc119fe718521561abed62faa762de0e08f",
+              "pid": "902241",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 8,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 208,
+                "indirectly lost": 1680,
+                "possibly lost": 0,
+                "still reachable": 48404
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/24-rboxc-valgrind/process-902255.log",
+              "sha256": "cee0e640fdd73a368ae08c483ab54668e1d5549aa09e9fe6e68bc429f5ab630b",
+              "pid": "902255",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49754
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:function-subshell",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -e; f() (false; printf unreachable); f; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/25-gnu-valgrind/process-902276.log",
+              "sha256": "130cefc8dbbfdbf0aacce0e0d09f1c5dd8fd30d77f7098fdc94cd1d3ea1edbaa",
+              "pid": "902276",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 160,
+                "indirectly lost": 1029,
+                "possibly lost": 0,
+                "still reachable": 47851
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/25-gnu-valgrind/process-902295.log",
+              "sha256": "442959ccb5cdc860603bd7662c088fefd123e4cdb90162ffe65b14d612fca9e9",
+              "pid": "902295",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49555
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/25-rboxc-valgrind/process-902298.log",
+              "sha256": "b5e85b13259ce78e778fdb2593cd9709d4f246403e4023fbf07047001131f86b",
+              "pid": "902298",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48548
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/25-rboxc-valgrind/process-902316.log",
+              "sha256": "b58797b238212d9f71e539d47bed2bc832025599e515a141637145d5dc8e88a8",
+              "pid": "902316",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50387
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:nested-eval",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -e; f(){ local x=inside; g; }; g(){ eval \"false; printf unreachable\"; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/26-gnu-valgrind/process-902321.log",
+              "sha256": "445eea17d26688ec0396233946088c62b4052eced1808385df20e12ddd886aba",
+              "pid": "902321",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 64,
+                "indirectly lost": 301,
+                "possibly lost": 0,
+                "still reachable": 50945
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/26-rboxc-valgrind/process-902340.log",
+              "sha256": "90f3bec442ffd8b1f4f4c3dbc4383555fb7002a62976c61c0fc7c2b2c38793ec",
+              "pid": "902340",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52709
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:exit-local",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -e; trap 'printf \"exit:%s:%s\\n\" \"$?\" \"${x-unset}\"' EXIT; f(){ local x=inside; false; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "657869743a313a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "657869743a313a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "657869743a313a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "657869743a313a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/27-gnu-valgrind/process-902359.log",
+              "sha256": "9502c54386c5681106676d0b9766cc8250e9b357835fdb63c712e4f6c4232985",
+              "pid": "902359",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 176,
+                "indirectly lost": 1397,
+                "possibly lost": 0,
+                "still reachable": 48903
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "657869743a313a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "657869743a313a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "657869743a313a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "657869743a313a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/27-rboxc-valgrind/process-902377.log",
+              "sha256": "1c50719fbeeffac360c6f3c60a4bfcf03cee23fa44edcabc4c20acd237bd4783",
+              "pid": "902377",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50119
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:error-trap",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -eE; trap 'printf \"error:%s\\n\" \"$?\"' ERR; f(){ local x=inside; false; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "6572726f723a310a",
+          "stderr": "",
+          "raw_stdout": "6572726f723a310a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "6572726f723a310a",
+          "stderr": "",
+          "raw_stdout": "6572726f723a310a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/28-gnu-valgrind/process-902395.log",
+              "sha256": "dc49d25b113186a194488776bfc503f3ba4e381a076e6c0e809a4b2c29b01694",
+              "pid": "902395",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 176,
+                "indirectly lost": 1382,
+                "possibly lost": 0,
+                "still reachable": 48783
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "6572726f723a310a",
+          "stderr": "",
+          "raw_stdout": "6572726f723a310a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "6572726f723a310a",
+          "stderr": "",
+          "raw_stdout": "6572726f723a310a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/28-rboxc-valgrind/process-902413.log",
+              "sha256": "6f03ae1b1bc2f41207341cdeb8c98fd898a91022c21c89731c204fb0af4017d2",
+              "pid": "902413",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50735
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:conditional-ignore",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -e; f(){ local x=inside; false; printf \"continued:%s\\n\" \"$x\"; }; if f; then printf \"outer:%s\\n\" \"${x-unset}\"; fi"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/29-gnu-valgrind/process-902429.log",
+              "sha256": "882c5a4530c72267a3cb1b1d0ca63af0a484409f7686a920f2937a5f9ab2aabc",
+              "pid": "902429",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49123
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "stderr": "",
+          "raw_stdout": "636f6e74696e7565643a696e736964650a6f757465723a756e7365740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/29-rboxc-valgrind/process-902466.log",
+              "sha256": "f530a049b861f4d2a5d7d9c53adca8245e2936dff0f919c3116a97d2511725b6",
+              "pid": "902466",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50163
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:substitution",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -e; shopt -s inherit_errexit; f(){ local x=inside; false; printf unreachable; }; value=$(f); printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/30-gnu-valgrind/process-902511.log",
+              "sha256": "1fbd2b7fba6e13f38b5c7ee55cd3f702ff7370c3aadda55eb6fb25ff5ed7d8c3",
+              "pid": "902511",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48909
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/30-gnu-valgrind/process-902522.log",
+              "sha256": "5f766ff096d372dda0675f8a9a5bae08d8e45c8f8982d041633a6eb59e94745c",
+              "pid": "902522",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 7,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 176,
+                "indirectly lost": 522,
+                "possibly lost": 0,
+                "still reachable": 52279
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/30-rboxc-valgrind/process-902530.log",
+              "sha256": "0c6ccb3b19b2409ed8c2a752db9342b4b3b9af835a9c72cf5e3e53a9127664a7",
+              "pid": "902530",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49725
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/30-rboxc-valgrind/process-902545.log",
+              "sha256": "2c651a99fa10d71d280f1e792bbf2d41da80c3519649f004d03e657b4649c279",
+              "pid": "902545",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53853
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:lastpipe-failure",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -e; shopt -s lastpipe; f(){ local x=inside; printf \"item\\n\" | { read -r x; false; }; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/31-gnu-valgrind/process-902555.log",
+              "sha256": "92d8746219a46462738aab158eee941c08cdfe1bd8c2d14637c73d45d4d3343d",
+              "pid": "902555",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 9,
+              "non_inherited_descriptors": 2,
+              "heap_bytes": {
+                "definitely lost": 176,
+                "indirectly lost": 2199,
+                "possibly lost": 0,
+                "still reachable": 49897
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/31-gnu-valgrind/process-902567.log",
+              "sha256": "c29abfaf44a1e04fecc3347570b653a1336b9b4d1e4a781a5196fc389a640d0f",
+              "pid": "902567",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52156
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/31-rboxc-valgrind/process-902574.log",
+              "sha256": "7027cabf66f305c0abdbf9e2afc01d986a9a53e0f827391969950f056d4fadb0",
+              "pid": "902574",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51481
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-status-errexit/run-bghxh2wo/31-rboxc-valgrind/process-902608.log",
+              "sha256": "b71a5e282253cb48029bca152f26105566df86a594d5db1951db4c1541512b59",
+              "pid": "902608",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53244
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

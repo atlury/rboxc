@@ -1,0 +1,3861 @@
+{
+  "runtime_helpers": {
+    "/root/rboxc/target/bash-exit-scope-status-candidate/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174",
+    "/root/rboxc/build/gnu-coreutils/src/libstdbuf.so": "ab0f38c3557ced06f914416c765a68c1ebf00c6cdacbe24c9ab9ec60e49a6ea4"
+  },
+  "binary": "/root/rboxc/target/bash-exit-scope-status-candidate/release/rboxc",
+  "binary_sha256": "ce93145125f3959115af4c432e172c6c323df68a245c7a1317087e525e06ba7e",
+  "gnu_binary_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+  "inputs": {
+    "/root/rboxc/build/gnu-bash/bash": "bd47035bca2886f8d61f564ae38ca9c807a8b0b98e914d28f909fb7b1bb1366f",
+    "/root/rboxc/target/bash-exit-scope-status-candidate/release/rboxc": "ce93145125f3959115af4c432e172c6c323df68a245c7a1317087e525e06ba7e",
+    "/root/rboxc/tests/bash-trap-state-contract.py": "80761116d9b332387c53775d3289fd9bae05e8e0011cb6f66154ba69b88b2ed2"
+  },
+  "scope": "Eight bounded cases through four shell aliases compare native GNU and Rboxc: ordinary self-directed USR1, restart from USR1, return from USR1/INT within a function, and DEBUG/ERR/RETURN/INT handlers that reset themselves before executing a private plain script. All candidate process summaries must be complete and clean; native findings are preserved.",
+  "complete": true,
+  "planned_total": 32,
+  "passed": 32,
+  "total": 32,
+  "results": [
+    {
+      "name": "bash:user-signal-normal",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap 'printf signal\\n' USR1; kill -s USR1 $$; printf 'after:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/0-gnu-valgrind/process-900211.log",
+              "sha256": "c20b40d4f849c3ccbe4fbc6a1abfbad2ebb044831ab949704ec092ec6ce2150f",
+              "pid": "900211",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47281
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/0-rboxc-valgrind/process-900591.log",
+              "sha256": "9755104ea65d9857b29a964307143dca7f6af23e284bfebc97b775c9d8b318e6",
+              "pid": "900591",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48273
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:user-signal-restart",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap 'exec ./plain user-signal' USR1; kill -s USR1 $$; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/1-gnu-valgrind/process-900677.log",
+              "sha256": "633a287a47a76e519141767f911741c8cbf4b457544a45a9d57a132a962f9460",
+              "pid": "900677",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3717,
+                "indirectly lost": 19642,
+                "possibly lost": 74,
+                "still reachable": 48541
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/1-rboxc-valgrind/process-900701.log",
+              "sha256": "d09dffd4eb2b184c05912aa34548157b43e47e03c5c8d96a5a22f97bd77ce83e",
+              "pid": "900701",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48884
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:user-signal-return",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap 'return 7' USR1; f(){ kill -s USR1 $$; printf unreachable; }; f; printf 'returned:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/2-gnu-valgrind/process-900973.log",
+              "sha256": "0ad3ca0828c827c61f50ea7f5a65bf06fb90ded6fec70f13893816302648ea91",
+              "pid": "900973",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 32,
+                "indirectly lost": 66,
+                "possibly lost": 0,
+                "still reachable": 49569
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/2-rboxc-valgrind/process-900995.log",
+              "sha256": "9cd0d252a2a17e1aecdffb2589b4df64a4a90fdb5c507e6de7ccb71f04088cb1",
+              "pid": "900995",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51009
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:interrupt-return",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap 'return 9' INT; f(){ kill -s INT $$; printf unreachable; }; f; printf 'returned:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/3-gnu-valgrind/process-901022.log",
+              "sha256": "dee8adb7e3bad0fb553d0a1ce229c10fd2ba7002640553c6c83327bb43bc657e",
+              "pid": "901022",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 32,
+                "indirectly lost": 66,
+                "possibly lost": 0,
+                "still reachable": 49672
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/3-rboxc-valgrind/process-901065.log",
+              "sha256": "6bdf066785f7169ed3483eb9383539e964d99131e54415f081142f6f8fb7056a",
+              "pid": "901065",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51256
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:debug-reset-restart",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap 'trap - DEBUG; exec ./plain reset-debug' DEBUG; :"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/4-gnu-valgrind/process-901083.log",
+              "sha256": "b22ab6734ae5253e32ba2414c01b0286aa4528ed6b536583f76dc0bcf42750ef",
+              "pid": "901083",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3731,
+                "indirectly lost": 19685,
+                "possibly lost": 55,
+                "still reachable": 48508
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/4-rboxc-valgrind/process-901105.log",
+              "sha256": "25fd3c7608af662afc0c3fed38a9f26e6ae86f57e39d364a3d715dca75141a25",
+              "pid": "901105",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48851
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:error-reset-restart",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap 'trap - ERR; exec ./plain reset-error' ERR; false"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/5-gnu-valgrind/process-901126.log",
+              "sha256": "9c1e1d772410e5a3566f76efab5ffdb6019777f6c546343e1de011a7f34380ff",
+              "pid": "901126",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3729,
+                "indirectly lost": 19625,
+                "possibly lost": 55,
+                "still reachable": 48512
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/5-rboxc-valgrind/process-901146.log",
+              "sha256": "1b03490d952c89f73d02793156776b498e7440d2738998a5ea2926487c249562",
+              "pid": "901146",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48855
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:return-reset-restart",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -T; trap 'trap - RETURN; exec ./plain reset-return' RETURN; f(){ :; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/6-gnu-valgrind/process-901166.log",
+              "sha256": "acc1c9af51ce12bdb97550c85cf4658bae3eff888c055500e067b6aab3ebf7b6",
+              "pid": "901166",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 12,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3692,
+                "indirectly lost": 21310,
+                "possibly lost": 77,
+                "still reachable": 49021
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/6-rboxc-valgrind/process-901203.log",
+              "sha256": "ba6528f0cfa56fad8a1402addf9defd2e21c886ab5eed7930e8953aa200be7ba",
+              "pid": "901203",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49323
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:interrupt-reset-restart",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap 'trap - INT; exec ./plain reset-interrupt' INT; kill -s INT $$"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/7-gnu-valgrind/process-901277.log",
+              "sha256": "5bbaafe423347c88c1fe2a4d060c826569a28a2727d3af8d4bc713ce090d44ee",
+              "pid": "901277",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 15,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3767,
+                "indirectly lost": 19785,
+                "possibly lost": 68,
+                "still reachable": 48546
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/7-rboxc-valgrind/process-901304.log",
+              "sha256": "d4047b0a391c56042da2f14a33a4aedf8f97582e8f3bea9bb459daf081649d3c",
+              "pid": "901304",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48889
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:user-signal-normal",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap 'printf signal\\n' USR1; kill -s USR1 $$; printf 'after:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/8-gnu-valgrind/process-901348.log",
+              "sha256": "6e82cff07307a1fcc40e275d3c5e2336e3e4f6f0190691481a59a2c9f0025865",
+              "pid": "901348",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47397
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/8-rboxc-valgrind/process-901383.log",
+              "sha256": "99ee1d8007e11a44b7d6257ee17e024d2ee55e8bed1eca28158b96c724b2a130",
+              "pid": "901383",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48389
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:user-signal-restart",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap 'exec ./plain user-signal' USR1; kill -s USR1 $$; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/9-gnu-valgrind/process-901404.log",
+              "sha256": "99467038c7022544521000c2c4c4a6e2624410610e64cc721925a3a5df6a1537",
+              "pid": "901404",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3717,
+                "indirectly lost": 19642,
+                "possibly lost": 74,
+                "still reachable": 48667
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/9-rboxc-valgrind/process-901442.log",
+              "sha256": "226af5305882c340d7ab59a56b91e8afb2773e57f65255f43601530ddb29e7a1",
+              "pid": "901442",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49010
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:user-signal-return",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap 'return 7' USR1; f(){ kill -s USR1 $$; printf unreachable; }; f; printf 'returned:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/10-gnu-valgrind/process-901481.log",
+              "sha256": "ddbd958d7aeac8a3381d3bb1eee50bc01e527956c79a8f5fdf431b48bd23a91c",
+              "pid": "901481",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 32,
+                "indirectly lost": 66,
+                "possibly lost": 0,
+                "still reachable": 49683
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/10-rboxc-valgrind/process-901499.log",
+              "sha256": "4e00783cdb6e75e89f650153761c27e27f9f3c8a8df7106443f376211a3c9097",
+              "pid": "901499",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51123
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:interrupt-return",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap 'return 9' INT; f(){ kill -s INT $$; printf unreachable; }; f; printf 'returned:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/11-gnu-valgrind/process-901547.log",
+              "sha256": "8e03d1bd48b554e6d8ddb86a0305a5c2d645a3c7bfe96cd80228eb026ae0ae89",
+              "pid": "901547",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 32,
+                "indirectly lost": 66,
+                "possibly lost": 0,
+                "still reachable": 49786
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/11-rboxc-valgrind/process-901564.log",
+              "sha256": "77ce12a9ec71af209f394333c776772744c8a2ff4e3d7e1f64adb2c6dee40e8b",
+              "pid": "901564",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51370
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:debug-reset-restart",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap 'trap - DEBUG; exec ./plain reset-debug' DEBUG; :"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/12-gnu-valgrind/process-901586.log",
+              "sha256": "853bce02048b78a7a562761b898ebb192cf093c27252d1ac1c75431a39aefb8a",
+              "pid": "901586",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3731,
+                "indirectly lost": 19685,
+                "possibly lost": 55,
+                "still reachable": 48634
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/12-rboxc-valgrind/process-901614.log",
+              "sha256": "8d01dd8979b7a94ede5b7ef4e860c1eca7e6897e46fc464cd19ceb017c4bb9a4",
+              "pid": "901614",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48977
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:error-reset-restart",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap 'trap - ERR; exec ./plain reset-error' ERR; false"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/13-gnu-valgrind/process-901638.log",
+              "sha256": "baa97261077be402a82bb57cb4cef823deedfee5e3acca8ec3cfd06e241b97d2",
+              "pid": "901638",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3729,
+                "indirectly lost": 19625,
+                "possibly lost": 55,
+                "still reachable": 48638
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/13-rboxc-valgrind/process-901649.log",
+              "sha256": "894fb5d101826bdb3c0d3b6756c7d4d8c7cf830b368682f86c9c4d7a3a44deab",
+              "pid": "901649",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48981
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:return-reset-restart",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -T; trap 'trap - RETURN; exec ./plain reset-return' RETURN; f(){ :; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/14-gnu-valgrind/process-901807.log",
+              "sha256": "6dd15599de4793b2f23d5c963a4792f8c2b6dfbeaac56f450834d65e4de81316",
+              "pid": "901807",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 12,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3692,
+                "indirectly lost": 21308,
+                "possibly lost": 77,
+                "still reachable": 49145
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/14-rboxc-valgrind/process-901823.log",
+              "sha256": "4fd2c027bb1c4fbb27c6fc5ed3b2436952e6143ee086c7b0b4f25f17e416fa9c",
+              "pid": "901823",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49447
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:interrupt-reset-restart",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap 'trap - INT; exec ./plain reset-interrupt' INT; kill -s INT $$"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/15-gnu-valgrind/process-901848.log",
+              "sha256": "b9de6eb5f68e13b9486ea836521a5325893dc9608909eb397765d42ee2e02b03",
+              "pid": "901848",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 15,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3767,
+                "indirectly lost": 19785,
+                "possibly lost": 68,
+                "still reachable": 48672
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/15-rboxc-valgrind/process-901869.log",
+              "sha256": "f7da1eb47589fc554e9156ef912716c04bd6bbee300c3662c6f8f9dc3226d50f",
+              "pid": "901869",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49015
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:user-signal-normal",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap 'printf signal\\n' USR1; kill -s USR1 $$; printf 'after:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/16-gnu-valgrind/process-901892.log",
+              "sha256": "48875aa5a7d9fd8f1e62de06da8c44d1964d87b8a75fb8224196bb6a4e3e8fdf",
+              "pid": "901892",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47283
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/16-rboxc-valgrind/process-901911.log",
+              "sha256": "4eea6f1b3134a0851d2574ac2e8206785ab90b9f21b4fcaf803b6df3314b8281",
+              "pid": "901911",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48275
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:user-signal-restart",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap 'exec ./plain user-signal' USR1; kill -s USR1 $$; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/17-gnu-valgrind/process-901929.log",
+              "sha256": "ac48a905faec090b3fec08fb111f5ac1ed18615c452429e354bc3019ba9bfc9e",
+              "pid": "901929",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3717,
+                "indirectly lost": 19642,
+                "possibly lost": 74,
+                "still reachable": 48542
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/17-rboxc-valgrind/process-901944.log",
+              "sha256": "a44c0ae324198bb598a859ddb353cb879119d57133a414a8b7c38ec897beaa21",
+              "pid": "901944",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48885
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:user-signal-return",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap 'return 7' USR1; f(){ kill -s USR1 $$; printf unreachable; }; f; printf 'returned:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/18-gnu-valgrind/process-901968.log",
+              "sha256": "95561f65e83be74ee51f8947f15bddd99b883e347fab2aabfca48de93dfd5c16",
+              "pid": "901968",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 32,
+                "indirectly lost": 66,
+                "possibly lost": 0,
+                "still reachable": 49572
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/18-rboxc-valgrind/process-901984.log",
+              "sha256": "3bd11cd2527683a919a3e4e96108a37ef3f446b4d7796b838f5635090349a771",
+              "pid": "901984",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51012
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:interrupt-return",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap 'return 9' INT; f(){ kill -s INT $$; printf unreachable; }; f; printf 'returned:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/19-gnu-valgrind/process-902000.log",
+              "sha256": "87622aaf6630bbb33f095ccac523e2476afa186afae5e90e1b1f54167e0c4524",
+              "pid": "902000",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 32,
+                "indirectly lost": 66,
+                "possibly lost": 0,
+                "still reachable": 49675
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/19-rboxc-valgrind/process-902017.log",
+              "sha256": "8becf33dabb84067a4059170dd98a3c2f1b22a85e91460d01ceaa9d2e2f13dc9",
+              "pid": "902017",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51259
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:debug-reset-restart",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap 'trap - DEBUG; exec ./plain reset-debug' DEBUG; :"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/20-gnu-valgrind/process-902033.log",
+              "sha256": "8d364f18c8ea217c92af9e534ec90ebfa322142dfbdff7ab53ae858dd784fd5f",
+              "pid": "902033",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3731,
+                "indirectly lost": 19685,
+                "possibly lost": 55,
+                "still reachable": 48509
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/20-rboxc-valgrind/process-902050.log",
+              "sha256": "9efd6e43ee058a0afb1096b3fd83a6a6b4d4c60de2f153284b0412956738fa6e",
+              "pid": "902050",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48852
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:error-reset-restart",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap 'trap - ERR; exec ./plain reset-error' ERR; false"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/21-gnu-valgrind/process-902066.log",
+              "sha256": "b5bb8299f93a7f64618721bc4dcdc0d299e9172a63d4aefec2269bb609f3f1b7",
+              "pid": "902066",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3729,
+                "indirectly lost": 19625,
+                "possibly lost": 55,
+                "still reachable": 48513
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/21-rboxc-valgrind/process-902083.log",
+              "sha256": "3fe9f9118a8a7636165cca417e4f80e874ad1b15a991b0e4c6cb7f079747edd8",
+              "pid": "902083",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48856
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:return-reset-restart",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -T; trap 'trap - RETURN; exec ./plain reset-return' RETURN; f(){ :; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/22-gnu-valgrind/process-902099.log",
+              "sha256": "66b89cc3df6b13371175c4a455814db18f604619cc9b46e58fe03dea7dc97017",
+              "pid": "902099",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 12,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3692,
+                "indirectly lost": 21311,
+                "possibly lost": 77,
+                "still reachable": 49023
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/22-rboxc-valgrind/process-902114.log",
+              "sha256": "7f639761d90bf306845fb5af815ce22b47e0272aba3c8bc5cecebaeee64bb171",
+              "pid": "902114",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49325
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:interrupt-reset-restart",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap 'trap - INT; exec ./plain reset-interrupt' INT; kill -s INT $$"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/23-gnu-valgrind/process-902181.log",
+              "sha256": "0682527f254a37a70a1c3d78f5707d1cf4e6bd517e7be3bfbd843967e3339101",
+              "pid": "902181",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 15,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3767,
+                "indirectly lost": 19785,
+                "possibly lost": 68,
+                "still reachable": 48547
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/23-rboxc-valgrind/process-902202.log",
+              "sha256": "dcb0c3192487b429830e0d33290e1124eff349219b0015b26060965827615874",
+              "pid": "902202",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48890
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:user-signal-normal",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap 'printf signal\\n' USR1; kill -s USR1 $$; printf 'after:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/24-gnu-valgrind/process-902227.log",
+              "sha256": "70ea2af836ee585dc0b5561ae113975d002f4497e9472bb191bcfae5e353cc36",
+              "pid": "902227",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47279
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/24-rboxc-valgrind/process-902243.log",
+              "sha256": "bb859a8d6008058d5f11638c81b127d01333b2cff3f45c7ca853ad93f2659465",
+              "pid": "902243",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48271
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:user-signal-restart",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap 'exec ./plain user-signal' USR1; kill -s USR1 $$; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/25-gnu-valgrind/process-902262.log",
+              "sha256": "f06f21087d1123b8173ac85beb495926a3b314c4e90b107f945ed33d95a96820",
+              "pid": "902262",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3717,
+                "indirectly lost": 19642,
+                "possibly lost": 74,
+                "still reachable": 48540
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/25-rboxc-valgrind/process-902281.log",
+              "sha256": "644a321b6fe7cbc1b2e0759ed648318e12a0f85faf296c64411258dbb6eb3892",
+              "pid": "902281",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48883
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:user-signal-return",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap 'return 7' USR1; f(){ kill -s USR1 $$; printf unreachable; }; f; printf 'returned:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/26-gnu-valgrind/process-902308.log",
+              "sha256": "dd8448dbfdca650aafb33762f81394603e90d79452da1ad3a29a3e7089a2908b",
+              "pid": "902308",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 32,
+                "indirectly lost": 66,
+                "possibly lost": 0,
+                "still reachable": 49566
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/26-rboxc-valgrind/process-902323.log",
+              "sha256": "6a28e1579cbaa0d7fb5d417783eb3f81e0c488fa2b217419e4093570668fa2fd",
+              "pid": "902323",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51006
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:interrupt-return",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap 'return 9' INT; f(){ kill -s INT $$; printf unreachable; }; f; printf 'returned:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/27-gnu-valgrind/process-902345.log",
+              "sha256": "aeaed5939ac08334594e11c2ad9758fdd3ee41b5a79579757d4ba9ce7083624c",
+              "pid": "902345",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 32,
+                "indirectly lost": 66,
+                "possibly lost": 0,
+                "still reachable": 49669
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/27-rboxc-valgrind/process-902361.log",
+              "sha256": "57b6bb6d8afcb2a40081c69b81f63b3ce338c23b5e1669302bb8dbcce9e2eeef",
+              "pid": "902361",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51253
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:debug-reset-restart",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap 'trap - DEBUG; exec ./plain reset-debug' DEBUG; :"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/28-gnu-valgrind/process-902382.log",
+              "sha256": "cc97913da68be03e2b4cd7cb248ed9af51690cb18093d6b32c49674e58fefedd",
+              "pid": "902382",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3731,
+                "indirectly lost": 19685,
+                "possibly lost": 55,
+                "still reachable": 48507
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/28-rboxc-valgrind/process-902397.log",
+              "sha256": "e485eea65a30be9179bcf775d0a87f0077e6958907c9dff115754d492df8ce07",
+              "pid": "902397",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48850
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:error-reset-restart",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap 'trap - ERR; exec ./plain reset-error' ERR; false"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/29-gnu-valgrind/process-902415.log",
+              "sha256": "5f1eb89fd92241a99367716e40582fbddee0a9a466a654384d6605f933b53422",
+              "pid": "902415",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3729,
+                "indirectly lost": 19625,
+                "possibly lost": 55,
+                "still reachable": 48511
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/29-rboxc-valgrind/process-902431.log",
+              "sha256": "56c64d4d32b184182184038ffa54bcfc60770d0a5973fd8c6642c1f226465ee4",
+              "pid": "902431",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48854
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:return-reset-restart",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -T; trap 'trap - RETURN; exec ./plain reset-return' RETURN; f(){ :; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/30-gnu-valgrind/process-902497.log",
+              "sha256": "9ed2122bd8f951d239a66ea8517cd43ab50bc15d612fea629ab9bb8d779d1ccc",
+              "pid": "902497",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 12,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3692,
+                "indirectly lost": 21309,
+                "possibly lost": 77,
+                "still reachable": 49019
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/30-rboxc-valgrind/process-902513.log",
+              "sha256": "a4851a1a9cbaf6e780bf3f6f2deb9372b05c259c971eb7d5305663f617d0d93e",
+              "pid": "902513",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49321
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:interrupt-reset-restart",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap 'trap - INT; exec ./plain reset-interrupt' INT; kill -s INT $$"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/31-gnu-valgrind/process-902534.log",
+              "sha256": "ff106ec6e4055220073ea8244bf23a54fd002586282bed8d62926531c5a1767a",
+              "pid": "902534",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 15,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3767,
+                "indirectly lost": 19785,
+                "possibly lost": 68,
+                "still reachable": 48545
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-status-trap-state/run-z3qe1of1/31-rboxc-valgrind/process-902551.log",
+              "sha256": "98f044d084a782f0777dd9aa86178ec1e39dc01e1ee75857f2df9bad74c88714",
+              "pid": "902551",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48888
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

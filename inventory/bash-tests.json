@@ -57,8 +57,8 @@
       },
       "review": "Complete ordinary expansion/quoting conformance script and every referenced executable sub-script reviewed. Original expected-output comparison and recipe filter retained. File operations are confined to private TMPDIR.",
       "state": "reviewed-original-pass",
-      "evidence": "evidence/bash-assignment-regression-original.json",
-      "audit": "evidence/bash-assignment-regression-validation.json"
+      "evidence": "evidence/bash-arithmetic-regression-original.json",
+      "audit": "evidence/bash-arithmetic-regression-validation.json"
     },
     {
       "target": "arith",
@@ -81,8 +81,8 @@
       },
       "review": "Complete ordinary shell-language conformance script reviewed; execute unchanged and retain its expected-output comparison.",
       "state": "reviewed-original-pass",
-      "evidence": "evidence/bash-assignment-regression-original.json",
-      "audit": "evidence/bash-assignment-regression-validation.json"
+      "evidence": "evidence/bash-arithmetic-regression-original.json",
+      "audit": "evidence/bash-arithmetic-regression-validation.json"
     },
     {
       "target": "array",
@@ -121,8 +121,8 @@
       },
       "review": "Complete ordinary conformance script and every referenced sub-script reviewed; unchanged expected-output comparison retained.",
       "state": "reviewed-original-pass",
-      "evidence": "evidence/bash-assignment-regression-original.json",
-      "audit": "evidence/bash-assignment-regression-validation.json"
+      "evidence": "evidence/bash-arithmetic-regression-original.json",
+      "audit": "evidence/bash-arithmetic-regression-validation.json"
     },
     {
       "target": "braces",
@@ -231,15 +231,15 @@
         "comsub-eof6.sub": "b2091f72ed03e970fb0b38b8428cdcca302ffc693a2098e606a70e6ee809d913"
       },
       "review": "Complete original recipe and executable scripts reviewed. Fixed ordinary expansion, pattern, parser diagnostic, mapfile callback or bounded pipeline conformance cases; original expected outputs and filters retained. Only referenced subsidiary scripts are included; unreferenced similarly named files are not claimed as executed.",
-      "evidence": "evidence/bash-subshell-cleanup-batch-3.json",
-      "audit": "evidence/bash-subshell-cleanup-batch-3-validation.json"
+      "evidence": "evidence/bash-exit-scope-status-original.json",
+      "audit": "evidence/bash-exit-scope-status-original-validation.json"
     },
     {
       "target": "comsub-posix",
       "recipe": "run-comsub-posix",
       "recipe_sha256": "c4286996be822f1bdea43cb15a1cf4683289c7cac8c7b0d7e35a9490c005146d",
       "reviewed": true,
-      "state": "reviewed-ready",
+      "state": "reviewed-original-assertions-memory-open",
       "script": "comsub-posix.tests",
       "expected": "comsub-posix.right",
       "output_mode": "combined",
@@ -259,14 +259,16 @@
       ],
       "host_inputs": {
         "/usr/lib/cargo/bin/coreutils/cat": "48893b0fb21436b54619db80486e83ef39dfccaf1aefe83dfa00c02d6146e8c0"
-      }
+      },
+      "evidence": "evidence/bash-next-seven-substitution.json",
+      "audit": "evidence/bash-next-seven-substitution-validation.json"
     },
     {
       "target": "comsub2",
       "recipe": "run-comsub2",
       "recipe_sha256": "d863a7914f761eb8b10d7bad3dd5d02a5a4be07c315e4317992bde3ef80eceed",
       "reviewed": true,
-      "state": "reviewed-ready",
+      "state": "reviewed-original-pass",
       "script": "comsub2.tests",
       "expected": "comsub2.right",
       "output_mode": "combined",
@@ -287,7 +289,9 @@
       ],
       "host_inputs": {
         "/usr/lib/cargo/bin/coreutils/echo": "48893b0fb21436b54619db80486e83ef39dfccaf1aefe83dfa00c02d6146e8c0"
-      }
+      },
+      "evidence": "evidence/bash-exit-scope-status-original.json",
+      "audit": "evidence/bash-exit-scope-status-original-validation.json"
     },
     {
       "target": "cond",
@@ -467,8 +471,8 @@
         "exp13.sub": "dde578a82ebb499b4d0685af725502ab1d70009a3073b85a6c22841ccd9eda34"
       },
       "review": "Complete original script, recipe and all referenced subsidiary scripts reviewed. Bounded quoting, conditional diagnostics, completion registrations or private-directory pathname expansion. Completion registrations containing ps/remote-tool names are printed, never invoked. No original expected output is changed; fixed recho is the already pinned GNU test helper. Globstar needs the pinned GNU/candidate ls and ln helpers in the private PATH.",
-      "evidence": "evidence/bash-assignment-cleanup-original.json",
-      "audit": "evidence/bash-assignment-original-validation.json"
+      "evidence": "evidence/bash-exit-scope-status-original.json",
+      "audit": "evidence/bash-exit-scope-status-original-validation.json"
     },
     {
       "target": "exportfunc",
@@ -630,7 +634,7 @@
       "recipe": "run-ifs-posix",
       "recipe_sha256": "6ed3149043f4a0174aad7110672eefcc09807e91013ea8d04c264e56664ea00b",
       "reviewed": true,
-      "state": "reviewed-ready",
+      "state": "reviewed-original-pass",
       "script": "ifs-posix.tests",
       "expected": "ifs-posix.right",
       "output_mode": "combined",
@@ -639,14 +643,16 @@
         "ifs-posix.tests": "0ebcb00a4a8498ad8f5cd3b2a250b5a45ceb96227c8437fb9f4caf1b4653035c",
         "ifs-posix.right": "8d30156cd5cc001a34308d36769ee0ebdb32e0f98677a399cf4147851030bb9a"
       },
-      "review": "Complete fixed IFS whitespace/non-whitespace matrix read in full: 6856 set/read assertions. Its many forked builtin pipelines retain complete process logs. Fifteen-minute per-profile bound with owned-group cleanup; no timeout qualifies as a pass."
+      "review": "Complete fixed IFS whitespace/non-whitespace matrix read in full: 6856 set/read assertions. Its many forked builtin pipelines retain complete process logs. Fifteen-minute per-profile bound with owned-group cleanup; no timeout qualifies as a pass.",
+      "evidence": "evidence/bash-next-seven-ifs-matrix.json",
+      "audit": "evidence/bash-next-seven-ifs-matrix-validation.json"
     },
     {
       "target": "input-test",
       "recipe": "run-input-test",
       "recipe_sha256": "bf82997630b658376f859fd4de368a1e8fae94eea2a6a7c56351f4fff04ad94c",
       "reviewed": true,
-      "state": "reviewed-ready",
+      "state": "reviewed-original-pass",
       "script": "input-line.sh",
       "expected": "input.right",
       "output_mode": "combined",
@@ -656,7 +662,9 @@
         "input-line.sub": "833fd340f7fcfea08c184db0e7c94a028af8f74be40434623c950ae4f57a4849",
         "input.right": "5ec149f5ecf2394c2c7d2a9182604ec3739999fef6e4fc2d62ebc2079facf9ad"
       },
-      "review": "Read original recipe and both scripts. Script is provided on a regular stdin descriptor exactly as run-input-test; child consumes one line before parent continues. No script pathname argument or input pipe substitutes for the original shared offset."
+      "review": "Read original recipe and both scripts. Script is provided on a regular stdin descriptor exactly as run-input-test; child consumes one line before parent continues. No script pathname argument or input pipe substitutes for the original shared offset.",
+      "evidence": "evidence/bash-next-seven-array-redirection.json",
+      "audit": "evidence/bash-next-seven-array-redirection-validation.json"
     },
     {
       "target": "intl",
@@ -928,8 +936,8 @@
         "posix2syntax.sub": "e349291afd23e4dec948915eb1e123273cd6359e034eb1bdeeb281337309d139"
       },
       "review": "Complete original recipe and executable scripts reviewed. Fixed ordinary expansion, pattern, parser diagnostic, mapfile callback or bounded pipeline conformance cases; original expected outputs and filters retained. Only referenced subsidiary scripts are included; unreferenced similarly named files are not claimed as executed.",
-      "evidence": "evidence/bash-assignment-regression-original.json",
-      "audit": "evidence/bash-assignment-regression-validation.json"
+      "evidence": "evidence/bash-arithmetic-regression-original.json",
+      "audit": "evidence/bash-arithmetic-regression-validation.json"
     },
     {
       "target": "posix2",
@@ -943,7 +951,7 @@
       "recipe": "run-posixexp",
       "recipe_sha256": "df929c43b3d443b45e975e4fd5351b2466ae6ecc9c1ad69e92fff9ef4f910cdc",
       "reviewed": true,
-      "state": "reviewed-ready",
+      "state": "reviewed-original-assertions-memory-open",
       "script": "posixexp.tests",
       "expected": "posixexp.right",
       "output_mode": "combined",
@@ -960,7 +968,9 @@
         "posixexp8.sub": "d18f8688d3144cb14d059b4e9722b6fa468f421d9997e0033b7a4959a0f4965f"
       },
       "timeout_seconds": 600,
-      "review": "Main script, original recipe, and every referenced active subsidiary script read in full. Ordinary array-key quoting, allocated redirections, command substitution parsing/scope, or fixed POSIX expansion assertions. Every write uses private TMPDIR; hardcoded echo/cat need the existing private mount helper profile. Comsub-posix4.sub is commented out and is not claimed executed. Vredir includes a six-descriptor limit and /dev/tty access with no controlling terminal, whose original behavior must be compared explicitly; no historical crash/hang reproduction was selected."
+      "review": "Main script, original recipe, and every referenced active subsidiary script read in full. Ordinary array-key quoting, allocated redirections, command substitution parsing/scope, or fixed POSIX expansion assertions. Every write uses private TMPDIR; hardcoded echo/cat need the existing private mount helper profile. Comsub-posix4.sub is commented out and is not claimed executed. Vredir includes a six-descriptor limit and /dev/tty access with no controlling terminal, whose original behavior must be compared explicitly; no historical crash/hang reproduction was selected.",
+      "evidence": "evidence/bash-next-seven-posix-expansion.json",
+      "audit": "evidence/bash-next-seven-posix-expansion-validation.json"
     },
     {
       "target": "posixexp2",
@@ -1071,7 +1081,7 @@
       "recipe": "run-quotearray",
       "recipe_sha256": "c0df46aaa51bf8545be40240b3dab66e5ed0ca111bfd4cef545341cd77f633e6",
       "reviewed": true,
-      "state": "reviewed-ready",
+      "state": "reviewed-original-pass",
       "script": "quotearray.tests",
       "expected": "quotearray.right",
       "output_mode": "combined",
@@ -1085,7 +1095,9 @@
         "quotearray5.sub": "e89869a3acd09d06c02fddecff2f1f9f90379958824ef43a61438b8a80b3500f"
       },
       "timeout_seconds": 180,
-      "review": "Main script, original recipe, and every referenced active subsidiary script read in full. Ordinary array-key quoting, allocated redirections, command substitution parsing/scope, or fixed POSIX expansion assertions. Every write uses private TMPDIR; hardcoded echo/cat need the existing private mount helper profile. Comsub-posix4.sub is commented out and is not claimed executed. Vredir includes a six-descriptor limit and /dev/tty access with no controlling terminal, whose original behavior must be compared explicitly; no historical crash/hang reproduction was selected."
+      "review": "Main script, original recipe, and every referenced active subsidiary script read in full. Ordinary array-key quoting, allocated redirections, command substitution parsing/scope, or fixed POSIX expansion assertions. Every write uses private TMPDIR; hardcoded echo/cat need the existing private mount helper profile. Comsub-posix4.sub is commented out and is not claimed executed. Vredir includes a six-descriptor limit and /dev/tty access with no controlling terminal, whose original behavior must be compared explicitly; no historical crash/hang reproduction was selected.",
+      "evidence": "evidence/bash-exit-scope-status-original.json",
+      "audit": "evidence/bash-exit-scope-status-original-validation.json"
     },
     {
       "target": "read",
@@ -1144,8 +1156,8 @@
         "set-e3a.sub": "df638cd29b21994acfd0cb6cb968012c296f8650d94ddc8692be28dad07329f1"
       },
       "review": "Complete original recipe, script, nested scripts and helper functions reviewed. Fixed bounded pipeline timing/negation, or errexit propagation through functions, sources, pipelines and substitutions. The arithmetic loop performs fifteen iterations. No unbounded background tasks or external services. Original expected output is retained; helper executables are supplied privately.",
-      "evidence": "evidence/bash-subshell-cleanup-batch-1.json",
-      "audit": "evidence/bash-subshell-cleanup-batch-1-validation.json"
+      "evidence": "evidence/bash-exit-scope-status-original.json",
+      "audit": "evidence/bash-exit-scope-status-original-validation.json"
     },
     {
       "target": "set-x",
@@ -1300,7 +1312,7 @@
       "recipe": "run-vredir",
       "recipe_sha256": "7cbb8d228e34781f45c98ea6e8b2556b90008fe8765247eb17e40558a494f4fd",
       "reviewed": true,
-      "state": "reviewed-ready",
+      "state": "reviewed-original-baseline-open",
       "script": "vredir.tests",
       "expected": "vredir.right",
       "output_mode": "combined",
@@ -1317,7 +1329,9 @@
         "vredir8.sub": "38cfbf6c13f9856d2af88f2a1c3b4973118857649f63549106ad090b52a5e8df"
       },
       "timeout_seconds": 180,
-      "review": "Main script, original recipe, and every referenced active subsidiary script read in full. Ordinary array-key quoting, allocated redirections, command substitution parsing/scope, or fixed POSIX expansion assertions. Every write uses private TMPDIR; hardcoded echo/cat need the existing private mount helper profile. Comsub-posix4.sub is commented out and is not claimed executed. Vredir includes a six-descriptor limit and /dev/tty access with no controlling terminal, whose original behavior must be compared explicitly; no historical crash/hang reproduction was selected."
+      "review": "Main script, original recipe, and every referenced active subsidiary script read in full. Ordinary array-key quoting, allocated redirections, command substitution parsing/scope, or fixed POSIX expansion assertions. Every write uses private TMPDIR; hardcoded echo/cat need the existing private mount helper profile. Comsub-posix4.sub is commented out and is not claimed executed. Vredir includes a six-descriptor limit and /dev/tty access with no controlling terminal, whose original behavior must be compared explicitly; no historical crash/hang reproduction was selected.",
+      "evidence": "evidence/bash-next-seven-array-redirection.json",
+      "audit": "evidence/bash-next-seven-array-redirection-validation.json"
     }
   ],
   "fixed_test_helpers": {

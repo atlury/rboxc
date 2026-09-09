@@ -1,0 +1,2837 @@
+{
+  "runtime_helpers": {
+    "/root/rboxc/target/bash-exit-scope-cleanup-candidate/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174",
+    "/root/rboxc/build/gnu-coreutils/src/libstdbuf.so": "ab0f38c3557ced06f914416c765a68c1ebf00c6cdacbe24c9ab9ec60e49a6ea4"
+  },
+  "binary": "/root/rboxc/target/bash-exit-scope-cleanup-candidate/release/rboxc",
+  "binary_sha256": "9df634a55045fbf0568e348e362c716cca3ed3fb3cdd0db9460ba7c1bd5c5e2b",
+  "gnu_binary_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+  "inputs": {
+    "/root/rboxc/build/gnu-bash/bash": "bd47035bca2886f8d61f564ae38ca9c807a8b0b98e914d28f909fb7b1bb1366f",
+    "/root/rboxc/target/bash-exit-scope-cleanup-candidate/release/rboxc": "9df634a55045fbf0568e348e362c716cca3ed3fb3cdd0db9460ba7c1bd5c5e2b",
+    "/root/rboxc/tests/bash-function-substitution-contract.py": "de13a3473190c09ce7becfba87f2a3040612af061d2750b75f47bfd44ec40da2"
+  },
+  "scope": "Eight bounded no-fork substitution contracts through four shell aliases compare GNU output, status and private file effects. Normal output capture, local REPLY, nested substitutions, return, subshell exit, closed stdout, errexit and EXIT traps exercise temporary descriptor and source-string lifetime. All child logs are retained; native GNU findings remain separate",
+  "complete": true,
+  "planned_total": 32,
+  "passed": 28,
+  "total": 32,
+  "results": [
+    {
+      "name": "bash:normal",
+      "command": "bash",
+      "args": [
+        "-c",
+        "v=outer; x=${ v=inner; printf output; }; printf \"%s:%s\\n\" \"$v\" \"$x\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "696e6e65723a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "696e6e65723a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/0-gnu-valgrind/process-887496.log",
+              "sha256": "7d08d008b2ccd385a738af211053d656385a1e12ba9ccd98c0a27f872fd00615",
+              "pid": "887496",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48299
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "696e6e65723a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "696e6e65723a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/0-rboxc-valgrind/process-887498.log",
+              "sha256": "efdb5d800b553281bd2566d98624b7e5a33b4b1588e5445b0d25b605fab324a5",
+              "pid": "887498",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49771
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:return",
+      "command": "bash",
+      "args": [
+        "-c",
+        "x=${ printf output; return 7; printf unreachable; }; printf \"%s:%s\\n\" \"$?\" \"$x\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "373a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "373a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "373a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "373a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/1-gnu-valgrind/process-887500.log",
+              "sha256": "d8eacef2e542401582d3e61d59dcf8f2ab77c6da9fc62e915e22271780fa715b",
+              "pid": "887500",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48395
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "373a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "373a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "373a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "373a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/1-rboxc-valgrind/process-887502.log",
+              "sha256": "76cf51be3f1b2c9325722d12c0bf084a21ac46e1fb410909ef09d1bb9ebe334d",
+              "pid": "887502",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49995
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:subshell-exit",
+      "command": "bash",
+      "args": [
+        "-c",
+        "( printf \"%s\\n\" \"${ printf hidden; exit 7; }\" ); printf \"outer:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "6f757465723a370a",
+          "stderr": "",
+          "raw_stdout": "6f757465723a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "6f757465723a370a",
+          "stderr": "",
+          "raw_stdout": "6f757465723a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/2-gnu-valgrind/process-887505.log",
+              "sha256": "a248c2a3d91d2d098a079f5e3a7bb34dbc1eaf4b06824e6dd6ebae9afd99f5c8",
+              "pid": "887505",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46111
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/2-gnu-valgrind/process-887506.log",
+              "sha256": "ae376be69239901ece5e7edde6b7191fdc590b5bde7eae766357f2fa8e2f7a03",
+              "pid": "887506",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 9,
+              "non_inherited_descriptors": 3,
+              "heap_bytes": {
+                "definitely lost": 297,
+                "indirectly lost": 425,
+                "possibly lost": 0,
+                "still reachable": 49674
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "6f757465723a370a",
+          "stderr": "",
+          "raw_stdout": "6f757465723a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "6f757465723a370a",
+          "stderr": "",
+          "raw_stdout": "6f757465723a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/2-rboxc-valgrind/process-887509.log",
+              "sha256": "3a28d7d1ec600efaa2fe0c889b385f71f295c30f1ed02db54a3a668b87a9f27a",
+              "pid": "887509",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46687
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/2-rboxc-valgrind/process-887511.log",
+              "sha256": "ef1409d0cdf4d1852de417d2fc7dae96ad6b239b19e496698c7eec0801f9b9df",
+              "pid": "887511",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51836
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:nested",
+      "command": "bash",
+      "args": [
+        "-c",
+        "printf \"%s\\n\" \"${ printf one; printf %s \"${ printf two; }\"; }\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "6f6e6574776f0a",
+          "stderr": "",
+          "raw_stdout": "6f6e6574776f0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "6f6e6574776f0a",
+          "stderr": "",
+          "raw_stdout": "6f6e6574776f0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/3-gnu-valgrind/process-887513.log",
+              "sha256": "80c4358096d8b6d7803705fcc968fa695368de06d95cd7e214d6bfc67733eb4a",
+              "pid": "887513",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51230
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "6f6e6574776f0a",
+          "stderr": "",
+          "raw_stdout": "6f6e6574776f0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "6f6e6574776f0a",
+          "stderr": "",
+          "raw_stdout": "6f6e6574776f0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/3-rboxc-valgrind/process-887515.log",
+              "sha256": "886617984e8ce5c8892859eedf7f3fb92d75eb4277c1b0f607d6a43ff267bdc7",
+              "pid": "887515",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52826
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:value-local",
+      "command": "bash",
+      "args": [
+        "-c",
+        "REPLY=outer; printf \"%s:%s\\n\" \"${| REPLY=inner; }\" \"$REPLY\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "696e6e65723a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f757465720a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "696e6e65723a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f757465720a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/4-gnu-valgrind/process-887517.log",
+              "sha256": "77785a2e3522611d6fabd1b72b000c46ddb449e06a11232902fbcb617950958d",
+              "pid": "887517",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48926
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "696e6e65723a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f757465720a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "696e6e65723a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f757465720a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/4-rboxc-valgrind/process-887519.log",
+              "sha256": "e0758ccdf48c2eca3097df6160d45fa61ff9406c48bfd11b1f01dc6abea93260",
+              "pid": "887519",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50286
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:stdout-closed",
+      "command": "bash",
+      "args": [
+        "-c",
+        "exec 1>&-; x=${ printf output; }; printf \"%s\\n\" \"$x\" >&2"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d7475676e6f6668672f657865632f626173683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d72386377353270622f657865632f626173683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/5-gnu-valgrind/process-887521.log",
+              "sha256": "b68a7d37c7e63b6e3887204f488a63d04e3b8d3d08502212b31fa854e8cdc7e8",
+              "pid": "887521",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 4,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 149,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47063
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6d76356a62697a302f657865632f626173683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f626173683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d5f73683937716e6f2f657865632f626173683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/5-rboxc-valgrind/process-887523.log",
+              "sha256": "399771c162b06bd8e96d5d9cbcd0a19ba9c8d9f74e17cce8068352dc82f75a23",
+              "pid": "887523",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47895
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:errexit",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -e; x=${ set -e; printf hidden; false; }; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/6-gnu-valgrind/process-887525.log",
+              "sha256": "4b848ee15379ad788126d4b512477e3d3ef6bdf59c2b5faf870e5f3c4b0e43c5",
+              "pid": "887525",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 8,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 195,
+                "indirectly lost": 461,
+                "possibly lost": 0,
+                "still reachable": 48340
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/6-rboxc-valgrind/process-887527.log",
+              "sha256": "90f225ddb6a75f2b123d822e9d386e2e1efc46f2735e87b3d732c9cb818d2b49",
+              "pid": "887527",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50062
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:exit-trap",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap 'printf exit >&2' EXIT; printf '%s\\n' \"${ printf hidden; exit 7; }\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": false,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "65786974",
+          "raw_stdout": "",
+          "raw_stderr": "65786974",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "65786974",
+          "raw_stdout": "",
+          "raw_stderr": "65786974",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/7-gnu-valgrind/process-887529.log",
+              "sha256": "cefcfd7efe71a0c893ca19443d90e13ed8258c6c00c0569632afb6514c0ef9de",
+              "pid": "887529",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 14,
+              "non_inherited_descriptors": 3,
+              "heap_bytes": {
+                "definitely lost": 409,
+                "indirectly lost": 610,
+                "possibly lost": 0,
+                "still reachable": 49808
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "65786974",
+          "raw_stdout": "",
+          "raw_stderr": "65786974",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "65786974",
+          "raw_stdout": "",
+          "raw_stderr": "65786974",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/7-rboxc-valgrind/process-887531.log",
+              "sha256": "c5dec5164680a4f66d2b87b23d3408df5433bc1319483bc10868f0b9c4863b5e",
+              "pid": "887531",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 11,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 201,
+                "indirectly lost": 866,
+                "possibly lost": 0,
+                "still reachable": 51520
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:normal",
+      "command": "sh",
+      "args": [
+        "-c",
+        "v=outer; x=${ v=inner; printf output; }; printf \"%s:%s\\n\" \"$v\" \"$x\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "696e6e65723a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "696e6e65723a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/8-gnu-valgrind/process-887533.log",
+              "sha256": "d3df49ec1db2ee1ba4ffdc838d34478070f909c3b704d62264b4571ef8dfad80",
+              "pid": "887533",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48351
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "696e6e65723a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "696e6e65723a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/8-rboxc-valgrind/process-887535.log",
+              "sha256": "8b15190d05dd31e78b1178579cf291c248c2dcbf4bfbbed379fc3371176347ec",
+              "pid": "887535",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49791
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:return",
+      "command": "sh",
+      "args": [
+        "-c",
+        "x=${ printf output; return 7; printf unreachable; }; printf \"%s:%s\\n\" \"$?\" \"$x\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "373a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "373a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "373a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "373a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/9-gnu-valgrind/process-887537.log",
+              "sha256": "fa14b4b7006bd84d2c85b0241c89b96f22562e8026e852d7434ca99964d9fad0",
+              "pid": "887537",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48447
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "373a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "373a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "373a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "373a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/9-rboxc-valgrind/process-887539.log",
+              "sha256": "2bb5f44ecf5ccdca73da3b3d0149db0940ea4cc2897dea2b61ec9322be1e5334",
+              "pid": "887539",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50015
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:subshell-exit",
+      "command": "sh",
+      "args": [
+        "-c",
+        "( printf \"%s\\n\" \"${ printf hidden; exit 7; }\" ); printf \"outer:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "6f757465723a370a",
+          "stderr": "",
+          "raw_stdout": "6f757465723a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "6f757465723a370a",
+          "stderr": "",
+          "raw_stdout": "6f757465723a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/10-gnu-valgrind/process-887542.log",
+              "sha256": "129f21b1138f1bf90273cc0d08cf476d23799c4c19bdac4bf7ee111dbb3ab111",
+              "pid": "887542",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46227
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/10-gnu-valgrind/process-887543.log",
+              "sha256": "21960c1dfd55b60cd656d212fa1078caefb7a8458b7bebe24f1b277897d04d58",
+              "pid": "887543",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 9,
+              "non_inherited_descriptors": 3,
+              "heap_bytes": {
+                "definitely lost": 297,
+                "indirectly lost": 425,
+                "possibly lost": 0,
+                "still reachable": 49758
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "6f757465723a370a",
+          "stderr": "",
+          "raw_stdout": "6f757465723a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "6f757465723a370a",
+          "stderr": "",
+          "raw_stdout": "6f757465723a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/10-rboxc-valgrind/process-887546.log",
+              "sha256": "8a6a674ab8d5d6b23ca5b3d83b34ee0a390b7bc98f3d7207365652b92ae2a588",
+              "pid": "887546",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46803
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/10-rboxc-valgrind/process-887547.log",
+              "sha256": "2981d55dc8fc0655bfcd4aacd4bad35875118c0f04cc66a91233d393b5699284",
+              "pid": "887547",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51904
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:nested",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf \"%s\\n\" \"${ printf one; printf %s \"${ printf two; }\"; }\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "6f6e6574776f0a",
+          "stderr": "",
+          "raw_stdout": "6f6e6574776f0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "6f6e6574776f0a",
+          "stderr": "",
+          "raw_stdout": "6f6e6574776f0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/11-gnu-valgrind/process-887549.log",
+              "sha256": "e37c890189f6225300f85a886941c42d68a4caa6493f78b6faff67cc9109672b",
+              "pid": "887549",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51354
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "6f6e6574776f0a",
+          "stderr": "",
+          "raw_stdout": "6f6e6574776f0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "6f6e6574776f0a",
+          "stderr": "",
+          "raw_stdout": "6f6e6574776f0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/11-rboxc-valgrind/process-887551.log",
+              "sha256": "2974cb46059534875d2698550a053a3feba6e7554596d4b3387086ebdc0aca1c",
+              "pid": "887551",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53138
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:value-local",
+      "command": "sh",
+      "args": [
+        "-c",
+        "REPLY=outer; printf \"%s:%s\\n\" \"${| REPLY=inner; }\" \"$REPLY\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "696e6e65723a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f757465720a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "696e6e65723a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f757465720a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/12-gnu-valgrind/process-887553.log",
+              "sha256": "3baaa462e84f1444172c8fa1dd896a70439dbc05c4aaea54e318ee0173b7de0d",
+              "pid": "887553",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49010
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "696e6e65723a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f757465720a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "696e6e65723a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f757465720a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/12-rboxc-valgrind/process-887555.log",
+              "sha256": "077eca69a54c369bd9e3b51e01ff213a5e37a0b06b3af2d9a9d988ebb970bbfd",
+              "pid": "887555",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50354
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:stdout-closed",
+      "command": "sh",
+      "args": [
+        "-c",
+        "exec 1>&-; x=${ printf output; }; printf \"%s\\n\" \"$x\" >&2"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d35736a6b31776f642f657865632f73683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d73387266643262682f657865632f73683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/13-gnu-valgrind/process-887557.log",
+              "sha256": "7936372c10366236b321a0d7183ca4cf7fc3794862b5817eb1b3ea66b9130a1a",
+              "pid": "887557",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 4,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 149,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47147
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6f73736a6b666d332f657865632f73683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f73683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d30395f6b6268775f2f657865632f73683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/13-rboxc-valgrind/process-887559.log",
+              "sha256": "ae26bda63eba9376602784274251fe9ec19105e72fbf0635857404cc2aa0e7ca",
+              "pid": "887559",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47963
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:errexit",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -e; x=${ set -e; printf hidden; false; }; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/14-gnu-valgrind/process-887561.log",
+              "sha256": "72db64f1ba8532063d1bc1cc1b3285c72c9e9a50316a67da06db1e08c3fd50ac",
+              "pid": "887561",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 8,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 195,
+                "indirectly lost": 461,
+                "possibly lost": 0,
+                "still reachable": 48392
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/14-rboxc-valgrind/process-887563.log",
+              "sha256": "a8c223368b58cd68712a562bf71bbe923a38aced9b9e0d97c813b2c44398d70f",
+              "pid": "887563",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50082
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:exit-trap",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap 'printf exit >&2' EXIT; printf '%s\\n' \"${ printf hidden; exit 7; }\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": false,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "65786974",
+          "raw_stdout": "",
+          "raw_stderr": "65786974",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "65786974",
+          "raw_stdout": "",
+          "raw_stderr": "65786974",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/15-gnu-valgrind/process-887565.log",
+              "sha256": "cdc608f095567539a3d05eace99556c93aeb16dc5063e8f6f7caf6e2d5e40deb",
+              "pid": "887565",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 14,
+              "non_inherited_descriptors": 3,
+              "heap_bytes": {
+                "definitely lost": 409,
+                "indirectly lost": 610,
+                "possibly lost": 0,
+                "still reachable": 49892
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "65786974",
+          "raw_stdout": "",
+          "raw_stderr": "65786974",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "65786974",
+          "raw_stdout": "",
+          "raw_stderr": "65786974",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/15-rboxc-valgrind/process-887567.log",
+              "sha256": "4da1307abcd1c7b3e512db359e706ad794a75908dcecce3f68491a042b069d6a",
+              "pid": "887567",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 11,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 201,
+                "indirectly lost": 866,
+                "possibly lost": 0,
+                "still reachable": 51588
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:normal",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "v=outer; x=${ v=inner; printf output; }; printf \"%s:%s\\n\" \"$v\" \"$x\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "696e6e65723a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "696e6e65723a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/16-gnu-valgrind/process-887607.log",
+              "sha256": "700d6e7a9597f377e8372eca6924516fd5be2541c1dc1f10ce72ab58967e5a93",
+              "pid": "887607",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48301
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "696e6e65723a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "696e6e65723a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/16-rboxc-valgrind/process-887625.log",
+              "sha256": "621ac13054bb5889995ce85364b6cd20fc4a9faf19db7e6962a05737ef105916",
+              "pid": "887625",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49773
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:return",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "x=${ printf output; return 7; printf unreachable; }; printf \"%s:%s\\n\" \"$?\" \"$x\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "373a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "373a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "373a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "373a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/17-gnu-valgrind/process-887627.log",
+              "sha256": "9a6f7dfdffa4adf28915fed43ddf597b7f7bf3d7c511187c45876c6b13a33aaf",
+              "pid": "887627",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48397
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "373a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "373a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "373a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "373a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/17-rboxc-valgrind/process-887629.log",
+              "sha256": "d1d73bfdccb60abd41ae94829fd297e50cbbc116e85278110be5a593ecceb086",
+              "pid": "887629",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49997
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:subshell-exit",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "( printf \"%s\\n\" \"${ printf hidden; exit 7; }\" ); printf \"outer:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "6f757465723a370a",
+          "stderr": "",
+          "raw_stdout": "6f757465723a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "6f757465723a370a",
+          "stderr": "",
+          "raw_stdout": "6f757465723a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/18-gnu-valgrind/process-887632.log",
+              "sha256": "7e7ad4d748350d7fe381ae00761a0d20b522cd7816356ea5f136db9f57d0b7d4",
+              "pid": "887632",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46113
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/18-gnu-valgrind/process-887633.log",
+              "sha256": "b76cf8b54a0f8ba26be50bd52837c43fd63ae592b5f7177f83ad6226e2e6aab8",
+              "pid": "887633",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 9,
+              "non_inherited_descriptors": 3,
+              "heap_bytes": {
+                "definitely lost": 297,
+                "indirectly lost": 425,
+                "possibly lost": 0,
+                "still reachable": 49676
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "6f757465723a370a",
+          "stderr": "",
+          "raw_stdout": "6f757465723a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "6f757465723a370a",
+          "stderr": "",
+          "raw_stdout": "6f757465723a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/18-rboxc-valgrind/process-887636.log",
+              "sha256": "7d898cced7884274f43c20fa5234117b54c149eea92d17650fa4ed0ab66e1a0b",
+              "pid": "887636",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46689
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/18-rboxc-valgrind/process-887637.log",
+              "sha256": "4f1c9e1a4a70934104732f87afbe7072837f63e5603050e44bf805ab9334eac1",
+              "pid": "887637",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51838
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:nested",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "printf \"%s\\n\" \"${ printf one; printf %s \"${ printf two; }\"; }\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "6f6e6574776f0a",
+          "stderr": "",
+          "raw_stdout": "6f6e6574776f0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "6f6e6574776f0a",
+          "stderr": "",
+          "raw_stdout": "6f6e6574776f0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/19-gnu-valgrind/process-887639.log",
+              "sha256": "96a78b5573b414436cd68e7541439c3431be400c93075d8e2504a16ebc48bfe4",
+              "pid": "887639",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51232
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "6f6e6574776f0a",
+          "stderr": "",
+          "raw_stdout": "6f6e6574776f0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "6f6e6574776f0a",
+          "stderr": "",
+          "raw_stdout": "6f6e6574776f0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/19-rboxc-valgrind/process-887641.log",
+              "sha256": "a992b7b70defa3813cfa25d3e84598bae58242e235aad05964ac39cdf5d4e633",
+              "pid": "887641",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52828
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:value-local",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "REPLY=outer; printf \"%s:%s\\n\" \"${| REPLY=inner; }\" \"$REPLY\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "696e6e65723a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f757465720a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "696e6e65723a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f757465720a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/20-gnu-valgrind/process-887643.log",
+              "sha256": "feb8715d75da94250d4c7daf1001b6f905cf486bb04c2db44dbb35f8b2bbda1a",
+              "pid": "887643",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48928
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "696e6e65723a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f757465720a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "696e6e65723a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f757465720a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/20-rboxc-valgrind/process-887645.log",
+              "sha256": "f542a64de82004a758242e6b5cd02710cffe461741aa6f42bfe28f6b6a23a855",
+              "pid": "887645",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50288
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:stdout-closed",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "exec 1>&-; x=${ printf output; }; printf \"%s\\n\" \"$x\" >&2"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d61657a74705f38792f657865632f2d626173683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d5f746975367831672f657865632f2d626173683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/21-gnu-valgrind/process-887647.log",
+              "sha256": "c633d6261c3848f3d3ca24cd254e5349e8941398833891a6aacf643d02003176",
+              "pid": "887647",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 4,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 149,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47065
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6a6d6d70313636332f657865632f2d626173683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d703074726e6b795f2f657865632f2d626173683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/21-rboxc-valgrind/process-887649.log",
+              "sha256": "bd9088bd5f84debd46daa79fc5eb6a456fb480349404cc307be7aad324b93d6c",
+              "pid": "887649",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47897
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:errexit",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -e; x=${ set -e; printf hidden; false; }; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/22-gnu-valgrind/process-887651.log",
+              "sha256": "b3459b2fcb1385891e7a72898b5b7b078311f593aa58de0c37e26e4cfd1658b1",
+              "pid": "887651",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 8,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 195,
+                "indirectly lost": 461,
+                "possibly lost": 0,
+                "still reachable": 48342
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/22-rboxc-valgrind/process-887653.log",
+              "sha256": "645bb86524ee168796122fb7772e3cbac45b8fa17dee561ae0b4b233bfdaa084",
+              "pid": "887653",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50064
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:exit-trap",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap 'printf exit >&2' EXIT; printf '%s\\n' \"${ printf hidden; exit 7; }\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": false,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "65786974",
+          "raw_stdout": "",
+          "raw_stderr": "65786974",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "65786974",
+          "raw_stdout": "",
+          "raw_stderr": "65786974",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/23-gnu-valgrind/process-887655.log",
+              "sha256": "6c9a3cf8a11a20c4462410b7b0ec9bbe86ccd10f3fb8ff2bc366ee1174090e0f",
+              "pid": "887655",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 14,
+              "non_inherited_descriptors": 3,
+              "heap_bytes": {
+                "definitely lost": 409,
+                "indirectly lost": 610,
+                "possibly lost": 0,
+                "still reachable": 49810
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "65786974",
+          "raw_stdout": "",
+          "raw_stderr": "65786974",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "65786974",
+          "raw_stdout": "",
+          "raw_stderr": "65786974",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/23-rboxc-valgrind/process-887657.log",
+              "sha256": "25a611702ad7ebff55005ed50bc35dbdf52f2adf3bbc24c7ce86bae2a2eabbfe",
+              "pid": "887657",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 11,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 201,
+                "indirectly lost": 866,
+                "possibly lost": 0,
+                "still reachable": 51522
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:normal",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "v=outer; x=${ v=inner; printf output; }; printf \"%s:%s\\n\" \"$v\" \"$x\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "696e6e65723a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "696e6e65723a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/24-gnu-valgrind/process-887659.log",
+              "sha256": "4bb221b14ae04bed32bbda5098b7bceb8c9b4dde848999752446c38c13ad6159",
+              "pid": "887659",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48297
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "696e6e65723a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "696e6e65723a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/24-rboxc-valgrind/process-887661.log",
+              "sha256": "3f76b052d82dc2394ae7bd07ff5928222bb456258e6534ec88b3de17bb6b7282",
+              "pid": "887661",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49769
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:return",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "x=${ printf output; return 7; printf unreachable; }; printf \"%s:%s\\n\" \"$?\" \"$x\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "373a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "373a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "373a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "373a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/25-gnu-valgrind/process-887663.log",
+              "sha256": "93f229b5c64a4c3efca540c2fda6135aa29ade4e67d27a13fb4705af0dd83ea8",
+              "pid": "887663",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48393
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "373a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "373a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "373a6f75747075740a",
+          "stderr": "",
+          "raw_stdout": "373a6f75747075740a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/25-rboxc-valgrind/process-887665.log",
+              "sha256": "86d0c9493f53e8cb67ffc3bee53fec9ca4b4bafcdb21bc7ceb60b9f4aee39705",
+              "pid": "887665",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49993
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:subshell-exit",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "( printf \"%s\\n\" \"${ printf hidden; exit 7; }\" ); printf \"outer:%s\\n\" \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "6f757465723a370a",
+          "stderr": "",
+          "raw_stdout": "6f757465723a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "6f757465723a370a",
+          "stderr": "",
+          "raw_stdout": "6f757465723a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/26-gnu-valgrind/process-887668.log",
+              "sha256": "f0927937d38af7e622a6bce600e31c5e415bc382e71f676dc34c5630cfd7d870",
+              "pid": "887668",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46109
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/26-gnu-valgrind/process-887669.log",
+              "sha256": "026e12d66646086eb103cf56ce565989f6b042b995b7d5b605030e1a108ba3da",
+              "pid": "887669",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 9,
+              "non_inherited_descriptors": 3,
+              "heap_bytes": {
+                "definitely lost": 297,
+                "indirectly lost": 425,
+                "possibly lost": 0,
+                "still reachable": 49672
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "6f757465723a370a",
+          "stderr": "",
+          "raw_stdout": "6f757465723a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "6f757465723a370a",
+          "stderr": "",
+          "raw_stdout": "6f757465723a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/26-rboxc-valgrind/process-887672.log",
+              "sha256": "9380d349684d170e251d204656305a1ac8854260005e4af1a426b141bf9eae07",
+              "pid": "887672",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46685
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/26-rboxc-valgrind/process-887673.log",
+              "sha256": "195b4369ec77671bde999fe2aeabf6b135ec48090eff4109d6b9171f56b41e85",
+              "pid": "887673",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51834
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:nested",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "printf \"%s\\n\" \"${ printf one; printf %s \"${ printf two; }\"; }\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "6f6e6574776f0a",
+          "stderr": "",
+          "raw_stdout": "6f6e6574776f0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "6f6e6574776f0a",
+          "stderr": "",
+          "raw_stdout": "6f6e6574776f0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/27-gnu-valgrind/process-887675.log",
+              "sha256": "3c7371a1405346f3deb9f8a3ee837baeadb95477d53de340a8516786a4e87ccb",
+              "pid": "887675",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51228
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "6f6e6574776f0a",
+          "stderr": "",
+          "raw_stdout": "6f6e6574776f0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "6f6e6574776f0a",
+          "stderr": "",
+          "raw_stdout": "6f6e6574776f0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/27-rboxc-valgrind/process-887677.log",
+              "sha256": "42acb2b6e7929c91a2fb54b3b002f8c5637a16edba2c9ed7a2555d7fc9187b46",
+              "pid": "887677",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52824
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:value-local",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "REPLY=outer; printf \"%s:%s\\n\" \"${| REPLY=inner; }\" \"$REPLY\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "696e6e65723a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f757465720a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "696e6e65723a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f757465720a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/28-gnu-valgrind/process-887679.log",
+              "sha256": "04a1d080e18babfeeceeacf3c57313aad83be327731bd3d1ffef30713cef33b9",
+              "pid": "887679",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48924
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "696e6e65723a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f757465720a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "696e6e65723a6f757465720a",
+          "stderr": "",
+          "raw_stdout": "696e6e65723a6f757465720a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/28-rboxc-valgrind/process-887681.log",
+              "sha256": "1890ce54113cba490a906e5d17636fd779cf40786e034f20c3f784542bf96eaa",
+              "pid": "887681",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50284
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:stdout-closed",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "exec 1>&-; x=${ printf output; }; printf \"%s\\n\" \"$x\" >&2"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d7a706e676c775f722f657865632f2d73683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d733868646e7165732f657865632f2d73683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/29-gnu-valgrind/process-887683.log",
+              "sha256": "6205acd8eeb96e4d7d43957bf38b8693fee656d77ff72093453c023f8a42f04b",
+              "pid": "887683",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 4,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 149,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47061
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6468305f666831342f657865632f2d73683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f2d73683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d626173682d665f6962776b7a392f657865632f2d73683a2066756e6374696f6e5f737562737469747574653a2063616e6e6f74206475706c696361746520616e6f6e796d6f75732066696c65206173207374616e64617264206f75747075743a204261642066696c652064657363726970746f720a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/29-rboxc-valgrind/process-887685.log",
+              "sha256": "33d6646c9c2e4388b34711983e9b5cff406963a06c9c0aca04bca3232462a9da",
+              "pid": "887685",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47893
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:errexit",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -e; x=${ set -e; printf hidden; false; }; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/30-gnu-valgrind/process-887687.log",
+              "sha256": "02cb0fdee0e7948457daf1cff806f77eb0017bcfd09c6930834139998e44b12c",
+              "pid": "887687",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 8,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 195,
+                "indirectly lost": 461,
+                "possibly lost": 0,
+                "still reachable": 48338
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/30-rboxc-valgrind/process-887689.log",
+              "sha256": "ea9e9cf2bc9bf4c7f283064b9e6791bd170117ac769f893a9e0763bdaa40c448",
+              "pid": "887689",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50060
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:exit-trap",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap 'printf exit >&2' EXIT; printf '%s\\n' \"${ printf hidden; exit 7; }\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": false,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "65786974",
+          "raw_stdout": "",
+          "raw_stderr": "65786974",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "65786974",
+          "raw_stdout": "",
+          "raw_stderr": "65786974",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/31-gnu-valgrind/process-887694.log",
+              "sha256": "6dfe8090d88ccaa28f4ff26c9cb8ccc991a494fe2b272bedf121e220adfd1823",
+              "pid": "887694",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 14,
+              "non_inherited_descriptors": 3,
+              "heap_bytes": {
+                "definitely lost": 409,
+                "indirectly lost": 610,
+                "possibly lost": 0,
+                "still reachable": 49806
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "65786974",
+          "raw_stdout": "",
+          "raw_stderr": "65786974",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "",
+          "stderr": "65786974",
+          "raw_stdout": "",
+          "raw_stderr": "65786974",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exit-scope-cleanup-contract/run-dtiswcrs/31-rboxc-valgrind/process-887995.log",
+              "sha256": "32ab37a484656590ef988bcbc5372d1c8e77ef999385a36fcf085d1576e22701",
+              "pid": "887995",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 11,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 201,
+                "indirectly lost": 866,
+                "possibly lost": 0,
+                "still reachable": 51518
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

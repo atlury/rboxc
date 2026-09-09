@@ -78,7 +78,7 @@ there where available.
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
-| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 45 original recipes (46 scripts) pass on their recorded candidates with 1743 clean process logs; lastpipe retains a default-SIGPIPE profile |
+| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 49 original recipes (50 scripts) pass on their recorded candidates with 12133 clean process logs; three memory/signal profiles and one GNU environment baseline remain open |
 | Less | 704 | Ten focused checks, one production terminal check and all 18 original screen replays pass across declared profiles |
 | Screen | 5.0.2 | All three original targets pass across declared profiles; daemon cleanup and socket recovery pass Valgrind |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
@@ -105,32 +105,50 @@ The public terminal cleanup API alone retains the shared parameter cache in
 this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
-The current 187-command candidate is **14,721,912 bytes**, at
-`target/bash-arithmetic-cleanup-candidate/release/rboxc`, SHA-256
-`27afaa0287da4c9cb1535a567a03e47dac428deaab87a32099be2dfd317645bf`.
+The current 187-command candidate is **14,722,352 bytes**, at
+`target/bash-exit-scope-status-candidate/release/rboxc`, SHA-256
+`ce93145125f3959115af4c432e172c6c323df68a245c7a1317087e525e06ba7e`.
 An independent rebuild is byte-identical. All 428 Coreutils smoke checks,
 11 dispatcher checks, 44 focused Bash comparisons and 69 shell-adapter checks
-pass. The preceding complete Bash ledger records **46 strict scripts from 45
-original recipes**, with **1743 clean
+pass. Bash has **50 strict scripts from 49 original recipes**, with **12133 clean
 candidate process logs** across their recorded immutable candidates.
+[evidence/bash-exit-scope-status-coverage.json](evidence/bash-exit-scope-status-coverage.json)
+accounts for 54 reviewed scripts and all 88 original recipes; 31 recipes remain
+pending, two are orchestration and two are held outside execution.
 
-The quotearray original additionally passes unchanged on this candidate.
-Arithmetic command/substitution strings and array-element names retain owners
-while nested index diagnostics unwind the caller. Five related original scripts
-and 32 arithmetic contracts pass, with 490 clean process logs across those six
-originals. [evidence/bash-arithmetic-cleanup-validation.json](evidence/bash-arithmetic-cleanup-validation.json)
-audits the three changed helpers and byte-identical rebuild.
+No-fork substitution files and saved stdout now retain exit owners. Anonymous
+file records and assignment descriptors live on the heap, and explicit heap
+cleanup releases expansion, getopt and saved PIPESTATUS data while EXIT traps
+retain GNU's function scope. The unchanged comsub2 original passes; all five
+related original scripts pass with 474 clean process logs. The same candidate
+passes 140 substitution, EXIT-scope, trap and errexit contracts; 24 direct helper
+contracts cover descriptor ownership and close errors.
+[evidence/bash-exit-scope-status-validation.json](evidence/bash-exit-scope-status-validation.json)
+audits the adapted builtins archive, three changed helpers, runtime wrapper,
+rebuild and retained intermediate findings. EXIT-scope diagnostics use stderr
+so captured substitution output cannot hide the observed state.
 
-Seven additional original recipes have reviewed profiles. Script input passes
-using the original shared stdin offset. Command-substitution and POSIX expansion
-assertions match GNU but retain cleanup findings; the redirection original has
-matching GNU/Rboxc terminal and Valgrind resource-limit baseline differences.
+Seven additional original recipes now have complete recorded runs. The unchanged
+6856-assertion IFS matrix passes with 10287 clean candidate process logs;
+[evidence/bash-next-seven-ifs-matrix-validation.json](evidence/bash-next-seven-ifs-matrix-validation.json)
+reparses every original log. Script input passes using the original shared stdin
+offset, and quotearray passes after arithmetic caller ownership cleanup.
+Comsub-posix and posixexp match GNU assertions but retain cleanup findings.
+Vredir matches GNU separately with and without instrumentation, including the
+missing-terminal and Valgrind descriptor-limit differences from the original
+expected file. These profiles remain outside strict counts; their initial
+results are preserved in
 [evidence/bash-next-seven-array-redirection-validation.json](evidence/bash-next-seven-array-redirection-validation.json),
 [evidence/bash-next-seven-substitution-validation.json](evidence/bash-next-seven-substitution-validation.json)
-and [evidence/bash-next-seven-posix-expansion-validation.json](evidence/bash-next-seven-posix-expansion-validation.json)
-retain all completed initial results. The 6856-assertion IFS matrix is still
-running; these seven recipes have not yet been incorporated into the complete
-coverage ledger. Pending and baseline results are not strict passes.
+and [evidence/bash-next-seven-posix-expansion-validation.json](evidence/bash-next-seven-posix-expansion-validation.json).
+Lastpipe's expected default-SIGPIPE profile also remains outside strict counts.
+Full Bash and GNU acceptance is unfinished.
+
+The preceding arithmetic candidate passed quotearray and five related originals
+with 490 clean process logs, plus 32 arithmetic contracts. It retains arithmetic
+command/substitution strings and array-element names through nested index
+diagnostics. [evidence/bash-arithmetic-cleanup-validation.json](evidence/bash-arithmetic-cleanup-validation.json)
+records that independent increment.
 
 The exp-tests original now passes unchanged, with 249 clean process logs.
 Arithmetic lookahead tokens, assignment values and expanded array lists retain

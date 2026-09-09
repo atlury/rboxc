@@ -110,14 +110,7 @@ static void track_bash_standard(int fd) {
   errno = saved;
 }
 int rboxc_bash_owned_dup2(int from, int to) {
-  int result, saved = errno;
-  /* Preserve an invalid source's EBADF result without duplicating a descriptor
-     that the shell has already closed during redirection setup. */
-  if (fcntl(from, F_GETFD) < 0 && errno == EBADF)
-    return -1;
-  errno = saved;
-  result = dup2(from, to);
-  saved = errno;
+  int result = dup2(from, to), saved = errno;
   if (result >= 0 && from != to) track_bash_standard(to);
   errno = saved;
   return result;

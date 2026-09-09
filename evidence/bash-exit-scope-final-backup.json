@@ -1,0 +1,256 @@
+{
+  "scope": "Native and Valgrind checks of owned backup cleanup and same-inode descriptor reuse after successful close, simulated Linux late close errors, and an already-closed descriptor. The wrapper closes the real descriptor before returning a simulated late error. An already-closed descriptor reaches real close if the production guard fails, so duplicate-close findings cannot be hidden by the test wrapper. No filesystem fault or malformed input is required.",
+  "driver_sha256": "e3c6f3333dd77b13d033e14ea369e82671e79ca8a4f1c2361c90956268ead15f",
+  "runtime_source_sha256": "68d642fe74372c2e65db79e58424ad555bfb85c746d9d13eba120ec3e6827d54",
+  "harness_sha256": "41a5ddd119696c178a6d6ffd3a4c06c77902b5b51cc766335d8fe3790668974f",
+  "binary_sha256": "066156e058c67651c6f8587f09c4ba8e9660c7d82073d217de972816d1f6d72a",
+  "compile_arguments": [
+    "gcc",
+    "-O2",
+    "-fPIC",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "/root/rboxc/build/bash-backup-contract-gsw71kft/contract.c",
+    "/root/rboxc/src/shell_arguments.c",
+    "-Wl,--wrap=close",
+    "-o",
+    "/root/rboxc/build/bash-backup-contract-gsw71kft/contract"
+  ],
+  "build_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "passed": 7,
+  "total": 7,
+  "results": [
+    {
+      "case": "success",
+      "pass": true,
+      "outcomes": [
+        {
+          "instrumented": false,
+          "status": 0,
+          "stdout": "6261636b7570206f776e657273686970207061737365640a",
+          "stderr": "",
+          "pass": true
+        },
+        {
+          "instrumented": true,
+          "status": 0,
+          "stdout": "6261636b7570206f776e657273686970207061737365640a",
+          "stderr": "",
+          "pass": true,
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {},
+            "exec_images": 1,
+            "log_pids": [
+              "893832"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/bash-backup-contract-2lth5sjg/success.log",
+          "sha256": "4d269aaeee2d2a4322a9223270a60b7187d3d175166bf3a855d192fcdd717384",
+          "memory_clean": true
+        }
+      ]
+    },
+    {
+      "case": "late-eio",
+      "pass": true,
+      "outcomes": [
+        {
+          "instrumented": false,
+          "status": 0,
+          "stdout": "6261636b7570206f776e657273686970207061737365640a",
+          "stderr": "",
+          "pass": true
+        },
+        {
+          "instrumented": true,
+          "status": 0,
+          "stdout": "6261636b7570206f776e657273686970207061737365640a",
+          "stderr": "",
+          "pass": true,
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {},
+            "exec_images": 1,
+            "log_pids": [
+              "894261"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/bash-backup-contract-2lth5sjg/late-eio.log",
+          "sha256": "2ca84e92fe7ecf9c0e167c4d44f2869eb070ff54f26103cf5f546d4779ee8d0d",
+          "memory_clean": true
+        }
+      ]
+    },
+    {
+      "case": "interrupted",
+      "pass": true,
+      "outcomes": [
+        {
+          "instrumented": false,
+          "status": 0,
+          "stdout": "6261636b7570206f776e657273686970207061737365640a",
+          "stderr": "",
+          "pass": true
+        },
+        {
+          "instrumented": true,
+          "status": 0,
+          "stdout": "6261636b7570206f776e657273686970207061737365640a",
+          "stderr": "",
+          "pass": true,
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {},
+            "exec_images": 1,
+            "log_pids": [
+              "894290"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/bash-backup-contract-2lth5sjg/interrupted.log",
+          "sha256": "7b45219953c93437dbe8c7f0e7c85e32dbde6d1900683130054edfa6139eef71",
+          "memory_clean": true
+        }
+      ]
+    },
+    {
+      "case": "late-enospc",
+      "pass": true,
+      "outcomes": [
+        {
+          "instrumented": false,
+          "status": 0,
+          "stdout": "6261636b7570206f776e657273686970207061737365640a",
+          "stderr": "",
+          "pass": true
+        },
+        {
+          "instrumented": true,
+          "status": 0,
+          "stdout": "6261636b7570206f776e657273686970207061737365640a",
+          "stderr": "",
+          "pass": true,
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {},
+            "exec_images": 1,
+            "log_pids": [
+              "894301"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/bash-backup-contract-2lth5sjg/late-enospc.log",
+          "sha256": "3bb4e4d90e2e8f42e2c77107e0072cb61b4fd9438885aa59492b709af554fed3",
+          "memory_clean": true
+        }
+      ]
+    },
+    {
+      "case": "late-edquot",
+      "pass": true,
+      "outcomes": [
+        {
+          "instrumented": false,
+          "status": 0,
+          "stdout": "6261636b7570206f776e657273686970207061737365640a",
+          "stderr": "",
+          "pass": true
+        },
+        {
+          "instrumented": true,
+          "status": 0,
+          "stdout": "6261636b7570206f776e657273686970207061737365640a",
+          "stderr": "",
+          "pass": true,
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {},
+            "exec_images": 1,
+            "log_pids": [
+              "894369"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/bash-backup-contract-2lth5sjg/late-edquot.log",
+          "sha256": "d4cf6158814598b6e57fed5d9917b7ad506832706bcb2c7b08f02fc8faaee2e0",
+          "memory_clean": true
+        }
+      ]
+    },
+    {
+      "case": "already-closed",
+      "pass": true,
+      "outcomes": [
+        {
+          "instrumented": false,
+          "status": 0,
+          "stdout": "6261636b7570206f776e657273686970207061737365640a",
+          "stderr": "",
+          "pass": true
+        },
+        {
+          "instrumented": true,
+          "status": 0,
+          "stdout": "6261636b7570206f776e657273686970207061737365640a",
+          "stderr": "",
+          "pass": true,
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {},
+            "exec_images": 1,
+            "log_pids": [
+              "894395"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/bash-backup-contract-2lth5sjg/already-closed.log",
+          "sha256": "6d3f2833de62d0888fec44afd9ad53f965d484ac3d16c6486eca78518e84060a",
+          "memory_clean": true
+        }
+      ]
+    },
+    {
+      "case": "owned-exit",
+      "pass": true,
+      "outcomes": [
+        {
+          "instrumented": false,
+          "status": 0,
+          "stdout": "6261636b7570206f776e657273686970207061737365640a",
+          "stderr": "",
+          "pass": true
+        },
+        {
+          "instrumented": true,
+          "status": 0,
+          "stdout": "6261636b7570206f776e657273686970207061737365640a",
+          "stderr": "",
+          "pass": true,
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {},
+            "exec_images": 1,
+            "log_pids": [
+              "894409"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/bash-backup-contract-2lth5sjg/owned-exit.log",
+          "sha256": "604ad17b0fabed4287464e20fe0c1de0ec4163fb1208a16e5fac0454e37ec3c0",
+          "memory_clean": true
+        }
+      ]
+    }
+  ]
+}
