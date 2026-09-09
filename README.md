@@ -74,7 +74,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 218 of 244 original groups validated across recorded profiles |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 451 reviewed originals pass; three original failures match GNU |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 455 reviewed originals pass; three original failures match GNU |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -235,12 +235,13 @@ Seven further unchanged Gawk recipes pass for numeric and string formatting,
 separator arrays, record reading, multibyte substitution, process identifiers and
 script shebang dispatch. Recipe helpers use pinned GNU implementations; the
 substitution recipe uses the verified English UTF-8 profile.
-`evidence/gawk-indirect-posix-coverage.json` audits **451 passing original recipes,
-three unchanged GNU baseline failures and 563 clean processes**: 466 original
+`evidence/gawk-format-lint-match-coverage.json` audits **455 passing original recipes,
+three unchanged GNU baseline failures and 567 clean processes**: 470 original
 Gawk invocations, twelve shell children and 85 focused cases counted once.
 Three auxiliary inputs are already covered by passing recipes; nine exclusions
-and 168 pending inputs remain. The latest three unchanged recipes cover indirect function calls, POSIX conversion
-and field behavior, and namespace pretty printing. The candidate and installed
+and 164 pending inputs remain. The latest seven unchanged recipes cover indirect function calls, POSIX conversion
+and field behavior, namespace pretty printing, formatting, lint diagnostics and
+text matching. The candidate and installed
 release are unchanged, and full GNU acceptance remains open.
 
 Five preceding unchanged Gawk recipes pass for directory entries, fixed-width
