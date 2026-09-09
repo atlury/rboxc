@@ -23,9 +23,7 @@ def main():
     config = json.loads(Path(sys.argv[1]).read_text())
     command = sys.argv[2:]
     assert os.geteuid() == 0
-    assert config['script'] in ('tests/chown/preserve-root.sh', 'tests/rm/r-root.sh')
-    rm_profile = config['script'] == 'tests/rm/r-root.sh'
-    assert not rm_profile or not config['instrument']
+    assert config['script'] == 'tests/chown/preserve-root.sh'
     assert command[-1] == str(Path(config['source'])/config['script'])
     mount_namespace = os.readlink('/proc/self/ns/mnt')
     pid_namespace = os.readlink('/proc/self/ns/pid')
@@ -76,23 +74,6 @@ def main():
             alias = destination('/usr/bin/'+name)
             if not alias.exists():
                 alias.symlink_to(config['gnu'])
-        if rm_profile:
-            # Stage the compiler and debugger as copies inside the disposable root.
-            # No compiler paths or source directories are bind-mounted from the host.
-            copy_file(source/'src/remove.c')
-            for executable in ('/usr/bin/x86_64-linux-gnu-gcc-15', '/usr/bin/as',
-                               '/usr/bin/ld', '/usr/bin/gdb'):
-                copy_file(executable)
-            for directory in ('/usr/include', '/usr/lib/gcc/x86_64-linux-gnu/15',
-                              '/usr/libexec/gcc/x86_64-linux-gnu/15',
-                              '/usr/share/gdb/python', '/usr/lib/python3.14',
-                              '/usr/lib/x86_64-linux-gnu/gconv'):
-                for entry in sorted(Path(directory).rglob('*')):
-                    if entry.is_file() and '__pycache__' not in entry.parts:
-                        copy_file(entry)
-            for name in ('crti.o', 'crtn.o', 'libc.so', 'libc_nonshared.a', 'libgcc_s.so.1',
-                         'libthread_db.so.1', 'libdl.a'):
-                copy_file('/usr/lib/x86_64-linux-gnu/'+name)
         copy_file(config['candidate'])
         copy_file(config['getlimits'])
         copy_file(config['config_header'])
@@ -100,13 +81,6 @@ def main():
         staged_run.parent.mkdir(parents=True, exist_ok=True)
         shutil.copytree(run, staged_run, symlinks=True)
         os.chown(staged_run, 65534, 65534)
-        if rm_profile:
-            wrapper = staged_run/'src/gdb'
-            wrapper.write_text('#!/bin/sh\nexec /usr/bin/gdb '
-                "'-iex=set disable-randomization off' '-iex=set auto-load off' "
-                "'-iex=set debuginfod enabled off' '-iex=set confirm off' \"$@\"\n")
-            wrapper.chmod(0o755)
-            staged_files[str(run/'src/gdb')] = digest(wrapper)
         if config['instrument']:
             for path in config['valgrind_runtime']:
                 copy_file(path)
@@ -125,9 +99,7 @@ def main():
         os.mknod(root/'dev/zero', stat.S_IFCHR | 0o666, os.makedev(1, 5))
         (root/'dev/null').chmod(0o666)
         (root/'dev/zero').chmod(0o666)
-        # GDB needs /proc/self/mem writes in this private PID namespace.
-        proc_options = ('rw' if rm_profile else 'ro')+',nosuid,nodev,noexec'
-        subprocess.run(['/usr/bin/mount', '-t', 'proc', '-o', proc_options,
+        subprocess.run(['/usr/bin/mount', '-t', 'proc', '-o', 'ro,nosuid,nodev,noexec',
                         'proc', str(root/'proc')], check=True)
         mounts.callback(subprocess.run, ['/usr/bin/umount', str(root/'proc')], check=True)
         root_identity = [root.stat().st_dev, root.stat().st_ino]
@@ -151,7 +123,7 @@ def main():
             profile = {'root_identity': root_identity, 'host_root_identity':
                 [host_root.st_dev, host_root.st_ino], 'uid': os.geteuid(), 'gid': os.getegid(),
                 'groups': os.getgroups(), 'no_new_privileges': True, 'private_null_device': True,
-                'private_pid': os.getpid(), 'private_proc_options': proc_options,
+                'private_pid': os.getpid(),
                 'mount_namespace': mount_namespace, 'pid_namespace': pid_namespace,
                 'parent_mount_namespace': config['parent_mount_namespace'],
                 'parent_pid_namespace': config['parent_pid_namespace'],
@@ -160,8 +132,6 @@ def main():
 
         environment = {**os.environ, 'PATH': str(run/'src')+':/usr/bin:/bin',
                        'TMPDIR': '/tmp', 'HOME': '/tmp', 'VALGRIND_LIB': '/usr/libexec/valgrind'}
-        if rm_profile:
-            environment['CC'] = '/usr/bin/x86_64-linux-gnu-gcc-15'
         completed = subprocess.run(command, env=environment, preexec_fn=enter_root)
         if config['instrument']:
             for path in destination(config['memory']).glob('*.log'):

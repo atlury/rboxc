@@ -85,13 +85,11 @@ def main():
                 copy_file(executable)
             for directory in ('/usr/include', '/usr/lib/gcc/x86_64-linux-gnu/15',
                               '/usr/libexec/gcc/x86_64-linux-gnu/15',
-                              '/usr/share/gdb/python', '/usr/lib/python3.14',
-                              '/usr/lib/x86_64-linux-gnu/gconv'):
+                              '/usr/share/gdb/python', '/usr/lib/python3.14'):
                 for entry in sorted(Path(directory).rglob('*')):
                     if entry.is_file() and '__pycache__' not in entry.parts:
                         copy_file(entry)
-            for name in ('crti.o', 'crtn.o', 'libc.so', 'libc_nonshared.a', 'libgcc_s.so.1',
-                         'libthread_db.so.1', 'libdl.a'):
+            for name in ('crti.o', 'crtn.o', 'libc.so', 'libc_nonshared.a', 'libgcc_s.so.1'):
                 copy_file('/usr/lib/x86_64-linux-gnu/'+name)
         copy_file(config['candidate'])
         copy_file(config['getlimits'])
@@ -125,9 +123,7 @@ def main():
         os.mknod(root/'dev/zero', stat.S_IFCHR | 0o666, os.makedev(1, 5))
         (root/'dev/null').chmod(0o666)
         (root/'dev/zero').chmod(0o666)
-        # GDB needs /proc/self/mem writes in this private PID namespace.
-        proc_options = ('rw' if rm_profile else 'ro')+',nosuid,nodev,noexec'
-        subprocess.run(['/usr/bin/mount', '-t', 'proc', '-o', proc_options,
+        subprocess.run(['/usr/bin/mount', '-t', 'proc', '-o', 'ro,nosuid,nodev,noexec',
                         'proc', str(root/'proc')], check=True)
         mounts.callback(subprocess.run, ['/usr/bin/umount', str(root/'proc')], check=True)
         root_identity = [root.stat().st_dev, root.stat().st_ino]
@@ -151,7 +147,7 @@ def main():
             profile = {'root_identity': root_identity, 'host_root_identity':
                 [host_root.st_dev, host_root.st_ino], 'uid': os.geteuid(), 'gid': os.getegid(),
                 'groups': os.getgroups(), 'no_new_privileges': True, 'private_null_device': True,
-                'private_pid': os.getpid(), 'private_proc_options': proc_options,
+                'private_pid': os.getpid(),
                 'mount_namespace': mount_namespace, 'pid_namespace': pid_namespace,
                 'parent_mount_namespace': config['parent_mount_namespace'],
                 'parent_pid_namespace': config['parent_pid_namespace'],

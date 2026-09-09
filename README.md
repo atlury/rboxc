@@ -2326,11 +2326,11 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. The current
-[evidence/gnu-tail-profiles-coverage.json](evidence/gnu-tail-profiles-coverage.json)
-extends the preserved suite checkpoints: **646 scripts passed**, 32 have
-selected coverage, five are skipped, 29 are excluded and 21 remain pending.
-Excluding the 29 exclusions, 646/704 scripts (91.8%) have whole-script passes;
-58/704 (8.2%) remain partial, pending or skipped. This measures script coverage,
+[evidence/gnu-printf-bounded-output-coverage.json](evidence/gnu-printf-bounded-output-coverage.json)
+extends the preserved suite checkpoints: **648 scripts passed**, 32 have
+selected coverage, five are skipped, 29 are excluded and 19 remain pending.
+Excluding the 29 exclusions, 648/704 scripts (92.0%) have whole-script passes;
+56/704 (8.0%) remain partial, pending or skipped. This measures script coverage,
 not remaining engineering effort or complete Valgrind acceptance.
 
 All 197 reviewed `env -S` cases pass normally against GNU. The original table
@@ -2562,6 +2562,31 @@ call is expected). No assertions or memory findings are suppressed.
 [evidence/gnu-current-lifecycle-validation.json](evidence/gnu-current-lifecycle-validation.json)
 pins all eight open original profiles and the separate natural-exit evidence;
 these checks change no whole-script or strict Valgrind totals.
+
+The whole `rm/r-root.sh` original now passes **22 root-guard cases per
+implementation** on the optimized debug candidate. It runs as UID/GID 65534
+with no supplementary groups or new privileges, inside a disposable filesystem
+copy with private mount/PID namespaces. The original compiler-built unlinkat
+interceptor and debugger breakpoint guard both remain mandatory. GNU and Rboxc
+pass all root aliases, refusal diagnostics, abbreviated-option rejection,
+mixed operands and intercepted override assertions; the parent root's identity,
+ownership and mode remain unchanged. Compiler, debugger and library files are
+copied, with no host directory mounts. The private proc mount allows debugger
+access to its own processes. Missing debugger runtime dependencies and an
+initial trace counter omission are preserved as earlier nonpassing checkpoints.
+[evidence/gnu-rm-private-root-validation.json](evidence/gnu-rm-private-root-validation.json)
+checks the isolated roots, all staged file hashes, 22 calls and original assertions.
+Its Valgrind/debugger profile remains pending.
+
+The whole `printf/printf-surprise.sh` finite memory-budget original also passes.
+It retains its 10-byte FIFO reader, 20-million-character field bound and original
+`MALLOC_PERTURB_=0` safeguard. GNU and Rboxc both produce no output and return 1
+with a write-error diagnostic at calibrated virtual-memory limits of 18,004 and
+35,004 KiB respectively. The
+[evidence/gnu-printf-bounded-output-validation.json](evidence/gnu-printf-bounded-output-validation.json)
+audit verifies the exact source, calibration, exercised limits and status/output
+assertions. These native limits cannot accommodate Valgrind startup; the separate
+instrumented resource profile remains pending.
 
 Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are

@@ -14434,29 +14434,5 @@
     "timeout_seconds": 180,
     "gdb_tail_profile": true,
     "reason": "Whole original owned-file timing script on an optimized debug candidate. GNU and translated Rust breakpoints map to entry into tail_forever_inotify before watches are established. Host ASLR remains enabled; no original assertions change. Instrumented debugger integration remains separate."
-  },
-  {
-    "script": "tests/rm/r-root.sh",
-    "command": "rm",
-    "commands": [
-      "rm"
-    ],
-    "sha256": "b81356101eed4cb4c7f0a35a7f40abb10810dd5400bcb9d0934c8289b89a99f4",
-    "full_suite": true,
-    "clean_environment": true,
-    "profile": "private-root",
-    "valgrind": false,
-    "timeout_seconds": 300,
-    "reason": "Whole original inside a copies-only disposable root with private mount/PID namespaces and uid/gid 65534. Original unlinkat interception and debugger guards remain required. Native debug candidate; Valgrind profile remains pending."
-  },
-  {
-    "script": "tests/printf/printf-surprise.sh",
-    "command": "printf",
-    "sha256": "ec08312c62a3c678113cf48981e4f9671356db9b948b15d62477c2739dab730c",
-    "full_suite": true,
-    "clean_environment": true,
-    "valgrind": false,
-    "timeout_seconds": 180,
-    "reason": "Original bounded allocation-failure/output-status profile on pinned current GNU sources. Retains dynamic virtual-memory calibration, a 10-byte FIFO reader, 20-million-character field bound and original MALLOC_PERTURB_=0 safeguard. No maximum-width variant; Valgrind resource profile remains pending."
   }
 ]

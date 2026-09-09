@@ -563,7 +563,7 @@ def main():
                     expected_calls = ROOT_GUARD_COMMANDS
                     if row['script'] == 'tests/rm/r-root.sh':
                         calls = [call.decode() for call in re.findall(
-                            rb'^\+ (?:returns_ 1 )?(exercise_rm_r_root [^\n]*)$', completed.stderr, re.M)]
+                            rb'^\+ (exercise_rm_r_root [^\n]*)$', completed.stderr, re.M)]
                         expected_calls = ['exercise_rm_r_root '+arg for arg in (
                             'dir', 'file', '/', '--preserve-root /', '//', '///', '////',
                             'rootlink/', 'rootlink2/', 'rootlink3/', '--no-preserve /',
