@@ -89,6 +89,8 @@ def prepare_archives(root,provider,mapping):
         prepare_parser_cleanup(root, adapted)
         from bash_subshell_cleanup import prepare as prepare_subshell_cleanup
         prepare_subshell_cleanup(root, adapted)
+        from bash_globstar_cleanup import prepare as prepare_globstar_cleanup
+        prepare_globstar_cleanup(root, adapted)
     if provider=='gawk':
         from gawk_cleanup import prepare
         adapted=prepare(root)

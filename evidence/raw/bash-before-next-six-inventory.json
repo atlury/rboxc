@@ -1,6 +1,6 @@
 {
   "provider": "GNU Bash 5.3",
-  "scope": "All 88 top-level recipes are inventoried. Forty-six recipes containing forty-seven scripts match original assertions: forty-five scripts pass strictly with 1494 clean candidate process logs on their recorded candidates. Lastpipe retains the audited default-SIGPIPE profile; exp-tests has an invalid-array-index heap finding. Thirty-eight recipes remain pending, two dispatchers are accounted as orchestration, and two mixed reproduction recipes remain held. Full Bash acceptance remains open.",
+  "scope": "All 88 top-level recipes are inventoried. Forty recipes containing forty-one scripts match original assertions: forty scripts pass strictly with 1171 clean candidate process logs; lastpipe retains an explicitly audited default SIGPIPE profile outside strict counts. Two dispatcher recipes are accounted as orchestration, forty-five recipes remain pending, and one mixed reproduction recipe remains held. Full Bash acceptance remains open.",
   "inputs": [
     {
       "target": "alias",
@@ -138,8 +138,8 @@
       },
       "review": "Complete ordinary expansion/quoting conformance script and every referenced executable sub-script reviewed. Original expected-output comparison and recipe filter retained. File operations are confined to private TMPDIR.",
       "state": "reviewed-original-pass",
-      "evidence": "evidence/bash-globstar-pattern-original.json",
-      "audit": "evidence/bash-globstar-pattern-validation.json"
+      "evidence": "evidence/bash-subshell-cleanup-batch-0.json",
+      "audit": "evidence/bash-subshell-cleanup-batch-0-validation.json"
     },
     {
       "target": "builtins",
@@ -190,18 +190,8 @@
       "target": "complete",
       "recipe": "run-complete",
       "recipe_sha256": "37de2c1326f9412be522b413b16dd761321eae56e1d2bc079b9d023f3a02dde4",
-      "reviewed": true,
-      "state": "reviewed-original-pass",
-      "script": "complete.tests",
-      "expected": "complete.right",
-      "output_mode": "combined",
-      "fixtures": {
-        "complete.tests": "1a6aaf115ee99731aa954cec8bd8c233ca31d993bed114d7483aa075131dfa94",
-        "complete.right": "5dc338ca607da4b2eb7d1603161e3d6189d6429457c941d9c0c45bc2aed8069c"
-      },
-      "review": "Complete original script, recipe and all referenced subsidiary scripts reviewed. Bounded quoting, conditional diagnostics, completion registrations or private-directory pathname expansion. Completion registrations containing ps/remote-tool names are printed, never invoked. No original expected output is changed; fixed recho is the already pinned GNU test helper. Globstar needs the pinned GNU/candidate ls and ln helpers in the private PATH.",
-      "evidence": "evidence/bash-next-six-structure.json",
-      "audit": "evidence/bash-next-six-structure-validation.json"
+      "reviewed": false,
+      "state": "pending-review"
     },
     {
       "target": "comsub",
@@ -252,23 +242,8 @@
       "target": "cond",
       "recipe": "run-cond",
       "recipe_sha256": "37ecc2597355566f92ecc692de1b1ab1ee2846ba48c6a4f1bbdb21669aa60265",
-      "reviewed": true,
-      "state": "reviewed-original-pass",
-      "script": "cond.tests",
-      "expected": "cond.right",
-      "output_mode": "combined",
-      "fixtures": {
-        "cond.tests": "dcbfeaa4971d2f40f0c333ec16a3431373e19762e7ef74b65803f8ed0be9c8b9",
-        "cond.right": "5f13926c0a41f23af7c0fe6d7045696dc64715cf7866bca51b5110f1b2555bdc",
-        "cond-regexp1.sub": "b1894a9ae24eb60d2fbdd17d2604c94a423c175ff417e982783da44ec1de74ed",
-        "cond-regexp2.sub": "4766aab8034f9564ed3007122ef3a38a8c19003d44ee05cccb00d7726e4932dc",
-        "cond-regexp3.sub": "45f96a4fb537f02efde1a76266d6f7a8beb3ccc432731eec1d243c0fe688cd36",
-        "cond-error1.sub": "734864d6c1b24041feedc5e44b6f6c895185f212d25201de0561bf80af4d2847",
-        "cond-xtrace1.sub": "77f9a383781f658312b1a92fcd08525ae866e13f6cbe98998bf9d25343d48882"
-      },
-      "review": "Complete original script, recipe and all referenced subsidiary scripts reviewed. Bounded quoting, conditional diagnostics, completion registrations or private-directory pathname expansion. Completion registrations containing ps/remote-tool names are printed, never invoked. No original expected output is changed; fixed recho is the already pinned GNU test helper. Globstar needs the pinned GNU/candidate ls and ln helpers in the private PATH.",
-      "evidence": "evidence/bash-next-six-structure.json",
-      "audit": "evidence/bash-next-six-structure-validation.json"
+      "reviewed": false,
+      "state": "pending-review"
     },
     {
       "target": "coproc",
@@ -403,31 +378,8 @@
       "target": "exp-tests",
       "recipe": "run-exp-tests",
       "recipe_sha256": "ae34d4a5508f322236b0e00624093b31e233b4a2ef9c9e5f4ec5abe4f2542175",
-      "reviewed": true,
-      "state": "reviewed-original-assertions-memory-open",
-      "script": "exp.tests",
-      "expected": "exp.right",
-      "output_mode": "drop-expect",
-      "fixtures": {
-        "exp.tests": "61d18513dcf789da86c5af8d1e843a367684dc23e509efc580b4f9ff9c832d3c",
-        "exp.right": "04155a2780481b5e3ec69ffa8261153fb7eb24b3a0c051b42ca4412b3ccf1469",
-        "exp1.sub": "6bfad7446ae085393a65d20204a4551e8814790bedc984052464600232ffd46e",
-        "exp2.sub": "c4ae6cc1608d75be82788d13982e5df2ef4e8ac500f0530f2d7bca347a80d81d",
-        "exp3.sub": "bd0104998540d95273bc39dd7f62573825b199c861f99637a32b746b939a06ab",
-        "exp4.sub": "e4fd178f5db7fc178e5c00f5886a72d451a54cd148ccd127c0a514adee1749bb",
-        "exp5.sub": "9d07ef4e02bb03f8277c8fa3d52a66316adf1ff4ca58409fef83be50b675b823",
-        "exp6.sub": "84899e10e2a5506d4276a171ef208aeb802a78cba7e211c9354cb2ed50df3646",
-        "exp7.sub": "ff9c22a893dc786b3a812ec46e76dcf63551948daafc91fc840157bde749a878",
-        "exp8.sub": "51c2cc0a49e79bc7811204e37fe08e2b74f0d2efacbf53a114d12b05cdcce76d",
-        "exp9.sub": "0a4bab7ba51c221ae6deb3a54ba2596964d8159b680865c5538f0c33bbf4f600",
-        "exp10.sub": "c81df648a5424df4fb8eb59331c49df9a8a556e5c24e0f86d76bdb7abcb0ff86",
-        "exp11.sub": "ee26b10e1bc94497893f2efadbbda5230d7c070b28f643aa9fde95a49adae89e",
-        "exp12.sub": "b60fd5aefd94de921978641afc1e292757263be8e5da69687fb1a422f028e316",
-        "exp13.sub": "dde578a82ebb499b4d0685af725502ab1d70009a3073b85a6c22841ccd9eda34"
-      },
-      "review": "Complete original script, recipe and all referenced subsidiary scripts reviewed. Bounded quoting, conditional diagnostics, completion registrations or private-directory pathname expansion. Completion registrations containing ps/remote-tool names are printed, never invoked. No original expected output is changed; fixed recho is the already pinned GNU test helper. Globstar needs the pinned GNU/candidate ls and ln helpers in the private PATH.",
-      "evidence": "evidence/bash-next-six-expansion.json",
-      "audit": "evidence/bash-next-six-expansion-validation.json"
+      "reviewed": false,
+      "state": "pending-review"
     },
     {
       "target": "exportfunc",
@@ -458,8 +410,8 @@
         "extglob2.right": "77d35d0156c8c42ad71bd2d9bf258b7fba4ee93f50cf0d78d5316c0adaea8e72"
       },
       "review": "Complete original recipe and executable scripts reviewed. Fixed ordinary expansion, pattern, parser diagnostic, mapfile callback or bounded pipeline conformance cases; original expected outputs and filters retained. Only referenced subsidiary scripts are included; unreferenced similarly named files are not claimed as executed.",
-      "evidence": "evidence/bash-globstar-pattern-original.json",
-      "audit": "evidence/bash-globstar-pattern-validation.json"
+      "evidence": "evidence/bash-subshell-cleanup-batch-1.json",
+      "audit": "evidence/bash-subshell-cleanup-batch-1-validation.json"
     },
     {
       "target": "extglob3",
@@ -475,8 +427,8 @@
         "extglob3.right": "2f94b0cd2f94334cf8247be4e01f467ebd45bf9aa9312c3223017ca82274bade"
       },
       "review": "Complete original recipe and executable scripts reviewed. Fixed ordinary expansion, pattern, parser diagnostic, mapfile callback or bounded pipeline conformance cases; original expected outputs and filters retained. Only referenced subsidiary scripts are included; unreferenced similarly named files are not claimed as executed.",
-      "evidence": "evidence/bash-globstar-pattern-original.json",
-      "audit": "evidence/bash-globstar-pattern-validation.json"
+      "evidence": "evidence/bash-subshell-cleanup-batch-2.json",
+      "audit": "evidence/bash-subshell-cleanup-batch-2-validation.json"
     },
     {
       "target": "func",
@@ -511,21 +463,8 @@
       "target": "globstar",
       "recipe": "run-globstar",
       "recipe_sha256": "65b0fdc8e51ff559276bdd021135044cd07ca68016ee609f6523c96e27a8a495",
-      "reviewed": true,
-      "state": "reviewed-original-pass",
-      "script": "globstar.tests",
-      "expected": "globstar.right",
-      "output_mode": "combined",
-      "fixtures": {
-        "globstar.tests": "abcd94978dd62d55231d6f1a1586db0db8ccf2973f4c64115c5312a594cb993e",
-        "globstar.right": "f37f1a5d12bd5a46785fdf19a6a62e18ddfcb2b93f7af98c7f7b70ac2570007d",
-        "globstar1.sub": "7fc30e390def1ac23753801437cd7740bf46a191b4e54a47dc6d78c953b7be6a",
-        "globstar2.sub": "049bd24f7544756592703d4b054003322e84fdd73524823dc64b4ac59e376ed1",
-        "globstar3.sub": "fb672414edfe17ed45d61f07933045bc3e6f549f56d0429fbd9fb88609766fca"
-      },
-      "review": "Complete original script, recipe and all referenced subsidiary scripts reviewed. Bounded quoting, conditional diagnostics, completion registrations or private-directory pathname expansion. Completion registrations containing ps/remote-tool names are printed, never invoked. No original expected output is changed; fixed recho is the already pinned GNU test helper. Globstar needs the pinned GNU/candidate ls and ln helpers in the private PATH.",
-      "evidence": "evidence/bash-globstar-cleanup-original.json",
-      "audit": "evidence/bash-globstar-original-validation.json"
+      "reviewed": false,
+      "state": "pending-review"
     },
     {
       "target": "heredoc",
@@ -715,18 +654,8 @@
       "target": "more-exp",
       "recipe": "run-more-exp",
       "recipe_sha256": "075727755033ac95ddfae32232cbd41f97a1cf33ccfa1c04d456b74ea7b47abd",
-      "reviewed": true,
-      "state": "reviewed-original-pass",
-      "script": "more-exp.tests",
-      "expected": "more-exp.right",
-      "output_mode": "drop-expect",
-      "fixtures": {
-        "more-exp.tests": "37c85f28c5be2e74444f797e4bc02eb7be30e7b831efebd00fe661829cba93b1",
-        "more-exp.right": "cd6e16614e06f393d9d1e3c20acaf6e8a31ec61fc88e9d30234445fb5d0e3c5c"
-      },
-      "review": "Complete original script and recipe reviewed. Fixed parameter expansions, tilde/IFS/quoting, ordinary expected substitution diagnostics and local expr/recho/zecho helpers. No subsidiary scripts or shared file writes.",
-      "evidence": "evidence/bash-next-six-expansion.json",
-      "audit": "evidence/bash-next-six-expansion-validation.json"
+      "reviewed": false,
+      "state": "pending-review"
     },
     {
       "target": "nameref",
@@ -740,32 +669,14 @@
       "recipe": "run-new-exp",
       "recipe_sha256": "8dba3e1d33334eab1832902df2613fea54232fb8c31343b22fb164d34f78980f",
       "reviewed": false,
-      "state": "mixed-reproduction-inputs-unexecuted",
-      "main_source_sha256": "3c057e8a7bb2d2fc68b4a373a7f88d68848c3c9090f83d5a046d2be7d847ff6a",
-      "review": "Main script and recipe read. The whole recipe mixes ordinary expansion assertions with explicitly documented historical core-dump inputs, including malformed bracket-expression parsing. Whole script remains unexecuted. It also requires a non-root environment and sixteen subsidiary scripts, which are not yet fully reviewed. Ordinary bounded selections can be reviewed separately."
+      "state": "pending-review"
     },
     {
       "target": "nquote",
       "recipe": "run-nquote",
       "recipe_sha256": "ac88992f879f4d3c34d142e0a78d83b040812518d6b5a1c5e844b5158f4ce8cc",
-      "reviewed": true,
-      "state": "reviewed-original-pass",
-      "script": "nquote.tests",
-      "expected": "nquote.right",
-      "output_mode": "drop-expect",
-      "fixtures": {
-        "nquote.tests": "e3ac1ab8ed2ad6781b92fd5852a9d9735225073bf21914b792def090360fb64f",
-        "nquote.right": "2d526f81867a01412fcfa2b4e4df113beeeb4bf44c4560bb08ed2df21e4c5483",
-        "nquote1.sub": "db1325d245c3ec47249464ee149e66d8b22588f1cba2ae44fbcd49b8bd0d0a01",
-        "nquote2.sub": "74e7d2ff4e890ff73643a3a49d6b1768fdddc8632d560c28acb7d22b7c43d288",
-        "nquote3.sub": "987eeb3e74ad68699a91ede16bc77cf598c9b6e67f807a3389b39aa8e6dd7382",
-        "nquote4.sub": "0052160aac884140223d991abd1b09687615c7033739ab27dd05ed961e756ff0",
-        "nquote5.sub": "815aacc81e4d92065b395f798766214bb789341d5c461067b60eef9de77a3793",
-        "test-glue-functions": "6c7ab2a929235d0cca603eb060a354e0670054ad9525efa7ff3ce590ec29ef7e"
-      },
-      "review": "Complete original script, recipe and all referenced subsidiary scripts reviewed. Bounded quoting, conditional diagnostics, completion registrations or private-directory pathname expansion. Completion registrations containing ps/remote-tool names are printed, never invoked. No original expected output is changed; fixed recho is the already pinned GNU test helper. Globstar needs the pinned GNU/candidate ls and ln helpers in the private PATH.",
-      "evidence": "evidence/bash-next-six-expansion.json",
-      "audit": "evidence/bash-next-six-expansion-validation.json"
+      "reviewed": false,
+      "state": "pending-review"
     },
     {
       "target": "nquote1",
@@ -916,8 +827,8 @@
         "posixpat.right": "713fa0c20fac8575b37c165b49f1427b64bd9cc9062bfa1fb0144f68075138e8"
       },
       "review": "Complete original recipe and executable scripts reviewed. Fixed ordinary expansion, pattern, parser diagnostic, mapfile callback or bounded pipeline conformance cases; original expected outputs and filters retained. Only referenced subsidiary scripts are included; unreferenced similarly named files are not claimed as executed.",
-      "evidence": "evidence/bash-globstar-pattern-original.json",
-      "audit": "evidence/bash-globstar-pattern-validation.json"
+      "evidence": "evidence/bash-subshell-cleanup-batch-0.json",
+      "audit": "evidence/bash-subshell-cleanup-batch-0-validation.json"
     },
     {
       "target": "posixpipe",

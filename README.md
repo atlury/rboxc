@@ -78,7 +78,7 @@ there where available.
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
-| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 39 original recipes (40 scripts) pass on the current candidate with 1171 clean process logs; lastpipe assertions pass with an explicit default-SIGPIPE profile |
+| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 44 original recipes (45 scripts) pass on their recorded candidates with 1494 clean process logs; lastpipe has a default-SIGPIPE profile and exp-tests has an array-assignment heap finding |
 | Less | 704 | Ten focused checks, one production terminal check and all 18 original screen replays pass across declared profiles |
 | Screen | 5.0.2 | All three original targets pass across declared profiles; daemon cleanup and socket recovery pass Valgrind |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
@@ -106,24 +106,34 @@ this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
 The current 187-command candidate is **14,721,424 bytes**, at
-`target/bash-subshell-cleanup-candidate/release/rboxc`, SHA-256
-`a337963b6c2e2d665f254fa59fe41fb6ea079c74c43f05cdded2891681d688e2`.
+`target/bash-globstar-cleanup-candidate/release/rboxc`, SHA-256
+`c4db42383944596d9c2402077dbf35a6928c629331049c84df3281d694eb0bac`.
 An independent rebuild is byte-identical. All 428 Coreutils smoke checks,
 11 dispatcher checks, 44 focused Bash comparisons and 69 shell-adapter checks
-pass. All 41 reviewed original Bash scripts were rerun: **40 scripts from 39
-recipes pass strictly**, with **1171 clean candidate process logs**.
+pass. Bash has **45 strict scripts from 44 original recipes**, with **1494 clean
+candidate process logs** across their recorded immutable candidates.
 
-Lastpipe backup descriptors and frozen job-table entries now receive their
-required cleanup. The existing errexit frame discard now releases known heap
-payloads without restoring abandoned stack state. The original set-e script
-passes with 101 clean process logs, and 32 contracts retain GNU output/status
-through functions, subshells, nested eval, EXIT/ERR traps and pipelines.
+Six additional original recipes cover completion, conditional expressions,
+recursive pathname matching, quoting and parameter expansion. All six match
+GNU's unchanged expected output. The globstar original exposed discarded path
+strings, empty placeholders and a current-directory list node; their ownership
+is now released in GNU's existing cleanup paths. Globstar and four related
+pattern originals pass with 46 clean process logs on this candidate.
+[evidence/bash-globstar-cleanup-validation.json](evidence/bash-globstar-cleanup-validation.json)
+audits that isolated glob archive and preserves the initial findings. The
+exp-tests original retains a 70-byte invalid-array-index heap finding; its entire
+249-process family remains outside strict counts.
+
+The preceding subshell candidate passed all 41 reviewed original assertions,
+with 40 strict scripts and 1171 clean logs. Lastpipe backup descriptors and frozen
+job-table entries receive cleanup; errexit frame discard releases known heap
+payloads without restoring abandoned stack state. Thirty-two contracts retain
+GNU output/status through functions, subshells, eval, EXIT/ERR traps and pipelines.
 [evidence/bash-subshell-cleanup-validation.json](evidence/bash-subshell-cleanup-validation.json)
-audits the changes and full reviewed regression. Lastpipe matches all original
-assertions; its remaining finding is the expected default SIGPIPE child with
-standard descriptors 0/1 still open at signal termination. The kernel releases
-these descriptors. Signal behavior is unchanged, and the entire 51-process
-family remains outside strict Valgrind counts.
+retains that full regression. Lastpipe's expected default-SIGPIPE child keeps
+standard descriptors 0/1 open until signal termination; the kernel releases them.
+Signal behavior is unchanged, and its entire 51-process family remains outside
+strict Valgrind counts.
 
 The preceding pipe-ownership increment made posixexp2 pass unchanged with 50
 clean logs. Seventeen native and Valgrind contracts cover all combinations of
@@ -142,8 +152,11 @@ close/descriptor-reuse contracts remain in
 
 The runner bounds each private process group and preserves timeout output;
 absolute true/false helpers use private mounts and host files remain unchanged.
-Two recipe dispatchers are accounted as orchestration; 45 recipes remain pending
-and one mixed reproduction recipe remains held. Full Bash/GNU acceptance is open.
+Two recipe dispatchers are accounted as orchestration; 38 recipes remain pending
+and two mixed reproduction recipes remain held. The newly reviewed new-exp main
+script mixes ordinary assertions with explicit historical core-dump inputs, so
+its complete recipe remains unexecuted; its non-root profile and subsidiary
+scripts also need separate review. Full Bash/GNU acceptance is open.
 
 The preceding trap candidate, SHA-256
 `b00869258dca564ea767195be3238bbb7b7cbdd928d7b8c5dad36e6f21c2ead9`,
