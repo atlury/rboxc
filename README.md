@@ -2931,3 +2931,17 @@ is unchanged. Current
 accounts for 54 strict recipes (55 scripts), 13,185 clean strict process logs,
 eight memory/signal profiles, seven assertion baselines, 14 recipes pending
 review, three held mixed-input recipes and two orchestration recipes.
+
+The complete Bash `execscript` recipe and its 17 original children are now
+recorded in [evidence/bash-execscript-validation.json](evidence/bash-execscript-validation.json).
+Native and instrumented rboxc outputs match their corresponding GNU runs
+(after work-directory substitution for the latter comparison), but this is
+an **assertion baseline**, not an original-output pass. Native signal ordering
+differs from the original platform; the Python privilege helper also leaves
+PIPE/XFSZ ignored. Valgrind adds RTMAX, changes argv[0], and terminates its
+client when the original E2BIG execution attempt fails. Of 286 candidate
+images, 284 are clean; the remaining profiles are that incomplete client
+and a 30-byte trap-restoration leak. Current
+[evidence/bash-execscript-coverage.json](evidence/bash-execscript-coverage.json)
+records 71 original scripts, 55 strict scripts, eight memory/signal profiles,
+eight assertion baselines and 13 recipes pending review.
