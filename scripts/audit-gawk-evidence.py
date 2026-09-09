@@ -126,9 +126,13 @@ for row in original['results']:
         assert locale['driver_sha256']==fingerprint(ROOT/locale.get('preparation_driver','scripts/prepare-gawk-locales.py'))
         assert fingerprint(ROOT/locale['build_log'])==locale['build_log_sha256']
         base=Path(locale['runtime_path'])
-        assert (base/locale['alias']).readlink()==Path(locale['name'])
+        if locale.get('alias'):
+            assert (base/locale['alias']).readlink()==Path(locale['name'])
         for name,h in locale['files'].items():assert fingerprint(base/locale['name']/name)==h
-        assert locale['probe']=={'status':0,'stdout':'UTF-8\n','stderr':''}
+        charmap=Path(locale['build_command'][locale['build_command'].index('-f')+1])
+        assert charmap.name in ('UTF-8','ISO-8859-7')
+        assert fingerprint(charmap)==locale['inputs'][str(charmap)]
+        assert locale['probe']=={'status':0,'stdout':charmap.name+'\n','stderr':''}
     for key,outcome in row['outcomes'].items():
         assert not outcome.get('timed_out') and not outcome.get('child_wait_timeout')
         assert outcome['status']==0

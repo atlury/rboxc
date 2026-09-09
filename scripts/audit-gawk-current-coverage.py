@@ -136,8 +136,12 @@ for filename in sorted({r['evidence'] for r in reviewed.values()}):
             locale=json.loads((ROOT/locale_profile).read_text())
             assert locale['driver_sha256']==fingerprint(ROOT/locale.get('preparation_driver','scripts/prepare-gawk-locales.py'))
             assert fingerprint(ROOT/locale['build_log'])==locale['build_log_sha256']
-            assert locale['probe']=={'status':0,'stdout':'UTF-8\n','stderr':''}
-            assert (Path(locale['runtime_path'])/locale['alias']).readlink()==Path(locale['name'])
+            charmap=Path(locale['build_command'][locale['build_command'].index('-f')+1])
+            assert charmap.name in ('UTF-8','ISO-8859-7')
+            assert fingerprint(charmap)==locale['inputs'][str(charmap)]
+            assert locale['probe']=={'status':0,'stdout':charmap.name+'\n','stderr':''}
+            if locale.get('alias'):
+                assert (Path(locale['runtime_path'])/locale['alias']).readlink()==Path(locale['name'])
             for locale_input,expected in locale['inputs'].items():
                 actual=fingerprint(Path(locale_input))
                 if actual!=expected:

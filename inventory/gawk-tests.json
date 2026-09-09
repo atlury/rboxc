@@ -1,6 +1,6 @@
 {
   "provider": "GNU Gawk 5.4.1",
-  "scope": "All 634 original AWK inputs inventoried; 546 recipes reviewed: 532 pass, six assertion failures match GNU, and eight additional originals pass assertions with memory/descriptor findings still open. Nine auxiliary inputs add no duplicate recipe/process counts; one is an unread source argument and one is text input only. Forty historical reproductions are excluded. Twenty MPFR programs and one ARRAYDEBUG program are unavailable in the configured build, verified through unchanged GNU capability guards; 18 other inputs still await accounting and profiles. Strict aggregate counts exclude all processes from the eight open profiles. Full acceptance remains open.",
+  "scope": "All 634 original AWK inputs inventoried; 549 recipes reviewed: 535 pass, six assertion failures match GNU, and eight additional originals pass assertions with memory/descriptor findings still open. Nine auxiliary inputs add no duplicate recipe/process counts; one is an unread source argument and one is text input only. Forty historical reproductions are excluded. Twenty MPFR programs and one ARRAYDEBUG program are unavailable in the configured build, verified through unchanged GNU capability guards; 15 other inputs still await accounting and profiles. Strict aggregate counts exclude all processes from the eight open profiles. Full acceptance remains open.",
   "registration_sha256": "447e3fdd76fe4ebb4b39427465aa727ed421a5818e568a00e00f2c5a90830ade",
   "inputs": [
     {
@@ -2743,8 +2743,67 @@
     {
       "path": "test/fts.awk",
       "sha256": "69a36c378343b29eea62ef4682132278cd9f4b2b0fc31af8bfddbda2b34ce2c9",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "fts",
+      "review": "Complete source, unchanged recipe and original fixtures reviewed. Fixed Greek case comparisons, French plural/positional translations, or two private directories containing four empty files compared through native fts and an AWK walk. No VMS branch is selected. GNU translation catalog strings were read and matched to the supplied PO. Native extensions and recipe helpers are explicitly pinned.",
+      "fixtures": {},
+      "configured_recipe_sha256": "f95c81b1fbab2690e228b0aaf8ea36c74511aa8d94fe919d241e5526fb2e3b14",
+      "extension_profile": {
+        "scope": "Pinned GNU native extension helpers with the GNU or translated Gawk entry; private test-only library lookup.",
+        "libraries": {
+          "filefuncs.so": {
+            "path": "/root/rboxc/build/gnu-gawk/extension/.libs/filefuncs.so",
+            "sha256": "5d0ff47bff41d7b72ab06bf9d91d43f24c77154fa8b811f9b86fd0825f998f45"
+          }
+        },
+        "inputs": {
+          "/opt/src/gawk-5.4.1/extension/filefuncs.c": "a847860a78d43c3eb4dc4b53e71bf382a30bb340b6decc117c78804bb55fe227",
+          "/opt/src/gawk-5.4.1/extension/ext_custom.h": "70293c4c5e662cd2980b7d29112134aa2102347960471dcb16fd677c3e70af07",
+          "/opt/src/gawk-5.4.1/gawkapi.h": "3480eb870c9b88cca3f4df58e069ba91c944954d7f1610944ef557350c8b0713",
+          "/opt/src/gawk-5.4.1/gettext.h": "d9d2efcd8865ed25b0976aee699b4f82f88fc9acf2b706886027b4a6f5daadf7",
+          "/opt/src/gawk-5.4.1/extension/gawkfts.c": "4c0b2b8d8767a6276debfc468bc233abccb86cae41ce93b359e4d9a20557c29a",
+          "/opt/src/gawk-5.4.1/extension/gawkfts.h": "41925fa51e4ac52aaf679b49cfa01d77bc3ef25471b7302cd344157f7a1ab839",
+          "/opt/src/gawk-5.4.1/extension/gawkdirfd.h": "c16d17e5baa0b2b780e9dfcb29ca87dd8f3cdcbb6eeeeb3b9c052bf27b54d102",
+          "/opt/src/gawk-5.4.1/extension/stack.c": "bdcee0132971c4b44cb4cdbe40fd9ca59c101218d6df3de83eefc9c1c3b7b18b",
+          "/opt/src/gawk-5.4.1/extension/stack.h": "17319501b7e30c1e925fcce50f614b083b9751610ff586a20fa01c094f7939e1",
+          "/root/rboxc/build/gnu-gawk/config.h": "2b3a38ed3f2a47cd81af88f0082d073fadfe7530bd3bf00d42f28b78d9df58a0",
+          "/root/rboxc/build/gnu-gawk/extension/Makefile": "862d1946e6d089d1549d1e0c5ac25ccae045b3cbf5408cee00fe3de13a8d7a12",
+          "/root/rboxc/build/gnu-gawk/extension/.libs/filefuncs.o": "1af931a04651af2c286317cdcc18eab291e836042652cda68fd72f79df28465c",
+          "/root/rboxc/build/gnu-gawk/gawkapi.o": "c154ac8f1e56a497a649f3554ac42054296a22570628808450ceb6d881473a05"
+        }
+      },
+      "child_dependencies": {
+        "rm": {
+          "path": "/root/rboxc/build/gnu-coreutils/src/coreutils",
+          "sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4"
+        },
+        "mkdir": {
+          "path": "/root/rboxc/build/gnu-coreutils/src/coreutils",
+          "sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4"
+        },
+        "touch": {
+          "path": "/root/rboxc/build/gnu-coreutils/src/coreutils",
+          "sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4"
+        },
+        "ls": {
+          "path": "/root/rboxc/build/gnu-coreutils/src/coreutils",
+          "sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4"
+        }
+      },
+      "child_commands": {
+        "/bin/sh -c rm\\ -fr\\ d1\\ d2": 2,
+        "rm -fr d1 d2": 2,
+        "/bin/sh -c mkdir\\ d1\\ d2\\ ;\\ touch\\ d1/f1\\ d1/f2\\ d2/f1\\ d2/f2": 1,
+        "mkdir d1 d2": 1,
+        "touch d1/f1 d1/f2 d2/f1 d2/f2": 1,
+        "/bin/sh -c ls\\ -f\\ d1": 1,
+        "ls -f d1": 1,
+        "/bin/sh -c ls\\ -f\\ d2": 1,
+        "ls -f d2": 1
+      },
+      "evidence": "evidence/gawk-locale-directory-original.json",
+      "audit": "evidence/gawk-locale-directory-memory-audit.json"
     },
     {
       "path": "test/functab1.awk",
@@ -3380,8 +3439,18 @@
     {
       "path": "test/greek-8bit.awk",
       "sha256": "ae7230f6ddb32a888b25b8ac08e9f7d92793010dc62fe53bd7c8760a6dde469c",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "greek-8bit",
+      "review": "Complete source, unchanged recipe and original fixtures reviewed. Fixed Greek case comparisons, French plural/positional translations, or two private directories containing four empty files compared through native fts and an AWK walk. No VMS branch is selected. GNU translation catalog strings were read and matched to the supplied PO. Native extensions and recipe helpers are explicitly pinned.",
+      "fixtures": {
+        "greek-8bit.ok": "cb2de1b2f8553552ee62cc835c589875df046c617da05883165f1286cb38c529",
+        "greek-8bit.ok2": "f0234d1ba9a53235f780a61404e70bc1de4b44ce185e222cceead94cef0e21af"
+      },
+      "configured_recipe_sha256": "cef85d2777fe88e569b6ef960b7caa23fef802b403cd5eb5a299b1ed20ac91eb",
+      "locale_profile": "evidence/gawk-greek-locales.json",
+      "evidence": "evidence/gawk-locale-directory-original.json",
+      "audit": "evidence/gawk-locale-directory-memory-audit.json"
     },
     {
       "path": "test/greek-equiv.awk",
@@ -5342,8 +5411,20 @@
     {
       "path": "test/nlstringtest.awk",
       "sha256": "daa51f9c61cc8668691938a90e62118f6dfbed2e12962e3b45ac221668d80895",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "nlstringtest",
+      "review": "Complete source, unchanged recipe and original fixtures reviewed. Fixed Greek case comparisons, French plural/positional translations, or two private directories containing four empty files compared through native fts and an AWK walk. No VMS branch is selected. GNU translation catalog strings were read and matched to the supplied PO. Native extensions and recipe helpers are explicitly pinned.",
+      "fixtures": {
+        "nlstringtest.ok": "848346b1030cd4a72e49a0f1270a5f2daa6e50b92389cf057cdcbfc6be9b1ae3",
+        "nlstringtest.po": "879fd9a665362487acc1ab87581c1cf4a68eeef078d6b83041bd18b4e734dfd4",
+        "nlstringtest-nogettext.ok": "7fd05b71a8bff818d7b1d28ec6dfedc680512d1eeb609d5880fd1b5c970e05b0",
+        "fr/LC_MESSAGES/nlstringtest.mo": "4caa7a09c1fbc946236acfad7ba373f89627966a00314143ccfc091f88523bd7"
+      },
+      "configured_recipe_sha256": "91cb4cbae367e2ff59b39987ae06065b05f09d6190a1082095ece2bbc9a8fc14",
+      "locale_profile": "evidence/gawk-french-locales.json",
+      "evidence": "evidence/gawk-locale-directory-original.json",
+      "audit": "evidence/gawk-locale-directory-memory-audit.json"
     },
     {
       "path": "test/noeffect.awk",
