@@ -71,7 +71,7 @@ there where available.
 | BC | 1.08.2 | `bc`, `dc` installed |
 | Ed | 1.22.6 | `ed` installed |
 | Findutils | 4.11.0 | `find`, `xargs`, `locate` installed; `updatedb` and private `frcode` integrated in candidate |
-| Tar | 1.35 | `tar` installed; 97 original groups across 96 input files validated |
+| Tar | 1.35 | `tar` installed; 118 of 244 original groups validated across recorded profiles |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
 | Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 448 reviewed originals pass; three original failures match GNU |
@@ -1150,7 +1150,27 @@ read and write, and closes owned local archive handles on fatal exit while
 invalidating every explicitly closed handle. The owner original uses files-only
 NSS in a private mount namespace; its earlier host SSSD diagnostic remains in
 the baseline report. Earlier allocation and descriptor findings are preserved.
-Thirteen additional unchanged GNU Tar groups pass on the current 187-command
+Twenty-one additional GNU Tar groups pass for incremental archives, timestamp
+restoration, directory changes, concatenation and renamed directory trees.
+`listed03` runs without root privileges. GNU's original `ckmtime` helper was
+missing in the first attempt, so fifteen groups skipped their main assertions;
+that run is preserved. The original timestamp and sparse-file helpers now build
+and pass their own native and Valgrind checks. The completed unchanged rerun has
+207 clean Tar processes, audited alongside the earlier 13 groups in
+`evidence/tar-pending-current-audited.json`: **34 groups and 401 clean Tar
+processes on the current 187-command candidate**. Native GNU findings remain
+separate in `evidence/tar-incremental-recovery.json`.
+
+The registration inventory now distinguishes **244 registered groups** from
+237 distributed `.at` files. Two groups (`exclude17` and `exclude18`) exist in
+the generated suite but their standalone sources are absent from the signed
+release archive. `sparsemvp.at` supplies shared macros rather than its own group;
+`testsuite.at` directly registers six compression groups. Across recorded
+candidate profiles, 118 groups from 117 input files are validated. The remaining
+126 registered groups stay explicit in `inventory/tar-groups.json`; full
+acceptance and release activation remain open.
+
+Thirteen preceding unchanged GNU Tar groups pass on the current 187-command
 candidate, covering recursion toggles, long-name appends, create/append archive
 equality, changed blocking factors, deletion, backups, link comparison, old
 archive format and verification. `evidence/tar-pending-archive-audited.json`

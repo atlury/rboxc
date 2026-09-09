@@ -1,0 +1,492 @@
+GNU tar 1.35 test suite test groups:
+
+ NUM: FILE-NAME:LINE     TEST-GROUP-NAME
+      KEYWORDS
+
+   1: version.at:19      tar version
+   2: pipe.at:29         decompressing from stdin
+      pipe
+   3: options.at:24      mixing options
+      options options00
+   4: options02.at:26    interspersed options
+      options options02
+   5: options03.at:21    TAR_OPTIONS with string arguments
+      options options03
+   6: opcomp01.at:21     occurrence compatibility
+      opcomp opcomp01
+   7: opcomp02.at:21     occurrence compatibility
+      opcomp opcomp02
+   8: opcomp03.at:21     --verify compatibility
+      opcomp opcomp03
+   9: opcomp04.at:21     compress option compatibility
+      opcomp opcomp04
+  10: opcomp05.at:21     --pax-option compatibility
+      opcomp opcomp05
+  11: opcomp06.at:21     --pax-option compatibility
+      opcomp opcomp06
+  12: defaults.at:16     checkpoint defaults
+      checkpoint checkpoint/defaults
+  13: interval.at:16     checkpoint interval
+      checkpoint checkpoint/interval
+  14: dot.at:16          dot action
+      checkpoint checkpoint/dot
+  15: dot-compat.at:16   dot action (compatibility syntax)
+      checkpoint checkpoint/dot-compat
+  16: dot-int.at:16      dot action and interval
+      checkpoint checkpoint/dot-int
+  17: testsuite.at:242   compress: gzip
+      compression compress-gzip gzip
+  18: testsuite.at:243   compress: bzip2
+      compression compress-bzip2 bzip2
+  19: testsuite.at:244   compress: xz
+      compression compress-xz xz
+  20: testsuite.at:246   compress: lzip
+      compression compress-lzip lzip
+  21: testsuite.at:247   compress: lzop
+      compression compress-lzop lzop
+  22: testsuite.at:248   compress: zstd
+      compression compress-zstd zstd
+  23: positional01.at:21 Exclude
+      options positional positional01 exclude
+  24: positional02.at:21 Directory
+      options positional positional02 directory chdir
+  25: positional03.at:21 Several options
+      options positional positional03 chdir
+  26: add-file.at:21     The --add-file option
+      add-file
+  27: T-mult.at:21       multiple file lists
+      files-from t-mult
+  28: T-nest.at:21       nested file lists
+      files-from t-nest
+  29: T-rec.at:21        recursive file lists
+      files-from t-rec
+  30: T-recurse.at:27    files-from & recurse: toggle
+      recurse t-recurse files-from
+  31: T-recurse.at:66    toggle --recursion (not) from -T
+      recurse t-recurse t-recurse2 files-from
+  32: T-cd.at:21         -C in file lists
+      files-from t-cd chdir
+  33: T-empty.at:26      empty entries
+      files-from empty-line
+  34: T-null.at:21       0-separated file without -0
+      files-from null t-null
+  35: T-null2.at:17      --null enables verbatim reading
+      files-from null t-null2 t-verbatim
+  36: T-zfile.at:26      empty file
+      files-from empty-file
+  37: T-nonl.at:27       entries with missing newlines
+      files-from nonewline nonl t-nonl
+  38: T-dir00.at:28      recursive extraction from --files-from
+      files-from extract t-dir t-dir00
+  39: T-dir01.at:28      trailing slash in --files-from
+      files-from extract t-dir t-dir01
+  40: indexfile.at:26    tar --index-file=FILE --file=-
+      stdout indexfile
+  41: verbose.at:26      tar cvf -
+      stdout verbose
+  42: gzip.at:23         gzip
+      gzip
+  43: recurse.at:21      recurse
+      recurse
+  44: recurs02.at:30     recurse: toggle
+      recurse options recurse02
+  45: shortrec.at:25     short records
+      shortrec
+  46: numeric.at:18      --numeric-owner basic tests
+      options numeric numeric-owner
+  47: same-order01.at:26 working -C with --same-order
+      same-order same-order01 chdir
+  48: same-order02.at:25 multiple -C options
+      same-order same-order02 chdir
+  49: append.at:21       append
+      append append00
+  50: append01.at:29     appending files with long names
+      append append01
+  51: append02.at:54     append vs. create
+      append append02 append-gnu
+  52: append03.at:21     append with name transformation
+      append append03
+  53: append04.at:29     append with verify
+      append append04 verify append-verify
+  54: append05.at:32     append after changed blocking
+      append append05 blocking
+  55: xform-h.at:30      transforming hard links on create
+      transform xform xform-h
+  56: xform01.at:26      transformations and GNU volume labels
+      transform xform xform01 volume
+  57: xform02.at:21      transforming escaped delimiters on create
+      transform xform delimiter
+  58: xform03.at:21      transforming hard link targets
+      transform xform link
+  59: exclude.at:23      exclude
+      exclude
+  60: exclude01.at:19    exclude wildcards
+      exclude exclude01
+  61: exclude02.at:19    exclude: anchoring
+      exclude exclude02
+  62: exclude03.at:19    exclude: wildcards match slash
+      exclude exclude03
+  63: exclude04.at:19    exclude: case insensitive
+      exclude exclude04
+  64: exclude05.at:21    exclude: lots of excludes
+      exclude exclude05
+  65: exclude06.at:26    exclude: long files in pax archives
+      exclude exclude06 chdir
+  66: exclude07.at:19    exclude: --exclude-backups option
+      exclude exclude07
+  67: exclude08.at:36    --exclude-tag option
+      exclude exclude-tag exclude08
+  68: exclude09.at:37    --exclude-tag option and --listed-incremental
+      exclude exclude-tag listed incremental exclude09
+  69: exclude10.at:38    --exclude-tag option in incremental pass
+      exclude exclude-tag listed incremental exclude10
+  70: exclude11.at:36    --exclude-tag-under option
+      exclude exclude-tag exclude-tag-under exclude11
+  71: exclude12.at:37    --exclude-tag-under and --listed-incremental
+      exclude exclude-tag exclude-tag-under listed incremental exclude12
+  72: exclude13.at:39    --exclude-tag-under option in incremental pass
+      exclude exclude-tag exclude-tag-under listed incremental exclude13
+  73: exclude14.at:36    --exclude-tag-all option
+      exclude exclude-tag exclude-tag-all exclude14
+  74: exclude15.at:36    --exclude-tag-all and --listed-incremental
+      exclude exclude-tag exclude-tag-all listed incremental exclude15
+  75: exclude16.at:38    --exclude-tag-all option in incremental pass
+      exclude exclude-tag exclude-tag-all listed incremental exclude16
+  76: exclude17.at:21    --exclude-vcs-ignores memory allocation
+      exclude exclude17
+  77: exclude18.at:30    --exclude-vcs extract list compare
+      exclude-vcs extract list compare exclude18
+  78: delete01.at:23     deleting a member after a big one
+      delete delete01
+  79: delete02.at:23     deleting a member from stdin archive
+      delete delete02
+  80: delete03.at:21     deleting members with long names
+      delete delete03
+  81: delete04.at:23     deleting a large last member
+      delete delete04
+  82: delete05.at:27     deleting non-existing member
+      delete delete05
+  83: delete06.at:25     EOF detection
+      delete delete06
+  84: extrac01.at:23     extract over an existing directory
+      extract extract01
+  85: extrac02.at:23     extracting symlinks over an existing file
+      extract extract02 symlink
+  86: extrac03.at:23     extraction loops
+      extract extract03
+  87: extrac04.at:23     extract + fnmatch
+      extract extract04 fnmatch
+  88: extrac05.at:30     extracting selected members from pax
+      extract extract05
+  89: extrac06.at:34     mode of extracted directories
+      extract extract06 directory mode
+  90: extrac07.at:27     extracting symlinks to a read-only dir
+      extract extract07 read-only symlink chdir
+  91: extrac08.at:33     restoring mode on existing directory
+      extract extrac08
+  92: extrac09.at:34     extracting even when . and .. are unreadable
+      extract extrac09 chdir
+  93: extrac10.at:29     -C and delayed setting of metadata
+      extract extrac10 chdir
+  94: extrac11.at:25     scarce file descriptors
+      extract extrac11 chdir
+  95: extrac12.at:25     extract dot permissions
+      extract extrac12 chdir
+  96: extrac13.at:26     extract over symlinks
+      extract extrac13 chdir
+  97: extrac14.at:25     extract -C symlink
+      extract extrac14 chdir
+  98: extrac15.at:25     extract parent mkdir failure
+      extract extrac15 chdir
+  99: extrac16.at:26     extract empty directory with -C
+      extract extrac16 chdir
+ 100: extrac17.at:21     name matching/transformation ordering
+      extract extrac17 chdir
+ 101: extrac18.at:34     keep-old-files
+      extract extrac18 old-files keep-old-files
+ 102: extrac19.at:21     skip-old-files
+      extract extrac19 old-files skip-old-files
+ 103: extrac20.at:21     keep-directory-symlink
+      extrac20 extract old-files keep-old-files
+ 104: extrac21.at:31     delay-directory-restore
+      extract extract21 read-only symlink delay-directory-restore
+ 105: extrac22.at:19     delay-directory-restore on reversed ordering
+      extract extrac22 delay delay-reversed
+ 106: extrac23.at:18     --no-overwrite-dir
+      extract extrac23 no-overwrite-dir
+ 107: extrac24.at:18     --to-stdout
+      extract extrac24 to-stdout
+ 108: extrac25.at:18     extract over parent dir that is dangling symlink
+      extract extrac25
+ 109: backup01.at:33     extracting existing dir with --backup
+      extract backup backup01
+ 110: difflink.at:17     link mismatch
+      diff difflink
+ 111: label01.at:21      single-volume label
+      label label01
+ 112: label02.at:21      multi-volume label
+      label label02 multi-label multivolume multiv
+ 113: label03.at:27      test-label option
+      label label03 test-label
+ 114: label04.at:27      label with non-create option
+      label label04
+ 115: label05.at:24      label with non-create option
+      label label05
+ 116: incremental.at:23  incremental
+      incremental listed incr00
+ 117: incr01.at:27       restore broken symlinks from incremental
+      incremental incr01
+ 118: incr02.at:32       restoring timestamps from incremental
+      incremental timestamp restore incr02
+ 119: listed01.at:26     --listed for individual files
+      listed incremental listed01
+ 120: listed02.at:28     working --listed
+      listed incremental listed02
+ 121: listed03.at:24     incremental dump when the parent directory is unreadable
+      listed incremental listed03
+ 122: listed04.at:26     --listed-incremental and --one-file-system
+      listed incremental listed04
+ 123: listed05.at:33     --listed-incremental and remounted directories
+      listed incremental listed05 chdir
+ 124: incr03.at:28       renamed files in incrementals
+      incremental incr03 rename
+ 125: incr04.at:29       proper icontents initialization
+      incremental incr04 icontents
+ 126: incr05.at:21       incremental dumps with -C
+      incremental incr05 chdir
+ 127: incr06.at:21       incremental dumps of nested directories
+      incremental incr06 chdir
+ 128: incr07.at:18       incremental restores with -C
+      incremental extract incr07 chdir
+ 129: incr08.at:38       filename normalization
+      incremental create incr08 chdir
+ 130: incr09.at:26       incremental with alternating -C
+      incremental create incr09 chdir
+ 131: incr10.at:18       concatenated incremental archives (deletes)
+      incremental concat cat incr10 chdir
+ 132: incr11.at:25       concatenated incremental archives (renames)
+      incremental concat cat incr11 chdir
+ 133: filerem01.at:36    file removed as we read it
+      create incremental listed filechange filerem filerem01
+ 134: filerem02.at:26    toplevel file removed
+      create incremental listed filechange filerem filerem02
+ 135: dirrem01.at:38     directory removed before reading
+      create incremental listed dirchange dirrem dirrem01
+ 136: dirrem02.at:31     explicitly named directory removed before reading
+      create incremental listed dirchange dirrem dirrem02
+ 137: rename01.at:24     renamed dirs in incrementals
+      incremental rename rename01
+ 138: rename02.at:24     move between hierarchies
+      incremental rename rename02
+ 139: rename03.at:23     cyclic renames
+      incremental rename rename03 cyclic-rename
+ 140: rename04.at:27     renamed directory containing subdirectories
+      incremental rename04 rename
+ 141: rename05.at:24     renamed subdirectories
+      incremental rename05 rename
+ 142: rename06.at:19     chained renames
+      incremental rename06 rename
+ 143: chtype.at:27       changed file types in incrementals
+      incremental listed chtype
+ 144: ignfail.at:23      ignfail
+      ignfail
+ 145: link01.at:33       link count gt 2
+      hardlinks link01
+ 146: link02.at:32       preserve hard links with --remove-files
+      hardlinks link02
+ 147: link03.at:24       working -l with --remove-files
+      hardlinks link03
+ 148: link04.at:29       link count is 1 but multiple occurrences
+      hardlinks link04
+ 149: longv7.at:24       long names in V7 archives
+      longname longv7
+ 150: long01.at:28       long file names divisible by block size
+      longname long512
+ 151: lustar01.at:21     ustar: unsplittable file name
+      longname ustar lustar01
+ 152: lustar02.at:21     ustar: unsplittable path name
+      longname ustar lustar02
+ 153: lustar03.at:21     ustar: splitting long names
+      longname ustar lustar03
+ 154: old.at:23          old archives
+      old
+ 155: time01.at:20       time: tricky time stamps
+      time time01
+ 156: time02.at:20       time: clamping mtime
+      time time02
+ 157: multiv01.at:23     multivolume dumps from pipes
+      multivolume multiv multiv01 chdir
+ 158: multiv02.at:28     skipping a straddling member
+      multivolume multiv multiv02
+ 159: multiv03.at:30     MV archive & long filenames
+      multivolume multiv multiv03
+ 160: multiv04.at:36     split directory members in a MV archive
+      multivolume multiv incremental listed multiv04
+ 161: multiv05.at:26     Restoring after an out of sync volume
+      multivolume multiv multiv05 sync
+ 162: multiv06.at:27     Multivolumes with L=record_size
+      multivolume multiv multiv06
+ 163: multiv07.at:28     volumes split at an extended header
+      multivolume multiv multiv07 xsplit
+ 164: multiv08.at:25     multivolume header creation
+      multivolume multiv multiv08
+ 165: multiv09.at:26     bad next volume
+      multivolume multiv multiv09
+ 166: multiv10.at:37     file start at the beginning of a posix volume
+      multivolume multiv multiv10
+ 167: owner.at:21        --owner and --group
+      owner
+ 168: map.at:21          --owner-map and --group-map
+      owner map
+ 169: sparse01.at:21     sparse files
+      sparse sparse01
+ 170: sparse02.at:21     extracting sparse file over a pipe
+      sparse sparse02
+ 171: sparse03.at:21     storing sparse files > 8G
+      sparse sparse03 largefile
+ 172: sparse04.at:21     storing long sparse file names
+      sparse sparse04
+ 173: sparse05.at:21     listing sparse files bigger than 2^33 B
+      sparse sparse05 largefile
+ 174: sparse06.at:21     storing sparse file using seek method
+      sparse sparse06 chdir
+ 175: sparse07.at:21     sparse files with unicode names
+      sparse sparse07 unicode
+ 176: sparsemv.at:21     sparse files in MV archives
+      sparse multiv sparsemv
+ 177: spmvp00.at:21      sparse files in PAX MV archives, v.0.0
+      sparse multivolume multiv sparsemvp sparsemvp00
+ 178: spmvp01.at:21      sparse files in PAX MV archives, v.0.1
+      sparse multiv sparsemvp sparsemvp01
+ 179: spmvp10.at:21      sparse files in PAX MV archives, v.1.0
+      sparse multivolume multiv sparsemvp sparsemvp10
+ 180: sptrcreat.at:33    sparse file truncated while archiving
+      truncate filechange sparse sptr sptrcreat
+ 181: sptrdiff00.at:26   file truncated in sparse region while comparing
+      truncate filechange sparse sptr sptrdiff diff
+ 182: sptrdiff01.at:26   file truncated in data region while comparing
+      truncate filechange sparse sptr sptrdiff diff
+ 183: update.at:28       update unchanged directories
+      update update00
+ 184: update01.at:29     update directories
+      update update01
+ 185: update02.at:26     update changed files
+      update update02
+ 186: update03.at:20     update with chdir
+      update update03 chdir
+ 187: update04.at:20     update with wildcards
+      update update04 wildcards
+ 188: verify.at:25       verify
+      verify
+ 189: volume.at:23       volume
+      volume volcheck
+ 190: volsize.at:29      volume header size
+      volume volsize
+ 191: comprec.at:21      compressed format recognition
+      comprec
+ 192: shortfile.at:26    short input files
+      shortfile shortfile0
+ 193: shortupd.at:31     updating short archives
+      shortfile shortfile1 shortupd
+ 194: truncate.at:29     truncate
+      truncate filechange
+ 195: grow.at:24         grow
+      grow filechange
+ 196: sigpipe.at:21      sigpipe handling
+      sigpipe
+ 197: comperr.at:18      compressor program failure
+      compress comperr
+ 198: remfiles01.at:28   remove-files with compression
+      create remove-files remfiles01 gzip
+ 199: remfiles02.at:28   remove-files with compression: grand-child
+      create remove-files remfiles02 gzip
+ 200: remfiles03.at:28   remove-files with symbolic links
+      create remove-files remfiles03
+ 201: remfiles04a.at:25  remove-files with -C:rel in -c/non-incr. mode
+      create remove-files remfiles04 remfiles04a chdir
+ 202: remfiles04b.at:33  remove-files with -C:rel in -c/incr. mode
+      create incremental remove-files remfiles04 remfiles04b chdir
+ 203: remfiles04c.at:33  remove-files with -C:rel in -r mode
+      create append remove-files remfiles04 remfiles04c chdir
+ 204: remfiles05a.at:34  remove-files with -C:rel,rel in -c/non-incr. mode
+      create remove-files remfiles05 remfiles05a chdir
+ 205: remfiles05b.at:25  remove-files with -C:rel,rel in -c/incr. mode
+      create incremental remove-files remfiles05 remfiles05b chdir
+ 206: remfiles05c.at:25  remove-files with -C:rel,rel in -r mode
+      create append remove-files remfiles05 remfiles05c chdir
+ 207: remfiles06a.at:25  remove-files with -C:rel,abs in -c/non-incr. mode
+      create remove-files remfiles06 remfiles06a chdir
+ 208: remfiles06b.at:25  remove-files with -C:rel,abs in -c/incr. mode
+      create incremental remove-files remfiles06 remfiles06b chdir
+ 209: remfiles06c.at:25  remove-files with -C:rel,abs in -r mode
+      create append remove-files remfiles06 remfiles06c chdir
+ 210: remfiles07a.at:25  remove-files with -C:abs,rel in -c/non-incr. mode
+      create remove-files remfiles07 remfiles07a chdir
+ 211: remfiles07b.at:25  remove-files with -C:abs,rel in -c/incr. mode
+      create incremental remove-files remfiles07 remfiles07b chdir
+ 212: remfiles07c.at:25  remove-files with -C:abs,rel in -r mode
+      create append remove-files remfiles07 remfiles07c chdir
+ 213: remfiles08a.at:28  remove-files deleting two subdirs in -c/non-incr. mode
+      create remove-files remfiles08 remfiles08a chdir
+ 214: remfiles08b.at:31  remove-files deleting two subdirs in -c/incr. mode
+      create incremental remove-files remfiles08 remfiles08b chdir
+ 215: remfiles08c.at:28  remove-files deleting two subdirs in -r mode
+      create append remove-files remfiles08 remfiles08c chdir
+ 216: remfiles09a.at:25  remove-files on full directory in -c/non-incr. mode
+      create remove-files remfiles09 remfiles09a
+ 217: remfiles09b.at:29  remove-files on full directory in -c/incr. mode
+      create incremental remove-files remfiles09 remfiles09b
+ 218: remfiles09c.at:25  remove-files on full directory in -r mode
+      create append remove-files remfiles09 remfiles09c
+ 219: remfiles10.at:20   remove-files
+      create remove-files remfiles10
+ 220: xattr01.at:25      xattrs: basic functionality
+      xattrs xattr01
+ 221: xattr02.at:25      xattrs: change directory with -C option
+      xattrs xattr02 chdir
+ 222: xattr03.at:25      xattrs: trusted.* attributes
+      xattrs xattr03 chdir
+ 223: xattr04.at:26      xattrs: s/open/openat/ regression
+      xattrs xattr04 chdir
+ 224: xattr05.at:28      xattrs: keywords with '=' and '%'
+      xattrs xattr05 chdir
+ 225: xattr06.at:27      xattrs: exclude xattrs on create 
+      xattrs xattr06
+ 226: xattr07.at:26      xattrs: xattrs and --skip-old-files
+      xattrs xattr07
+ 227: xattr08.at:26      xattrs: xattrs and read-only files
+      xattrs xattr08
+ 228: acls01.at:25       acls: basic functionality
+      xattrs acls acls01
+ 229: acls02.at:25       acls: work with -C
+      xattrs acls acls02 chdir
+ 230: acls03.at:30       acls: default ACLs
+      xattrs acls acls03 chdir
+ 231: selnx01.at:25      selinux: basic store/restore
+      xattrs selinux selnx01
+ 232: selacl01.at:25     acls/selinux: special files & fifos
+      xattrs selinux acls selacls01
+ 233: capabs_raw01.at:25 capabilities: binary store/restore
+      xattrs capabilities capabs_raw01
+ 234: onetop01.at:21     tar --one-top-level
+      extract onetop onetop01
+ 235: onetop02.at:21     tar --one-top-level --show-transformed
+      extract onetop onetop02
+ 236: onetop03.at:21     tar --one-top-level --transform
+      extract onetop onetop03
+ 237: onetop04.at:21     tar --one-top-level --transform
+      extract onetop onetop04
+ 238: onetop05.at:21     tar --one-top-level restoring permissions
+      extract onetop onetop05 chdir
+ 239: gtarfail.at:21     gtarfail
+      star gtarfail
+ 240: gtarfail2.at:21    gtarfail2
+      star gtarfail2
+ 241: multi-fail.at:21   multi-fail
+      star multivolume multiv multi-fail
+ 242: ustar-big-2g.at:21 ustar-big-2g
+      star ustar-big-2g largefile
+ 243: ustar-big-8g.at:21 ustar-big-8g
+      star ustar-big-8g largefile
+ 244: pax-big-10g.at:21  pax-big-10g
+      star pax-big-10g largefile

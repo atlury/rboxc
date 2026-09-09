@@ -97,20 +97,6 @@ selections.update({
     'backup01': (109, 'backup01.at'), 'difflink': (110, 'difflink.at'),
     'old': (154, 'old.at'), 'verify': (188, 'verify.at'),
 })
-selections.update({
-    'incremental': (116, 'incremental.at'), 'incr01': (117, 'incr01.at'),
-    'incr02': (118, 'incr02.at'), 'listed01': (119, 'listed01.at'),
-    'listed02': (120, 'listed02.at'), 'listed03': (121, 'listed03.at'),
-    'listed04': (122, 'listed04.at'), 'incr03': (124, 'incr03.at'),
-    'incr05': (126, 'incr05.at'), 'incr06': (127, 'incr06.at'),
-    'incr07': (128, 'incr07.at'), 'incr08': (129, 'incr08.at'),
-    'incr09': (130, 'incr09.at'), 'incr10': (131, 'incr10.at'),
-    'incr11': (132, 'incr11.at'), 'rename01': (137, 'rename01.at'),
-    'rename02': (138, 'rename02.at'), 'rename03': (139, 'rename03.at'),
-    'rename04': (140, 'rename04.at'), 'rename05': (141, 'rename05.at'),
-    'rename06': (142, 'rename06.at'),
-})
-permission_selections['listed03'] = selections['listed03']
 selected = profile.options.commands or list(selections)
 assert set(selected) <= set(selections)
 helpers = {n: ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','mkdir','chmod','touch','sort','echo','basename','cp','ln','true','false','sleep','ls','mv','mktemp','cut','id','date','printf','dd','rmdir','expr','tr','wc','head','tail','uname','cksum')}
@@ -118,12 +104,10 @@ helpers.update({n: ROOT/'build/gnu-diffutils/src'/n for n in ('cmp', 'diff')})
 helpers['sed'] = ROOT/'build/gnu-sed/sed/sed'
 helpers['grep'] = ROOT/'build/gnu-grep/src/grep'
 helpers['genfile'] = ROOT/'build/gnu-tar/tests/genfile'
-helpers['ckmtime'] = ROOT/'build/gnu-tar/tests/ckmtime'
-helpers['checkseekhole'] = ROOT/'build/gnu-tar/tests/checkseekhole'
 helpers['find'] = ROOT/'build/gnu-findutils/find/find'
 inputs = {p: fingerprint(p) for p in {*helpers.values(), profile.oracle, source/'tests/testsuite', source/'tests/testsuite.at',
     ROOT/'build/gnu-tar/tests/atconfig', ROOT/'build/gnu-tar/tests/atlocal', Path('/bin/bash'), Path('/bin/sh').resolve(), Path('/usr/bin/awk').resolve(), Path(__file__)}}
-for filename in ('genfile.c', 'argcv.c', 'argcv.h', 'ckmtime.c', 'checkseekhole.c', 'Makefile.am'):
+for filename in ('genfile.c', 'argcv.c', 'argcv.h', 'Makefile.am'):
     path = source/'tests'/filename
     inputs[path] = fingerprint(path)
 manifest = json.loads((ROOT/'inventory/tar-tests.json').read_text())
@@ -213,7 +197,7 @@ def run_selection(name):
                     shutil.copytree(work/'testsuite.dir', saved/'suite', symlinks=True)
                 shutil.copytree(work/'memory', saved/'memory')
                 output = done.stdout.decode(errors='replace')
-                assertions = re.findall(r'^\s*(\d+):\s+.*?\s+(ok|FAILED|skipped|expected failure)(?: \([^\n]*\))?\s*$', output, re.M)
+                assertions = re.findall(r'^\s*(\d+):\s+.*?\s+(ok|FAILED|skipped|expected failure)\s*$', output, re.M)
                 passed = done.returncode == 0 and assertions == [(str(number), 'ok')]
                 logs = [{**runner.parse_memory_log(p.read_text(), p.stem, exec_only=True), 'log': str(p.relative_to(ROOT)), 'sha256': fingerprint(p)} for p in sorted((saved/'memory').glob('*.log'))]
                 clean = bool(logs) and all(m['complete_exec_log'] and m['errors'] == 0 and m['non_inherited_descriptors'] == 0 and not any(m['heap_bytes'].get(k, 0) for k in ('definitely lost','indirectly lost','possibly lost')) for m in logs)

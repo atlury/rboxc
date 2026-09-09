@@ -118,12 +118,10 @@ helpers.update({n: ROOT/'build/gnu-diffutils/src'/n for n in ('cmp', 'diff')})
 helpers['sed'] = ROOT/'build/gnu-sed/sed/sed'
 helpers['grep'] = ROOT/'build/gnu-grep/src/grep'
 helpers['genfile'] = ROOT/'build/gnu-tar/tests/genfile'
-helpers['ckmtime'] = ROOT/'build/gnu-tar/tests/ckmtime'
-helpers['checkseekhole'] = ROOT/'build/gnu-tar/tests/checkseekhole'
 helpers['find'] = ROOT/'build/gnu-findutils/find/find'
 inputs = {p: fingerprint(p) for p in {*helpers.values(), profile.oracle, source/'tests/testsuite', source/'tests/testsuite.at',
     ROOT/'build/gnu-tar/tests/atconfig', ROOT/'build/gnu-tar/tests/atlocal', Path('/bin/bash'), Path('/bin/sh').resolve(), Path('/usr/bin/awk').resolve(), Path(__file__)}}
-for filename in ('genfile.c', 'argcv.c', 'argcv.h', 'ckmtime.c', 'checkseekhole.c', 'Makefile.am'):
+for filename in ('genfile.c', 'argcv.c', 'argcv.h', 'Makefile.am'):
     path = source/'tests'/filename
     inputs[path] = fingerprint(path)
 manifest = json.loads((ROOT/'inventory/tar-tests.json').read_text())
@@ -213,7 +211,7 @@ def run_selection(name):
                     shutil.copytree(work/'testsuite.dir', saved/'suite', symlinks=True)
                 shutil.copytree(work/'memory', saved/'memory')
                 output = done.stdout.decode(errors='replace')
-                assertions = re.findall(r'^\s*(\d+):\s+.*?\s+(ok|FAILED|skipped|expected failure)(?: \([^\n]*\))?\s*$', output, re.M)
+                assertions = re.findall(r'^\s*(\d+):\s+.*?\s+(ok|FAILED|skipped|expected failure)\s*$', output, re.M)
                 passed = done.returncode == 0 and assertions == [(str(number), 'ok')]
                 logs = [{**runner.parse_memory_log(p.read_text(), p.stem, exec_only=True), 'log': str(p.relative_to(ROOT)), 'sha256': fingerprint(p)} for p in sorted((saved/'memory').glob('*.log'))]
                 clean = bool(logs) and all(m['complete_exec_log'] and m['errors'] == 0 and m['non_inherited_descriptors'] == 0 and not any(m['heap_bytes'].get(k, 0) for k in ('definitely lost','indirectly lost','possibly lost')) for m in logs)
