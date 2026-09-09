@@ -78,7 +78,7 @@ there where available.
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; original interface and local hostname tests pass with clean Valgrind; original Inetd reloads pass, with signal-exit resources recorded; other service profiles remain open |
-| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 53 original recipes (54 scripts) pass on their recorded candidates with 12765 clean process logs; six memory/signal profiles and seven instrumentation/environment baselines remain open |
+| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 54 original recipes (55 scripts) pass on their recorded candidates with 13185 clean process logs; six memory/signal profiles and seven instrumentation/environment baselines remain open |
 | Less | 704 | Ten focused checks, one production terminal check and all 18 original screen replays pass across declared profiles |
 | Screen | 5.0.2 | All three original targets pass across declared profiles; daemon cleanup and socket recovery pass Valgrind |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
@@ -2884,3 +2884,17 @@ and 10,000 numbered lines for `tac`.
 [evidence/coreutils-finite-pipe-exit-validation.json](evidence/coreutils-finite-pipe-exit-validation.json)
 verifies all six comparisons on the Inetd cleanup candidate. These supplemental
 checks change no production signal handling or original-suite pass counts.
+
+Bash's complete `run-dollars` recipe now passes on the Inetd cleanup candidate:
+`dollar-at-star` and all **29 unchanged child scripts** match GNU's complete
+expected output normally and under Valgrind. The recipe covers quoted and
+unquoted positional/array expansions, IFS, assignments, substring operations
+and empty parameters. All **420 candidate process logs are clean**; GNU's
+original `recho` helper is shared and is not counted as a port.
+[evidence/bash-dollars-validation.json](evidence/bash-dollars-validation.json)
+verifies every child, original output, source hash and process log.
+[evidence/bash-dollars-coverage.json](evidence/bash-dollars-coverage.json)
+now records 54 strict recipes (55 scripts), 13,185 clean candidate logs,
+six memory/signal profiles, seven assertion baselines, 16 recipes pending review,
+three held mixed-input recipes and two orchestration recipes. Full Bash
+acceptance remains open.
