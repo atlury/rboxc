@@ -1,0 +1,3861 @@
+{
+  "runtime_helpers": {
+    "/root/rboxc/target/bash-trap-restart-owners-candidate/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174",
+    "/root/rboxc/build/gnu-coreutils/src/libstdbuf.so": "ab0f38c3557ced06f914416c765a68c1ebf00c6cdacbe24c9ab9ec60e49a6ea4"
+  },
+  "binary": "/root/rboxc/target/bash-trap-restart-owners-candidate/release/rboxc",
+  "binary_sha256": "77f4bca348caa1661f6ddf6a569b54892a40938dc23e68eba2cdafce34dd04a6",
+  "gnu_binary_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+  "inputs": {
+    "/root/rboxc/build/gnu-bash/bash": "bd47035bca2886f8d61f564ae38ca9c807a8b0b98e914d28f909fb7b1bb1366f",
+    "/root/rboxc/target/bash-trap-restart-owners-candidate/release/rboxc": "77f4bca348caa1661f6ddf6a569b54892a40938dc23e68eba2cdafce34dd04a6",
+    "/root/rboxc/tests/bash-trap-state-contract.py": "80761116d9b332387c53775d3289fd9bae05e8e0011cb6f66154ba69b88b2ed2"
+  },
+  "scope": "Eight bounded cases through four shell aliases compare native GNU and Rboxc: ordinary self-directed USR1, restart from USR1, return from USR1/INT within a function, and DEBUG/ERR/RETURN/INT handlers that reset themselves before executing a private plain script. All candidate process summaries must be complete and clean; native findings are preserved.",
+  "complete": true,
+  "planned_total": 32,
+  "passed": 28,
+  "total": 32,
+  "results": [
+    {
+      "name": "bash:user-signal-normal",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap 'printf signal\\n' USR1; kill -s USR1 $$; printf 'after:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/0-gnu-valgrind/process-765720.log",
+              "sha256": "de3dbf96d43baef7e983084a7139a94a717fe946d6840b1bb7c2f4e045c78016",
+              "pid": "765720",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47281
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/0-rboxc-valgrind/process-765725.log",
+              "sha256": "7a2fb745a74bd93ca8869bbadb338086a20398751af36dfdff42baa8f66fae1c",
+              "pid": "765725",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47817
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:user-signal-restart",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap 'exec ./plain user-signal' USR1; kill -s USR1 $$; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/1-gnu-valgrind/process-765750.log",
+              "sha256": "1332c3a4ce8871dac6a72406b6e17daecd9113b1ecebc74804eae0847f1d8b4c",
+              "pid": "765750",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3717,
+                "indirectly lost": 19642,
+                "possibly lost": 74,
+                "still reachable": 48541
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/1-rboxc-valgrind/process-765755.log",
+              "sha256": "e7d862927d525a07efba2bd4dc3dac305cc3338d7d650fdbe78580e1b1cdee0e",
+              "pid": "765755",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48748
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:user-signal-return",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap 'return 7' USR1; f(){ kill -s USR1 $$; printf unreachable; }; f; printf 'returned:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/2-gnu-valgrind/process-765968.log",
+              "sha256": "6b60ed982c0c0e2b131664d96c49a88f60162fa741c6466ba0048d779ffd0397",
+              "pid": "765968",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 32,
+                "indirectly lost": 66,
+                "possibly lost": 0,
+                "still reachable": 49569
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/2-rboxc-valgrind/process-765976.log",
+              "sha256": "77d8f5f28a4a16de1f00139243c63feb10e83c011247e74172196a5093a4930d",
+              "pid": "765976",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50345
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:interrupt-return",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap 'return 9' INT; f(){ kill -s INT $$; printf unreachable; }; f; printf 'returned:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": false,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/3-gnu-valgrind/process-765985.log",
+              "sha256": "fe36bf3973295a6ed5bcb00409164d93838a650d6853ff38fd0a1a203959751a",
+              "pid": "765985",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 32,
+                "indirectly lost": 66,
+                "possibly lost": 0,
+                "still reachable": 49672
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/3-rboxc-valgrind/process-765993.log",
+              "sha256": "b37de61689a299460ab9adb5177821fcc85d0f0ea3679e15cfacb0f11971d5e1",
+              "pid": "765993",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 120,
+                "indirectly lost": 234,
+                "possibly lost": 0,
+                "still reachable": 50525
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:debug-reset-restart",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap 'trap - DEBUG; exec ./plain reset-debug' DEBUG; :"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/4-gnu-valgrind/process-766015.log",
+              "sha256": "bf4bcd70da4b3a5b60853ed188e16d5a761946fe9e6fd1021b1daa3c55526bfe",
+              "pid": "766015",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3731,
+                "indirectly lost": 19685,
+                "possibly lost": 55,
+                "still reachable": 48508
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/4-rboxc-valgrind/process-766033.log",
+              "sha256": "0d0b34076ea40776d09867f7093a71784570e884aa013d5e24fc639211bf0c63",
+              "pid": "766033",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48715
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:error-reset-restart",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap 'trap - ERR; exec ./plain reset-error' ERR; false"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/5-gnu-valgrind/process-766055.log",
+              "sha256": "5328edde8e5c36514a598e79de986ed67624defbe6a52adf0d0d29f176c8fdee",
+              "pid": "766055",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3729,
+                "indirectly lost": 19625,
+                "possibly lost": 55,
+                "still reachable": 48512
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/5-rboxc-valgrind/process-766073.log",
+              "sha256": "8dd2d2a7c7fc45ad4d7a0d87708a0a9cad8a6cd20e0e5b1b00ef0e0c424c87b9",
+              "pid": "766073",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48719
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:return-reset-restart",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -T; trap 'trap - RETURN; exec ./plain reset-return' RETURN; f(){ :; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/6-gnu-valgrind/process-766095.log",
+              "sha256": "878bf4b6dc2066eb4846a76da45655cc1a0d4dfb95c0f4817ddadc446f7639e9",
+              "pid": "766095",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 12,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3692,
+                "indirectly lost": 21310,
+                "possibly lost": 77,
+                "still reachable": 49021
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/6-rboxc-valgrind/process-766114.log",
+              "sha256": "4d3ae7dd4d8ff6f1208d56ce04210b6194f1937a618aec77f22fe2f8e054fbf6",
+              "pid": "766114",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49187
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:interrupt-reset-restart",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap 'trap - INT; exec ./plain reset-interrupt' INT; kill -s INT $$"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/7-gnu-valgrind/process-766139.log",
+              "sha256": "5f09ee008abacc85c109b6ee9977f249294721a57a4fb2e4501bf6b392c44739",
+              "pid": "766139",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 15,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3767,
+                "indirectly lost": 19785,
+                "possibly lost": 68,
+                "still reachable": 48546
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/7-rboxc-valgrind/process-766157.log",
+              "sha256": "2c651a1385ac7b76ad7348b942712946bd7fc21d95c3425117a7dbe71bf2556f",
+              "pid": "766157",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48753
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:user-signal-normal",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap 'printf signal\\n' USR1; kill -s USR1 $$; printf 'after:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/8-gnu-valgrind/process-766181.log",
+              "sha256": "3f9d93542e763bbd46ea8af4f88b551361a7bc9d3731075b7f93181093690c86",
+              "pid": "766181",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47397
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/8-rboxc-valgrind/process-766202.log",
+              "sha256": "64e82c1561329fbb42f90d95af236f8365275bef625e7cc022907458d1407e01",
+              "pid": "766202",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47933
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:user-signal-restart",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap 'exec ./plain user-signal' USR1; kill -s USR1 $$; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/9-gnu-valgrind/process-766261.log",
+              "sha256": "055f6ef26d71eae739ad4ec3ebec6af34fe54a7a8875cfa0d5fb3f1fd0f111c0",
+              "pid": "766261",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3717,
+                "indirectly lost": 19642,
+                "possibly lost": 74,
+                "still reachable": 48667
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/9-rboxc-valgrind/process-766276.log",
+              "sha256": "475fe30e90f389b5a9fac1bf587a95316a1ba1c2b17dcba343e3180ea7f9856a",
+              "pid": "766276",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48874
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:user-signal-return",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap 'return 7' USR1; f(){ kill -s USR1 $$; printf unreachable; }; f; printf 'returned:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/10-gnu-valgrind/process-766281.log",
+              "sha256": "b537892b7b889b9d50f751f3e7688c07e52339210746eb5c3bcc2444db513da0",
+              "pid": "766281",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 32,
+                "indirectly lost": 66,
+                "possibly lost": 0,
+                "still reachable": 49683
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/10-rboxc-valgrind/process-766287.log",
+              "sha256": "f0c82b404e7475b9b2ed7d439f031202134c2416d6f6969af817767e4e919766",
+              "pid": "766287",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50459
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:interrupt-return",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap 'return 9' INT; f(){ kill -s INT $$; printf unreachable; }; f; printf 'returned:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": false,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/11-gnu-valgrind/process-766498.log",
+              "sha256": "56ae3f13e6dc81e6468b3caa34ddf2c3208f04e7111fb5317698773e3c944aab",
+              "pid": "766498",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 32,
+                "indirectly lost": 66,
+                "possibly lost": 0,
+                "still reachable": 49786
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/11-rboxc-valgrind/process-766505.log",
+              "sha256": "2c3130de6bd9dec823694d94045d770159d41a176a39f828c5f843cdf48c3c2b",
+              "pid": "766505",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 120,
+                "indirectly lost": 234,
+                "possibly lost": 0,
+                "still reachable": 50639
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:debug-reset-restart",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap 'trap - DEBUG; exec ./plain reset-debug' DEBUG; :"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/12-gnu-valgrind/process-766513.log",
+              "sha256": "23a896a1d3b81e90d8d3bdde4d13471542bcaf3d920d17d87a59b34fb0db9ee7",
+              "pid": "766513",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3731,
+                "indirectly lost": 19685,
+                "possibly lost": 55,
+                "still reachable": 48634
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/12-rboxc-valgrind/process-766538.log",
+              "sha256": "9a71ee45c9ccd0b22301afa4d518a64e10507cb402bb564513c083f264b19d80",
+              "pid": "766538",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48841
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:error-reset-restart",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap 'trap - ERR; exec ./plain reset-error' ERR; false"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/13-gnu-valgrind/process-766555.log",
+              "sha256": "6ae7aa72fac51f884e6e5d2429e552d37df4757db6bef0286e1d75e08f19343a",
+              "pid": "766555",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3729,
+                "indirectly lost": 19625,
+                "possibly lost": 55,
+                "still reachable": 48638
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/13-rboxc-valgrind/process-766568.log",
+              "sha256": "7b68c8f8c7af93d498582177c245f4ede9387ba49a3ecbf352cdebc082e9fed4",
+              "pid": "766568",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48845
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:return-reset-restart",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -T; trap 'trap - RETURN; exec ./plain reset-return' RETURN; f(){ :; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/14-gnu-valgrind/process-766584.log",
+              "sha256": "7a3f99bd89b944ea893d6956143c992bc18bce7c2004569107ae99f59c4b0b35",
+              "pid": "766584",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 12,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3692,
+                "indirectly lost": 21308,
+                "possibly lost": 77,
+                "still reachable": 49145
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/14-rboxc-valgrind/process-766597.log",
+              "sha256": "c90fa25af2a62e0b8d901b12c5ff5a98563df35a8632e3e8b655699bcdb45d67",
+              "pid": "766597",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49311
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:interrupt-reset-restart",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap 'trap - INT; exec ./plain reset-interrupt' INT; kill -s INT $$"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/15-gnu-valgrind/process-766614.log",
+              "sha256": "d9bcee8260574fdd6ede10fde7d26bd2c3baecadbe4cbb899a58c450a6a92c29",
+              "pid": "766614",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 15,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3767,
+                "indirectly lost": 19785,
+                "possibly lost": 68,
+                "still reachable": 48672
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/15-rboxc-valgrind/process-766627.log",
+              "sha256": "259d9a14802a60bc62917b02d6a60f58c245e7ed1bc149041173bb9f6e321ddf",
+              "pid": "766627",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48879
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:user-signal-normal",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap 'printf signal\\n' USR1; kill -s USR1 $$; printf 'after:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/16-gnu-valgrind/process-766644.log",
+              "sha256": "4c468a2a9920b16f3ac8fdd669b91b6c30a3dfe2fa451200a897f4c7f9e2afa3",
+              "pid": "766644",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47283
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/16-rboxc-valgrind/process-766657.log",
+              "sha256": "bef5ad4adbf89be171121a04d7096077df507cc9a4ce4a497a365bceeb92f652",
+              "pid": "766657",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47819
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:user-signal-restart",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap 'exec ./plain user-signal' USR1; kill -s USR1 $$; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/17-gnu-valgrind/process-766674.log",
+              "sha256": "0e55ee0cf94122b444fa947cbbae41f643655f622b08e31e93b26991cd385b7f",
+              "pid": "766674",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3717,
+                "indirectly lost": 19642,
+                "possibly lost": 74,
+                "still reachable": 48542
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/17-rboxc-valgrind/process-766687.log",
+              "sha256": "396a07b0abe2da86eedb4bfc0884b7039e355baf086f95b36e5b37f3a94fc23f",
+              "pid": "766687",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48749
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:user-signal-return",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap 'return 7' USR1; f(){ kill -s USR1 $$; printf unreachable; }; f; printf 'returned:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/18-gnu-valgrind/process-766705.log",
+              "sha256": "ba3409d7f0fc8e03eb18e6cbd728e95427280609c2417705e739c27e42f31229",
+              "pid": "766705",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 32,
+                "indirectly lost": 66,
+                "possibly lost": 0,
+                "still reachable": 49572
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/18-rboxc-valgrind/process-766718.log",
+              "sha256": "c2d5d6d2a7fec93ba3526c1356d43caa393d46c05a618922577f4cb2c4bc6080",
+              "pid": "766718",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50348
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:interrupt-return",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap 'return 9' INT; f(){ kill -s INT $$; printf unreachable; }; f; printf 'returned:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": false,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/19-gnu-valgrind/process-766742.log",
+              "sha256": "ed4e0f82330a645b4fe4224a122508aecf34a35e49806c56f28acc20449478e8",
+              "pid": "766742",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 32,
+                "indirectly lost": 66,
+                "possibly lost": 0,
+                "still reachable": 49675
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/19-rboxc-valgrind/process-766772.log",
+              "sha256": "22aaad471c9203e7c7ae872bf590fe427e2b7cc0bdefdea51f7cb7ff51ca7a07",
+              "pid": "766772",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 120,
+                "indirectly lost": 234,
+                "possibly lost": 0,
+                "still reachable": 50528
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:debug-reset-restart",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap 'trap - DEBUG; exec ./plain reset-debug' DEBUG; :"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/20-gnu-valgrind/process-766784.log",
+              "sha256": "a343c9f489d23853c56a6c9c269d64b8042daca342902104b6b834ca75168112",
+              "pid": "766784",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3731,
+                "indirectly lost": 19685,
+                "possibly lost": 55,
+                "still reachable": 48509
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/20-rboxc-valgrind/process-766786.log",
+              "sha256": "7a8b4e84e50c276c92070097b79639895cd8b2364e41509af02e0863c3bc5b69",
+              "pid": "766786",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48716
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:error-reset-restart",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap 'trap - ERR; exec ./plain reset-error' ERR; false"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/21-gnu-valgrind/process-766788.log",
+              "sha256": "616e9fdc3cb14088e42c5c8bac9ac7a843e9584c5877b97d24b275288f4f7ee1",
+              "pid": "766788",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3729,
+                "indirectly lost": 19625,
+                "possibly lost": 55,
+                "still reachable": 48513
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/21-rboxc-valgrind/process-766790.log",
+              "sha256": "7354c925994d6505df8e4308aad21d863ef6508cacdd07cc788f6613d476de5d",
+              "pid": "766790",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48720
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:return-reset-restart",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -T; trap 'trap - RETURN; exec ./plain reset-return' RETURN; f(){ :; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/22-gnu-valgrind/process-766796.log",
+              "sha256": "8fcfc6bd9f3c7a28e6e6822f23e39e5f775b836d713d1e77d871d7bce8be32de",
+              "pid": "766796",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 12,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3692,
+                "indirectly lost": 21311,
+                "possibly lost": 77,
+                "still reachable": 49023
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/22-rboxc-valgrind/process-766799.log",
+              "sha256": "7e8dcb563e1e5dbbdcab6e94834169f1e4626c54d63b9024f4dfc747bfbc258b",
+              "pid": "766799",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49189
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:interrupt-reset-restart",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap 'trap - INT; exec ./plain reset-interrupt' INT; kill -s INT $$"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/23-gnu-valgrind/process-766802.log",
+              "sha256": "5534aa1ec231205763f24a88820d65979a9a6b3a24fb4b488ada56ba9947754f",
+              "pid": "766802",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 15,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3767,
+                "indirectly lost": 19785,
+                "possibly lost": 68,
+                "still reachable": 48547
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/23-rboxc-valgrind/process-766808.log",
+              "sha256": "c951476b9abb8cd519ae6c950c94920183db68e51dc39653527d7a765d91779a",
+              "pid": "766808",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48754
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:user-signal-normal",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap 'printf signal\\n' USR1; kill -s USR1 $$; printf 'after:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/24-gnu-valgrind/process-766811.log",
+              "sha256": "84a895f6a79703c86af6f7bde3c1d1ba96ad4e20dd8c03bb91bd91127f09b7cd",
+              "pid": "766811",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47279
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7369676e616c6e61667465723a300a",
+          "stderr": "",
+          "raw_stdout": "7369676e616c6e61667465723a300a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/24-rboxc-valgrind/process-766814.log",
+              "sha256": "80cc00a22c7ca5d9503e78e260336b80f6fc03a5afe829b9145283c9b86360bb",
+              "pid": "766814",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47815
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:user-signal-restart",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap 'exec ./plain user-signal' USR1; kill -s USR1 $$; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/25-gnu-valgrind/process-766826.log",
+              "sha256": "40412866238860c6640d5ad32d9fe594dc9ca9bf9b05a500b1a260bec69ba0ca",
+              "pid": "766826",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3717,
+                "indirectly lost": 19642,
+                "possibly lost": 74,
+                "still reachable": 48540
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a757365722d7369676e616c0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a757365722d7369676e616c0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/25-rboxc-valgrind/process-766831.log",
+              "sha256": "a0ccc1035b0404a1597b99b0743fc3e0507f399d67a59298d3bdad888182a7db",
+              "pid": "766831",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48747
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:user-signal-return",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap 'return 7' USR1; f(){ kill -s USR1 $$; printf unreachable; }; f; printf 'returned:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/26-gnu-valgrind/process-766837.log",
+              "sha256": "d9b7148981550def002fc86e524b980187531bc1ac9085de9a20d97ae0f8fb72",
+              "pid": "766837",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 32,
+                "indirectly lost": 66,
+                "possibly lost": 0,
+                "still reachable": 49566
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a370a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/26-rboxc-valgrind/process-766840.log",
+              "sha256": "44023fb8da8652bd4bc678aa65f7ea707ea7b6c5cc142d3e33a6d21340540bff",
+              "pid": "766840",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50342
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:interrupt-return",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap 'return 9' INT; f(){ kill -s INT $$; printf unreachable; }; f; printf 'returned:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": false,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/27-gnu-valgrind/process-766852.log",
+              "sha256": "3072eaebcb8fc5bf80ef9c8ad571f04cf056d2504d39ee3d4dab1cedf8ead683",
+              "pid": "766852",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 32,
+                "indirectly lost": 66,
+                "possibly lost": 0,
+                "still reachable": 49669
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657475726e65643a390a",
+          "stderr": "",
+          "raw_stdout": "72657475726e65643a390a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/27-rboxc-valgrind/process-766857.log",
+              "sha256": "00fa63a9af0f2fa93b13dfb37fc925fd8734e2286caf00a5673581771af9ae3d",
+              "pid": "766857",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 6,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 120,
+                "indirectly lost": 234,
+                "possibly lost": 0,
+                "still reachable": 50522
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:debug-reset-restart",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap 'trap - DEBUG; exec ./plain reset-debug' DEBUG; :"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/28-gnu-valgrind/process-766863.log",
+              "sha256": "8dbf08cabe2c1a954bbb013be7da4c8a2ddab9d39fa4c25596eb2d309d255a8a",
+              "pid": "766863",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3731,
+                "indirectly lost": 19685,
+                "possibly lost": 55,
+                "still reachable": 48507
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d64656275670a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/28-rboxc-valgrind/process-766866.log",
+              "sha256": "6a0c9ab9fedb967d16093492a95484d1db886a9d5c7e9caad0ee401ef87db94e",
+              "pid": "766866",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48714
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:error-reset-restart",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap 'trap - ERR; exec ./plain reset-error' ERR; false"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/29-gnu-valgrind/process-766886.log",
+              "sha256": "b8d92bbb6d69a9b3bbca77cba9fefa728883bac237825b5a7e48715a591a61b1",
+              "pid": "766886",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3729,
+                "indirectly lost": 19625,
+                "possibly lost": 55,
+                "still reachable": 48511
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d6572726f720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d6572726f720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/29-rboxc-valgrind/process-766889.log",
+              "sha256": "fdef163665f9b58d24c38b03a8da3978f3cd81bf08bcb3580d6ac207cfb1fe52",
+              "pid": "766889",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48718
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:return-reset-restart",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -T; trap 'trap - RETURN; exec ./plain reset-return' RETURN; f(){ :; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/30-gnu-valgrind/process-766893.log",
+              "sha256": "dd768c5fbe8bb044946f2ab52a6207382b583e1a5388066f43930b380d3853bc",
+              "pid": "766893",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 12,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3692,
+                "indirectly lost": 21309,
+                "possibly lost": 77,
+                "still reachable": 49019
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d72657475726e0a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d72657475726e0a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/30-rboxc-valgrind/process-766896.log",
+              "sha256": "fba52087664d60900f3ed378dd6eb9b66ef37ad6fd9813d1ae275e357fa195e5",
+              "pid": "766896",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49185
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:interrupt-reset-restart",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap 'trap - INT; exec ./plain reset-interrupt' INT; kill -s INT $$"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/31-gnu-valgrind/process-766900.log",
+              "sha256": "0eff179d38882f51848be441b3422438c03b341e95ba3ea04a96775133a4ba5d",
+              "pid": "766900",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 15,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3767,
+                "indirectly lost": 19785,
+                "possibly lost": 68,
+                "still reachable": 48545
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657365742d696e746572727570740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-owners-state/run-69s4l354/31-rboxc-valgrind/process-766905.log",
+              "sha256": "c6a24916d961c6dd450637f7023bb0403ea4115ac319424557d474525e05bddd",
+              "pid": "766905",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48752
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

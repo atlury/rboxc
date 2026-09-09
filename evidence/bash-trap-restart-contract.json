@@ -1,0 +1,3989 @@
+{
+  "runtime_helpers": {
+    "/root/rboxc/target/bash-trap-restart-candidate/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174",
+    "/root/rboxc/build/gnu-coreutils/src/libstdbuf.so": "ab0f38c3557ced06f914416c765a68c1ebf00c6cdacbe24c9ab9ec60e49a6ea4"
+  },
+  "binary": "/root/rboxc/target/bash-trap-restart-candidate/release/rboxc",
+  "binary_sha256": "2033bfbcae48106ef8c2bec39251eef297ed34b104ca95074c80d76e6a2eaf54",
+  "gnu_binary_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+  "inputs": {
+    "/root/rboxc/build/gnu-bash/bash": "bd47035bca2886f8d61f564ae38ca9c807a8b0b98e914d28f909fb7b1bb1366f",
+    "/root/rboxc/target/bash-trap-restart-candidate/release/rboxc": "2033bfbcae48106ef8c2bec39251eef297ed34b104ca95074c80d76e6a2eaf54",
+    "/root/rboxc/tests/bash-return-trap-contract.py": "fa6c6c9f27067fabac035221388ed41bb4690af52f7da6aeeb2b7af5f2258a53"
+  },
+  "scope": "Eight bounded RETURN-trap lifetime cases through four shell aliases compare native GNU with the immutable Rboxc candidate. Includes active replacement/reset, DEBUG callbacks, sourced returns, status preservation, substitution and interpreter restart. Complete parent and child Valgrind summaries are required. Native findings remain baseline observations; this is focused ownership evidence, not full Bash acceptance.",
+  "complete": true,
+  "planned_total": 32,
+  "passed": 32,
+  "total": 32,
+  "results": [
+    {
+      "name": "bash:unchanged",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -T; trap ':' RETURN; f(){ :; }; for ((i=0;i<25;i++)); do f; done; printf 'unchanged\n' "
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "756e6368616e6765640a",
+          "stderr": "",
+          "raw_stdout": "756e6368616e6765640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "756e6368616e6765640a",
+          "stderr": "",
+          "raw_stdout": "756e6368616e6765640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/0-gnu-valgrind/process-763967.log",
+              "sha256": "9f9b936a09d4f8a26fc64a15b5baea98f87d0ff9bccfec177323629d7b3e607b",
+              "pid": "763967",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51302
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "756e6368616e6765640a",
+          "stderr": "",
+          "raw_stdout": "756e6368616e6765640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "756e6368616e6765640a",
+          "stderr": "",
+          "raw_stdout": "756e6368616e6765640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/0-rboxc-valgrind/process-763990.log",
+              "sha256": "ffd28486f3ca49d19bddfbe74a07a0e4ccc94dbf444435666c96b3cec12f8e30",
+              "pid": "763990",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52050
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:debug-functions",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -T; d(){ :; }; r(){ :; }; trap d DEBUG; trap r RETURN; f(){ :; :; }; for ((i=0;i<25;i++)); do f; done; trap - DEBUG RETURN; printf 'debug\n' "
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "64656275670a",
+          "stderr": "",
+          "raw_stdout": "64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "64656275670a",
+          "stderr": "",
+          "raw_stdout": "64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/1-gnu-valgrind/process-764002.log",
+              "sha256": "73e138b7260d67ef2f72a2fe1995e90f6005e5872f7229ba008d7e26f303627f",
+              "pid": "764002",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 100,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52608
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "64656275670a",
+          "stderr": "",
+          "raw_stdout": "64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "64656275670a",
+          "stderr": "",
+          "raw_stdout": "64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/1-rboxc-valgrind/process-764013.log",
+              "sha256": "8cbf20f5e48676035c01d3ded3278af24bc128540d8c00c9d4d397e72029c7fd",
+              "pid": "764013",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53564
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:replace-active",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -T; trap 'trap \"echo next\" RETURN; trap \":\" RETURN; echo first' RETURN; f(){ :; }; f; f; echo done"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "66697273740a646f6e650a",
+          "stderr": "",
+          "raw_stdout": "66697273740a646f6e650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "66697273740a646f6e650a",
+          "stderr": "",
+          "raw_stdout": "66697273740a646f6e650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/2-gnu-valgrind/process-764036.log",
+              "sha256": "857af437d015790f861a3d49b2f755258e855527aa70a57bed97f1d770cec766",
+              "pid": "764036",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 10,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50894
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "66697273740a646f6e650a",
+          "stderr": "",
+          "raw_stdout": "66697273740a646f6e650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "66697273740a646f6e650a",
+          "stderr": "",
+          "raw_stdout": "66697273740a646f6e650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/2-rboxc-valgrind/process-764039.log",
+              "sha256": "1efe631714f9b075238f859b6715216112b8d3c3dbcf0f7be896fd17a444a2fb",
+              "pid": "764039",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52062
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:reset-active",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -T; trap 'trap - RETURN; trap \":\" RETURN; trap - RETURN; echo reset' RETURN; f(){ :; }; f; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657365740a",
+          "stderr": "",
+          "raw_stdout": "72657365740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657365740a",
+          "stderr": "",
+          "raw_stdout": "72657365740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/3-gnu-valgrind/process-764053.log",
+              "sha256": "79b79f772a907e6ce406f6320b537f10b70bce535c05505efccbf9e17b6fb4d0",
+              "pid": "764053",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 2,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50221
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657365740a",
+          "stderr": "",
+          "raw_stdout": "72657365740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657365740a",
+          "stderr": "",
+          "raw_stdout": "72657365740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/3-rboxc-valgrind/process-764061.log",
+              "sha256": "447d79dc8202c99ec933f991298febde9f68df834f76d6d3769b45397d68b824",
+              "pid": "764061",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51109
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:sourced-return",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -T; trap ':' RETURN; d(){ :; }; trap d DEBUG; source ./input one two; printf 'source:%s\n' \"$?\" "
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "stderr": "",
+          "raw_stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "stderr": "",
+          "raw_stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/4-gnu-valgrind/process-764063.log",
+              "sha256": "7176f4cbdb6a97555d7741411a95d42e761893473cc0651767d891ffa92b6ec3",
+              "pid": "764063",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51960
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "stderr": "",
+          "raw_stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "stderr": "",
+          "raw_stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/4-rboxc-valgrind/process-764067.log",
+              "sha256": "94d8566b8a3fbdcb561567aa395c4b615dea43e305d5e1ed92aacc43437e5f27",
+              "pid": "764067",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52904
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:return-status",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -T; trap ':' RETURN; f(){ return 7; }; f; printf 'status:%s\n' \"$?\" "
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/5-gnu-valgrind/process-764071.log",
+              "sha256": "447753dfc9044be31e1c3f3e232668109f9568e54c16ab548d08a288db4ef918",
+              "pid": "764071",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49111
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/5-rboxc-valgrind/process-764089.log",
+              "sha256": "64fcc084f52e8cfe8e2d7fbeabbe9eb3992cf95718aac6cc781077db1f2d9f5e",
+              "pid": "764089",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49855
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:substitution",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -T; trap ':' RETURN; d(){ :; }; trap d DEBUG; f(){ x=$(printf value); printf '%s\n' \"$x\"; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "76616c75650a",
+          "stderr": "",
+          "raw_stdout": "76616c75650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "76616c75650a",
+          "stderr": "",
+          "raw_stdout": "76616c75650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/6-gnu-valgrind/process-764092.log",
+              "sha256": "9288b80c918f91970da844307f9f1bf9ea47fbfe6ec8736fdad415826c95f97b",
+              "pid": "764092",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53139
+              }
+            },
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/6-gnu-valgrind/process-764093.log",
+              "sha256": "db37622e920d2bd84cdd13043bcd84d6822fd5f63b803661fa71c3e174c743fb",
+              "pid": "764093",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 57495
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "76616c75650a",
+          "stderr": "",
+          "raw_stdout": "76616c75650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "76616c75650a",
+          "stderr": "",
+          "raw_stdout": "76616c75650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/6-rboxc-valgrind/process-764096.log",
+              "sha256": "d2c3658798055d03694daa0fa31b2c4c360d98efbc54c6898c9a3261c4ce96cf",
+              "pid": "764096",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54083
+              }
+            },
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/6-rboxc-valgrind/process-764097.log",
+              "sha256": "44b06ade3b4df93f1de5df7767523a26471c4d7f08042d677a063ac342a5cfff",
+              "pid": "764097",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 58975
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:handler-restart",
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -T; trap 'exec ./plain return-handler' RETURN; f(){ :; }; f; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/7-gnu-valgrind/process-764099.log",
+              "sha256": "18c53f897031e72a2734995174d3f67e6788cd6393bdc95c1e5069fbafdcc849",
+              "pid": "764099",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3724,
+                "indirectly lost": 21175,
+                "possibly lost": 84,
+                "still reachable": 49021
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/7-rboxc-valgrind/process-764101.log",
+              "sha256": "fce637e726c65bb9732573a6e9f4d6243daac31706edd4ce0c088fff4d1b2107",
+              "pid": "764101",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49228
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:unchanged",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -T; trap ':' RETURN; f(){ :; }; for ((i=0;i<25;i++)); do f; done; printf 'unchanged\n' "
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "756e6368616e6765640a",
+          "stderr": "",
+          "raw_stdout": "756e6368616e6765640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "756e6368616e6765640a",
+          "stderr": "",
+          "raw_stdout": "756e6368616e6765640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/8-gnu-valgrind/process-764103.log",
+              "sha256": "60ee147037cfb1c559bc34c9f5d1988c69e6fed040c04cb061e8dfd69f3b5566",
+              "pid": "764103",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51416
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "756e6368616e6765640a",
+          "stderr": "",
+          "raw_stdout": "756e6368616e6765640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "756e6368616e6765640a",
+          "stderr": "",
+          "raw_stdout": "756e6368616e6765640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/8-rboxc-valgrind/process-764105.log",
+              "sha256": "2763f19e68d51f349c9ff8aad6295d84246b71fca08e30e775d6d2764ebc666c",
+              "pid": "764105",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52164
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:debug-functions",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -T; d(){ :; }; r(){ :; }; trap d DEBUG; trap r RETURN; f(){ :; :; }; for ((i=0;i<25;i++)); do f; done; trap - DEBUG RETURN; printf 'debug\n' "
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "64656275670a",
+          "stderr": "",
+          "raw_stdout": "64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "64656275670a",
+          "stderr": "",
+          "raw_stdout": "64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/9-gnu-valgrind/process-764107.log",
+              "sha256": "0052eb3658ccaa4269ae5eb1d54f24f855615903fb2c7714e451f4000483b60e",
+              "pid": "764107",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 100,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52718
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "64656275670a",
+          "stderr": "",
+          "raw_stdout": "64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "64656275670a",
+          "stderr": "",
+          "raw_stdout": "64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/9-rboxc-valgrind/process-764109.log",
+              "sha256": "a67b87e539f23e0ae0a6c366311118cbeafaf349edaa529300bb407ac46925a0",
+              "pid": "764109",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53674
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:replace-active",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -T; trap 'trap \"echo next\" RETURN; trap \":\" RETURN; echo first' RETURN; f(){ :; }; f; f; echo done"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "66697273740a646f6e650a",
+          "stderr": "",
+          "raw_stdout": "66697273740a646f6e650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "66697273740a646f6e650a",
+          "stderr": "",
+          "raw_stdout": "66697273740a646f6e650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/10-gnu-valgrind/process-764111.log",
+              "sha256": "bc62f05c95a31982a53efeb4ce0f61b5a64fd5b4d0c7c2f4d3124e117c529d3d",
+              "pid": "764111",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 10,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51008
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "66697273740a646f6e650a",
+          "stderr": "",
+          "raw_stdout": "66697273740a646f6e650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "66697273740a646f6e650a",
+          "stderr": "",
+          "raw_stdout": "66697273740a646f6e650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/10-rboxc-valgrind/process-764113.log",
+              "sha256": "29b8199f447b9473aa160b9afac21419c58b0d62b54383da1f7cb364b9782ce9",
+              "pid": "764113",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52176
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:reset-active",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -T; trap 'trap - RETURN; trap \":\" RETURN; trap - RETURN; echo reset' RETURN; f(){ :; }; f; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657365740a",
+          "stderr": "",
+          "raw_stdout": "72657365740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657365740a",
+          "stderr": "",
+          "raw_stdout": "72657365740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/11-gnu-valgrind/process-764115.log",
+              "sha256": "2ab6f5cbd68f6a002cec4ad4834bf3a9ac50a8083dac56c22b95e3eb007e80f5",
+              "pid": "764115",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 2,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50335
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657365740a",
+          "stderr": "",
+          "raw_stdout": "72657365740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657365740a",
+          "stderr": "",
+          "raw_stdout": "72657365740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/11-rboxc-valgrind/process-764117.log",
+              "sha256": "378cfdf47cebc85b87205846d394380d7356a9f31ee0c7edd4a950ec8653268f",
+              "pid": "764117",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51223
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:sourced-return",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -T; trap ':' RETURN; d(){ :; }; trap d DEBUG; source ./input one two; printf 'source:%s\n' \"$?\" "
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "stderr": "",
+          "raw_stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "stderr": "",
+          "raw_stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/12-gnu-valgrind/process-764119.log",
+              "sha256": "43057a6451e48ac7dd1d4838193830f00d4578f83e462ec2293ef9d83b4ea7ac",
+              "pid": "764119",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52074
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "stderr": "",
+          "raw_stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "stderr": "",
+          "raw_stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/12-rboxc-valgrind/process-764121.log",
+              "sha256": "5f04a9d38561cdaac0f3e94ecd12f04b80f613b471c65b865ee2ff182b7870be",
+              "pid": "764121",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53018
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:return-status",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -T; trap ':' RETURN; f(){ return 7; }; f; printf 'status:%s\n' \"$?\" "
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/13-gnu-valgrind/process-764123.log",
+              "sha256": "ad6458fef901f994cd1614c31a2b73bc07dd584838d5524758cb9044f36cb64c",
+              "pid": "764123",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49225
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/13-rboxc-valgrind/process-764125.log",
+              "sha256": "6153d4f7bccc3da825b2279f7b40343a6d461d05b128b420849457c4830cc72d",
+              "pid": "764125",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49969
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:substitution",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -T; trap ':' RETURN; d(){ :; }; trap d DEBUG; f(){ x=$(printf value); printf '%s\n' \"$x\"; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "76616c75650a",
+          "stderr": "",
+          "raw_stdout": "76616c75650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "76616c75650a",
+          "stderr": "",
+          "raw_stdout": "76616c75650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/14-gnu-valgrind/process-764128.log",
+              "sha256": "cff1b1a8f999c18dfa60b169e0dbf9dd056a3d64b8552f562d23a4cdb93bb491",
+              "pid": "764128",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53259
+              }
+            },
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/14-gnu-valgrind/process-764129.log",
+              "sha256": "3c8c2a0d4738e749f15f11e087ec1ff05c7793a774e6018b3042379c27847fbf",
+              "pid": "764129",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 57609
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "76616c75650a",
+          "stderr": "",
+          "raw_stdout": "76616c75650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "76616c75650a",
+          "stderr": "",
+          "raw_stdout": "76616c75650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/14-rboxc-valgrind/process-764132.log",
+              "sha256": "b92bfcc48b0d898aa63cf95fb5316240204d419469bb56ee571c3771afec663b",
+              "pid": "764132",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54203
+              }
+            },
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/14-rboxc-valgrind/process-764134.log",
+              "sha256": "deaabc93bd4f7dd104b41a13605d974878827f362a788fe6c1a8b1bf8378018d",
+              "pid": "764134",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 59089
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:handler-restart",
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -T; trap 'exec ./plain return-handler' RETURN; f(){ :; }; f; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/15-gnu-valgrind/process-764136.log",
+              "sha256": "bf18b57e0a9b7783287ebb3b8ccb9a36fdb132f1da5e42eff5cbc989ce5ddd12",
+              "pid": "764136",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3724,
+                "indirectly lost": 21173,
+                "possibly lost": 84,
+                "still reachable": 49145
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/15-rboxc-valgrind/process-764138.log",
+              "sha256": "64e58cdaf6bf72daafb6cbc8489218989aaf46b57ca51dc2e18437282a5319e0",
+              "pid": "764138",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49352
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:unchanged",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -T; trap ':' RETURN; f(){ :; }; for ((i=0;i<25;i++)); do f; done; printf 'unchanged\n' "
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "756e6368616e6765640a",
+          "stderr": "",
+          "raw_stdout": "756e6368616e6765640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "756e6368616e6765640a",
+          "stderr": "",
+          "raw_stdout": "756e6368616e6765640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/16-gnu-valgrind/process-764140.log",
+              "sha256": "b30fc4bb24627b74faa62396ced5cbd59a5c141548fa2e6f3fef2499158ce8fa",
+              "pid": "764140",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51305
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "756e6368616e6765640a",
+          "stderr": "",
+          "raw_stdout": "756e6368616e6765640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "756e6368616e6765640a",
+          "stderr": "",
+          "raw_stdout": "756e6368616e6765640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/16-rboxc-valgrind/process-764142.log",
+              "sha256": "87176579bfa4f1a1bed13e189f79ebfd6bf9a6d9301a47b8dec1a3288b8eabc9",
+              "pid": "764142",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52053
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:debug-functions",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -T; d(){ :; }; r(){ :; }; trap d DEBUG; trap r RETURN; f(){ :; :; }; for ((i=0;i<25;i++)); do f; done; trap - DEBUG RETURN; printf 'debug\n' "
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "64656275670a",
+          "stderr": "",
+          "raw_stdout": "64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "64656275670a",
+          "stderr": "",
+          "raw_stdout": "64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/17-gnu-valgrind/process-764144.log",
+              "sha256": "84f66598a7d3234b38aae9f7e4fcb0ef87c2f400747d28b18336e4444f011710",
+              "pid": "764144",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 100,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52613
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "64656275670a",
+          "stderr": "",
+          "raw_stdout": "64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "64656275670a",
+          "stderr": "",
+          "raw_stdout": "64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/17-rboxc-valgrind/process-764146.log",
+              "sha256": "6f8734d52a04ef3fb7b423901ce517dab88b5cac44f3108d56f4b35e3c344de6",
+              "pid": "764146",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53569
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:replace-active",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -T; trap 'trap \"echo next\" RETURN; trap \":\" RETURN; echo first' RETURN; f(){ :; }; f; f; echo done"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "66697273740a646f6e650a",
+          "stderr": "",
+          "raw_stdout": "66697273740a646f6e650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "66697273740a646f6e650a",
+          "stderr": "",
+          "raw_stdout": "66697273740a646f6e650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/18-gnu-valgrind/process-764148.log",
+              "sha256": "f9970dc3987909b9b424b977b716929b692e72aa0f2b47a90174df38c18fd5e7",
+              "pid": "764148",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 10,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50897
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "66697273740a646f6e650a",
+          "stderr": "",
+          "raw_stdout": "66697273740a646f6e650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "66697273740a646f6e650a",
+          "stderr": "",
+          "raw_stdout": "66697273740a646f6e650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/18-rboxc-valgrind/process-764150.log",
+              "sha256": "986dd6566dff95feeb03899734438903b3f952517c0369eeedbe524c9fd386c6",
+              "pid": "764150",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52065
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:reset-active",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -T; trap 'trap - RETURN; trap \":\" RETURN; trap - RETURN; echo reset' RETURN; f(){ :; }; f; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657365740a",
+          "stderr": "",
+          "raw_stdout": "72657365740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657365740a",
+          "stderr": "",
+          "raw_stdout": "72657365740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/19-gnu-valgrind/process-764152.log",
+              "sha256": "890aa2d5c3fcead825e0ee5e4c7ab577fe022ffc54ed69717408cae9f11cbe96",
+              "pid": "764152",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 2,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50224
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657365740a",
+          "stderr": "",
+          "raw_stdout": "72657365740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657365740a",
+          "stderr": "",
+          "raw_stdout": "72657365740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/19-rboxc-valgrind/process-764154.log",
+              "sha256": "509619ed4f99ecf8ecbe4e4c4c9224e9e092a367310855b5ba2f5003f3d91bcf",
+              "pid": "764154",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51112
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:sourced-return",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -T; trap ':' RETURN; d(){ :; }; trap d DEBUG; source ./input one two; printf 'source:%s\n' \"$?\" "
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "stderr": "",
+          "raw_stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "stderr": "",
+          "raw_stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/20-gnu-valgrind/process-764156.log",
+              "sha256": "d67250460da703909d6cabbab336b0ddac8c4280b4d69442b0d9d66dcf997590",
+              "pid": "764156",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51963
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "stderr": "",
+          "raw_stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "stderr": "",
+          "raw_stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/20-rboxc-valgrind/process-764158.log",
+              "sha256": "0033b5615495a5d1a8c47a9f62961687baddb1623eaa1560c9149f8f5d15c1f3",
+              "pid": "764158",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52907
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:return-status",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -T; trap ':' RETURN; f(){ return 7; }; f; printf 'status:%s\n' \"$?\" "
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/21-gnu-valgrind/process-764160.log",
+              "sha256": "5841be01a94fd84306cd38a0b270e8b9cf55fe94fedcfc7435c95f34d676b06d",
+              "pid": "764160",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49114
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/21-rboxc-valgrind/process-764162.log",
+              "sha256": "50608e9eadef4ba853b544affae44488ff8fdd4e3a7a6fca90ac2d886ba080d1",
+              "pid": "764162",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49858
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:substitution",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -T; trap ':' RETURN; d(){ :; }; trap d DEBUG; f(){ x=$(printf value); printf '%s\n' \"$x\"; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "76616c75650a",
+          "stderr": "",
+          "raw_stdout": "76616c75650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "76616c75650a",
+          "stderr": "",
+          "raw_stdout": "76616c75650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/22-gnu-valgrind/process-764165.log",
+              "sha256": "fd03275a7384a683b09a600d041da723e26278cceaa4eb3525901526e848bba1",
+              "pid": "764165",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53143
+              }
+            },
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/22-gnu-valgrind/process-764166.log",
+              "sha256": "c478089b485c72609d437f23ca245fdfaefeb609540251b3f359015db4af4240",
+              "pid": "764166",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 57502
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "76616c75650a",
+          "stderr": "",
+          "raw_stdout": "76616c75650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "76616c75650a",
+          "stderr": "",
+          "raw_stdout": "76616c75650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/22-rboxc-valgrind/process-764169.log",
+              "sha256": "0b57aee0cb889f9e54c55031577433172540d9141258a7b6539cf21eafe1f987",
+              "pid": "764169",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54087
+              }
+            },
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/22-rboxc-valgrind/process-764170.log",
+              "sha256": "8ac7cad228b147db08901185c28de719da4055253878bf91f269c4000251fbe4",
+              "pid": "764170",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 58982
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:handler-restart",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "set -T; trap 'exec ./plain return-handler' RETURN; f(){ :; }; f; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/23-gnu-valgrind/process-764172.log",
+              "sha256": "3e35da770690170117f294c5c2bf49904e980e1220a0869c47929a267afc6b03",
+              "pid": "764172",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3724,
+                "indirectly lost": 21176,
+                "possibly lost": 84,
+                "still reachable": 49023
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/23-rboxc-valgrind/process-764174.log",
+              "sha256": "05838e8473427021134a2ff2db10bdbfc88d92f86e1b1252020e813f26034468",
+              "pid": "764174",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49230
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:unchanged",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -T; trap ':' RETURN; f(){ :; }; for ((i=0;i<25;i++)); do f; done; printf 'unchanged\n' "
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "756e6368616e6765640a",
+          "stderr": "",
+          "raw_stdout": "756e6368616e6765640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "756e6368616e6765640a",
+          "stderr": "",
+          "raw_stdout": "756e6368616e6765640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/24-gnu-valgrind/process-764176.log",
+              "sha256": "5704865cb98a4abab024b2280cc4cb936294b088ebf1b1e7f2a9631ecb686005",
+              "pid": "764176",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51299
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "756e6368616e6765640a",
+          "stderr": "",
+          "raw_stdout": "756e6368616e6765640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "756e6368616e6765640a",
+          "stderr": "",
+          "raw_stdout": "756e6368616e6765640a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/24-rboxc-valgrind/process-764178.log",
+              "sha256": "74f04758080d92ba95ea1c7a79fc6ac0943abfed51b48a289bb035a2798d6e2b",
+              "pid": "764178",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52047
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:debug-functions",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -T; d(){ :; }; r(){ :; }; trap d DEBUG; trap r RETURN; f(){ :; :; }; for ((i=0;i<25;i++)); do f; done; trap - DEBUG RETURN; printf 'debug\n' "
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "64656275670a",
+          "stderr": "",
+          "raw_stdout": "64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "64656275670a",
+          "stderr": "",
+          "raw_stdout": "64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/25-gnu-valgrind/process-764180.log",
+              "sha256": "5e5574f5a3a5ed3fbdb6a005c61db80db00ee8cf92b0ec899ca243e04f0bfe2e",
+              "pid": "764180",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 100,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52603
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "64656275670a",
+          "stderr": "",
+          "raw_stdout": "64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "64656275670a",
+          "stderr": "",
+          "raw_stdout": "64656275670a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/25-rboxc-valgrind/process-764182.log",
+              "sha256": "4f94e8268f3433ee625bcd2b96ad62abf75fa719b39717edcfe2941cb2dad646",
+              "pid": "764182",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53559
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:replace-active",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -T; trap 'trap \"echo next\" RETURN; trap \":\" RETURN; echo first' RETURN; f(){ :; }; f; f; echo done"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "66697273740a646f6e650a",
+          "stderr": "",
+          "raw_stdout": "66697273740a646f6e650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "66697273740a646f6e650a",
+          "stderr": "",
+          "raw_stdout": "66697273740a646f6e650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/26-gnu-valgrind/process-764184.log",
+              "sha256": "7c26f146275e5850d2b140613d7cdd32ec94bd4c4936e1dc9b40d627f8de8956",
+              "pid": "764184",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 10,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50891
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "66697273740a646f6e650a",
+          "stderr": "",
+          "raw_stdout": "66697273740a646f6e650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "66697273740a646f6e650a",
+          "stderr": "",
+          "raw_stdout": "66697273740a646f6e650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/26-rboxc-valgrind/process-764186.log",
+              "sha256": "50d1b04403e1cef0b68a8f11fda847d47599aab0343e8117f6b0933212167a51",
+              "pid": "764186",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52059
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:reset-active",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -T; trap 'trap - RETURN; trap \":\" RETURN; trap - RETURN; echo reset' RETURN; f(){ :; }; f; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72657365740a",
+          "stderr": "",
+          "raw_stdout": "72657365740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "72657365740a",
+          "stderr": "",
+          "raw_stdout": "72657365740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/27-gnu-valgrind/process-764188.log",
+              "sha256": "72de266a68277241bbc13f6ceb43c03b755d611cdbb1754fa3602ed01fecf021",
+              "pid": "764188",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 2,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50218
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72657365740a",
+          "stderr": "",
+          "raw_stdout": "72657365740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "72657365740a",
+          "stderr": "",
+          "raw_stdout": "72657365740a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/27-rboxc-valgrind/process-764190.log",
+              "sha256": "2fa3892c7c7d083000ad9d16f2302644f3617af9a0cd962f382f5f4e56936747",
+              "pid": "764190",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51106
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:sourced-return",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -T; trap ':' RETURN; d(){ :; }; trap d DEBUG; source ./input one two; printf 'source:%s\n' \"$?\" "
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "stderr": "",
+          "raw_stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "stderr": "",
+          "raw_stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/28-gnu-valgrind/process-764192.log",
+              "sha256": "c1216ae4b6391001bba99f68536d6ce04f69f3f5c6ecdad926f43c77a0e216d8",
+              "pid": "764192",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51957
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "stderr": "",
+          "raw_stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "stderr": "",
+          "raw_stdout": "736f75726365643a6f6e653a74776f0a736f757263653a340a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/28-rboxc-valgrind/process-764194.log",
+              "sha256": "10ac4ec3871924cbd805745110dd7372baf10d6f0d1295c0e9b844cbe3b51cbd",
+              "pid": "764194",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52901
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:return-status",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -T; trap ':' RETURN; f(){ return 7; }; f; printf 'status:%s\n' \"$?\" "
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/29-gnu-valgrind/process-764197.log",
+              "sha256": "9355eba4531829caded78d4fe57f9f914b4a82075b3b00784454fcb1aeb0690d",
+              "pid": "764197",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49108
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/29-rboxc-valgrind/process-764206.log",
+              "sha256": "92ecb4cbe577dea57adfd97c1e1e73720ea620cbbac503b24379f3e860981a2e",
+              "pid": "764206",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49852
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:substitution",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -T; trap ':' RETURN; d(){ :; }; trap d DEBUG; f(){ x=$(printf value); printf '%s\n' \"$x\"; }; f"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "76616c75650a",
+          "stderr": "",
+          "raw_stdout": "76616c75650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "76616c75650a",
+          "stderr": "",
+          "raw_stdout": "76616c75650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/30-gnu-valgrind/process-764211.log",
+              "sha256": "b8ce691078e8cd4190a9a801af72e7b20bc97276f5e7821626687e8601abda83",
+              "pid": "764211",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53135
+              }
+            },
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/30-gnu-valgrind/process-764214.log",
+              "sha256": "9ea0946a90fc21923674296615212305dcd4714c85f796ae3b3b7657854362c0",
+              "pid": "764214",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 57488
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "76616c75650a",
+          "stderr": "",
+          "raw_stdout": "76616c75650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "76616c75650a",
+          "stderr": "",
+          "raw_stdout": "76616c75650a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/30-rboxc-valgrind/process-764217.log",
+              "sha256": "368e76a2ac59423d166ec8c1cc2b180d8dad9e996a88ac05443703dbaa2582b7",
+              "pid": "764217",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54079
+              }
+            },
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/30-rboxc-valgrind/process-764220.log",
+              "sha256": "00d974b7f0324a5dae7a04e146ca3f14ad252eb4e87d1ec4fa649afc1e8d7e18",
+              "pid": "764220",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 58968
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:handler-restart",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "set -T; trap 'exec ./plain return-handler' RETURN; f(){ :; }; f; printf unreachable"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/31-gnu-valgrind/process-764222.log",
+              "sha256": "691aad990a6ca2fcb0a8fec741894989732aab3fac882459406156bb8d7cea3b",
+              "pid": "764222",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 13,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 3724,
+                "indirectly lost": 21174,
+                "possibly lost": 84,
+                "still reachable": 49019
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "stderr": "",
+          "raw_stdout": "706c61696e3a72657475726e2d68616e646c65720a",
+          "raw_stderr": "",
+          "tree": {
+            "input": {
+              "sha256": "b683179a9fe9e2d118bcb44a5ef10904e2d7a41ef11839f119ef08ad43a99b39",
+              "mode": 416
+            },
+            "plain": {
+              "sha256": "47ff52e5ec6014e4b6f81f6817add330f7347f1208c57340bf03e74e8ea896d4",
+              "mode": 493
+            }
+          },
+          "memory": [
+            {
+              "log": "evidence/raw/bash-trap-restart-contract/run-a12mgxda/31-rboxc-valgrind/process-764226.log",
+              "sha256": "6452835113ce0e311641409b8f981103ab7b56ec04c21585916c594f085f542f",
+              "pid": "764226",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49226
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -105,16 +105,30 @@ The public terminal cleanup API alone retains the shared parameter cache in
 this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
-The current 187-command candidate is **14,718,304 bytes**, at
-`target/bash-return-trap-candidate/release/rboxc`, SHA-256
-`50c3aae0478a7a6631bf268c92dc27e76b5ff420383e4a29b28c398e95b8d43a`.
+The current 187-command candidate is **14,719,808 bytes**, at
+`target/bash-trap-restart-final-candidate/release/rboxc`, SHA-256
+`b00869258dca564ea767195be3238bbb7b7cbdd928d7b8c5dad36e6f21c2ead9`.
 An independent rebuild is byte-identical. All 428 Coreutils smoke checks,
 11 dispatcher checks, 44 focused Bash comparisons and 69 shell-adapter checks
 pass. All 27 reviewed Bash scripts were rerun: 26 pass strictly with 717 clean
 candidate process logs; the trace script retains its deliberate closed-descriptor
-finding. Twenty-eight of 32 RETURN ownership contracts pass, improving twelve
-previous allocation failures; four interpreter-restart cases retain their earlier
-parser/status allocation findings. Those four are outside strict counts.
+finding. All **84 trap ownership/control-flow contracts pass**, with 88 clean
+candidate process logs. The four previously open RETURN restart cases now pass,
+as do DEBUG, ERR, self-directed INT/USR1, nested handlers, handler resets and
+returns from signal handlers inside functions.
+
+Only the Bash trap helper changed. Saved parser state, PIPESTATUS and
+BASH_TRAPSIG copies are released when the interpreter abandons their frames.
+Active handler borrows are tracked through replacement and actual string release;
+restart also detaches still-inherited handlers before freeing them. Normal
+returns preserve GNU restoration. Nonlocal returns complete GNU's interrupted
+parse cleanup before removing the new ownership registrations. Intermediate
+allocation findings, including the draft cleanup-order regression, remain
+preserved and are excluded from strict counts.
+[evidence/bash-trap-restart-validation.json](evidence/bash-trap-restart-validation.json)
+audits the source/object boundary, immutable rebuild, raw process logs and
+current comparisons. The 354 deferred commands remain untouched until the
+current GNU providers have completed validation and we review them together.
 Gawk's 561 reviewed recipes remain pinned to the preserved preceding
 `target/gawk-format-lifetime-candidate/release/rboxc` candidate, SHA-256
 `df802022e1d85caf26f6d514459110657e06e6bf0e44407f0573e93f8e74652e`.

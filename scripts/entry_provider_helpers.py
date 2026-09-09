@@ -83,6 +83,8 @@ def prepare_archives(root,provider,mapping):
         adapted=prepare(root)
         from bash_return_trap_cleanup import prepare as prepare_return_trap
         prepare_return_trap(root, adapted)
+        from bash_trap_restart_cleanup import prepare as prepare_trap_restart
+        prepare_trap_restart(root, adapted)
     if provider=='gawk':
         from gawk_cleanup import prepare
         adapted=prepare(root)
