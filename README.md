@@ -2820,3 +2820,28 @@ bytes; strict memory acceptance remains open.
 [evidence/inetd-private-original-validation.json](evidence/inetd-private-original-validation.json)
 verifies these assertions, source hashes, namespace boundaries and process logs.
 This advances service coverage without claiming completion of Inetutils.
+
+Inetd's daemon helper now skips descriptors confirmed closed by `F_GETFD`
+before applying GNU's original close loop. Its fork, session, working-directory,
+standard-stream and signal behavior is retained. Sixteen direct GNU/adapted
+comparisons cover both directory and descriptor-preservation options with full
+and sparse standard descriptors; all 24 adapted Valgrind process images are
+clean. The fixture passes its extra descriptor through exec so the two exiting
+fork parents correctly see it as inherited. The earlier fixture result remains
+preserved. Only `daemon.o` changes in Inetd's native helper archive; translated
+Rust and the GNU oracle remain unchanged.
+
+The original Inetd service test passes again in all four modes, with ten
+connections and five reloads per run. The redundant startup close is gone.
+The daemon still exits through GNU's default SIGTERM action, with two listening
+sockets and three `/dev/null` standard descriptors; this is explicitly separate
+from a strict zero-descriptor result. Its other 13 process images are clean,
+and there are no lost heap bytes. Five focused option comparisons, 428 Coreutils
+smoke checks and all 11 dispatch checks pass on the new candidate.
+[evidence/inetd-daemon-cleanup-validation.json](evidence/inetd-daemon-cleanup-validation.json)
+verifies the changed archive member, source adaptation, contract and service
+results. The reproducible candidate at `target/inetd-daemon-candidate/release/rboxc`
+is **14,725,368 bytes**, SHA-256
+`0634c6cd9e7e5333e1f1093fd87f1a99c89cbd436ae3bd6a8af1128d9767c956`,
+832 bytes larger than the preceding candidate. The installed release remains
+separate. This does not certify all Inetutils service or shutdown profiles.

@@ -1,0 +1,712 @@
+{
+  "runtime_helpers": {},
+  "binary": "/root/rboxc/target/inetd-daemon-candidate/release/rboxc",
+  "binary_sha256": "0634c6cd9e7e5333e1f1093fd87f1a99c89cbd436ae3bd6a8af1128d9767c956",
+  "gnu_binary_sha256": "7973e2fcaddb0e2e87ff8466b2a650d1756211b411be3dc340514b16ffa60749",
+  "scope": "Whole original inetd.sh: local IPv4/IPv6 addrpeek services and five daemon reloads in private network/PID/mount namespaces as nobody. Only loopback exists. No authentication or external connection. Strict Valgrind findings remain separate.",
+  "inputs": {
+    "/opt/src/inetutils-2.8/tests/inetd.sh": "06f9a8f51db490a4926551f90c83fdb2c2bba9680b13a2847b2765bcde3c5080",
+    "/root/rboxc/build/gnu-inetutils/tests/tools.sh": "4dbd0746347414a583cef2f27c056eeff0609174d787407bf0cd40f940b0ab23",
+    "/root/rboxc/build/gnu-inetutils/tests/addrpeek": "c103a84d924f31f69850c0dec7e155d2b3cb132557dca9a2481236a7ab8cbcfb",
+    "/root/rboxc/build/gnu-inetutils/tests/tcpget": "3a27b70247804bce3335b11e328947b0a4fa99373f3e04cf8a45ae0ef2e06dab",
+    "/root/rboxc/tests/gnu/inetd-net-profile.py": "cd9233659dadbd4c54f7501ffb7c2cc41347a6a565641240c7f3e875ba04dc56",
+    "/root/rboxc/tests/inetutils-inetd-original.py": "feadc5d0c36c9bd665173dfa4baa41636074a3a6e921c142e759f9a5ff09416d"
+  },
+  "results": [
+    {
+      "instrumented": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/gnu-native.log",
+          "log_sha256": "82b4ce855ec3f59f53c78a0b13d6d453fdf5b9e3cdb8f56173f6ed67528fb140",
+          "private_profile": {
+            "namespaces": {
+              "mnt": "mnt:[4026533475]",
+              "net": "net:[4026533534]",
+              "pid": "pid:[4026533533]"
+            },
+            "parent_namespaces": {
+              "mnt": "mnt:[4026531832]",
+              "net": "net:[4026531833]",
+              "pid": "pid:[4026531836]"
+            },
+            "interfaces": [
+              {
+                "ifindex": 1,
+                "ifname": "lo",
+                "flags": [
+                  "LOOPBACK",
+                  "UP",
+                  "LOWER_UP"
+                ],
+                "mtu": 65536,
+                "qdisc": "noqueue",
+                "operstate": "UNKNOWN",
+                "group": "default",
+                "txqlen": 1000,
+                "link_type": "loopback",
+                "address": "00:00:00:00:00:00",
+                "broadcast": "00:00:00:00:00:00",
+                "addr_info": [
+                  {
+                    "family": "inet",
+                    "local": "127.0.0.1",
+                    "prefixlen": 8,
+                    "scope": "host",
+                    "label": "lo",
+                    "valid_life_time": 4294967295,
+                    "preferred_life_time": 4294967295
+                  },
+                  {
+                    "family": "inet6",
+                    "local": "::1",
+                    "prefixlen": 128,
+                    "scope": "host",
+                    "protocol": "kernel_lo",
+                    "valid_life_time": 4294967295,
+                    "preferred_life_time": 4294967295
+                  }
+                ]
+              }
+            ],
+            "uid": 65534,
+            "gid": 65534,
+            "groups": []
+          },
+          "children_reaped": [
+            {
+              "pid": 18,
+              "status": 0
+            },
+            {
+              "pid": 20,
+              "status": -15
+            }
+          ],
+          "original_sha256": "06f9a8f51db490a4926551f90c83fdb2c2bba9680b13a2847b2765bcde3c5080",
+          "binary_sha256": "7973e2fcaddb0e2e87ff8466b2a650d1756211b411be3dc340514b16ffa60749",
+          "service_connections": 10,
+          "reload_signals": 5,
+          "memory": [],
+          "behavior_pass": true
+        },
+        "rboxc": {
+          "status": 0,
+          "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/rboxc-native.log",
+          "log_sha256": "10e2661ceee0d87ef235dd4f6bc8fb67d289f2f2bb6b351d2c80b9e41bfc6b63",
+          "private_profile": {
+            "namespaces": {
+              "mnt": "mnt:[4026533475]",
+              "net": "net:[4026533534]",
+              "pid": "pid:[4026533533]"
+            },
+            "parent_namespaces": {
+              "mnt": "mnt:[4026531832]",
+              "net": "net:[4026531833]",
+              "pid": "pid:[4026531836]"
+            },
+            "interfaces": [
+              {
+                "ifindex": 1,
+                "ifname": "lo",
+                "flags": [
+                  "LOOPBACK",
+                  "UP",
+                  "LOWER_UP"
+                ],
+                "mtu": 65536,
+                "qdisc": "noqueue",
+                "operstate": "UNKNOWN",
+                "group": "default",
+                "txqlen": 1000,
+                "link_type": "loopback",
+                "address": "00:00:00:00:00:00",
+                "broadcast": "00:00:00:00:00:00",
+                "addr_info": [
+                  {
+                    "family": "inet",
+                    "local": "127.0.0.1",
+                    "prefixlen": 8,
+                    "scope": "host",
+                    "label": "lo",
+                    "valid_life_time": 4294967295,
+                    "preferred_life_time": 4294967295
+                  },
+                  {
+                    "family": "inet6",
+                    "local": "::1",
+                    "prefixlen": 128,
+                    "scope": "host",
+                    "protocol": "kernel_lo",
+                    "valid_life_time": 4294967295,
+                    "preferred_life_time": 4294967295
+                  }
+                ]
+              }
+            ],
+            "uid": 65534,
+            "gid": 65534,
+            "groups": []
+          },
+          "children_reaped": [
+            {
+              "pid": 18,
+              "status": 0
+            },
+            {
+              "pid": 20,
+              "status": -15
+            }
+          ],
+          "original_sha256": "06f9a8f51db490a4926551f90c83fdb2c2bba9680b13a2847b2765bcde3c5080",
+          "binary_sha256": "0634c6cd9e7e5333e1f1093fd87f1a99c89cbd436ae3bd6a8af1128d9767c956",
+          "service_connections": 10,
+          "reload_signals": 5,
+          "memory": [],
+          "behavior_pass": true
+        }
+      },
+      "behavior_pass": true,
+      "strict_memory_pass": null
+    },
+    {
+      "instrumented": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/gnu-valgrind.log",
+          "log_sha256": "3a99bf54079b7d5ec359e9dd2037d34991bfde5fc24baec043b2db383f534c6a",
+          "private_profile": {
+            "namespaces": {
+              "mnt": "mnt:[4026533475]",
+              "net": "net:[4026533534]",
+              "pid": "pid:[4026533533]"
+            },
+            "parent_namespaces": {
+              "mnt": "mnt:[4026531832]",
+              "net": "net:[4026531833]",
+              "pid": "pid:[4026531836]"
+            },
+            "interfaces": [
+              {
+                "ifindex": 1,
+                "ifname": "lo",
+                "flags": [
+                  "LOOPBACK",
+                  "UP",
+                  "LOWER_UP"
+                ],
+                "mtu": 65536,
+                "qdisc": "noqueue",
+                "operstate": "UNKNOWN",
+                "group": "default",
+                "txqlen": 1000,
+                "link_type": "loopback",
+                "address": "00:00:00:00:00:00",
+                "broadcast": "00:00:00:00:00:00",
+                "addr_info": [
+                  {
+                    "family": "inet",
+                    "local": "127.0.0.1",
+                    "prefixlen": 8,
+                    "scope": "host",
+                    "label": "lo",
+                    "valid_life_time": 4294967295,
+                    "preferred_life_time": 4294967295
+                  },
+                  {
+                    "family": "inet6",
+                    "local": "::1",
+                    "prefixlen": 128,
+                    "scope": "host",
+                    "protocol": "kernel_lo",
+                    "valid_life_time": 4294967295,
+                    "preferred_life_time": 4294967295
+                  }
+                ]
+              }
+            ],
+            "uid": 65534,
+            "gid": 65534,
+            "groups": []
+          },
+          "children_reaped": [
+            {
+              "pid": 18,
+              "status": 0
+            },
+            {
+              "pid": 19,
+              "status": -15
+            }
+          ],
+          "original_sha256": "06f9a8f51db490a4926551f90c83fdb2c2bba9680b13a2847b2765bcde3c5080",
+          "binary_sha256": "7973e2fcaddb0e2e87ff8466b2a650d1756211b411be3dc340514b16ffa60749",
+          "service_connections": 10,
+          "reload_signals": 5,
+          "memory": [
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/gnu-12.log",
+              "sha256": "32c8c843d479efd55799a60067c2e789c631a2a793bb55f9b6d51b6d14386bd3",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 731
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "12"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/gnu-17.log",
+              "sha256": "b67e78459a24a1222c4ae57bf27f65e5160c53be90f0a190e2cad0c632a742b7",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 61
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "17"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/gnu-18.log",
+              "sha256": "b1cd157574060adff87e42b5acfead7eed00f62e42b35a8b378474c75ce7a8ba",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 61
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "18"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/gnu-19.log",
+              "sha256": "1b2dd96ed1ac999016d3d14a3f16dca02382b96016297da7e2a5b8cb1bf945e8",
+              "errors": 6,
+              "non_inherited_descriptors": 5,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 8526
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "19"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/gnu-23.log",
+              "sha256": "83f579d14e5617d6e6794d81ac17f45b4e5c660a2e76d7af9d6e3631792027d6",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "23"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/gnu-26.log",
+              "sha256": "dad414759ae08a5fa5902e8d7987dddc69426fff16a688c775cc7ac72a6e7470",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "26"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/gnu-32.log",
+              "sha256": "15dbd755449ac30c65c8de1ee2f24060501ce0d6392170461859e95a4104debc",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "32"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/gnu-35.log",
+              "sha256": "d13fdc6edab948be829b450e7857849f3228a1de0b4054680502c97ec6eb6001",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "35"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/gnu-41.log",
+              "sha256": "149e36759d8f6d1fb650c03f6710a9bb4014c96543a1aedd6eb381794a867a86",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "41"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/gnu-44.log",
+              "sha256": "57ccf3b27fb7a431250703605e1a83ad20e1bf2dcc43cebea2b466e8fe2c7e1f",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "44"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/gnu-50.log",
+              "sha256": "73990e8558aa31a203ffaae87f8891873900520d6de7d1945d3e75aafdd44864",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "50"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/gnu-53.log",
+              "sha256": "14900dea49bbd2b0f217a42cfd1ff4b6b0fb13f37bba831150019b64b3405a4a",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "53"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/gnu-59.log",
+              "sha256": "b2d32d7891ecf7f4db3ab3ca5be811c04c914c1421f208fba4193723a916df6c",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "59"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/gnu-62.log",
+              "sha256": "9658fe722f8cc6e7ab1d04962a4125db333565982980ec3ea5394242cecf45e2",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "62"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "behavior_pass": true,
+          "strict_memory_pass": false
+        },
+        "rboxc": {
+          "status": 0,
+          "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/rboxc-valgrind.log",
+          "log_sha256": "8501e1d67ae7d0f46e5bebcf6dba07107c7fcac3ac7895944c268d33b29b9508",
+          "private_profile": {
+            "namespaces": {
+              "mnt": "mnt:[4026533475]",
+              "net": "net:[4026533534]",
+              "pid": "pid:[4026533533]"
+            },
+            "parent_namespaces": {
+              "mnt": "mnt:[4026531832]",
+              "net": "net:[4026531833]",
+              "pid": "pid:[4026531836]"
+            },
+            "interfaces": [
+              {
+                "ifindex": 1,
+                "ifname": "lo",
+                "flags": [
+                  "LOOPBACK",
+                  "UP",
+                  "LOWER_UP"
+                ],
+                "mtu": 65536,
+                "qdisc": "noqueue",
+                "operstate": "UNKNOWN",
+                "group": "default",
+                "txqlen": 1000,
+                "link_type": "loopback",
+                "address": "00:00:00:00:00:00",
+                "broadcast": "00:00:00:00:00:00",
+                "addr_info": [
+                  {
+                    "family": "inet",
+                    "local": "127.0.0.1",
+                    "prefixlen": 8,
+                    "scope": "host",
+                    "label": "lo",
+                    "valid_life_time": 4294967295,
+                    "preferred_life_time": 4294967295
+                  },
+                  {
+                    "family": "inet6",
+                    "local": "::1",
+                    "prefixlen": 128,
+                    "scope": "host",
+                    "protocol": "kernel_lo",
+                    "valid_life_time": 4294967295,
+                    "preferred_life_time": 4294967295
+                  }
+                ]
+              }
+            ],
+            "uid": 65534,
+            "gid": 65534,
+            "groups": []
+          },
+          "children_reaped": [
+            {
+              "pid": 18,
+              "status": 0
+            },
+            {
+              "pid": 19,
+              "status": -15
+            }
+          ],
+          "original_sha256": "06f9a8f51db490a4926551f90c83fdb2c2bba9680b13a2847b2765bcde3c5080",
+          "binary_sha256": "0634c6cd9e7e5333e1f1093fd87f1a99c89cbd436ae3bd6a8af1128d9767c956",
+          "service_connections": 10,
+          "reload_signals": 5,
+          "memory": [
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/rboxc-12.log",
+              "sha256": "11ad3db819ae4b51f85cb9794b05d852ed1d1663deb340948be99c55c2f57e42",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 731
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "12"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/rboxc-17.log",
+              "sha256": "ed7784ae00b08627c88348e97adaa31639d868cadd735ef2c689cc4ccc3dad8e",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 61
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "17"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/rboxc-18.log",
+              "sha256": "fe587e24f5355e2aa9cad153265ac20c241ee2d83a210dcb55e6a725f73a022b",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 61
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "18"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/rboxc-19.log",
+              "sha256": "f3bb1dde10c4cec66bc81bc0a0a9932f4e794a63cce254ea48522db3936c9def",
+              "errors": 5,
+              "non_inherited_descriptors": 5,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 8526
+              },
+              "exec_images": 1,
+              "log_pids": [
+                "19"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/rboxc-23.log",
+              "sha256": "ff399829f7d1e7ba568a52d0d7ccc939da1f7725e5d2accc4866a52d92edddce",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "23"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/rboxc-26.log",
+              "sha256": "8262c5a407b84766c8fc0f330636b9d098179e3bf7626424d871673e9e33a2de",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "26"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/rboxc-32.log",
+              "sha256": "cd94b5b65e754f5dc885076180e92a4a40f88e8c4941e449a13d9cf8416fde6b",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "32"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/rboxc-35.log",
+              "sha256": "4598a8dc3c8f786642ea42a363c894e83c276891d2318d1c25ad44059aedc486",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "35"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/rboxc-41.log",
+              "sha256": "cdef43bdab14bb030c2deb9ea0ff8d10ea9b7b395924108c46bea98e49b4dff5",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "41"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/rboxc-44.log",
+              "sha256": "a3e7c0d93c841148b364e5762ac42b81246d945288a1c25a7307acc6b5058eb6",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "44"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/rboxc-50.log",
+              "sha256": "9697a4a03fbf4f5fd502d3aea5bfe0db688090368d0dc6ee4d83a807118e2efb",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "50"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/rboxc-53.log",
+              "sha256": "194d6ad8a4859c296fd4e4eecb1d61499e4a08a20ee79a20de187cc1c6ff63f6",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "53"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/rboxc-59.log",
+              "sha256": "f185b837404e8459555d4fc9cdc7bf0c7e5726de52bcad1f4a5ed4581e9a6c47",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "59"
+              ],
+              "complete_exec_log": true
+            },
+            {
+              "log": "evidence/raw/inetd-daemon-closed-original/run-79wlqdxy/rboxc-62.log",
+              "sha256": "82dcbf49636a6723bc2c30e710f6f40fcf78cc6d6be253009f7be4c6c4e248b0",
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {},
+              "exec_images": 1,
+              "log_pids": [
+                "62"
+              ],
+              "complete_exec_log": true
+            }
+          ],
+          "behavior_pass": true,
+          "strict_memory_pass": false
+        }
+      },
+      "behavior_pass": true,
+      "strict_memory_pass": false
+    }
+  ],
+  "complete": true
+}

@@ -1,26 +1,20 @@
 {
-  "provider": "inetutils",
-  "entries": [
-    "single_binary_main_inetd"
-  ],
-  "commands": [
-    "inetd"
-  ],
-  "native_command_entries": [],
-  "scope": "Translated Rust entry with original GNU aliases and isolated native helpers; original C entry object excluded. Runtime validation is separate.",
-  "rust_source_sha256": "af1aeb5b292ad62da80452412e84d289cf4937e6c9feb9f6a0cc41fcdb8a8e29",
-  "original_inputs": {
-    "build/gnu-inetutils/libinetutils/libinetutils.a": "87b9b9242cbe81278e0408d6f8cfc67163274e62adff61d8e07eff54852d38da",
-    "build/gnu-inetutils/lib/libgnu.a": "b34c4d953646a33412435b88ba8315892e9975998b707aa4379fd192ad8e2842"
-  },
-  "helper_inputs": {
-    "build/helpers/inetd-000-libinetutils.a": "3798b18ad47eff5117629a8480798631ce87c8e20dcff26273660613faecc8df",
-    "build/helpers/inetd-001-libgnu.a": "cf7fa730433b2ecea9d0ad961f0f3618cca253787c60dd0e7b04260ff1a9a495"
-  },
-  "namespaced_symbols": 398,
-  "symbol_map_sha256": "8b03772589777b3a7a69c8ecd0486ee06b5f5933893202fffbe2210e6934b397",
-  "original_link_inputs": [
+  "scope": "Probe descriptors with F_GETFD and skip only confirmed EBADF entries before GNU daemon closes its original descriptor range. Keep fork, session, chdir, redirection and signal semantics unchanged. Only inetd receives this helper adaptation.",
+  "driver_sha256": "0f3b98aa75089e8d3b5715862b6f42cbf485c43237a0be5214f790dcc5ce0029",
+  "original_sha256": "45ef9b876ef518eb1168e8a6cd269e5d835f72f7692548f62cebe288d6e3bdee",
+  "adapted_sha256": "cffbfee7bd09db9b031a5c1108f7d31edde01031f8764d7f67a00fe4057a6358",
+  "object_sha256": "dc10b841d8b2fa2fcae9a2c816b08a19b317317c44d1c8e0b31555dba94a3849",
+  "original_archive_sha256": "87b9b9242cbe81278e0408d6f8cfc67163274e62adff61d8e07eff54852d38da",
+  "adapted_archive_sha256": "34c347f0735c4c16a47e18aaffac39f563014eec61a8e24d49a2639eea61ae76",
+  "compiler_arguments": [
     "gcc",
+    "-DHAVE_CONFIG_H",
+    "-I.",
+    "-I/opt/src/inetutils-2.8/libinetutils",
+    "-I..",
+    "-I/opt/src/inetutils-2.8/lib",
+    "-I../lib",
+    "-I/opt/src/inetutils-2.8/libinetutils",
     "-Wall",
     "-Warith-conversion",
     "-Wcast-align=strict",
@@ -79,16 +73,17 @@
     "-g",
     "-O2",
     "-std=gnu17",
+    "-MT",
+    "daemon.o",
+    "-MD",
+    "-MP",
+    "-MF",
+    "/root/rboxc/build/inetd-daemon-cleanup/daemon.d",
+    "-c",
     "-o",
-    "inetd",
-    "inetd.o",
-    "../libinetutils/libinetutils.a",
-    "../lib/libgnu.a",
-    "-lutil"
+    "/root/rboxc/build/inetd-daemon-cleanup/daemon.o",
+    "/root/rboxc/build/inetd-daemon-cleanup/daemon.c"
   ],
-  "link_inputs": [
-    "/root/rboxc/build/helpers/inetd-000-libinetutils.a",
-    "/root/rboxc/build/helpers/inetd-001-libgnu.a",
-    "-lutil"
-  ]
+  "log": "evidence/raw/inetd-daemon-cleanup-build.log",
+  "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 }
