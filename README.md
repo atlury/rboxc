@@ -2577,6 +2577,10 @@ initial trace counter omission are preserved as earlier nonpassing checkpoints.
 [evidence/gnu-rm-private-root-validation.json](evidence/gnu-rm-private-root-validation.json)
 checks the isolated roots, all staged file hashes, 22 calls and original assertions.
 Its Valgrind/debugger profile remains pending.
+The existing ownership root profile also passes all seven original cases again
+normally and under Valgrind, with nine clean candidate process logs. Its proc
+mount remains read-only. This regression check adds no suite passes:
+[evidence/gnu-private-root-compat-validation.json](evidence/gnu-private-root-compat-validation.json).
 
 The whole `printf/printf-surprise.sh` finite memory-budget original also passes.
 It retains its 10-byte FIFO reader, 20-million-character field bound and original
