@@ -1,0 +1,700 @@
+{
+  "runtime_helpers": {
+    "/root/rboxc/target/bash-terminal-cleanup-candidate/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174"
+  },
+  "binary": "/root/rboxc/target/bash-terminal-cleanup-candidate/release/rboxc",
+  "binary_sha256": "27d1ec465c58ed342334c5e79b0370f1698be957df6a1452b010b633b6449891",
+  "gnu_binary_sha256": "bd47035bca2886f8d61f564ae38ca9c807a8b0b98e914d28f909fb7b1bb1366f",
+  "inputs": {
+    "/root/rboxc/build/gnu-bash/bash": "bd47035bca2886f8d61f564ae38ca9c807a8b0b98e914d28f909fb7b1bb1366f",
+    "/root/rboxc/target/bash-terminal-cleanup-candidate/release/rboxc": "27d1ec465c58ed342334c5e79b0370f1698be957df6a1452b010b633b6449891",
+    "/root/rboxc/tests/bash-terminal-contract.py": "6de7fd9c23c38870214a94302082ecc55ea716da51fb7b1a9a3acb9180a4a3ce"
+  },
+  "scope": "Eight interactive startup/EXIT contracts cover four aliases with and without a private controlling terminal. Terminal fd 255 stays available through EXIT, and original monitor/tty state and exit status match GNU. Only the independently validated missing-terminal session number is canonicalized for comparison; raw diagnostics remain recorded. Every candidate process must finish with clean Valgrind logs.",
+  "complete": true,
+  "planned_total": 8,
+  "passed": 8,
+  "total": 8,
+  "results": [
+    {
+      "name": "bash:False",
+      "command": "bash",
+      "args": [
+        "-i",
+        "-c",
+        "trap 'test -e /proc/self/fd/255 && echo terminal-open-at-exit' EXIT; test -t 255; printf 'tty:%s\\n' \"$?\"; case $- in *m*) echo monitor:on;; *) echo monitor:off;; esac; exit 7"
+      ],
+      "controlling_terminal": false,
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "626173683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020283c73657373696f6e3e293a20496e617070726f70726961746520696f63746c20666f72206465766963650a626173683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "raw_stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "626173683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020282d31293a20496e617070726f70726961746520696f63746c20666f72206465766963650a626173683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "626173683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020283c73657373696f6e3e293a20496e617070726f70726961746520696f63746c20666f72206465766963650a626173683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "raw_stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "626173683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020282d31293a20496e617070726f70726961746520696f63746c20666f72206465766963650a626173683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-terminal-cleanup-contract/run-x_t4ua01/0-gnu-valgrind/process-914372.log",
+              "sha256": "1f144e5f6848ebdeaeaff510868c34735d7d1a66b45afade604259c4e7dfdc5f",
+              "pid": "914372",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48747
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "626173683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020283c73657373696f6e3e293a20496e617070726f70726961746520696f63746c20666f72206465766963650a626173683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "raw_stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "626173683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020282d31293a20496e617070726f70726961746520696f63746c20666f72206465766963650a626173683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "626173683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020283c73657373696f6e3e293a20496e617070726f70726961746520696f63746c20666f72206465766963650a626173683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "raw_stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "626173683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020282d31293a20496e617070726f70726961746520696f63746c20666f72206465766963650a626173683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-terminal-cleanup-contract/run-x_t4ua01/0-rboxc-valgrind/process-914377.log",
+              "sha256": "362f583ff63922361d73efa502a0ce53dbe546db71908b1bd3f4bf1c3d81230f",
+              "pid": "914377",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49803
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:True",
+      "command": "bash",
+      "args": [
+        "-i",
+        "-c",
+        "trap 'test -e /proc/self/fd/255 && echo terminal-open-at-exit' EXIT; test -t 255; printf 'tty:%s\\n' \"$?\"; case $- in *m*) echo monitor:on;; *) echo monitor:off;; esac; exit 7"
+      ],
+      "controlling_terminal": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "657869740a",
+          "raw_stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "657869740a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "657869740a",
+          "raw_stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "657869740a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-terminal-cleanup-contract/run-x_t4ua01/1-gnu-valgrind/process-914382.log",
+              "sha256": "dcd162995c7df902ee5fc4dfd76d3775c63f3d4259736c2fc00423651da30c5a",
+              "pid": "914382",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48755
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "657869740a",
+          "raw_stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "657869740a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "657869740a",
+          "raw_stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "657869740a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-terminal-cleanup-contract/run-x_t4ua01/1-rboxc-valgrind/process-914388.log",
+              "sha256": "9a70de41bc598a9a22eb9b867caaa851f59218b6d405b2dfbf5f681800caa5a0",
+              "pid": "914388",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49811
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:False",
+      "command": "sh",
+      "args": [
+        "-i",
+        "-c",
+        "trap 'test -e /proc/self/fd/255 && echo terminal-open-at-exit' EXIT; test -t 255; printf 'tty:%s\\n' \"$?\"; case $- in *m*) echo monitor:on;; *) echo monitor:off;; esac; exit 7"
+      ],
+      "controlling_terminal": false,
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "73683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020283c73657373696f6e3e293a20496e617070726f70726961746520696f63746c20666f72206465766963650a73683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "raw_stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "73683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020282d31293a20496e617070726f70726961746520696f63746c20666f72206465766963650a73683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "73683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020283c73657373696f6e3e293a20496e617070726f70726961746520696f63746c20666f72206465766963650a73683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "raw_stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "73683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020282d31293a20496e617070726f70726961746520696f63746c20666f72206465766963650a73683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-terminal-cleanup-contract/run-x_t4ua01/2-gnu-valgrind/process-914395.log",
+              "sha256": "31caef714561b282abfb9187232850a12ed5889f228b06c423899db50c9ca949",
+              "pid": "914395",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48865
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "73683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020283c73657373696f6e3e293a20496e617070726f70726961746520696f63746c20666f72206465766963650a73683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "raw_stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "73683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020282d31293a20496e617070726f70726961746520696f63746c20666f72206465766963650a73683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "73683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020283c73657373696f6e3e293a20496e617070726f70726961746520696f63746c20666f72206465766963650a73683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "raw_stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "73683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020282d31293a20496e617070726f70726961746520696f63746c20666f72206465766963650a73683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-terminal-cleanup-contract/run-x_t4ua01/2-rboxc-valgrind/process-914400.log",
+              "sha256": "eff0ceab62a024b2c215faa5375c7842d912965e854c24a061d4458c8e7d3086",
+              "pid": "914400",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49921
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:True",
+      "command": "sh",
+      "args": [
+        "-i",
+        "-c",
+        "trap 'test -e /proc/self/fd/255 && echo terminal-open-at-exit' EXIT; test -t 255; printf 'tty:%s\\n' \"$?\"; case $- in *m*) echo monitor:on;; *) echo monitor:off;; esac; exit 7"
+      ],
+      "controlling_terminal": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "657869740a",
+          "raw_stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "657869740a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "657869740a",
+          "raw_stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "657869740a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-terminal-cleanup-contract/run-x_t4ua01/3-gnu-valgrind/process-914408.log",
+              "sha256": "4943a9830eddde8f70eb9bfa8e6aceda8e0852f3a7afc444de9855ba3060688a",
+              "pid": "914408",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48873
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "657869740a",
+          "raw_stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "657869740a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "657869740a",
+          "raw_stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "657869740a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-terminal-cleanup-contract/run-x_t4ua01/3-rboxc-valgrind/process-914413.log",
+              "sha256": "126f7b95f9d3627d0c5e87d6844f3dcd819bc529e62e4b2de36237b0af6835bd",
+              "pid": "914413",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49929
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:False",
+      "command": "-bash",
+      "args": [
+        "-i",
+        "-c",
+        "trap 'test -e /proc/self/fd/255 && echo terminal-open-at-exit' EXIT; test -t 255; printf 'tty:%s\\n' \"$?\"; case $- in *m*) echo monitor:on;; *) echo monitor:off;; esac; exit 7"
+      ],
+      "controlling_terminal": false,
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "2d626173683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020283c73657373696f6e3e293a20496e617070726f70726961746520696f63746c20666f72206465766963650a2d626173683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "raw_stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "2d626173683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020282d31293a20496e617070726f70726961746520696f63746c20666f72206465766963650a2d626173683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "2d626173683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020283c73657373696f6e3e293a20496e617070726f70726961746520696f63746c20666f72206465766963650a2d626173683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "raw_stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "2d626173683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020282d31293a20496e617070726f70726961746520696f63746c20666f72206465766963650a2d626173683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-terminal-cleanup-contract/run-x_t4ua01/4-gnu-valgrind/process-914418.log",
+              "sha256": "e0264604f74c4188ad69cf6227fd0934a0644442a0744e20cac00d7a46c15afd",
+              "pid": "914418",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48749
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "2d626173683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020283c73657373696f6e3e293a20496e617070726f70726961746520696f63746c20666f72206465766963650a2d626173683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "raw_stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "2d626173683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020282d31293a20496e617070726f70726961746520696f63746c20666f72206465766963650a2d626173683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "2d626173683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020283c73657373696f6e3e293a20496e617070726f70726961746520696f63746c20666f72206465766963650a2d626173683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "raw_stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "2d626173683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020282d31293a20496e617070726f70726961746520696f63746c20666f72206465766963650a2d626173683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-terminal-cleanup-contract/run-x_t4ua01/4-rboxc-valgrind/process-914423.log",
+              "sha256": "4c713a3c67d3ef0743a99dd39c287d55711a98fc5dca290d10e29c5809fce42b",
+              "pid": "914423",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49805
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:True",
+      "command": "-bash",
+      "args": [
+        "-i",
+        "-c",
+        "trap 'test -e /proc/self/fd/255 && echo terminal-open-at-exit' EXIT; test -t 255; printf 'tty:%s\\n' \"$?\"; case $- in *m*) echo monitor:on;; *) echo monitor:off;; esac; exit 7"
+      ],
+      "controlling_terminal": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "657869740a",
+          "raw_stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "657869740a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "657869740a",
+          "raw_stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "657869740a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-terminal-cleanup-contract/run-x_t4ua01/5-gnu-valgrind/process-914429.log",
+              "sha256": "537699f979a5ac4cc5880d2cf4fbfe5ef389509a44896f243897da3a6ca5d3f7",
+              "pid": "914429",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48757
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "657869740a",
+          "raw_stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "657869740a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "657869740a",
+          "raw_stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "657869740a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-terminal-cleanup-contract/run-x_t4ua01/5-rboxc-valgrind/process-914432.log",
+              "sha256": "4b9e3d72d36a02e57a66e83a831a94c10a11bf7dd5e2b9848e943cc486565921",
+              "pid": "914432",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49813
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:False",
+      "command": "-sh",
+      "args": [
+        "-i",
+        "-c",
+        "trap 'test -e /proc/self/fd/255 && echo terminal-open-at-exit' EXIT; test -t 255; printf 'tty:%s\\n' \"$?\"; case $- in *m*) echo monitor:on;; *) echo monitor:off;; esac; exit 7"
+      ],
+      "controlling_terminal": false,
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "2d73683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020283c73657373696f6e3e293a20496e617070726f70726961746520696f63746c20666f72206465766963650a2d73683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "raw_stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "2d73683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020282d31293a20496e617070726f70726961746520696f63746c20666f72206465766963650a2d73683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "2d73683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020283c73657373696f6e3e293a20496e617070726f70726961746520696f63746c20666f72206465766963650a2d73683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "raw_stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "2d73683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020282d31293a20496e617070726f70726961746520696f63746c20666f72206465766963650a2d73683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-terminal-cleanup-contract/run-x_t4ua01/6-gnu-valgrind/process-914435.log",
+              "sha256": "fccb06b244cb14fb9a53c6389df5f45d474782b4c257f402fcacbd276863c010",
+              "pid": "914435",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48745
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "2d73683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020283c73657373696f6e3e293a20496e617070726f70726961746520696f63746c20666f72206465766963650a2d73683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "raw_stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "2d73683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020282d31293a20496e617070726f70726961746520696f63746c20666f72206465766963650a2d73683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "2d73683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020283c73657373696f6e3e293a20496e617070726f70726961746520696f63746c20666f72206465766963650a2d73683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "raw_stdout": "7474793a310a6d6f6e69746f723a6f66660a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "2d73683a2063616e6e6f7420736574207465726d696e616c2070726f636573732067726f757020282d31293a20496e617070726f70726961746520696f63746c20666f72206465766963650a2d73683a206e6f206a6f6220636f6e74726f6c20696e2074686973207368656c6c0a657869740a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-terminal-cleanup-contract/run-x_t4ua01/6-rboxc-valgrind/process-914486.log",
+              "sha256": "3b306917132bbda16d0ac3111ac40b541af0709bb802b44a59a0ddb109a617f6",
+              "pid": "914486",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49801
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:True",
+      "command": "-sh",
+      "args": [
+        "-i",
+        "-c",
+        "trap 'test -e /proc/self/fd/255 && echo terminal-open-at-exit' EXIT; test -t 255; printf 'tty:%s\\n' \"$?\"; case $- in *m*) echo monitor:on;; *) echo monitor:off;; esac; exit 7"
+      ],
+      "controlling_terminal": true,
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 7,
+          "stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "657869740a",
+          "raw_stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "657869740a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 7,
+          "stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "657869740a",
+          "raw_stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "657869740a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-terminal-cleanup-contract/run-x_t4ua01/7-gnu-valgrind/process-914491.log",
+              "sha256": "eb439d3b15797549b66a668ee6bf06866b6aa628387f8e95e640327e54fa162d",
+              "pid": "914491",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48753
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 7,
+          "stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "657869740a",
+          "raw_stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "657869740a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 7,
+          "stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "stderr": "657869740a",
+          "raw_stdout": "7474793a300a6d6f6e69746f723a6f6e0a7465726d696e616c2d6f70656e2d61742d657869740a",
+          "raw_stderr": "657869740a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-terminal-cleanup-contract/run-x_t4ua01/7-rboxc-valgrind/process-914497.log",
+              "sha256": "c3592bbc831c7dc4eeb4d4dc5624f9f737ef8313ab16fbbae8e48f840c27d90c",
+              "pid": "914497",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49809
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

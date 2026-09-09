@@ -527,24 +527,8 @@
       "target": "func",
       "recipe": "run-func",
       "recipe_sha256": "d09dad1f1d59198849a01e02ab6e5e73138fd74641c1d7e496ceaa522094185e",
-      "reviewed": true,
-      "state": "reviewed-original-pass",
-      "script": "func.tests",
-      "expected": "func.right",
-      "fixtures": {
-        "func.tests": "b0e5b527b06f7bc0253fb2e60ee051851882ca43743f0066b16d38e138d5562e",
-        "func.right": "12eaf253fe3b45fa3d4f22ff79ab1f467a54c85f8f8389811b396fbbfa1104ff",
-        "func1.sub": "1eb09e1ffb59f34b84ddcb25bd2dd68dadfab970de4d86c9a67df5418153dfd1",
-        "func2.sub": "2fc7a4c5c884a84bbc0eda546d98846137172551ec4075535e657b70617a51ca",
-        "func3.sub": "d10aaf9f8fc056acf6a706824c65b94558035521c9975da8b2d9a035dae0e427",
-        "func4.sub": "a0a6f715945d9be67db5d9747a5ea52a7e4e3555c970e0ad0351a59b29053866",
-        "func5.sub": "23092d1569d0b829630a34da58e4661d81229f5aba0c0164420ab20c2e98a9a9"
-      },
-      "output_mode": "combined",
-      "timeout_seconds": 300,
-      "review": "Original recipe, main script and every subsidiary read in full. Bounded local function scope, return behavior and here-document expansion assertions. Here-document build inputs and test C files are pinned plain data, never compiled or executed by this profile.",
-      "evidence": "evidence/bash-terminal-functions-original.json",
-      "audit": "evidence/bash-terminal-functions-validation.json"
+      "reviewed": false,
+      "state": "pending-review"
     },
     {
       "target": "getopts",
@@ -592,44 +576,8 @@
       "target": "heredoc",
       "recipe": "run-heredoc",
       "recipe_sha256": "7c9a72e4c037ca75eb5d95e7f37bd9ee3be1c2adad0e5cb53a1160d1535662a7",
-      "reviewed": true,
-      "state": "reviewed-original-baseline-open",
-      "script": "heredoc.tests",
-      "expected": "heredoc.right",
-      "fixtures": {
-        "heredoc.tests": "4b11ab8d4f351442882519e2858641c57b9661964609301f789ee7ceac098993",
-        "heredoc.right": "7af3a14ae4aad185c90f8f0bffe2612514ea147f5d2efd730616a65bab1c33d7",
-        "heredoc1.sub": "627f2b293f3661a2212a9a1eac168b9747101d7916e281c85463b247a5c9962e",
-        "heredoc2.sub": "b8f2a777937696b4317e6a0ed9b624578521556d7efa20e520b0db9ee14e4ed3",
-        "heredoc3.sub": "5fc1d9f38697f10e85f73bccee1b885519309918a5cc38e9e1fffe4ebd4b8c80",
-        "heredoc4.sub": "c1e6eb0ae1a99204557fe77b230f1172393b663e11d6a7ec0fa275ad06b14182",
-        "heredoc5.sub": "ce396ab45257261fed6fb47446f80087983b9c35a9725a4de14a38fb86a1d4bc",
-        "heredoc6.sub": "dbf29f08be8d74465a19ea189def4d67d0764250ccd87eb389bf72ece427d730",
-        "heredoc7.sub": "86e94ef6231150bdbd383a895dd5de95b33ec0ce18ea4c7568ee5bfdaf48c6dc",
-        "heredoc8.sub": "0bc13947b72ae9aac62a1447040b018bb752cc27a9ab49510cc7cb91ed732214",
-        "heredoc9.sub": "26b09f442c5f8b57e8da60c912835ebf3fc1acf4f6c5e0444e579bc6356b8184",
-        "heredoc10.sub": "431f52041fba3c8fd6e6ef9ec6b2d2d45334b53926a69dec387206ed239c2c33"
-      },
-      "output_mode": "combined",
-      "timeout_seconds": 300,
-      "review": "Original recipe, main script and every subsidiary read in full. Bounded local function scope, return behavior and here-document expansion assertions. Here-document build inputs and test C files are pinned plain data, never compiled or executed by this profile.",
-      "build_data": {
-        "y.tab.c": {
-          "path": "/opt/src/bash-5.3/y.tab.c",
-          "sha256": "8c3fa4f8d439dc913391818300bbc1ffdcefc8f38fe36efb8e9b83a8874a2f76"
-        },
-        "config.h": {
-          "path": "/root/rboxc/build/gnu-bash/config.h",
-          "sha256": "4491ce594354daa494946bc935033c1c97ab359360927eda1406c26f5900f07c"
-        },
-        "version.h": {
-          "path": "/root/rboxc/build/gnu-bash/version.h",
-          "sha256": "fcc1ab378a65f2646d2f6eae9481dbcbcb09d10f0f98e88c4c208f5f28532d28"
-        }
-      },
-      "evidence": "evidence/bash-terminal-functions-original.json",
-      "audit": "evidence/bash-terminal-functions-validation.json",
-      "baseline": "Both instrumented implementations expose the absolute private grep helper path in its missing-file diagnostic. Raw outputs remain unchanged; the baseline comparison canonicalizes only each private exec directory independently derived from process commands. Normal expected output matches and all 98 candidate process logs are clean; the entire script stays outside strict counts."
+      "reviewed": false,
+      "state": "pending-review"
     },
     {
       "target": "herestr",
@@ -654,7 +602,7 @@
       "recipe": "run-histexpand",
       "recipe_sha256": "ec9f89bb4bcb2cae5368c483719301c471e9932ebe8e9d73e833bf54619e5a88",
       "reviewed": true,
-      "state": "reviewed-original-assertions-memory-open",
+      "state": "reviewed-ready",
       "script": "histexp.tests",
       "expected": "histexp.right",
       "fixtures": {
@@ -677,16 +625,14 @@
       },
       "output_mode": "combined",
       "timeout_seconds": 300,
-      "review": "Original recipe, main script, every active subsidiary and sourced fixture read in full. Fixed local scope, history replay or POSIX assertions only. Original history.list command replay and the posix2 generated shebang require a private /bin/sh bind to the selected Bash implementation. History interactive children intentionally use their original piped/here-string input. Varenv needs private env and absolute true/echo helpers; its fixed RANDOM inequality remains an unchanged probabilistic assertion.",
-      "evidence": "evidence/bash-terminal-history-original.json",
-      "audit": "evidence/bash-terminal-history-validation.json"
+      "review": "Original recipe, main script, every active subsidiary and sourced fixture read in full. Fixed local scope, history replay or POSIX assertions only. Original history.list command replay and the posix2 generated shebang require a private /bin/sh bind to the selected Bash implementation. History interactive children intentionally use their original piped/here-string input. Varenv needs private env and absolute true/echo helpers; its fixed RANDOM inequality remains an unchanged probabilistic assertion."
     },
     {
       "target": "history",
       "recipe": "run-history",
       "recipe_sha256": "6d05fbba68af60dc1bcb2ff03dac60f0d870223b073030c5f16af306c4c2ee9e",
       "reviewed": true,
-      "state": "reviewed-original-pass",
+      "state": "reviewed-ready",
       "script": "history.tests",
       "expected": "history.right",
       "fixtures": {
@@ -713,9 +659,7 @@
       "output_mode": "combined",
       "timeout_seconds": 300,
       "review": "Original recipe, main script, every active subsidiary and sourced fixture read in full. Fixed local scope, history replay or POSIX assertions only. Original history.list command replay and the posix2 generated shebang require a private /bin/sh bind to the selected Bash implementation. History interactive children intentionally use their original piped/here-string input. Varenv needs private env and absolute true/echo helpers; its fixed RANDOM inequality remains an unchanged probabilistic assertion.",
-      "controlling_terminal": true,
-      "evidence": "evidence/bash-terminal-history-original.json",
-      "audit": "evidence/bash-terminal-history-validation.json"
+      "controlling_terminal": true
     },
     {
       "target": "ifs",
@@ -1050,7 +994,7 @@
       "recipe": "run-posix2",
       "recipe_sha256": "82856bfa88fb72013120df5a0f2ddab7b4c49203f7b862475044f13010cbb24a",
       "reviewed": true,
-      "state": "reviewed-original-pass",
+      "state": "reviewed-ready",
       "script": "posix2.tests",
       "expected": "posix2.right",
       "fixtures": {
@@ -1065,9 +1009,7 @@
       },
       "output_mode": "drop-expect",
       "timeout_seconds": 300,
-      "review": "Original recipe, main script, every active subsidiary and sourced fixture read in full. Fixed local scope, history replay or POSIX assertions only. Original history.list command replay and the posix2 generated shebang require a private /bin/sh bind to the selected Bash implementation. History interactive children intentionally use their original piped/here-string input. Varenv needs private env and absolute true/echo helpers; its fixed RANDOM inequality remains an unchanged probabilistic assertion.",
-      "evidence": "evidence/bash-next-four-scope.json",
-      "audit": "evidence/bash-next-four-scope-validation.json"
+      "review": "Original recipe, main script, every active subsidiary and sourced fixture read in full. Fixed local scope, history replay or POSIX assertions only. Original history.list command replay and the posix2 generated shebang require a private /bin/sh bind to the selected Bash implementation. History interactive children intentionally use their original piped/here-string input. Varenv needs private env and absolute true/echo helpers; its fixed RANDOM inequality remains an unchanged probabilistic assertion."
     },
     {
       "target": "posixexp",
@@ -1169,19 +1111,7 @@
       "recipe": "run-printf",
       "recipe_sha256": "3ef94f816b379b4d62aa1ae23db89a78063e70db300b37c3acba476cd02801ba",
       "reviewed": false,
-      "state": "mixed-reproduction-inputs-unexecuted",
-      "review": "Main, original recipe and all seven subsidiaries read. Main and printf1.sub include explicitly documented historical infinite-loop inputs; whole recipe remains unexecuted. Ordinary formatting selections can be covered separately. Other prerequisites are the original cat -v output filter, pinned hexdump/getconf helpers, en_US.UTF-8 locale and recorded clock-boundary assertions.",
-      "reviewed_source_sha256": {
-        "printf.tests": "bf1f466de4329e75c0b870981de5ea6e74f49dc96089fd7f9bd57949e36f85e2",
-        "printf.right": "b263085798dad1f800baf86564930b6414ad43fbc59ec8990b2e8ee66c1c12a3",
-        "printf1.sub": "66681602d2b73f79d94deb09ebcc6864802c22f3fbb1566c11604838e579a790",
-        "printf2.sub": "c7bd376b1899ea9eb61105ff7a17c4b76950e07d9a551ffb8c0a4c00c56b91f8",
-        "printf3.sub": "7911dad5d29ed6db139de3025f067f895546c50ef380fffca37294d25b53a936",
-        "printf4.sub": "14b0aa639a20774c47a19e7ec9baed146270ceeb7abe3dc807af6c65629d650d",
-        "printf5.sub": "b6fc3289c6a478eee7dd98f689357fde2dbd5750cec81ad2e6536800ff0b5c8e",
-        "printf6.sub": "6b680c770442826bd6dc39444ffb132d5ceefe5a0742dcc17d98cc0090766d1d",
-        "printf7.sub": "6edd632603d40b10645f401cbd56aa59326a63a83c60423750b48e78d9735fa8"
-      }
+      "state": "pending-review"
     },
     {
       "target": "procsub",
@@ -1440,7 +1370,7 @@
       "recipe": "run-varenv",
       "recipe_sha256": "9f68e76de3c6df3a367fba91c483ab896171958cb275c118ad33ebb096db8a67",
       "reviewed": true,
-      "state": "reviewed-original-baseline-open",
+      "state": "reviewed-ready",
       "script": "varenv.tests",
       "expected": "varenv.right",
       "fixtures": {
@@ -1483,10 +1413,7 @@
       },
       "output_mode": "drop-expect",
       "timeout_seconds": 300,
-      "review": "Original recipe, main script, every active subsidiary and sourced fixture read in full. Fixed local scope, history replay or POSIX assertions only. Original history.list command replay and the posix2 generated shebang require a private /bin/sh bind to the selected Bash implementation. History interactive children intentionally use their original piped/here-string input. Varenv needs private env and absolute true/echo helpers; its fixed RANDOM inequality remains an unchanged probabilistic assertion.",
-      "evidence": "evidence/bash-next-four-scope.json",
-      "audit": "evidence/bash-next-four-scope-validation.json",
-      "baseline": "Both instrumented implementations print four inherited SIGRTMAX trap entries. Normal runs match the original expected output, and all candidate logs are clean; the entire script stays outside strict counts."
+      "review": "Original recipe, main script, every active subsidiary and sourced fixture read in full. Fixed local scope, history replay or POSIX assertions only. Original history.list command replay and the posix2 generated shebang require a private /bin/sh bind to the selected Bash implementation. History interactive children intentionally use their original piped/here-string input. Varenv needs private env and absolute true/echo helpers; its fixed RANDOM inequality remains an unchanged probabilistic assertion."
     },
     {
       "target": "vredir",

@@ -78,7 +78,7 @@ there where available.
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
-| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 49 original recipes (50 scripts) pass on their recorded candidates with 12133 clean process logs; three memory/signal profiles and one GNU environment baseline remain open |
+| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 52 original recipes (53 scripts) pass on their recorded candidates with 12275 clean process logs; four memory/signal profiles and three instrumentation/environment baselines remain open |
 | Less | 704 | Ten focused checks, one production terminal check and all 18 original screen replays pass across declared profiles |
 | Screen | 5.0.2 | All three original targets pass across declared profiles; daemon cleanup and socket recovery pass Valgrind |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
@@ -106,15 +106,31 @@ this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
 The current 187-command candidate is **14,722,352 bytes**, at
-`target/bash-exit-scope-status-candidate/release/rboxc`, SHA-256
-`ce93145125f3959115af4c432e172c6c323df68a245c7a1317087e525e06ba7e`.
+`target/bash-terminal-cleanup-candidate/release/rboxc`, SHA-256
+`27d1ec465c58ed342334c5e79b0370f1698be957df6a1452b010b633b6449891`.
 An independent rebuild is byte-identical. All 428 Coreutils smoke checks,
 11 dispatcher checks, 44 focused Bash comparisons and 69 shell-adapter checks
-pass. Bash has **50 strict scripts from 49 original recipes**, with **12133 clean
+pass. Bash has **53 strict scripts from 52 original recipes**, with **12275 clean
 candidate process logs** across their recorded immutable candidates.
-[evidence/bash-exit-scope-status-coverage.json](evidence/bash-exit-scope-status-coverage.json)
-accounts for 54 reviewed scripts and all 88 original recipes; 31 recipes remain
-pending, two are orchestration and two are held outside execution.
+[evidence/bash-terminal-cleanup-coverage.json](evidence/bash-terminal-cleanup-coverage.json)
+accounts for 60 reviewed scripts and all 88 original recipes; 24 recipes remain
+pending, two are orchestration and three are held outside execution.
+
+Interactive Bash now retains exit ownership of its allocated terminal while
+leaving borrowed stderr unchanged. Eight contracts check four shell aliases
+with and without a private controlling terminal; the terminal stays available
+through EXIT. The history, function and POSIX originals add 142 clean candidate
+process logs. Variable-environment output exposes an inherited Valgrind signal
+trap, and here-document output exposes Valgrind's absolute helper diagnostic
+name; both have clean candidate logs but remain outside strict counts. The
+latter baseline comparison maps only the private exec directories derived
+from process commands and preserves raw output. History expansion retains
+expected default-SIGPIPE descriptor findings.
+[evidence/bash-terminal-cleanup-validation.json](evidence/bash-terminal-cleanup-validation.json)
+checks the sole changed jobs helper, rebuild, contracts and original reports,
+including the initial eleven terminal descriptor findings. The printf recipe
+and all subsidiaries have been read; its mixed historical loop-reproduction
+inputs remain unexecuted, while ordinary formatting can be covered separately.
 
 No-fork substitution files and saved stdout now retain exit owners. Anonymous
 file records and assignment descriptors live on the heap, and explicit heap

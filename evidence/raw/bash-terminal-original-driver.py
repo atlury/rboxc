@@ -23,9 +23,8 @@ selected_groups=sorted(r['target'] for r in selected)
 selected=[{**r,**case,'selection':r['target']+':'+case['script'] if r.get('script_cases') else r['target']}
           for r in selected for case in r.get('script_cases',[{}])]
 helpers={'sed':ROOT/'build/gnu-sed/sed/sed','grep':ROOT/'build/gnu-grep/src/grep',
-         'cmp':ROOT/'build/gnu-diffutils/src/cmp',
          'diff':ROOT/'build/gnu-diffutils/src/diff','awk':ROOT/'build/gnu-gawk/gawk',
-         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('od','mktemp','touch','chmod','rm','cat','tr','mkdir','printenv','sleep','date','wc','seq','tee','expr','ls','ln','cp','uname','env','sort','mkfifo')}}
+         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('od','mktemp','touch','chmod','rm','cat','tr','mkdir','printenv','sleep','date','wc','seq','tee','expr','ls','ln','cp','uname','env')}}
 fixed_helpers=inventory.get('fixed_test_helpers',{})
 runtime_helpers=inventory.get('runtime_test_helpers',{})
 inputs={p:fingerprint(p) for p in [Path(__file__),manifest,profile.oracle,*helpers.values()]}
@@ -36,9 +35,6 @@ for helper in runtime_helpers.values():
     inputs[ROOT/helper['source']]=helper['source_sha256']
     inputs[ROOT/helper['binary']]=helper['binary_sha256']
 for row in selected:
-    for name,data in row.get('build_data',{}).items():
-        assert Path(name).name==name and name not in ('.','..')
-        inputs[Path(data['path'])]=data['sha256']
     inputs.update({Path(p):h for p,h in row.get('host_inputs',{}).items()})
     if row.get('absolute_helpers'):
         inputs.update({p:fingerprint(p) for p in (Path('/usr/bin/unshare'),Path('/usr/bin/mount'),Path('/bin/sh').resolve())})
@@ -67,11 +63,6 @@ for row in selected:
                     '--track-fds=yes','--trace-children=yes','--log-file='+str(saved/'process-%p.log'),*argv]
                 env={'PATH':str(work/'exec')+':/usr/bin:/bin','THIS_SH':str(alias),'HOME':directory,
                      'TMPDIR':directory,'LC_ALL':'C','LANGUAGE':'C','TZ':'UTC0'}
-                if row.get('build_data'):
-                    (work/'build-data').mkdir()
-                    for filename,data in row['build_data'].items():
-                        shutil.copy2(data['path'],work/'build-data'/filename)
-                    env['BUILD_DIR']=str(work/'build-data')
                 if row.get('runtime_helpers'):
                     env['LD_PRELOAD']=':'.join(str(ROOT/runtime_helpers[n]['binary']) for n in row['runtime_helpers'])
                 private_mounts=[]

@@ -528,7 +528,7 @@
       "recipe": "run-func",
       "recipe_sha256": "d09dad1f1d59198849a01e02ab6e5e73138fd74641c1d7e496ceaa522094185e",
       "reviewed": true,
-      "state": "reviewed-original-pass",
+      "state": "reviewed-ready",
       "script": "func.tests",
       "expected": "func.right",
       "fixtures": {
@@ -542,9 +542,7 @@
       },
       "output_mode": "combined",
       "timeout_seconds": 300,
-      "review": "Original recipe, main script and every subsidiary read in full. Bounded local function scope, return behavior and here-document expansion assertions. Here-document build inputs and test C files are pinned plain data, never compiled or executed by this profile.",
-      "evidence": "evidence/bash-terminal-functions-original.json",
-      "audit": "evidence/bash-terminal-functions-validation.json"
+      "review": "Original recipe, main script and every subsidiary read in full. Bounded local function scope, return behavior and here-document expansion assertions. Here-document build inputs and test C files are pinned plain data, never compiled or executed by this profile."
     },
     {
       "target": "getopts",
@@ -593,7 +591,7 @@
       "recipe": "run-heredoc",
       "recipe_sha256": "7c9a72e4c037ca75eb5d95e7f37bd9ee3be1c2adad0e5cb53a1160d1535662a7",
       "reviewed": true,
-      "state": "reviewed-original-baseline-open",
+      "state": "reviewed-ready",
       "script": "heredoc.tests",
       "expected": "heredoc.right",
       "fixtures": {
@@ -626,10 +624,7 @@
           "path": "/root/rboxc/build/gnu-bash/version.h",
           "sha256": "fcc1ab378a65f2646d2f6eae9481dbcbcb09d10f0f98e88c4c208f5f28532d28"
         }
-      },
-      "evidence": "evidence/bash-terminal-functions-original.json",
-      "audit": "evidence/bash-terminal-functions-validation.json",
-      "baseline": "Both instrumented implementations expose the absolute private grep helper path in its missing-file diagnostic. Raw outputs remain unchanged; the baseline comparison canonicalizes only each private exec directory independently derived from process commands. Normal expected output matches and all 98 candidate process logs are clean; the entire script stays outside strict counts."
+      }
     },
     {
       "target": "herestr",
@@ -654,7 +649,7 @@
       "recipe": "run-histexpand",
       "recipe_sha256": "ec9f89bb4bcb2cae5368c483719301c471e9932ebe8e9d73e833bf54619e5a88",
       "reviewed": true,
-      "state": "reviewed-original-assertions-memory-open",
+      "state": "reviewed-ready",
       "script": "histexp.tests",
       "expected": "histexp.right",
       "fixtures": {
@@ -677,16 +672,14 @@
       },
       "output_mode": "combined",
       "timeout_seconds": 300,
-      "review": "Original recipe, main script, every active subsidiary and sourced fixture read in full. Fixed local scope, history replay or POSIX assertions only. Original history.list command replay and the posix2 generated shebang require a private /bin/sh bind to the selected Bash implementation. History interactive children intentionally use their original piped/here-string input. Varenv needs private env and absolute true/echo helpers; its fixed RANDOM inequality remains an unchanged probabilistic assertion.",
-      "evidence": "evidence/bash-terminal-history-original.json",
-      "audit": "evidence/bash-terminal-history-validation.json"
+      "review": "Original recipe, main script, every active subsidiary and sourced fixture read in full. Fixed local scope, history replay or POSIX assertions only. Original history.list command replay and the posix2 generated shebang require a private /bin/sh bind to the selected Bash implementation. History interactive children intentionally use their original piped/here-string input. Varenv needs private env and absolute true/echo helpers; its fixed RANDOM inequality remains an unchanged probabilistic assertion."
     },
     {
       "target": "history",
       "recipe": "run-history",
       "recipe_sha256": "6d05fbba68af60dc1bcb2ff03dac60f0d870223b073030c5f16af306c4c2ee9e",
       "reviewed": true,
-      "state": "reviewed-original-pass",
+      "state": "reviewed-ready",
       "script": "history.tests",
       "expected": "history.right",
       "fixtures": {
@@ -713,9 +706,7 @@
       "output_mode": "combined",
       "timeout_seconds": 300,
       "review": "Original recipe, main script, every active subsidiary and sourced fixture read in full. Fixed local scope, history replay or POSIX assertions only. Original history.list command replay and the posix2 generated shebang require a private /bin/sh bind to the selected Bash implementation. History interactive children intentionally use their original piped/here-string input. Varenv needs private env and absolute true/echo helpers; its fixed RANDOM inequality remains an unchanged probabilistic assertion.",
-      "controlling_terminal": true,
-      "evidence": "evidence/bash-terminal-history-original.json",
-      "audit": "evidence/bash-terminal-history-validation.json"
+      "controlling_terminal": true
     },
     {
       "target": "ifs",
@@ -1050,7 +1041,7 @@
       "recipe": "run-posix2",
       "recipe_sha256": "82856bfa88fb72013120df5a0f2ddab7b4c49203f7b862475044f13010cbb24a",
       "reviewed": true,
-      "state": "reviewed-original-pass",
+      "state": "reviewed-ready",
       "script": "posix2.tests",
       "expected": "posix2.right",
       "fixtures": {
@@ -1065,9 +1056,7 @@
       },
       "output_mode": "drop-expect",
       "timeout_seconds": 300,
-      "review": "Original recipe, main script, every active subsidiary and sourced fixture read in full. Fixed local scope, history replay or POSIX assertions only. Original history.list command replay and the posix2 generated shebang require a private /bin/sh bind to the selected Bash implementation. History interactive children intentionally use their original piped/here-string input. Varenv needs private env and absolute true/echo helpers; its fixed RANDOM inequality remains an unchanged probabilistic assertion.",
-      "evidence": "evidence/bash-next-four-scope.json",
-      "audit": "evidence/bash-next-four-scope-validation.json"
+      "review": "Original recipe, main script, every active subsidiary and sourced fixture read in full. Fixed local scope, history replay or POSIX assertions only. Original history.list command replay and the posix2 generated shebang require a private /bin/sh bind to the selected Bash implementation. History interactive children intentionally use their original piped/here-string input. Varenv needs private env and absolute true/echo helpers; its fixed RANDOM inequality remains an unchanged probabilistic assertion."
     },
     {
       "target": "posixexp",
@@ -1169,19 +1158,7 @@
       "recipe": "run-printf",
       "recipe_sha256": "3ef94f816b379b4d62aa1ae23db89a78063e70db300b37c3acba476cd02801ba",
       "reviewed": false,
-      "state": "mixed-reproduction-inputs-unexecuted",
-      "review": "Main, original recipe and all seven subsidiaries read. Main and printf1.sub include explicitly documented historical infinite-loop inputs; whole recipe remains unexecuted. Ordinary formatting selections can be covered separately. Other prerequisites are the original cat -v output filter, pinned hexdump/getconf helpers, en_US.UTF-8 locale and recorded clock-boundary assertions.",
-      "reviewed_source_sha256": {
-        "printf.tests": "bf1f466de4329e75c0b870981de5ea6e74f49dc96089fd7f9bd57949e36f85e2",
-        "printf.right": "b263085798dad1f800baf86564930b6414ad43fbc59ec8990b2e8ee66c1c12a3",
-        "printf1.sub": "66681602d2b73f79d94deb09ebcc6864802c22f3fbb1566c11604838e579a790",
-        "printf2.sub": "c7bd376b1899ea9eb61105ff7a17c4b76950e07d9a551ffb8c0a4c00c56b91f8",
-        "printf3.sub": "7911dad5d29ed6db139de3025f067f895546c50ef380fffca37294d25b53a936",
-        "printf4.sub": "14b0aa639a20774c47a19e7ec9baed146270ceeb7abe3dc807af6c65629d650d",
-        "printf5.sub": "b6fc3289c6a478eee7dd98f689357fde2dbd5750cec81ad2e6536800ff0b5c8e",
-        "printf6.sub": "6b680c770442826bd6dc39444ffb132d5ceefe5a0742dcc17d98cc0090766d1d",
-        "printf7.sub": "6edd632603d40b10645f401cbd56aa59326a63a83c60423750b48e78d9735fa8"
-      }
+      "state": "pending-review"
     },
     {
       "target": "procsub",
@@ -1440,7 +1417,7 @@
       "recipe": "run-varenv",
       "recipe_sha256": "9f68e76de3c6df3a367fba91c483ab896171958cb275c118ad33ebb096db8a67",
       "reviewed": true,
-      "state": "reviewed-original-baseline-open",
+      "state": "reviewed-ready",
       "script": "varenv.tests",
       "expected": "varenv.right",
       "fixtures": {
@@ -1483,10 +1460,7 @@
       },
       "output_mode": "drop-expect",
       "timeout_seconds": 300,
-      "review": "Original recipe, main script, every active subsidiary and sourced fixture read in full. Fixed local scope, history replay or POSIX assertions only. Original history.list command replay and the posix2 generated shebang require a private /bin/sh bind to the selected Bash implementation. History interactive children intentionally use their original piped/here-string input. Varenv needs private env and absolute true/echo helpers; its fixed RANDOM inequality remains an unchanged probabilistic assertion.",
-      "evidence": "evidence/bash-next-four-scope.json",
-      "audit": "evidence/bash-next-four-scope-validation.json",
-      "baseline": "Both instrumented implementations print four inherited SIGRTMAX trap entries. Normal runs match the original expected output, and all candidate logs are clean; the entire script stays outside strict counts."
+      "review": "Original recipe, main script, every active subsidiary and sourced fixture read in full. Fixed local scope, history replay or POSIX assertions only. Original history.list command replay and the posix2 generated shebang require a private /bin/sh bind to the selected Bash implementation. History interactive children intentionally use their original piped/here-string input. Varenv needs private env and absolute true/echo helpers; its fixed RANDOM inequality remains an unchanged probabilistic assertion."
     },
     {
       "target": "vredir",

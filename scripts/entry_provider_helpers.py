@@ -99,6 +99,8 @@ def prepare_archives(root,provider,mapping):
         prepare_function_substitution_cleanup(root, adapted)
         from bash_exit_scope_cleanup import prepare as prepare_exit_scope_cleanup
         prepare_exit_scope_cleanup(root, adapted)
+        from bash_terminal_cleanup import prepare as prepare_terminal_cleanup
+        prepare_terminal_cleanup(root, adapted)
     if provider=='gawk':
         from gawk_cleanup import prepare
         adapted=prepare(root)

@@ -2,7 +2,6 @@
 """Run reviewed, unchanged Bash scripts against their original expected output."""
 # SPDX-License-Identifier: GPL-3.0-or-later
 import importlib.util,json,os,re,shutil,signal,subprocess,sys,tempfile
-import fcntl,pty,select,termios,threading
 from pathlib import Path
 from comparison_profile import ComparisonProfile,fingerprint
 
@@ -23,9 +22,8 @@ selected_groups=sorted(r['target'] for r in selected)
 selected=[{**r,**case,'selection':r['target']+':'+case['script'] if r.get('script_cases') else r['target']}
           for r in selected for case in r.get('script_cases',[{}])]
 helpers={'sed':ROOT/'build/gnu-sed/sed/sed','grep':ROOT/'build/gnu-grep/src/grep',
-         'cmp':ROOT/'build/gnu-diffutils/src/cmp',
          'diff':ROOT/'build/gnu-diffutils/src/diff','awk':ROOT/'build/gnu-gawk/gawk',
-         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('od','mktemp','touch','chmod','rm','cat','tr','mkdir','printenv','sleep','date','wc','seq','tee','expr','ls','ln','cp','uname','env','sort','mkfifo')}}
+         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('od','mktemp','touch','chmod','rm','cat','tr','mkdir','printenv','sleep','date','wc','seq','tee','expr','ls','ln','cp','uname','env')}}
 fixed_helpers=inventory.get('fixed_test_helpers',{})
 runtime_helpers=inventory.get('runtime_test_helpers',{})
 inputs={p:fingerprint(p) for p in [Path(__file__),manifest,profile.oracle,*helpers.values()]}
@@ -36,9 +34,6 @@ for helper in runtime_helpers.values():
     inputs[ROOT/helper['source']]=helper['source_sha256']
     inputs[ROOT/helper['binary']]=helper['binary_sha256']
 for row in selected:
-    for name,data in row.get('build_data',{}).items():
-        assert Path(name).name==name and name not in ('.','..')
-        inputs[Path(data['path'])]=data['sha256']
     inputs.update({Path(p):h for p,h in row.get('host_inputs',{}).items()})
     if row.get('absolute_helpers'):
         inputs.update({p:fingerprint(p) for p in (Path('/usr/bin/unshare'),Path('/usr/bin/mount'),Path('/bin/sh').resolve())})
@@ -50,7 +45,6 @@ for row in selected:
     outcomes={};name=row['selection']
     timeout_seconds=row.get('timeout_seconds',180)
     assert type(timeout_seconds) is int and 1<=timeout_seconds<=900
-    assert type(row.get('controlling_terminal',False)) is bool
     for implementation,binary in [('gnu',profile.oracle),('rboxc',profile.binary)]:
         for instrument in (False,True):
             key=implementation+('-valgrind' if instrument else '')
@@ -67,11 +61,6 @@ for row in selected:
                     '--track-fds=yes','--trace-children=yes','--log-file='+str(saved/'process-%p.log'),*argv]
                 env={'PATH':str(work/'exec')+':/usr/bin:/bin','THIS_SH':str(alias),'HOME':directory,
                      'TMPDIR':directory,'LC_ALL':'C','LANGUAGE':'C','TZ':'UTC0'}
-                if row.get('build_data'):
-                    (work/'build-data').mkdir()
-                    for filename,data in row['build_data'].items():
-                        shutil.copy2(data['path'],work/'build-data'/filename)
-                    env['BUILD_DIR']=str(work/'build-data')
                 if row.get('runtime_helpers'):
                     env['LD_PRELOAD']=':'.join(str(ROOT/runtime_helpers[n]['binary']) for n in row['runtime_helpers'])
                 private_mounts=[]
@@ -89,29 +78,9 @@ for row in selected:
                         'while [ "$1" != -- ]; do /usr/bin/mount --bind "$1" "$2" || exit 77; shift 2; done; shift; exec "$@"',
                         'bash-private-helpers',*mount_args,'--',*argv]
                 script_input=(work/row['script']).open('rb') if row.get('stdin_script') else None
-                terminal_output=bytearray()
-                terminal_options={'start_new_session':True}
-                if row.get('controlling_terminal'):
-                    master,slave=pty.openpty()
-                    def terminal_child():
-                        os.setsid()
-                        fcntl.ioctl(slave,termios.TIOCSCTTY,0)
-                        os.close(slave)
-                    terminal_options={'preexec_fn':terminal_child,'pass_fds':(slave,)}
                 process=subprocess.Popen(argv,cwd=work,env=env,stdin=script_input if script_input is not None else subprocess.DEVNULL,stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE if row['output_mode'] in ('stdout','drop-expect-stdout') else subprocess.STDOUT,
-                    **terminal_options)
-                if row.get('controlling_terminal'):
-                    stop_drain=threading.Event()
-                    def drain_terminal():
-                        while True:
-                            if select.select([master],[],[],0.05)[0]:
-                                chunk=os.read(master,65536)
-                                if not chunk:break
-                                terminal_output.extend(chunk)
-                            elif stop_drain.is_set():break
-                    drain=threading.Thread(target=drain_terminal)
-                    drain.start()
+                    start_new_session=True)
                 if script_input is not None:script_input.close()
                 timed_out=False
                 try:
@@ -125,10 +94,6 @@ for row in selected:
                         try:os.killpg(process.pid,signal.SIGKILL)
                         except ProcessLookupError:pass
                         stdout,stderr=process.communicate()
-                if row.get('controlling_terminal'):
-                    stop_drain.set();drain.join()
-                    os.close(slave);os.close(master)
-                    (saved/'terminal-output').write_bytes(terminal_output)
                 done=subprocess.CompletedProcess(argv,process.returncode,stdout,stderr)
                 actual=done.stdout
                 # Match run-invert's original `grep -v '^expect'` filter.
@@ -146,8 +111,8 @@ for row in selected:
                     clean=complete and parsed['errors']==0 and parsed['non_inherited_descriptors']==0 and not any(parsed['heap_bytes'].get(k,0) for k in ('definitely lost','indirectly lost','possibly lost'))
                     logs.append({'log':str(log.relative_to(ROOT)),'sha256':fingerprint(log),'pid':pid,'complete':complete,'clean':clean,**parsed})
                 assert not instrument or logs
-                outcomes[key]={'private_mounts':private_mounts,'controlling_terminal':bool(row.get('controlling_terminal')),'status':done.returncode,'timeout_seconds':timeout_seconds,'stdin_script':bool(row.get('stdin_script')),'timed_out':timed_out,'expected_output_matches':actual==(source/row['expected']).read_bytes(),
-                    'raw':{str(p.relative_to(ROOT)):fingerprint(p) for p in [saved/'stdout',saved/'stderr',saved/'actual',*([saved/'terminal-output'] if row.get('controlling_terminal') else [])]},
+                outcomes[key]={'private_mounts':private_mounts,'status':done.returncode,'timeout_seconds':timeout_seconds,'stdin_script':bool(row.get('stdin_script')),'timed_out':timed_out,'expected_output_matches':actual==(source/row['expected']).read_bytes(),
+                    'raw':{str(p.relative_to(ROOT)):fingerprint(p) for p in (saved/'stdout',saved/'stderr',saved/'actual')},
                     'memory':logs,'memory_clean':all(m['clean'] for m in logs) if instrument else None}
     passed=all(not o['timed_out'] and o['expected_output_matches'] and o['status']==outcomes['gnu']['status'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
     results.append({'selection':name,'pass':passed,'outcomes':outcomes})

@@ -20,6 +20,7 @@ parser.add_argument('--inventory-snapshot', type=Path, required=True)
 parser.add_argument('--driver-snapshot', type=Path)
 parser.add_argument('--memory-open',nargs='*',default=[],help='Explicit failing memory profiles to audit and exclude from strict counts')
 parser.add_argument('--assertion-baseline',nargs='*',default=[],help='GNU and candidate share a profile-specific assertion difference; exclude the entire script')
+parser.add_argument('--private-directory-baseline',nargs='*',default=[],help='For an assertion baseline only, compare the diagnostic using the private directory recorded in its process commands')
 parser.add_argument('--report-name', required=True)
 args = parser.parse_args()
 assert re.fullmatch(r'[a-z0-9-]+', args.report_name)
@@ -28,6 +29,7 @@ assert not target.exists()
 report = json.loads(args.original.read_text())
 assert set(args.memory_open)<={r['selection'] for r in report['results'] if not r['pass']}
 assert set(args.assertion_baseline)<={r['selection'] for r in report['results'] if not r['pass']}
+assert set(args.private_directory_baseline)<=set(args.assertion_baseline)
 assert report['complete'] and report['total'] == report['planned_total'] == len(report['results'])
 assert report['passed'] == sum(r['pass'] for r in report['results'])
 assert fingerprint(Path(report['binary'])) == report['binary_sha256']
@@ -46,6 +48,24 @@ clean = []
 open_processes = []
 open_findings = []
 raw = {}
+private_directories = {}
+
+def baseline_output(result,key):
+    outcome=result['outcomes'][key]
+    output=next(ROOT/p for p in outcome['raw'] if p.endswith('/actual')).read_bytes()
+    if result['selection'] not in args.private_directory_baseline or not key.endswith('-valgrind'):
+        return output
+    # Valgrind's child exec exposes the absolute helper argv[0]. Derive the
+    # private fixture directory from recorded commands, never from a general
+    # output regex. Keep the unchanged expected-output comparison failing.
+    directories=set()
+    for memory in outcome['memory']:
+        text=(ROOT/memory['log']).read_text()
+        directories.update(re.findall(r'^==[0-9]+== Command: (/tmp/rboxc-bash-original-[a-z0-9_]{8})/exec/',text,re.M))
+    directory,=directories
+    assert directory.encode() in output
+    private_directories[result['selection']+':'+key]=directory
+    return output.replace(directory.encode()+b'/exec/',b'<private-directory>/exec/')
 for result in report['results']:
     row = rows[result['selection']]
     intrinsic_open = row.get('state')=='reviewed-original-intrinsic-descriptor-open'
@@ -61,6 +81,8 @@ for result in report['results']:
         assert not outcome.get('timed_out',False)
         assert outcome.get('timeout_seconds',180)==row.get('timeout_seconds',180)
         assert outcome.get('stdin_script',False)==bool(row.get('stdin_script'))
+        assert outcome.get('controlling_terminal',False)==bool(row.get('controlling_terminal'))
+        assert any(p.endswith('/terminal-output') for p in outcome['raw'])==bool(row.get('controlling_terminal'))
         reference = result['outcomes']['gnu-valgrind' if key.endswith('-valgrind') and baseline else 'gnu']
         if not baseline: assert outcome['expected_output_matches']
         assert outcome['status'] == reference['status']
@@ -72,16 +94,17 @@ for result in report['results']:
             output = b''.join(line for line in output.splitlines(keepends=True) if not line.startswith(b'expect'))
         assert outcome['expected_output_matches'] == (output == expected.read_bytes())
         if baseline:
-            reference_output = next(ROOT/p for p in reference['raw'] if p.endswith('/actual')).read_bytes()
-            assert output == reference_output
+            reference_key='gnu-valgrind' if key.endswith('-valgrind') else 'gnu'
+            assert baseline_output(result,key) == baseline_output(result,reference_key)
         assert next(ROOT/p for p in outcome['raw'] if p.endswith('/actual')).read_bytes() == output
         mounts = outcome.get('private_mounts', [])
         assert [m['original'] for m in mounts] == row.get('absolute_helpers', [])
         for mount in mounts:
-            assert mount['original'] in ('/bin/echo','/bin/cat','/bin/mkdir','/bin/touch','/bin/chmod','/bin/rm','/usr/bin/true','/usr/bin/false')
+            assert mount['original'] in ('/bin/echo','/bin/sh','/bin/true','/bin/cat','/bin/mkdir','/bin/touch','/bin/chmod','/bin/rm','/usr/bin/true','/usr/bin/false')
             assert str(Path(mount['original']).resolve()) == mount['destination']
             assert fingerprint(Path(mount['destination'])) == row['host_inputs'][mount['destination']]
-            replacement = ROOT/'build/gnu-coreutils/src/coreutils' if key.startswith('gnu') else Path(report['binary'])
+            native = ROOT/'build/gnu-bash/bash' if mount['original']=='/bin/sh' else ROOT/'build/gnu-coreutils/src/coreutils'
+            replacement = native if key.startswith('gnu') else Path(report['binary'])
             assert mount['source'] == str(replacement) and fingerprint(replacement) == mount['source_sha256']
         assert bool(outcome['memory']) == key.endswith('-valgrind')
         for memory in outcome['memory']:
@@ -126,5 +149,6 @@ target.write_text(json.dumps({'scope':'Strict original scripts match unchanged G
     'inventory_snapshot':str(args.inventory_snapshot), 'inventory_sha256':fingerprint(args.inventory_snapshot),
     'original_groups':report.get('original_groups',report['total']),'original_scripts':report['total'], 'strict_original_passes':report['passed'],'clean_candidate_processes':len(clean),
     'open_processes':open_processes,'open_findings':open_findings,'explicit_memory_open':args.memory_open,'assertion_baselines':args.assertion_baseline,
+    'private_directory_baselines':args.private_directory_baseline,'private_directories':private_directories,
     'driver_sha256':fingerprint(Path(__file__)), 'processes':clean, 'raw':raw}, indent=2)+'\n')
 print('Audited', report['total'], 'original Bash scripts and', len(clean), 'clean candidate processes')
