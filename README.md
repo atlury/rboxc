@@ -105,11 +105,12 @@ The public terminal cleanup API alone retains the shared parameter cache in
 this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
-The current 187-command candidate is **14,724,336 bytes**, at
-`target/iconv-charmap-cleanup-candidate/release/rboxc`, SHA-256
-`7a05a47ffcad4cca61b11910ecb670f61eca76cc6a2207f84bde189ee995d796`.
-An independent rebuild is byte-identical. All 428 Coreutils smoke checks,
-11 dispatcher checks and 50 focused glibc utility comparisons pass. The
+The current 187-command candidate is **14,724,536 bytes**, at
+`target/expr-cleanup-candidate/release/rboxc`, SHA-256
+`047ed73ab17d5202acce334bbee11516583cc0c60010782c6f47762e98caeebd`.
+An independent rebuild is byte-identical. All 428 Coreutils smoke checks and
+11 dispatcher checks pass. The preceding iconv candidate passed 50 focused
+glibc utility comparisons. The
 preceding dispatch checkpoint also passed 44 Bash and 69 adapter comparisons.
 Bash has **54 strict scripts from 53 original recipes**, with **12765 clean
 candidate process logs** across their recorded immutable candidates.
@@ -2325,10 +2326,12 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. The current
-[evidence/gnu-sort-selection-coverage.json](evidence/gnu-sort-selection-coverage.json)
-extends the preserved `evidence/gnu-suite-coverage.json` checkpoint by sixteen
-reviewed selections: 639 scripts passed, 29 have selected coverage, five
-are skipped, 29 are excluded and 31 remain pending.
+[evidence/gnu-resource-partial-expansion-coverage.json](evidence/gnu-resource-partial-expansion-coverage.json)
+extends the preserved suite checkpoints: **640 scripts passed**, 29 have
+selected coverage, five are skipped, 29 are excluded and 30 remain pending.
+Excluding the 29 exclusions, 640/704 scripts (90.9%) have whole-script passes;
+64/704 (9.1%) remain partial, pending or skipped. This measures script coverage,
+not remaining engineering effort or complete Valgrind acceptance.
 
 All 197 reviewed `env -S` cases pass normally against GNU. The original table
 contains 199 cases; two historical reproduction cases remain unexecuted.
@@ -2392,9 +2395,9 @@ historical cases remain held from the 457 generated cases. The independent
 audit pins the source/generator, selected names, locale files, original
 assertions and every process summary:
 [evidence/gnu-sort-selection-validation.json](evidence/gnu-sort-selection-validation.json).
-The Valgrind ledger now has 589 passed scripts, 23 passed selections, 39 open
+The preceding sort checkpoint has 589 passed scripts, 23 passed selections, 39 open
 profiles, 53 pending and 29 exclusions. Installed-release evidence is unchanged.
-All 31 remaining whole-script pending entries now have complete source reviews:
+All 31 whole-script pending entries at that checkpoint have complete source reviews:
 20 historical reproductions, four resource profiles, four isolation/debugger
 profiles, two mixed scripts needing ordinary selections, and one platform
 resource profile. These reviews add no runtime passes or exclusions. The
@@ -2403,6 +2406,29 @@ remaining filenames, source hashes and individual reasons are recorded in
 [evidence/gnu-remaining-coreutils-review-validation.json](evidence/gnu-remaining-coreutils-review-validation.json)
 verifies their exact correspondence to the pending ledger and unchanged
 execution states.
+
+
+The ordinary Perl selections now cover **85/90 tac**, **205/207 expr** and
+**77/78 seq** cases. All pass normally and under Valgrind. The whole unmodified
+`od/big-w.sh` also passes under a recorded 1 GiB address-space ceiling: two
+small widths produce their expected output; two large widths follow GNU's
+accepted allocation-failure branch. Together these runs contain **377 clean
+candidate process images**. Historical omitted cases remain omitted.
+[evidence/gnu-resource-partial-expansion-validation.json](evidence/gnu-resource-partial-expansion-validation.json)
+pins each candidate, exact source/selection, locale, resource profile and raw
+process summary. The updated Valgrind ledger has 590 passed scripts, 25 passed
+selections, 39 open profiles, 50 pending and 29 exclusions.
+
+Expanding `expr` exposed a 26-byte parsed-value leak on ordinary trailing
+arguments (`expr 9 9` and `expr 2 a`). The translated entry now frees the completed
+value before emitting that fatal syntax diagnostic. All 205 selected cases
+pass with 206 clean candidate process images; eight focused string, integer,
+large-integer and capture-result checks also pass under Valgrind. The original
+findings and prior candidate remain preserved. The one-line generated change,
+regeneration recipe, identical rebuild and shared checks are independently
+verified in [evidence/expr-value-cleanup-validation.json](evidence/expr-value-cleanup-validation.json).
+The tac, seq and od runs use the preceding iconv candidate; expr uses the new
+cleanup candidate. Existing evidence is not relabeled as a run on the new build.
 
 Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are

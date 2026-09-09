@@ -1243,7 +1243,6 @@ pub unsafe extern "C" fn single_binary_main_expr(
     args = argv.offset(1 as ::core::ffi::c_int as isize);
     let mut v: *mut VALUE = eval(r#true != 0);
     if !nomoreargs() {
-        freev(v);
         if 0 != 0 {
             error(
                 C2Rust_Unnamed_5::EXPR_INVALID.0 as ::core::ffi::c_int,

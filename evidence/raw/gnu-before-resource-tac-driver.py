@@ -203,13 +203,6 @@ def main():
         test_shell = row.get('test_shell', '/bin/sh')
         assert test_shell in ('/bin/sh', '/bin/bash'), 'unsupported test shell'
         context = {**execution_context, 'definition': row, 'shell': fingerprint(Path(test_shell))}
-        memory_limit = row.get('address_space_limit_bytes')
-        if memory_limit is not None:
-            assert row['script'] == 'tests/od/big-w.sh' and memory_limit == 1024**3
-            assert row.get('very_expensive') and not row.get('shell_selection')
-            limiter = Path('/usr/bin/prlimit').resolve(strict=True)
-            context['address_space_profile'] = {'bytes': memory_limit,
-                'limiter': str(limiter), 'limiter_sha256': fingerprint(limiter)}
         if row.get('shell_selection'):
             context['shell_selection_driver'] = fingerprint(ROOT/'scripts/gnu_shell_selections.py')
             context['selected_script'] = {'path': str(script.relative_to(ROOT)),
@@ -497,8 +490,6 @@ def main():
                     command = ['/usr/bin/unshare', '--mount', '--pid', '--fork', sys.executable,
                                str(ROOT/'tests/gnu/private-root-profile.py'), str(root_config), *command]
                 started = time.monotonic()
-                if memory_limit is not None:
-                    command = [str(limiter), '--as='+str(memory_limit), '--', *command]
                 config_hash = hashlib.sha256(config_header.read_bytes()).hexdigest()
                 deadline = row.get('valgrind_timeout_seconds', row.get('timeout_seconds', 60)) if instrument else row.get('timeout_seconds', 60)
                 assert isinstance(deadline, int) and 0 < deadline <= 14400, 'invalid reviewed watchdog deadline'
@@ -514,8 +505,6 @@ def main():
                                             'watchdog': {'path': str(watchdog), 'sha256': watchdog_hash},
                                             'test_shell': test_shell,
                                             'elapsed_seconds': round(time.monotonic()-started, 3)}
-                if memory_limit is not None:
-                    outcomes[implementation]['address_space_profile'] = context['address_space_profile']
                 if row.get('shell_selection'):
                     outcomes[implementation]['selected_runtime_script'] = {
                         'path': str(execution_script), 'sha256': fingerprint(execution_script),

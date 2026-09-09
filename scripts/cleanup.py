@@ -467,6 +467,8 @@ unsafe fn rboxc_free_environment() {
         from split_cleanup import cleanup_split
         text = cleanup_split(text, replace_once)
     if name == 'expr':
+        anchor = '    let mut v: *mut VALUE = eval(r#true != 0);\n    if !nomoreargs() {\n'
+        text = replace_once(text, anchor, anchor+'        freev(v);\n')
         text = replace_once(text, '    printv(v);\n    return null(v) as ::core::ffi::c_int;',
                             '    printv(v);\n    let status = null(v) as ::core::ffi::c_int;\n'
                             '    freev(v);\n    return status;')
