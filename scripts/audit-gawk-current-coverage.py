@@ -39,6 +39,7 @@ archives = [ROOT/'tests/gawk-original.py', ROOT/'evidence/raw/gawk-array-driver.
             ROOT/'evidence/raw/gawk-before-output-preservation-driver.py',
             ROOT/'evidence/raw/gawk-before-child-wait-driver.py',
             ROOT/'evidence/raw/gawk-before-self-exec-driver.py']
+archives.append(ROOT/'evidence/raw/gawk-debugger-restart-driver.py')
 driver_versions = {fingerprint(p): str(p.relative_to(ROOT)) for p in archives}
 focused_path = options.focused.resolve()
 focused = json.loads(focused_path.read_text())
@@ -209,6 +210,12 @@ for row in manifest['inputs']:
     if row.get('coverage_kind')=='unread-source-argument':
         assert owner['target']=='eofsrc1' and name=='eofsrc1b.awk'
         assert b'source files / command-line arguments must contain complete functions or rules' in (source/'test/eofsrc1.ok').read_bytes()
+    if row.get('coverage_kind')=='data-input':
+        assert owner['target']=='profile1' and name=='dtdgport.awk'
+        execution_name=Path(owner['path']).name
+        for key in ('gnu-valgrind','rboxc-valgrind'):
+            assert any(re.search(r'Command: gawk .* /opt/src/gawk-5\.4\.1/test/dtdgport\.awk\n',
+                (ROOT/m['log']).read_text()) for m in result['outcomes'][key]['memory'])
     for key in ('gnu-valgrind','rboxc-valgrind'):
         assert any(re.search(r'Command: gawk .*?-f (?:[^\n ]*/)?'+re.escape(execution_name)+r'(?: |\n)',
             (ROOT/m['log']).read_text()) for m in result['outcomes'][key]['memory'])

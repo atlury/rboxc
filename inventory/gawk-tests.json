@@ -1,6 +1,6 @@
 {
   "provider": "GNU Gawk 5.4.1",
-  "scope": "All 634 original AWK inputs inventoried; 539 recipes reviewed: 525 pass, six assertion failures match GNU, and eight additional originals pass assertions with memory/descriptor findings still open. Eight auxiliary inputs add no duplicate recipe/process counts; one is an unread second source argument in a passing parser diagnostic. Thirty-five historical reproductions are excluded. Twenty MPFR programs and one ARRAYDEBUG program are unavailable in the configured build, verified through unchanged GNU capability guards; 31 other inputs still await accounting and profiles. Strict aggregate counts exclude all processes from the eight open profiles. All reviewed recipes were rerun on the formatting-ownership candidate. Full acceptance remains open.",
+  "scope": "All 634 original AWK inputs inventoried; 546 recipes reviewed: 532 pass, six assertion failures match GNU, and eight additional originals pass assertions with memory/descriptor findings still open. Nine auxiliary inputs add no duplicate recipe/process counts; one is an unread source argument and one is text input only. Forty historical reproductions are excluded. Twenty MPFR programs and one ARRAYDEBUG program are unavailable in the configured build, verified through unchanged GNU capability guards; 18 other inputs still await accounting and profiles. Strict aggregate counts exclude all processes from the eight open profiles. Full acceptance remains open.",
   "registration_sha256": "447e3fdd76fe4ebb4b39427465aa727ed421a5818e568a00e00f2c5a90830ade",
   "inputs": [
     {
@@ -1803,7 +1803,11 @@
       "path": "test/dtdgport.awk",
       "sha256": "e38105219df54727c7ad0760e5c92aff98a50199b5c7fde893a11b93a503aadd",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "covered-original-auxiliary",
+      "covered_by": "profile1",
+      "coverage_kind": "data-input",
+      "review": "This complete reviewed XML-to-DTD program is used solely as fixed text input by the original cross-reference/pretty-print round trip. Its contents are not executed. It adds no separate recipe or process.",
+      "evidence": "evidence/gawk-include-xref-original.json"
     },
     {
       "path": "test/dynlj.awk",
@@ -3328,7 +3332,8 @@
       "path": "test/getnr2tm.awk",
       "sha256": "14e7c160ad3960b0decd2f0a72da716ea2fafb629be9679d75f22527f4497397",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "review": "Read-only source review identifies historical variable-content clobbering, leaked-data output, or a terminal session that required interruption. Preserve the source without executing this reproduction; no original-pass claim."
     },
     {
       "path": "test/gnuops2.awk",
@@ -3580,8 +3585,17 @@
     {
       "path": "test/hello.awk",
       "sha256": "53c3fb99f2918de10aa7842ef26db9b37ec7902cc093617586faea6af3350ae2",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "incdupe3",
+      "review": "Complete source, unchanged Make recipe and fixtures reviewed. Duplicate source/include diagnostics or a finite cross-reference/pretty-print round trip over a fixed 11074-byte program used only as text input. The cross-reference lexer advances through input to EOF. Its two executions use a pinned native GNU sort helper; pretty printing does not execute the program.",
+      "fixtures": {
+        "hello.awk": "53c3fb99f2918de10aa7842ef26db9b37ec7902cc093617586faea6af3350ae2",
+        "incdupe3.ok": "a8a35680b0636e4e0baeca83c5b4441f7389d37bc7167e3d35a63168a688d53b"
+      },
+      "configured_recipe_sha256": "edd342a9a93fbaa1b6c9d8735b856a24cd10d4d3ec5ec759d82285fecdd64951",
+      "evidence": "evidence/gawk-include-xref-original.json",
+      "audit": "evidence/gawk-include-files-coverage.json"
     },
     {
       "path": "test/hex.awk",
@@ -3776,8 +3790,17 @@
     {
       "path": "test/inchello.awk",
       "sha256": "8abbf05e4e4605d16e4ffee2c34c25b1c8af35eb70ff8e4e16742f28f9374716",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "incdupe6",
+      "review": "Complete source, unchanged Make recipe and fixtures reviewed. Duplicate source/include diagnostics or a finite cross-reference/pretty-print round trip over a fixed 11074-byte program used only as text input. The cross-reference lexer advances through input to EOF. Its two executions use a pinned native GNU sort helper; pretty printing does not execute the program.",
+      "fixtures": {
+        "hello.awk": "53c3fb99f2918de10aa7842ef26db9b37ec7902cc093617586faea6af3350ae2",
+        "incdupe6.ok": "5939da4b8f4171a1d12bf793272df793531c374dd510532a25058028cdc6868d"
+      },
+      "configured_recipe_sha256": "0d3b6a8ac64f48b1562ed1df13a325487827c7f66bb6b2f0e2e08d0eb045b316",
+      "evidence": "evidence/gawk-include-xref-original.json",
+      "audit": "evidence/gawk-include-files-coverage.json"
     },
     {
       "path": "test/inclib.awk",
@@ -3957,8 +3980,17 @@
     {
       "path": "test/inf-nan-torture.awk",
       "sha256": "2f7b88980e559e3f0acc8fb8f9447126cad86caf07a7c2fb677591eff222af69",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "inf-nan-torture",
+      "review": "Full short program, original Make recipe and supplied fixtures reviewed. Ordinary numeric-string conversion, assignment/comparison evaluation, invalid source-character diagnostic, or bounded private output to 1030 files of two short lines each. Generated file names are integers; no Gawk child commands or external services. Make recipe helpers use pinned native GNU utilities.",
+      "fixtures": {
+        "inf-nan-torture.in": "9fd8fa8aebebdab70b0bbfa7973010b52b7abc32b4ae6f2b742440adc60b76b3",
+        "inf-nan-torture.ok": "e17a859f0fe032839aad602f4428b19fe3d3e004934531ed463c20770316cd3b"
+      },
+      "configured_recipe_sha256": "dba7ec7cefd1d295e400c07d7c249539fa0237fceef72c89153ef91bf799179b",
+      "evidence": "evidence/gawk-files-numeric-original.json",
+      "audit": "evidence/gawk-include-files-coverage.json"
     },
     {
       "path": "test/inftest.awk",
@@ -4377,8 +4409,16 @@
     {
       "path": "test/manyfiles.awk",
       "sha256": "d82a3b22eb973e2e18daa5635320fa2924e9288b6431efbef7a4d120f1426a5d",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "manyfiles",
+      "review": "Full short program, original Make recipe and supplied fixtures reviewed. Ordinary numeric-string conversion, assignment/comparison evaluation, invalid source-character diagnostic, or bounded private output to 1030 files of two short lines each. Generated file names are integers; no Gawk child commands or external services. Make recipe helpers use pinned native GNU utilities.",
+      "fixtures": {
+        "manyfiles.ok": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+      },
+      "configured_recipe_sha256": "c1e8a07988a1681f0dabebbff732858f3900a46e27f7dd2b1d93ffdb4ba72eba",
+      "evidence": "evidence/gawk-files-numeric-original.json",
+      "audit": "evidence/gawk-include-files-coverage.json"
     },
     {
       "path": "test/match1.awk",
@@ -4765,8 +4805,17 @@
     {
       "path": "test/membug1.awk",
       "sha256": "a243f846baaf54dcec0770d2dece61286ffc56b78812249b7aa4151bda47834e",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "membug1",
+      "review": "Full short program, original Make recipe and supplied fixtures reviewed. Ordinary numeric-string conversion, assignment/comparison evaluation, invalid source-character diagnostic, or bounded private output to 1030 files of two short lines each. Generated file names are integers; no Gawk child commands or external services. Make recipe helpers use pinned native GNU utilities.",
+      "fixtures": {
+        "membug1.in": "63b14c5c06d5125e576f5dd9e64c62ca520e59b52a92c2afc9f5390e6bb25d80",
+        "membug1.ok": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "configured_recipe_sha256": "6732b2ab80a95e1e305e5c52a94d86481d49e9c02b3c0d0ef7022f2e134bcf5b",
+      "evidence": "evidence/gawk-files-numeric-original.json",
+      "audit": "evidence/gawk-include-files-coverage.json"
     },
     {
       "path": "test/memleak.awk",
@@ -4814,7 +4863,8 @@
       "path": "test/memleak4.awk",
       "sha256": "f7d2a30d32b44d745decabae4bd15180aacbe5303f2c94cfb9064bc0fbc3d23a",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "review": "Read-only source review identifies historical variable-content clobbering, leaked-data output, or a terminal session that required interruption. Preserve the source without executing this reproduction; no original-pass claim."
     },
     {
       "path": "test/messages.awk",
@@ -5596,8 +5646,16 @@
     {
       "path": "test/nulinsrc.awk",
       "sha256": "62c9c3641d0b91aef515aaf0d5f7239e170316ab690b624dd718128c82cdd0c2",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "nulinsrc",
+      "review": "Full short program, original Make recipe and supplied fixtures reviewed. Ordinary numeric-string conversion, assignment/comparison evaluation, invalid source-character diagnostic, or bounded private output to 1030 files of two short lines each. Generated file names are integers; no Gawk child commands or external services. Make recipe helpers use pinned native GNU utilities.",
+      "fixtures": {
+        "nulinsrc.ok": "704c04818580cb38509be82f07ede117d69c8977e4970fc0cec3eb3bbe259bbc"
+      },
+      "configured_recipe_sha256": "fb2ba15a09b3ed46423ccb77c09933bcf6caf9a1b2c7009e4a4807eedb3134e3",
+      "evidence": "evidence/gawk-files-numeric-original.json",
+      "audit": "evidence/gawk-include-files-coverage.json"
     },
     {
       "path": "test/nulrsend.awk",
@@ -6598,7 +6656,8 @@
       "path": "test/pty1.awk",
       "sha256": "0bfc36d020ba5e52c5ea97661c6060562843af23578f49ce857f3037eea92c39",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "review": "Read-only source review identifies historical variable-content clobbering, leaked-data output, or a terminal session that required interruption. Preserve the source without executing this reproduction; no original-pass claim."
     },
     {
       "path": "test/pty2.awk",
@@ -7433,13 +7492,15 @@
       "path": "test/rstest4.awk",
       "sha256": "9c86cdc5b43b269c28ace7207e3e0b675c56a9d02d49b2b51979ccab2c4f19e3",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "review": "Read-only source review identifies historical variable-content clobbering, leaked-data output, or a terminal session that required interruption. Preserve the source without executing this reproduction; no original-pass claim."
     },
     {
       "path": "test/rstest5.awk",
       "sha256": "407a2c5fa00854228ef20ffb9dadf36f83124c2adeac43d45cf04f12ebdcb019",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "review": "Read-only source review identifies historical variable-content clobbering, leaked-data output, or a terminal session that required interruption. Preserve the source without executing this reproduction; no original-pass claim."
     },
     {
       "path": "test/rstest6.awk",
@@ -9048,8 +9109,26 @@
     {
       "path": "test/xref.awk",
       "sha256": "9ae714e19c8e6b783cbd2fcad89c5c3581cb662f1e88e8651948642f093bedda",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "profile1",
+      "review": "Complete source, unchanged Make recipe and fixtures reviewed. Duplicate source/include diagnostics or a finite cross-reference/pretty-print round trip over a fixed 11074-byte program used only as text input. The cross-reference lexer advances through input to EOF. Its two executions use a pinned native GNU sort helper; pretty printing does not execute the program.",
+      "fixtures": {
+        "dtdgport.awk": "e38105219df54727c7ad0760e5c92aff98a50199b5c7fde893a11b93a503aadd"
+      },
+      "configured_recipe_sha256": "0808a43957c5cca5d1a624086f137810c67dfbfea4a54116be5171c7ccd589fe",
+      "child_dependencies": {
+        "sort": {
+          "path": "/root/rboxc/build/gawk-sort-helper/coreutils",
+          "sha256": "55d6a3487eed83a8b2b37aeaba723c3244c994663e58261cdccf9ecb97e70e32"
+        }
+      },
+      "child_commands": {
+        "/bin/sh -c sort": 2,
+        "sort": 2
+      },
+      "evidence": "evidence/gawk-include-xref-original.json",
+      "audit": "evidence/gawk-include-files-coverage.json"
     },
     {
       "path": "test/zero2.awk",
