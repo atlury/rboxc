@@ -74,7 +74,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 228 of 244 original groups validated across recorded profiles |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 505 reviewed originals pass; five failures match GNU and eight memory profiles remain open |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 518 reviewed originals pass; five failures match GNU and eight memory profiles remain open |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -235,18 +235,23 @@ Seven further unchanged Gawk recipes pass for numeric and string formatting,
 separator arrays, record reading, multibyte substitution, process identifiers and
 script shebang dispatch. Recipe helpers use pinned GNU implementations; the
 substitution recipe uses the verified English UTF-8 profile.
-`evidence/gawk-array-pipe-coverage.json` audits **505 passing original recipes,
-five unchanged GNU baseline failures and 646 clean processes**: 524 original
+`evidence/gawk-regex-allocation-coverage.json` audits **518 passing original recipes,
+five unchanged GNU baseline failures and 659 clean processes**: 537 original
 Gawk invocations, twenty-five shell children, twelve native helper children and
 85 focused cases counted once.
-Six auxiliary inputs are already covered by passing recipes; 30 historical
+Six auxiliary inputs are already covered by passing recipes; 33 historical
 reproductions are excluded after source review, twenty MPFR inputs are unavailable
-in this build, and 60 other pending inputs remain. Eight further reviewed originals pass their
+in this build, and 44 other pending inputs remain. Eight further reviewed originals pass their
 assertions but retain memory/descriptor findings; their 53 candidate logs are
 verified separately and excluded from the strict clean-process totals. The latest seven unchanged recipes cover indirect function calls, POSIX conversion
 and field behavior, namespace pretty printing, formatting, lint diagnostics and
 text matching. The candidate and installed
 release are unchanged, and full GNU acceptance remains open.
+
+Thirteen additional originals pass for regex anchors, replacement and case behavior,
+NUL and eight-bit matching, and allocation lifetimes for sorting callbacks and typed
+regex values. The byte sweep covers 256 values; all loops have fixed bounds.
+All thirteen candidate process logs are clean, with no production binary change.
 
 Five further originals pass for array parameter propagation, numeric-key formatting,
 unassigned element types, Greek case matching and glossary processing. Two additional
@@ -261,7 +266,7 @@ Nine debugger originals now pass for arrays, expression evaluation and typed
 regular expressions. Two restart the same process: their append-only Valgrind
 logs preserve both execution headers, with first-error termination enabled.
 Each restart counts as one process and two execution images; the strict aggregate
-contains 526 original Gawk execution images. Heap and descriptor summaries describe
+contains 539 original Gawk execution images. Heap and descriptor summaries describe
 the final image, not a separate pre-restart exit. The inherited log descriptor is
 part of the harness. Initial incomplete and intermediate runs remain preserved.
 
@@ -272,7 +277,7 @@ bounded debugger watchpoint session. All twelve Gawk/child logs are clean.
 guard with two clean candidate logs: both configured binaries lack MPFR. Its
 twenty distributed programs and one inline recipe are accounted as unavailable,
 with no execution or original-pass claim. These guard logs are outside the
-646-process aggregate.
+659-process aggregate.
 
 Eleven more originals now match GNU output for pipes, half-close diagnostics,
 inherited descriptors, getline side effects, virtual I/O and pretty printing.
