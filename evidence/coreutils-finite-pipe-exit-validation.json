@@ -1,0 +1,268 @@
+{
+  "scope": "Finite cat/dd file and tac stream writes to a pipe with no reader. Default SIGPIPE and explicitly ignored SIGPIPE are separate profiles; ignored signal exercises ordinary EPIPE cleanup, without changing production signal policy.",
+  "raw": {
+    "evidence/coreutils-finite-pipe-exit.json": "47f1cf5d98a9fe9d3d3a0b1295cf1913b7681caaafb60b9f44c06c48ecea1787",
+    "target/inetd-daemon-candidate/release/rboxc": "0634c6cd9e7e5333e1f1093fd87f1a99c89cbd436ae3bd6a8af1128d9767c956",
+    "build/gnu-coreutils/src/coreutils": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+    "tests/coreutils-pipe-exit.py": "a7c0fa0d892dccee91ec62a858c88809cf76ea9b0d034a760e13eef4c31790d9",
+    "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/cat-0-gnu-1.log": "1bcf2285fd7330ff0a1146cf47d192b1ab6f59b3471da4f1bc2baf5e4d9e6a67",
+    "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/cat-0-rboxc-1.log": "c884357196f083b1a716597b198e703f992fba043618c7fb74bed84e76114127",
+    "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/cat-1-gnu-1.log": "4dd12b8e75e2923e0ad89e4a90315c25d0d12996b264e9fd83766756b2c0c2c6",
+    "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/cat-1-rboxc-1.log": "93b518c0539e193c5a849dca1c553ee42e18e25da2bbd1ba222c7f17d728a28b",
+    "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/dd-0-gnu-1.log": "972797669e71e2dc5e3366c9697ef853a0e8bef0480634dbb5aa22aa93ea7025",
+    "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/dd-0-rboxc-1.log": "b4809018bdd46dab73ec4ea1a9ef450d4d2b20d8b795f47a53803e9c38fa6072",
+    "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/dd-1-gnu-1.log": "51fde143e9b1e49fe4bda655549053ad9fb5e565e933ea1a70dc664450cbe0a2",
+    "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/dd-1-rboxc-1.log": "2013193e03b3c839a6b8ff1bca971ead0ca3d4f5e840dd6f3464b36809896fa9",
+    "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/tac-0-gnu-1.log": "dc66b449e567a65b2a172e5b3ae8ffe8cdd20e0b47d5a69954f81f15c623af81",
+    "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/tac-0-rboxc-1.log": "8c9b7c3084eb26bc0b9ee523c562f66da40c1b0a0ff6c2454b6ecd0fd4452c2e",
+    "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/tac-1-gnu-1.log": "7566c5f7e8ecb9d6e2f2b8ac0e81833845ea11ee93d43488afd1427205ce2aa8",
+    "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/tac-1-rboxc-1.log": "ae053042bb1f5267bf3269dec3595ca3f2637ebd59bf860db3e3ff1e1bb474cb"
+  },
+  "results": [
+    {
+      "command": "cat",
+      "sigpipe_ignored": false,
+      "status": -13,
+      "images": {
+        "gnu-valgrind": {
+          "log": "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/cat-0-gnu-1.log",
+          "sha256": "1bcf2285fd7330ff0a1146cf47d192b1ab6f59b3471da4f1bc2baf5e4d9e6a67",
+          "errors": 1,
+          "non_inherited_descriptors": 1,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 262226
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "1171655"
+          ],
+          "complete_exec_log": true
+        },
+        "rboxc-valgrind": {
+          "log": "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/cat-0-rboxc-1.log",
+          "sha256": "c884357196f083b1a716597b198e703f992fba043618c7fb74bed84e76114127",
+          "errors": 1,
+          "non_inherited_descriptors": 1,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 262226
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "1171657"
+          ],
+          "complete_exec_log": true
+        }
+      }
+    },
+    {
+      "command": "cat",
+      "sigpipe_ignored": true,
+      "status": 1,
+      "images": {
+        "gnu-valgrind": {
+          "log": "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/cat-1-gnu-1.log",
+          "sha256": "4dd12b8e75e2923e0ad89e4a90315c25d0d12996b264e9fd83766756b2c0c2c6",
+          "errors": 1,
+          "non_inherited_descriptors": 1,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 262144
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "1171659"
+          ],
+          "complete_exec_log": true
+        },
+        "rboxc-valgrind": {
+          "log": "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/cat-1-rboxc-1.log",
+          "sha256": "93b518c0539e193c5a849dca1c553ee42e18e25da2bbd1ba222c7f17d728a28b",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {},
+          "exec_images": 1,
+          "log_pids": [
+            "1171661"
+          ],
+          "complete_exec_log": true
+        }
+      }
+    },
+    {
+      "command": "dd",
+      "sigpipe_ignored": false,
+      "status": -13,
+      "images": {
+        "gnu-valgrind": {
+          "log": "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/dd-0-gnu-1.log",
+          "sha256": "972797669e71e2dc5e3366c9697ef853a0e8bef0480634dbb5aa22aa93ea7025",
+          "errors": 3,
+          "non_inherited_descriptors": 1,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 1106
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "1171663"
+          ],
+          "complete_exec_log": true
+        },
+        "rboxc-valgrind": {
+          "log": "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/dd-0-rboxc-1.log",
+          "sha256": "b4809018bdd46dab73ec4ea1a9ef450d4d2b20d8b795f47a53803e9c38fa6072",
+          "errors": 1,
+          "non_inherited_descriptors": 1,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 8274
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "1171665"
+          ],
+          "complete_exec_log": true
+        }
+      }
+    },
+    {
+      "command": "dd",
+      "sigpipe_ignored": true,
+      "status": 1,
+      "images": {
+        "gnu-valgrind": {
+          "log": "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/dd-1-gnu-1.log",
+          "sha256": "51fde143e9b1e49fe4bda655549053ad9fb5e565e933ea1a70dc664450cbe0a2",
+          "errors": 2,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 1024
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "1171667"
+          ],
+          "complete_exec_log": true
+        },
+        "rboxc-valgrind": {
+          "log": "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/dd-1-rboxc-1.log",
+          "sha256": "2013193e03b3c839a6b8ff1bca971ead0ca3d4f5e840dd6f3464b36809896fa9",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 8192
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "1171669"
+          ],
+          "complete_exec_log": true
+        }
+      }
+    },
+    {
+      "command": "tac",
+      "sigpipe_ignored": false,
+      "status": -13,
+      "images": {
+        "gnu-valgrind": {
+          "log": "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/tac-0-gnu-1.log",
+          "sha256": "dc66b449e567a65b2a172e5b3ae8ffe8cdd20e0b47d5a69954f81f15c623af81",
+          "errors": 2,
+          "non_inherited_descriptors": 1,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 16388,
+            "still reachable": 4778
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "1171671"
+          ],
+          "complete_exec_log": true
+        },
+        "rboxc-valgrind": {
+          "log": "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/tac-0-rboxc-1.log",
+          "sha256": "8c9b7c3084eb26bc0b9ee523c562f66da40c1b0a0ff6c2454b6ecd0fd4452c2e",
+          "errors": 2,
+          "non_inherited_descriptors": 1,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 16388,
+            "still reachable": 4778
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "1171673"
+          ],
+          "complete_exec_log": true
+        }
+      }
+    },
+    {
+      "command": "tac",
+      "sigpipe_ignored": true,
+      "status": 1,
+      "images": {
+        "gnu-valgrind": {
+          "log": "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/tac-1-gnu-1.log",
+          "sha256": "7566c5f7e8ecb9d6e2f2b8ac0e81833845ea11ee93d43488afd1427205ce2aa8",
+          "errors": 2,
+          "non_inherited_descriptors": 1,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 16388,
+            "still reachable": 600
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "1171675"
+          ],
+          "complete_exec_log": true
+        },
+        "rboxc-valgrind": {
+          "log": "evidence/raw/coreutils-finite-pipe-exit/run-n9p1c86v/tac-1-rboxc-1.log",
+          "sha256": "ae053042bb1f5267bf3269dec3595ca3f2637ebd59bf860db3e3ff1e1bb474cb",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 128
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "1171677"
+          ],
+          "complete_exec_log": true
+        }
+      }
+    }
+  ],
+  "clean_epipe_candidate_images": 3,
+  "comparisons": 6,
+  "whole_original_memory_pass": false,
+  "full_suite_pass": false
+}

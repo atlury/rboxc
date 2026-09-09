@@ -2873,3 +2873,14 @@ for strict memory acceptance. GNU has 409 finding images in its separate logs.
 reparses every log, verifies the original assertions and equal command-image
 inventories, and accounts for every candidate finding. No suppression, signal
 policy change or increase in whole-script/strict Valgrind counts is applied.
+
+Six finite pipe-exit comparisons distinguish normal error cleanup from the
+original SIGPIPE termination of `cat`, `dd` and `tac`. Both signal policies
+match GNU normally and under instrumentation. When SIGPIPE is explicitly
+ignored by the test process, each command reports `Broken pipe`, returns 1,
+and finishes with a clean candidate Valgrind log. The default-SIGPIPE cases
+retain their signal-exit findings. Inputs are four file bytes for `cat`/`dd`
+and 10,000 numbered lines for `tac`.
+[evidence/coreutils-finite-pipe-exit-validation.json](evidence/coreutils-finite-pipe-exit-validation.json)
+verifies all six comparisons on the Inetd cleanup candidate. These supplemental
+checks change no production signal handling or original-suite pass counts.
