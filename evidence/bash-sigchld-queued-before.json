@@ -1,0 +1,485 @@
+{
+  "runtime_helpers": {
+    "/root/rboxc/target/bash-script-input-cleanup-candidate/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174",
+    "/root/rboxc/build/gnu-coreutils/src/libstdbuf.so": "ab0f38c3557ced06f914416c765a68c1ebf00c6cdacbe24c9ab9ec60e49a6ea4"
+  },
+  "binary": "/root/rboxc/target/bash-script-input-cleanup-candidate/release/rboxc",
+  "binary_sha256": "0599733d94b8649533edd2395fe9a108ca482a39a67e23596589b210135859f7",
+  "gnu_binary_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+  "inputs": {
+    "/root/rboxc/build/gnu-bash/bash": "bd47035bca2886f8d61f564ae38ca9c807a8b0b98e914d28f909fb7b1bb1366f",
+    "/root/rboxc/target/bash-script-input-cleanup-candidate/release/rboxc": "0599733d94b8649533edd2395fe9a108ca482a39a67e23596589b210135859f7",
+    "/root/rboxc/tests/bash-sigchld-contract.py": "e3e7d4de2f9260deed6f92baf5dd2a38956451db6a9bd1e75c7d6b585c03c1ba"
+  },
+  "scope": "Five bounded child-signal lifetime cases through four shell aliases compare native GNU with the immutable Rboxc candidate. Includes queued and repeated dispatch, active replacement/reset and function status preservation. All child jobs belong to the test. Complete parent and child Valgrind summaries are required. Native findings remain baseline observations; this is focused ownership evidence, not full Bash acceptance.",
+  "complete": true,
+  "planned_total": 4,
+  "passed": 0,
+  "total": 4,
+  "results": [
+    {
+      "name": "bash:queued",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap ':' CHLD; : & for ((i=0;i<10000;i++)); do :; done; wait; trap - CHLD; printf 'queued\\n'"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": false,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-queued-before/run-quw1b7lp/0-gnu-valgrind/process-977491.log",
+              "sha256": "eb40f325c847bb062a99d566f7624092ccdc4f6412b3fdf22f6f04b81f5a91bf",
+              "pid": "977491",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 2,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50684
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-queued-before/run-quw1b7lp/0-gnu-valgrind/process-977492.log",
+              "sha256": "00737241d3d8557b8654b38bd8286a7093bf94d982ccacf3988559dcfedd81cb",
+              "pid": "977492",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48690
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-queued-before/run-quw1b7lp/0-rboxc-valgrind/process-977651.log",
+              "sha256": "d77138345564e1e3d8b2ebee0a1571f1d4f935a39ecfa5b459de82e7637f57ca",
+              "pid": "977651",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 2,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52652
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-queued-before/run-quw1b7lp/0-rboxc-valgrind/process-977683.log",
+              "sha256": "d9b9481313f1b1eedec0d050aaba24fdf3d760e2c67a0b22eeba0f61f195a133",
+              "pid": "977683",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49298
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:queued",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap ':' CHLD; : & for ((i=0;i<10000;i++)); do :; done; wait; trap - CHLD; printf 'queued\\n'"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": false,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-queued-before/run-quw1b7lp/1-gnu-valgrind/process-977775.log",
+              "sha256": "85fef49519f6546d9c8caf6328f68e19f620f19068fe44d44ba001b8166c1bc3",
+              "pid": "977775",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 2,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50808
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-queued-before/run-quw1b7lp/1-gnu-valgrind/process-977776.log",
+              "sha256": "b24920e366a97467a21d3d1772153836c6a2346530faa91e50f0fd022cd86028",
+              "pid": "977776",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48814
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-queued-before/run-quw1b7lp/1-rboxc-valgrind/process-977779.log",
+              "sha256": "e20bbfb59b99af07a931670b5fb8f12f4704e52601f3e46c4fd1f6f2d9f05660",
+              "pid": "977779",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 2,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52776
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-queued-before/run-quw1b7lp/1-rboxc-valgrind/process-977785.log",
+              "sha256": "7cd27fd7462cef8d6c317b5628d6eccc45e732a38a05aac00d092a8270bc1622",
+              "pid": "977785",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49422
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:queued",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap ':' CHLD; : & for ((i=0;i<10000;i++)); do :; done; wait; trap - CHLD; printf 'queued\\n'"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": false,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-queued-before/run-quw1b7lp/2-gnu-valgrind/process-977788.log",
+              "sha256": "715be0f28a05d63ed2a69648e6dfc84ba8fc476d2dbde804c37f63ecb73b3d07",
+              "pid": "977788",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 2,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50686
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-queued-before/run-quw1b7lp/2-gnu-valgrind/process-977789.log",
+              "sha256": "c8b66e310552d1f8e9c882c47170b2ec1c15314279c706dfa04af9c20ef70dd7",
+              "pid": "977789",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48692
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-queued-before/run-quw1b7lp/2-rboxc-valgrind/process-977801.log",
+              "sha256": "1d2f7c35bd59bb27d0c94ce1eecea0fc52106bb97c4ce1ac6783c29810094a2f",
+              "pid": "977801",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 2,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52654
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-queued-before/run-quw1b7lp/2-rboxc-valgrind/process-977806.log",
+              "sha256": "34a1cc4a1987a7d6ef9bf2be58813a2a18f770301c143573919d1785f78a8fc3",
+              "pid": "977806",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49300
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:queued",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap ':' CHLD; : & for ((i=0;i<10000;i++)); do :; done; wait; trap - CHLD; printf 'queued\\n'"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": false,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-queued-before/run-quw1b7lp/3-gnu-valgrind/process-977813.log",
+              "sha256": "392e5eb5364d53b4427334746df4bc54df5556eb92f44c46207546dde5481f3a",
+              "pid": "977813",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 2,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50682
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-queued-before/run-quw1b7lp/3-gnu-valgrind/process-977814.log",
+              "sha256": "d9c841c960902f695a75df4bb26ddac9cca57b35a0c3932de814895d0ff9de8e",
+              "pid": "977814",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48688
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-queued-before/run-quw1b7lp/3-rboxc-valgrind/process-977825.log",
+              "sha256": "c85ec0d154c6e32b8f74a53dcc6ac8156e60b9236ecae34947c0be9ef23d4784",
+              "pid": "977825",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 2,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52650
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-queued-before/run-quw1b7lp/3-rboxc-valgrind/process-977836.log",
+              "sha256": "747e340c1ba1f2121acc4e50eb93518a12e128617f45c7b25fd3e955afce87f7",
+              "pid": "977836",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49296
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

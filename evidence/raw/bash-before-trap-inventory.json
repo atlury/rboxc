@@ -1,6 +1,6 @@
 {
   "provider": "GNU Bash 5.3",
-  "scope": "All 88 original recipes are source-pinned. Per-row states and immutable evidence distinguish strict passes, open memory findings, GNU instrumentation baselines, reviewed inputs awaiting execution, orchestration and held inputs. Full Bash acceptance remains open; current audited counts are recorded in the root README and coverage reports.",
+  "scope": "All 88 top-level recipes are inventoried. Forty-six recipes containing forty-seven scripts match original assertions: forty-five scripts pass strictly with 1494 clean candidate process logs on their recorded candidates. Lastpipe retains the audited default-SIGPIPE profile; exp-tests has an invalid-array-index heap finding. Thirty-eight recipes remain pending, two dispatchers are accounted as orchestration, and two mixed reproduction recipes remain held. Full Bash acceptance remains open.",
   "inputs": [
     {
       "target": "alias",
@@ -319,22 +319,8 @@
       "target": "coproc",
       "recipe": "run-coproc",
       "recipe_sha256": "e10eacbc1acecf1864157378ff900f114a391447c7bb6e5c592c17d38e3ce660",
-      "reviewed": true,
-      "state": "reviewed-original-assertions-memory-open",
-      "script": "coproc.tests",
-      "expected": "coproc.right",
-      "output_mode": "combined",
-      "fixtures": {
-        "coproc.tests": "1c7a81f48fe2567a21f932ddddcf3a7531cc036b322a28a58c45cb6ffcacd57c",
-        "coproc.right": "b6bef687014619f8177775a47795a2ede52507582afe409967ce53262624797b"
-      },
-      "host_inputs": {
-        "/etc/passwd": "7cc9e6053e6b4c534aac10aa082522c4801ded5a61734c7d00275d27059b156e"
-      },
-      "timeout_seconds": 300,
-      "review": "Complete original recipe, script, expected output and native xcase helper reviewed. Ordinary coprocess pipe communication, descriptor moves and owned-child termination, with bounded sleep and private cleanup output. The read-only host account file is pinned; its root-name selection is original. The native xcase helper is shared by both implementations and not counted as a translated applet.",
-      "evidence": "evidence/bash-coproc-original.json",
-      "audit": "evidence/bash-coproc-validation.json"
+      "reviewed": false,
+      "state": "pending-review"
     },
     {
       "target": "cprint",
@@ -1491,38 +1477,8 @@
       "target": "trap",
       "recipe": "run-trap",
       "recipe_sha256": "a7136b7aa7351b5e22f5f0b35b9264c743bab1205df7b48bbe75ebfbfb6454aa",
-      "reviewed": true,
-      "state": "reviewed-original-baseline-open",
-      "script": "trap.tests",
-      "expected": "trap.right",
-      "output_mode": "combined",
-      "fixtures": {
-        "trap.tests": "0d3c929562ab72c938e31e8b1ba674bbe13bab753b5b24c08a8353733d46fbef",
-        "trap.right": "d89ea57e0628ff6ebe9907e7146cce28f65a4574d3d013703145aa9491cf5092",
-        "trap1.sub": "217e8a66a7fef00f7dc6a798922ee3fbab4ffb0998f36d26c41f8aa28f2a7eb9",
-        "trap2.sub": "9b399da4850c6239663a4d76a9e420d2a1c4d2363348f8dfffc7ccc815344709",
-        "trap2a.sub": "175caa986854c82cc5b3e78b3ab2a3ed2f2c51e4822e038b092db2db99bb221f",
-        "trap3.sub": "15940da61b5fb098db7cf4a7a34b3a9cc734da959acc0cfd56f10b84c515c7f0",
-        "trap4.sub": "36b2b7d2b406a2ef350be01e16e038a60d5e923dca6e09a6b19462ec8de60ea9",
-        "trap5.sub": "7d2b6e4105d7a241f47cbb74c26b47286772de93179edce16deeb2fabd881ea1",
-        "trap6.sub": "e375014570eda8c2c15721b5e5266d69dc522f5af4fb5a9d1f0c762f683e7722",
-        "trap7.sub": "48a3653b6aab757923a922093fbf7e2bb160641eb61342958ed8933477ae6db5",
-        "trap8.sub": "7fb10cd42812f1f5118bd582e601766661ad0e28449de3e1dd8ad4acc691f88a",
-        "trap9.sub": "4ad61f72833d8635397e8e795ab45b37694c6a03263870631d0d1000692df8e3"
-      },
-      "absolute_helpers": [
-        "/bin/echo",
-        "/bin/false"
-      ],
-      "controlling_terminal": true,
-      "timeout_seconds": 300,
-      "host_inputs": {
-        "/usr/lib/cargo/bin/coreutils/echo": "48893b0fb21436b54619db80486e83ef39dfccaf1aefe83dfa00c02d6146e8c0",
-        "/usr/lib/cargo/bin/coreutils/false": "48893b0fb21436b54619db80486e83ef39dfccaf1aefe83dfa00c02d6146e8c0"
-      },
-      "review": "Complete original recipe, main script, expected output and all ten subsidiary files reviewed. Ordinary EXIT, ERR, DEBUG, RETURN and owned-child signal conformance; finite child sleeps and a one-second owned signal interrupt the loop. The original recipe does not invoke trap5.sub. Private controlling terminal and absolute GNU echo/false replacements preserve host helpers. Original scheduling-sensitive output stays unchanged; no output reordering or signal-line normalization is applied.",
-      "evidence": "evidence/bash-sigchld-trap-original.json",
-      "audit": "evidence/bash-sigchld-trap-validation.json"
+      "reviewed": false,
+      "state": "pending-review"
     },
     {
       "target": "type",
@@ -1651,13 +1607,6 @@
       "source_sha256": "722e2f857ab582c4b52d254c729c4cd5e7566e6a16f105fc106b5a3ec36ea73f",
       "binary": "build/gnu-bash/zecho",
       "binary_sha256": "733316316f52c643ebacaa780f33e456848daecef84950ae5835bfd9de52be80"
-    },
-    "xcase": {
-      "source": "support/xcase.c",
-      "source_sha256": "edde247d6331f8e968449dfafbefe21ef3b0a045c08af15aa0f35e6e548ff4ab",
-      "binary": "build/bash-xcase-helper/xcase",
-      "binary_sha256": "85d1bd12d98c60984e4f6ff4c99b00bcb43433676b96f9c2990b75d1bc8ab81f",
-      "scope": "Original case-conversion support helper shared by GNU and Rboxc, not an applet port."
     }
   },
   "runtime_test_helpers": {

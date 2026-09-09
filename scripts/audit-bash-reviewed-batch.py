@@ -117,7 +117,7 @@ for result in report['results']:
         mounts = outcome.get('private_mounts', [])
         assert [m['original'] for m in mounts] == row.get('absolute_helpers', [])
         for mount in mounts:
-            assert mount['original'] in ('/bin/echo','/bin/sh','/bin/sed','/bin/ls','/bin/true','/bin/cat','/bin/mkdir','/bin/touch','/bin/chmod','/bin/rm','/usr/bin/true','/usr/bin/false')
+            assert mount['original'] in ('/bin/echo','/bin/sh','/bin/sed','/bin/ls','/bin/true','/bin/false','/bin/cat','/bin/mkdir','/bin/touch','/bin/chmod','/bin/rm','/usr/bin/true','/usr/bin/false')
             assert str(Path(mount['original']).resolve()) == mount['destination']
             assert fingerprint(Path(mount['destination'])) == row['host_inputs'][mount['destination']]
             native = ROOT/'build/gnu-bash/bash' if mount['original']=='/bin/sh' else ROOT/'build/gnu-sed/sed/sed' if mount['original']=='/bin/sed' else ROOT/'build/gnu-coreutils/src/coreutils'

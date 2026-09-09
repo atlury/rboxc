@@ -1,0 +1,3285 @@
+{
+  "runtime_helpers": {
+    "/root/rboxc/target/bash-script-input-cleanup-candidate/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174",
+    "/root/rboxc/build/gnu-coreutils/src/libstdbuf.so": "ab0f38c3557ced06f914416c765a68c1ebf00c6cdacbe24c9ab9ec60e49a6ea4"
+  },
+  "binary": "/root/rboxc/target/bash-script-input-cleanup-candidate/release/rboxc",
+  "binary_sha256": "0599733d94b8649533edd2395fe9a108ca482a39a67e23596589b210135859f7",
+  "gnu_binary_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+  "inputs": {
+    "/root/rboxc/build/gnu-bash/bash": "bd47035bca2886f8d61f564ae38ca9c807a8b0b98e914d28f909fb7b1bb1366f",
+    "/root/rboxc/target/bash-script-input-cleanup-candidate/release/rboxc": "0599733d94b8649533edd2395fe9a108ca482a39a67e23596589b210135859f7",
+    "/root/rboxc/tests/bash-sigchld-contract.py": "99129703ed068bfca7be2314b882b889b6c4cb02d3ed682a257fdcc4beeff17f"
+  },
+  "scope": "Four bounded child-signal lifetime cases through four shell aliases compare native GNU with the immutable Rboxc candidate. Includes repeated dispatch, active replacement/reset and function status preservation. All child jobs belong to the test. Complete parent and child Valgrind summaries are required. Native findings remain baseline observations; this is focused ownership evidence, not full Bash acceptance.",
+  "complete": true,
+  "planned_total": 16,
+  "passed": 12,
+  "total": 16,
+  "results": [
+    {
+      "name": "bash:repeat",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap ':' CHLD; for ((i=0;i<12;i++)); do : & wait; done; trap - CHLD; printf 'complete\\n'"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-gnu-valgrind/process-976569.log",
+              "sha256": "b2e14e19137dae1f3079bfbb435df405c407018344cf9908ec3c9b269e5101dc",
+              "pid": "976569",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51248
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-gnu-valgrind/process-976573.log",
+              "sha256": "90ff19debb37d0e03c61c60361082bcfde8ed20b1238e6bb315f8db7ca7780e6",
+              "pid": "976573",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48601
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-gnu-valgrind/process-976574.log",
+              "sha256": "f121a57bdd2e174ca4449dff2105a06c93181f4bf8709694b3e6c30ee763ed52",
+              "pid": "976574",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50101
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-gnu-valgrind/process-976575.log",
+              "sha256": "8bca95d3fb251331217c26a012d42fd5366eca73777f0659fadf6d358a120791",
+              "pid": "976575",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51121
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-gnu-valgrind/process-976576.log",
+              "sha256": "a7a0c728f4d7fff03fda1ef57b1216af245f3225b2582121a7b552cfa7b42e32",
+              "pid": "976576",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52141
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-gnu-valgrind/process-976577.log",
+              "sha256": "10c129af1d52c7446aeca375f3f0a5bcb896f606e6163e41110e3a45a2c5153b",
+              "pid": "976577",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53161
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-gnu-valgrind/process-976578.log",
+              "sha256": "587e31f368ee374cfc6e1784bc0a3810f7e5fa551d3f1cf93c16156b119f421f",
+              "pid": "976578",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53449
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-gnu-valgrind/process-976579.log",
+              "sha256": "f19e315e7d9f8f74c0ecc3b19a1da6e64bd28e8d5ffb51bd246a8667866b914a",
+              "pid": "976579",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53449
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-gnu-valgrind/process-976580.log",
+              "sha256": "1962338792be3f57ae04054fdd32d32b66b49ea26756610af1a9b3695025dfee",
+              "pid": "976580",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53453
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-gnu-valgrind/process-976581.log",
+              "sha256": "59370e01d372fdc45c76b17edeac477bc01af3d5bd74fc41fe1c3a6d9fe4b1db",
+              "pid": "976581",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53449
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-gnu-valgrind/process-976582.log",
+              "sha256": "8c0036ee7581548cf1be09bfe891dc9471cfa9a4a04e912d27840acd93d2349c",
+              "pid": "976582",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53445
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-gnu-valgrind/process-976583.log",
+              "sha256": "24c7a71f66ee105f617c2e78a2db5392d62b3098f3f7fe94c965b9f4e5b1de21",
+              "pid": "976583",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53442
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-gnu-valgrind/process-976584.log",
+              "sha256": "06f02209ca48443a6ff43111109226ad935f9bd94a539c39ab2bbd6fd62c076f",
+              "pid": "976584",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53442
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-rboxc-valgrind/process-976598.log",
+              "sha256": "05b17d4a84def5d03e078511bd0bb9343c42d5a4e9ee84cc56f40ab06de242c5",
+              "pid": "976598",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53212
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-rboxc-valgrind/process-976602.log",
+              "sha256": "71d0f155bb62fccb73d2c63d884d6db1a8b8cabf61066cc2231daed59611426e",
+              "pid": "976602",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49161
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-rboxc-valgrind/process-976603.log",
+              "sha256": "f50d601e71cb6b767da60f144e8ab67dc81b80b8489a8f2c94689cbd2a531d5d",
+              "pid": "976603",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51301
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-rboxc-valgrind/process-976604.log",
+              "sha256": "787adf4cc69f6fa6553251e2c4ac9ca8f071ba2cd9e82d48ce20dee82a4ada86",
+              "pid": "976604",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52721
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-rboxc-valgrind/process-976605.log",
+              "sha256": "9207612c286fa3d15100af6d4fe855acb712d5bb16e342044ed86d0b3c8ed8fa",
+              "pid": "976605",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54141
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-rboxc-valgrind/process-976606.log",
+              "sha256": "ec4d3edf52588b3fe3d9071748d7378c25ba0aa4b742d65d4fa5a707c8d15e86",
+              "pid": "976606",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55561
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-rboxc-valgrind/process-976607.log",
+              "sha256": "cb4bdfb72e2c4c7eedfec2651353a88c8cd36609e9fbbe8d8a5248d800cacedc",
+              "pid": "976607",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55845
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-rboxc-valgrind/process-976608.log",
+              "sha256": "58599bb5bd18c9035b0c985d0dd2111bbd020e83499f3367339f73f16e63d169",
+              "pid": "976608",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55849
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-rboxc-valgrind/process-976609.log",
+              "sha256": "cfed95a4837479e775393e44cb115643e388489704ba73b1e9114629e099a330",
+              "pid": "976609",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55853
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-rboxc-valgrind/process-976610.log",
+              "sha256": "4953984ed2f93a17512b807a19816a965b3e8a30f8de56b740c0ad7bb45f4c69",
+              "pid": "976610",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55845
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-rboxc-valgrind/process-976611.log",
+              "sha256": "4e98c4543c0295a18c48263234ac441de66653a1ddd063954796c8b5772f814f",
+              "pid": "976611",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55841
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-rboxc-valgrind/process-976612.log",
+              "sha256": "f96452f6e4d182924a993617b4560835cdddea6823f105dffa01358217e184c1",
+              "pid": "976612",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55838
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/0-rboxc-valgrind/process-976613.log",
+              "sha256": "3000b3417c8761612111b244d08d64092e8cb2ba4e2e6dc330ec690c8ce1a732",
+              "pid": "976613",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55838
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:replace",
+      "command": "bash",
+      "args": [
+        "-c",
+        "seen=; trap 'seen=yes; trap \"seen=yes\" CHLD' CHLD; : & wait; trap - CHLD; printf 'seen:%s\\n' \"$seen\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/1-gnu-valgrind/process-976616.log",
+              "sha256": "3bb87df501e6d62760a1bbe5103d24c3f7cf33bbc1cab9630c55f06b9246c7fa",
+              "pid": "976616",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49279
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/1-gnu-valgrind/process-976617.log",
+              "sha256": "249244559e88f09b40acd0141f710d4534e2ce395fdd18c77e3d1a4dde32d0a4",
+              "pid": "976617",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48620
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/1-rboxc-valgrind/process-976620.log",
+              "sha256": "26ac3a2aca0bf2351b184b417ac1fde4f63756230f89c8b2011e81a7bd67b8ea",
+              "pid": "976620",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50687
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/1-rboxc-valgrind/process-976622.log",
+              "sha256": "351ae795a32f83db587b1c581e3e3fd82376695b4b63172d00a613f072e9c77b",
+              "pid": "976622",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49196
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:reset",
+      "command": "bash",
+      "args": [
+        "-c",
+        "seen=; trap 'seen=yes; trap - CHLD' CHLD; : & wait; printf 'seen:%s\\n' \"$seen\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/2-gnu-valgrind/process-976627.log",
+              "sha256": "547b02e2c2bb7816517a37f95180b9154db1418ce885366668b4c3aaa0f53b77",
+              "pid": "976627",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48965
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/2-gnu-valgrind/process-976634.log",
+              "sha256": "3fed7cb27064ee47c07c6965dd4656f265e9b9cc65ef4296a5b0bf18cfeb6ef9",
+              "pid": "976634",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48164
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/2-rboxc-valgrind/process-976640.log",
+              "sha256": "f255d144f38bcbd1a0d30ea5a8310141e1251e7a536cc50606a672725f5661e9",
+              "pid": "976640",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50085
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/2-rboxc-valgrind/process-976644.log",
+              "sha256": "792f411dde7e366e3585a3a9c68fea1c632f43934263ea6261e088b30b7bd806",
+              "pid": "976644",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48692
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:function",
+      "command": "bash",
+      "args": [
+        "-c",
+        "f(){ seen=; trap 'seen=yes' CHLD; : & wait; trap - CHLD; printf 'seen:%s\\n' \"$seen\"; return 7; }; f; printf 'status:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/3-gnu-valgrind/process-976648.log",
+              "sha256": "4b2f98d05a1313c858ec7a156acd6e1c3551967872a16b06d02c792afc9a04e7",
+              "pid": "976648",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52817
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/3-gnu-valgrind/process-976654.log",
+              "sha256": "5034634fc42a39a21f4bae4124c7787ea0e74570322c2b5052b017130b4851cc",
+              "pid": "976654",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54202
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/3-rboxc-valgrind/process-976657.log",
+              "sha256": "07b789335e324d2f59c8e9a92dace0aef8654b0ed52df7eb57c5841be1c3a1f6",
+              "pid": "976657",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54545
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/3-rboxc-valgrind/process-976658.log",
+              "sha256": "c56ef22b273f605b773afd9b0df8e9df4adad87e7e0be8039f4be41b935894fd",
+              "pid": "976658",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55258
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:repeat",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap ':' CHLD; for ((i=0;i<12;i++)); do : & wait; done; trap - CHLD; printf 'complete\\n'"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": false,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-gnu-valgrind/process-976672.log",
+              "sha256": "1199cb2960ab8d8a8f40e13071811998d21a05dcffec88e2c499432600205406",
+              "pid": "976672",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 24,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52916
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-gnu-valgrind/process-976679.log",
+              "sha256": "7899a43380ff477708e20f2f5dcdd371c6687ee8c0533c83cfc3370d0c281338",
+              "pid": "976679",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48725
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-gnu-valgrind/process-976680.log",
+              "sha256": "3fe72312a2e681096da939a29dc4ffebf4dc4dda960ebb28ffdcdc8db75ab7c2",
+              "pid": "976680",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 2,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49936
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-gnu-valgrind/process-976681.log",
+              "sha256": "f3f70c74fb587a9f04d93ae715bb2939d0939d164a84bcc18e8bbc0d4e611d25",
+              "pid": "976681",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 4,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50956
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-gnu-valgrind/process-976682.log",
+              "sha256": "432a61e1aa01d9b53456b160e6b17aeddb117a1ee6023bd23e959454b58e431c",
+              "pid": "976682",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 6,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51976
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-gnu-valgrind/process-976683.log",
+              "sha256": "f764b9d1c09376b0e4614faae62b0a5cfc6dde51a618319fd9380c55d45a5a13",
+              "pid": "976683",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 8,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52996
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-gnu-valgrind/process-976684.log",
+              "sha256": "7c5238d6c22e70231cccd85090f7fbd05f37be22ce409a518d7b15e501cbd438",
+              "pid": "976684",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 10,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53584
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-gnu-valgrind/process-976685.log",
+              "sha256": "9ac133695a22a75d522dce546d9045532c308e8756da12d0f5948f14d4179546",
+              "pid": "976685",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 12,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53396
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-gnu-valgrind/process-976686.log",
+              "sha256": "9d27d947454a529effb890fcef6380d7c437dccd9d072e5bd7b8e07e965a9d67",
+              "pid": "976686",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 14,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53400
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-gnu-valgrind/process-976687.log",
+              "sha256": "26f3f638b427c011114d62f2275d145bb098604dd09561ca5c007c15bdb8648e",
+              "pid": "976687",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 16,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53404
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-gnu-valgrind/process-976688.log",
+              "sha256": "7f2f0911c0323f993b4db79735ae00bdd656e548731036213cccd7a602ab9e78",
+              "pid": "976688",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 18,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53400
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-gnu-valgrind/process-976690.log",
+              "sha256": "1f66446d1e269c4c0898566182c791b5827e8cc28ae1d0c69e36f366afa86a3a",
+              "pid": "976690",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 20,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53401
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-gnu-valgrind/process-976692.log",
+              "sha256": "d5582f0613344d0c9e4ead073ec0a0cd6305c72aef0d5f888b99e73b36a1223f",
+              "pid": "976692",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 22,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53401
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-rboxc-valgrind/process-976709.log",
+              "sha256": "72eb5cfdcc7a7e909ef96f3ba6545b5a4eff898e0c1e4ce45b1b9345a6ecfe19",
+              "pid": "976709",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 24,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54876
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-rboxc-valgrind/process-976716.log",
+              "sha256": "c4269431fd9981de7d3529111fb2c2b61a2bf2e9160c6611dc57e6320576859d",
+              "pid": "976716",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49285
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-rboxc-valgrind/process-976717.log",
+              "sha256": "fa84092bc85f6b116e5c598e8c82e8b25406943f95ee787d8f7cd23c4bd0cce3",
+              "pid": "976717",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 2,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51136
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-rboxc-valgrind/process-976718.log",
+              "sha256": "a718983a7947482852c42de21bcab2645e322238fbf5d923ba6bc815865ada08",
+              "pid": "976718",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 4,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52556
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-rboxc-valgrind/process-976719.log",
+              "sha256": "2e5689a6968f036d7183de4e941d31613e3e2c0bd3c5a4c26ccdc98bd77a4784",
+              "pid": "976719",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 6,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53976
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-rboxc-valgrind/process-976720.log",
+              "sha256": "c49c6c779b5abaea3c21fbcf9ca9fd91a925fddcd063ca206999b66a6047a926",
+              "pid": "976720",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 8,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55396
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-rboxc-valgrind/process-976721.log",
+              "sha256": "ef025c251893790a11866d0bd59ffca89a924635f22eb472a2116d67e38646f5",
+              "pid": "976721",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 10,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55976
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-rboxc-valgrind/process-976722.log",
+              "sha256": "30ebfad992896df54e4991d300827c5aa368bbdf8cb5bc7405fcb1795c9a4c88",
+              "pid": "976722",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 12,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55784
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-rboxc-valgrind/process-976723.log",
+              "sha256": "95872cc82542f418a17faab0fae5e53a9587bda259fd24659104b0d98573bdc1",
+              "pid": "976723",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 14,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55788
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-rboxc-valgrind/process-976724.log",
+              "sha256": "0dc5d1ffe1756749810c5a50f4513a714df226975c3926cf2879249fd57b88b9",
+              "pid": "976724",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 16,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55792
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-rboxc-valgrind/process-976725.log",
+              "sha256": "e86f5c382c0aba6a5c24ec1c2a8c9e0ec6e4b6c5a8f704dce831082afef7db41",
+              "pid": "976725",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 18,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55792
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-rboxc-valgrind/process-976726.log",
+              "sha256": "888739072024f818398731cfcd07d2e6f3704a7ee8ea2abf8e47a502c892fab8",
+              "pid": "976726",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 20,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55789
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/4-rboxc-valgrind/process-976727.log",
+              "sha256": "e0c2cd43e95e09b0909135fde573f2a6f0ea95a782f29044d54aab0d47540004",
+              "pid": "976727",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 22,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55789
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:replace",
+      "command": "sh",
+      "args": [
+        "-c",
+        "seen=; trap 'seen=yes; trap \"seen=yes\" CHLD' CHLD; : & wait; trap - CHLD; printf 'seen:%s\\n' \"$seen\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": false,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/5-gnu-valgrind/process-976730.log",
+              "sha256": "b9771ac161f68cc45f82cf0b69c79fd4127aa357ac8624e2082e09c9660e060e",
+              "pid": "976730",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 31,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49204
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/5-gnu-valgrind/process-976734.log",
+              "sha256": "ce365943125aaefb890a7d650935081455964da9c4492fe18c3e5c2e0156e9ed",
+              "pid": "976734",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48744
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/5-rboxc-valgrind/process-976737.log",
+              "sha256": "747a918ed8ac94b576d52b03f6de56d7ef5f2397b83d381e42842e44b5092bed",
+              "pid": "976737",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 31,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50612
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/5-rboxc-valgrind/process-976738.log",
+              "sha256": "6b7dbe996147a4f58d3ce868647f8cafb487d6862071a53e46dc7558d1bcc148",
+              "pid": "976738",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49320
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:reset",
+      "command": "sh",
+      "args": [
+        "-c",
+        "seen=; trap 'seen=yes; trap - CHLD' CHLD; : & wait; printf 'seen:%s\\n' \"$seen\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": false,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/6-gnu-valgrind/process-976741.log",
+              "sha256": "c762802d4b423495ed75f38b84a9946fcc4d35fa873edd15513f18fdf2f0e70d",
+              "pid": "976741",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 22,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48868
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/6-gnu-valgrind/process-976742.log",
+              "sha256": "cb0f3ddc9ac4e41908e1dcc61cdc3ffdc77c25c317acb725994767ea0b84ae19",
+              "pid": "976742",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48288
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/6-rboxc-valgrind/process-976745.log",
+              "sha256": "baeb6ef12317e17b2f3eacfe9914bcd980621668064df8c98f3fecabe0b6e660",
+              "pid": "976745",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 22,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49988
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/6-rboxc-valgrind/process-976746.log",
+              "sha256": "2d3d1b50100f7601ca4d0c9c54bb8c775b9f50e68250f100b8529c5641a934e4",
+              "pid": "976746",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48816
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:function",
+      "command": "sh",
+      "args": [
+        "-c",
+        "f(){ seen=; trap 'seen=yes' CHLD; : & wait; trap - CHLD; printf 'seen:%s\\n' \"$seen\"; return 7; }; f; printf 'status:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": false,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/7-gnu-valgrind/process-976749.log",
+              "sha256": "c0bf8a449e0c73349a764cee9790bdf98c9e9ac472c8ef3104eda0edef99bd0d",
+              "pid": "976749",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 9,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52804
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/7-gnu-valgrind/process-976753.log",
+              "sha256": "a5c388cf4812af2d420d0eb4c2e14214f0864feadd443190ecbc5a2bff17f253",
+              "pid": "976753",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54320
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/7-rboxc-valgrind/process-976756.log",
+              "sha256": "d0e0283e48ede9168e2cb539063db1eff3fbb94503f3116ebddd30955b88c35f",
+              "pid": "976756",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 9,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54500
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/7-rboxc-valgrind/process-976765.log",
+              "sha256": "13b427b2df7dfe808ef04eb5cf781dec6540092f768e33682f60af657951add9",
+              "pid": "976765",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55376
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:repeat",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap ':' CHLD; for ((i=0;i<12;i++)); do : & wait; done; trap - CHLD; printf 'complete\\n'"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-gnu-valgrind/process-976782.log",
+              "sha256": "0cd738b7d10217e2fa257381c201a30d95d01923809a8311e8121cff126fd997",
+              "pid": "976782",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51250
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-gnu-valgrind/process-976783.log",
+              "sha256": "9d86ee77f45c65aa73989d203bc06aa773d5fa99d19a88143ef9523e9f7795e9",
+              "pid": "976783",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48603
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-gnu-valgrind/process-976784.log",
+              "sha256": "b492cb524301a6c81560110b9f75b5c744710795d9a6ada04b9cbba61377d402",
+              "pid": "976784",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50103
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-gnu-valgrind/process-976786.log",
+              "sha256": "1fe00eeb49fdc822b48fe3f68f063b85597b5de28da649c19363549a01c01ed5",
+              "pid": "976786",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51123
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-gnu-valgrind/process-976789.log",
+              "sha256": "19d14340597cd619c6092e000db4076c21e695676ec05cbfba56fb50bb659286",
+              "pid": "976789",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52143
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-gnu-valgrind/process-976790.log",
+              "sha256": "1a4b0563565c886f545943e7685bf71f2b07b5b5503c5daa2ef012acd8544c93",
+              "pid": "976790",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53163
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-gnu-valgrind/process-976791.log",
+              "sha256": "c3db55a4f9aa5be3e4ec3a7b7ba000938db981c58e40ca3a980c2164b557b988",
+              "pid": "976791",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53451
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-gnu-valgrind/process-976792.log",
+              "sha256": "2bb2e455158e4f8526d67956471017fa62761dc993a900f64cb90afe013a0f5b",
+              "pid": "976792",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53451
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-gnu-valgrind/process-976793.log",
+              "sha256": "44fb532528a77abb9fee2ea5c42f4c760f2504f22de0bf4db1f3db9e8090329d",
+              "pid": "976793",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53455
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-gnu-valgrind/process-976794.log",
+              "sha256": "33b10804043c7034aed2b695d9ffb55838d98bfaecce64e6c973c0a0156e149f",
+              "pid": "976794",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53451
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-gnu-valgrind/process-976795.log",
+              "sha256": "765d1942c06e564c26104ebc9db70afd2b78691bc73d35369c6aef1da9b9ac2d",
+              "pid": "976795",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53447
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-gnu-valgrind/process-976798.log",
+              "sha256": "cad231fe1003ff30b21cc1ee01b6c817c9c07511da758e6f544f2a6e35c3d0b9",
+              "pid": "976798",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53444
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-gnu-valgrind/process-976802.log",
+              "sha256": "23148efa15f32a1155b11b364ae83bfb437740108aeb54ad7fa9c05b5a7bb340",
+              "pid": "976802",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53444
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-rboxc-valgrind/process-976816.log",
+              "sha256": "53a82560fba497888cf5a9a88b901b8b349b6472f7f9a890df597ff2e1308270",
+              "pid": "976816",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53214
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-rboxc-valgrind/process-976820.log",
+              "sha256": "0653d32b139503990871f447b49671313888ff51709078e6df8761356aa58a9f",
+              "pid": "976820",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49163
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-rboxc-valgrind/process-976821.log",
+              "sha256": "69ae185ceb710df7f6abfab369b61072fd05cd5ec2333f215d70f43409b2fc2b",
+              "pid": "976821",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51303
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-rboxc-valgrind/process-976822.log",
+              "sha256": "e5d29a55507d117b2a32987d65a3ff6b0df4a8e97c3ed5291ef0a0ef20dd0c4a",
+              "pid": "976822",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52723
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-rboxc-valgrind/process-976823.log",
+              "sha256": "b861a064eb6562fdea708cd0b0c9c680dd8ce37b41a3e9cdd8009b2a7158b95e",
+              "pid": "976823",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54143
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-rboxc-valgrind/process-976824.log",
+              "sha256": "4df21c9ed1802c65023b714c0648b05800261a451cfc0b81fd9a39d6b3a81036",
+              "pid": "976824",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55563
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-rboxc-valgrind/process-976825.log",
+              "sha256": "3c33a54926de98063f41bf4395f5984a8fd9c680753fb7b8e8c124688299167d",
+              "pid": "976825",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55847
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-rboxc-valgrind/process-976826.log",
+              "sha256": "ec6459444686f1f3a65f45de882cf174e677c8219c51795e1b841ca6f80e75b7",
+              "pid": "976826",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55851
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-rboxc-valgrind/process-976827.log",
+              "sha256": "35bde4755cff539b6f5893538c169c9764a27baea373a84893fc12eb537b5a7c",
+              "pid": "976827",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55855
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-rboxc-valgrind/process-976828.log",
+              "sha256": "f8a81f391cfff5b8334a924b56570c368e2a9e03a8edd122c54e16490c96d0ea",
+              "pid": "976828",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55847
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-rboxc-valgrind/process-976829.log",
+              "sha256": "6444f184a7209d6c1bfd6658aa542f0d8483e8f0fc0bd8252405249da894b547",
+              "pid": "976829",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55843
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-rboxc-valgrind/process-976830.log",
+              "sha256": "05fc6cde7f7f761319598801cef21f3007f9012ba34df852bab9570f5781c490",
+              "pid": "976830",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55840
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/8-rboxc-valgrind/process-976831.log",
+              "sha256": "a19b2f9af867eb5a693e91b560324b3200c2028332169eb44c60b86d5b8c169b",
+              "pid": "976831",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55840
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:replace",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "seen=; trap 'seen=yes; trap \"seen=yes\" CHLD' CHLD; : & wait; trap - CHLD; printf 'seen:%s\\n' \"$seen\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/9-gnu-valgrind/process-976834.log",
+              "sha256": "b3c248aea400a90baae55fbc88645fe91fcf3e2b19b57ee6ca9f449e7899278b",
+              "pid": "976834",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49281
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/9-gnu-valgrind/process-976835.log",
+              "sha256": "6201d2d3d0c28b3ef17e533a3bc7fe08efedeb1512842fbd777fd778b12d2577",
+              "pid": "976835",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48622
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/9-rboxc-valgrind/process-976838.log",
+              "sha256": "cea0d5ad2abd651325c51605a5d73219024f3729d0bdf825db65ca7e341ef9b7",
+              "pid": "976838",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50689
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/9-rboxc-valgrind/process-976840.log",
+              "sha256": "6c4227b864a7fee37c6c1632e96c17aa5632bd7589530b6d43c4275cdaef2da0",
+              "pid": "976840",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49198
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:reset",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "seen=; trap 'seen=yes; trap - CHLD' CHLD; : & wait; printf 'seen:%s\\n' \"$seen\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/10-gnu-valgrind/process-976845.log",
+              "sha256": "479ca762322559f481a5300b40f216963c58675ea9400d6ffc161d511d8ce263",
+              "pid": "976845",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48967
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/10-gnu-valgrind/process-976849.log",
+              "sha256": "74e57b8638f0ffe9354bb73d9bf528f07f5fe2f5fbd1c975bbf85dd336f504da",
+              "pid": "976849",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48166
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/10-rboxc-valgrind/process-976855.log",
+              "sha256": "952c1029b805cc120884c9a62d6adf7000c1d33e12978c5ebd5a7766c6fbc134",
+              "pid": "976855",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50087
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/10-rboxc-valgrind/process-976856.log",
+              "sha256": "f832f757eccf6d4b9cfe0efbaf190b21bdfdf1c682da6da1657a3ab9a7cc45e8",
+              "pid": "976856",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48694
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:function",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "f(){ seen=; trap 'seen=yes' CHLD; : & wait; trap - CHLD; printf 'seen:%s\\n' \"$seen\"; return 7; }; f; printf 'status:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/11-gnu-valgrind/process-976860.log",
+              "sha256": "ae6fdbffdb2d705d77ab1802d2049d460b0ac3f10641ab5149ac96cedfec044d",
+              "pid": "976860",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52820
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/11-gnu-valgrind/process-976863.log",
+              "sha256": "6438fd384a2786eaa0c225d2093b35cdc23552e2af450aebce31b4688fad6e74",
+              "pid": "976863",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54207
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/11-rboxc-valgrind/process-976866.log",
+              "sha256": "937419f76a282543af781ba91c3b8c5c9b26f14ed8fff716dbc592037c41a104",
+              "pid": "976866",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54548
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/11-rboxc-valgrind/process-976867.log",
+              "sha256": "5d780c588d8fefcc3574d47ceac18abc8e49a94428067c109ae1155d284437f3",
+              "pid": "976867",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55263
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:repeat",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap ':' CHLD; for ((i=0;i<12;i++)); do : & wait; done; trap - CHLD; printf 'complete\\n'"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-gnu-valgrind/process-976881.log",
+              "sha256": "90dd2ff4943f3a6a160d68ff45e4046f891433d48656339935b6ea564cee89ff",
+              "pid": "976881",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51246
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-gnu-valgrind/process-976882.log",
+              "sha256": "38ebb962555f78c746889d3156ba6c8a7f7d119e72b9a38bd27e8713a4d0e68a",
+              "pid": "976882",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48599
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-gnu-valgrind/process-976883.log",
+              "sha256": "888a24176f11f0240ea54613626c2dafe4fb083ee47342dbd88d48166489900c",
+              "pid": "976883",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50099
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-gnu-valgrind/process-976884.log",
+              "sha256": "5cbbc6153e2524ee47daf7e0a4605c0fc00d01cfdb5ac3119fe9e7d2fb0b9cfd",
+              "pid": "976884",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51119
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-gnu-valgrind/process-976885.log",
+              "sha256": "89e872a3a7db2b17e86c13684194be1284092a18ec4d8c2582331daa735d39d8",
+              "pid": "976885",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52139
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-gnu-valgrind/process-976886.log",
+              "sha256": "04d060595cb7f8dcc3085f9f2f08fd1c15c5d311fac0e68ea4b6fb870daa7c12",
+              "pid": "976886",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53159
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-gnu-valgrind/process-976887.log",
+              "sha256": "4b2107c59800325ac0acf7bab55ba809a0053f850a8555bd5337f9a58f0bccbc",
+              "pid": "976887",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53447
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-gnu-valgrind/process-976888.log",
+              "sha256": "72c37af6713f019aae1ad3fe087a45ecb06fff443fbf7d4f41311c2fcd456600",
+              "pid": "976888",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53447
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-gnu-valgrind/process-976889.log",
+              "sha256": "5ff255a3a722fa2b6f500b2c704111964ec4e7cd09c4a28ec107ee65d89e21f0",
+              "pid": "976889",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53451
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-gnu-valgrind/process-976890.log",
+              "sha256": "03bc3a4b1520116395235c13f62f3ee138e5e2f9b548f15befbb2f464e83e6a3",
+              "pid": "976890",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53447
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-gnu-valgrind/process-976891.log",
+              "sha256": "82e8a73154bad3227c96d4466f82dd7f252f5e836e018944e0fa016b79eb287a",
+              "pid": "976891",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53443
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-gnu-valgrind/process-976892.log",
+              "sha256": "0deef6227321e46a6091b36eb695ec56b0747b6642347a16f4e5479558c64e91",
+              "pid": "976892",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53440
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-gnu-valgrind/process-976893.log",
+              "sha256": "138f34ab514ae24bed1a886b70fef9b1bf8c5ddfa4908cebcbf292ba09ea3b50",
+              "pid": "976893",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53440
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-rboxc-valgrind/process-976908.log",
+              "sha256": "f21c09ede8e53233cfd21eec1e74108cbb150ede95d9d77fb7ff3062172aea04",
+              "pid": "976908",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53210
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-rboxc-valgrind/process-976911.log",
+              "sha256": "84b86047f183fee212cf023d71b20568c6845ece6ab803ed0d601fb42b17331c",
+              "pid": "976911",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49159
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-rboxc-valgrind/process-976912.log",
+              "sha256": "bd9aa2205f988133788b2244928abb1a8ac1967fcd4f1908bbbc3d7cd6d24788",
+              "pid": "976912",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51299
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-rboxc-valgrind/process-976913.log",
+              "sha256": "1ecae0e24d69d15b1741befc1045da54fd873546fe5eca6e6747c4ce93c932ba",
+              "pid": "976913",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52719
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-rboxc-valgrind/process-976914.log",
+              "sha256": "69d80979029ef3c3a4fb77da2d3fa5cda24d8a5f9cbe659612fb92db392ee63b",
+              "pid": "976914",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54139
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-rboxc-valgrind/process-976915.log",
+              "sha256": "82c08bc6aedd102cfb2c5409154be4b2bbabedda89639e96a9899e95c7717b0c",
+              "pid": "976915",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55559
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-rboxc-valgrind/process-976916.log",
+              "sha256": "7086864f70537b41caf9fdcb2c66ae418febc041b6a6c0d42f6b588c4aec22d4",
+              "pid": "976916",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55843
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-rboxc-valgrind/process-976917.log",
+              "sha256": "ea9ec242ba6506f805f340d241cd5583d37c2e601a71836c45cec6f39515a126",
+              "pid": "976917",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55847
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-rboxc-valgrind/process-976918.log",
+              "sha256": "c38935d34a968bdfe8359f49b90884fe731665088ecc585852a36d9cfb7eecaf",
+              "pid": "976918",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55851
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-rboxc-valgrind/process-976919.log",
+              "sha256": "cc6bd919a548b9f675aba2901d4f081d21804e2afed29f2cdb4ea640719959de",
+              "pid": "976919",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55843
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-rboxc-valgrind/process-976920.log",
+              "sha256": "d204c62030eb488cdb762311da9e240d247288315e527a68e4be9584afe10986",
+              "pid": "976920",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55839
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-rboxc-valgrind/process-976921.log",
+              "sha256": "2ee9a420d239565a961bdc9d6ca46e0c16512e9295206f4974a014e4f2d33c00",
+              "pid": "976921",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55836
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/12-rboxc-valgrind/process-976922.log",
+              "sha256": "b0448865b018ae8a4c414f2fbba131884ab3d6989464bca807b106bdbb4c4b65",
+              "pid": "976922",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55836
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:replace",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "seen=; trap 'seen=yes; trap \"seen=yes\" CHLD' CHLD; : & wait; trap - CHLD; printf 'seen:%s\\n' \"$seen\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/13-gnu-valgrind/process-976926.log",
+              "sha256": "59a33b9cca8ea894fe21da7689820f4c3d0f376af5f564ac2fcda4711d467957",
+              "pid": "976926",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49277
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/13-gnu-valgrind/process-976927.log",
+              "sha256": "91dd4c4b415012435d8878ebde6698e5066c4f2c69f0c1acd48b53670ab271ff",
+              "pid": "976927",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48618
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/13-rboxc-valgrind/process-976930.log",
+              "sha256": "459d81136b004bc5e4d8abbc4819fe3b4aef69e16961f2f474a484afec41d872",
+              "pid": "976930",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50685
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/13-rboxc-valgrind/process-976933.log",
+              "sha256": "6ef65e052001295ca39ba8e76079d717c2a5b72e4bd41f5871f66ffa048b0a01",
+              "pid": "976933",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49194
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:reset",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "seen=; trap 'seen=yes; trap - CHLD' CHLD; : & wait; printf 'seen:%s\\n' \"$seen\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/14-gnu-valgrind/process-976940.log",
+              "sha256": "bd8696c98f7d59db7c09e02c64a23a97e8cfb155635f1fceabeaa155fd20c437",
+              "pid": "976940",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48963
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/14-gnu-valgrind/process-976949.log",
+              "sha256": "55d6eb4d133f2ff4e498aa04797f20846b6465d94e5bc843d8b8cbd2513f91db",
+              "pid": "976949",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48162
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/14-rboxc-valgrind/process-976955.log",
+              "sha256": "794b69b53105c77768d971c15357522a529f0063d64354852ab8c0efedaec6ed",
+              "pid": "976955",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50083
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/14-rboxc-valgrind/process-976956.log",
+              "sha256": "f9a5d8f9f8fcaa16aa55ca306202becf787ab5ac2409f9a67d0466e8db411538",
+              "pid": "976956",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48690
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:function",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "f(){ seen=; trap 'seen=yes' CHLD; : & wait; trap - CHLD; printf 'seen:%s\\n' \"$seen\"; return 7; }; f; printf 'status:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/15-gnu-valgrind/process-976959.log",
+              "sha256": "a0db4a2ff223d44a96a07ac3908b2c6a7c8e7c608c4a9b90d5578eb1f60955e4",
+              "pid": "976959",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52814
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/15-gnu-valgrind/process-976960.log",
+              "sha256": "fbd0e32c8fe881408b53ee5f76e8035a24e294d2022d10da4b7f3a5cd935398f",
+              "pid": "976960",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54197
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/15-rboxc-valgrind/process-976967.log",
+              "sha256": "44a4920de0911d921c30bb6c047fc2c7c50baed7b7d5d38fb84f07aeac97b318",
+              "pid": "976967",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54542
+              }
+            },
+            {
+              "log": "evidence/raw/bash-sigchld-contract-before/run-h4h_8obg/15-rboxc-valgrind/process-976974.log",
+              "sha256": "ae79fa8e4e158948c8d6c33b3f01ba0865de10dc55f126b7fd4e6aad7f0c8440",
+              "pid": "976974",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55253
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

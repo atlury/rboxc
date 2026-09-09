@@ -319,22 +319,8 @@
       "target": "coproc",
       "recipe": "run-coproc",
       "recipe_sha256": "e10eacbc1acecf1864157378ff900f114a391447c7bb6e5c592c17d38e3ce660",
-      "reviewed": true,
-      "state": "reviewed-original-assertions-memory-open",
-      "script": "coproc.tests",
-      "expected": "coproc.right",
-      "output_mode": "combined",
-      "fixtures": {
-        "coproc.tests": "1c7a81f48fe2567a21f932ddddcf3a7531cc036b322a28a58c45cb6ffcacd57c",
-        "coproc.right": "b6bef687014619f8177775a47795a2ede52507582afe409967ce53262624797b"
-      },
-      "host_inputs": {
-        "/etc/passwd": "7cc9e6053e6b4c534aac10aa082522c4801ded5a61734c7d00275d27059b156e"
-      },
-      "timeout_seconds": 300,
-      "review": "Complete original recipe, script, expected output and native xcase helper reviewed. Ordinary coprocess pipe communication, descriptor moves and owned-child termination, with bounded sleep and private cleanup output. The read-only host account file is pinned; its root-name selection is original. The native xcase helper is shared by both implementations and not counted as a translated applet.",
-      "evidence": "evidence/bash-coproc-original.json",
-      "audit": "evidence/bash-coproc-validation.json"
+      "reviewed": false,
+      "state": "pending-review"
     },
     {
       "target": "cprint",
@@ -1492,7 +1478,7 @@
       "recipe": "run-trap",
       "recipe_sha256": "a7136b7aa7351b5e22f5f0b35b9264c743bab1205df7b48bbe75ebfbfb6454aa",
       "reviewed": true,
-      "state": "reviewed-original-baseline-open",
+      "state": "reviewed-ready",
       "script": "trap.tests",
       "expected": "trap.right",
       "output_mode": "combined",
@@ -1520,9 +1506,7 @@
         "/usr/lib/cargo/bin/coreutils/echo": "48893b0fb21436b54619db80486e83ef39dfccaf1aefe83dfa00c02d6146e8c0",
         "/usr/lib/cargo/bin/coreutils/false": "48893b0fb21436b54619db80486e83ef39dfccaf1aefe83dfa00c02d6146e8c0"
       },
-      "review": "Complete original recipe, main script, expected output and all ten subsidiary files reviewed. Ordinary EXIT, ERR, DEBUG, RETURN and owned-child signal conformance; finite child sleeps and a one-second owned signal interrupt the loop. The original recipe does not invoke trap5.sub. Private controlling terminal and absolute GNU echo/false replacements preserve host helpers. Original scheduling-sensitive output stays unchanged; no output reordering or signal-line normalization is applied.",
-      "evidence": "evidence/bash-sigchld-trap-original.json",
-      "audit": "evidence/bash-sigchld-trap-validation.json"
+      "review": "Complete original recipe, main script, expected output and all ten subsidiary files reviewed. Ordinary EXIT, ERR, DEBUG, RETURN and owned-child signal conformance; finite child sleeps and a one-second owned signal interrupt the loop. The original recipe does not invoke trap5.sub. Private controlling terminal and absolute GNU echo/false replacements preserve host helpers. Original scheduling-sensitive output stays unchanged; no output reordering or signal-line normalization is applied."
     },
     {
       "target": "type",
@@ -1651,13 +1635,6 @@
       "source_sha256": "722e2f857ab582c4b52d254c729c4cd5e7566e6a16f105fc106b5a3ec36ea73f",
       "binary": "build/gnu-bash/zecho",
       "binary_sha256": "733316316f52c643ebacaa780f33e456848daecef84950ae5835bfd9de52be80"
-    },
-    "xcase": {
-      "source": "support/xcase.c",
-      "source_sha256": "edde247d6331f8e968449dfafbefe21ef3b0a045c08af15aa0f35e6e548ff4ab",
-      "binary": "build/bash-xcase-helper/xcase",
-      "binary_sha256": "85d1bd12d98c60984e4f6ff4c99b00bcb43433676b96f9c2990b75d1bc8ab81f",
-      "scope": "Original case-conversion support helper shared by GNU and Rboxc, not an applet port."
     }
   },
   "runtime_test_helpers": {

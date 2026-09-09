@@ -105,19 +105,33 @@ The public terminal cleanup API alone retains the shared parameter cache in
 this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
-The current 187-command candidate is **14,723,016 bytes**, at
-`target/bash-script-input-cleanup-candidate/release/rboxc`, SHA-256
-`0599733d94b8649533edd2395fe9a108ca482a39a67e23596589b210135859f7`.
+The current 187-command candidate is **14,723,208 bytes**, at
+`target/bash-sigchld-cleanup-candidate/release/rboxc`, SHA-256
+`59a624bd18698c1aeca638e7ea8f11b79a52b4790027cf3330d280247158c95a`.
 An independent rebuild is byte-identical. All 428 Coreutils smoke checks,
 11 dispatcher checks, 44 focused Bash comparisons and 69 shell-adapter checks
 pass. Bash has **54 strict scripts from 53 original recipes**, with **12765 clean
 candidate process logs** across their recorded immutable candidates.
-[evidence/bash-script-input-coverage.json](evidence/bash-script-input-coverage.json)
-accounts for 63 reviewed scripts and all 88 original recipes; 21 recipes remain
+[evidence/bash-sigchld-coverage.json](evidence/bash-sigchld-coverage.json)
+accounts for 65 reviewed scripts and all 88 original recipes; 19 recipes remain
 pending, two are orchestration and three are held outside execution.
 
 
-Opened script descriptors now retain exit ownership before startup validation.
+SIGCHLD dispatch now releases the replaced trap string after creating the
+independent execution/restore copy. Twenty child-signal and 32 RETURN contracts
+pass; queued-handler and POSIX-shell findings from the preceding candidate
+remain preserved. The original trap recipe matches normally and retains GNU’s
+identical Valgrind signal-trap output. Its ten-byte heap leak is repaired:
+66 of 68 candidate logs are clean, with two default-SIGPIPE families open.
+The coprocess recipe matches all original assertions in all four profiles;
+12 of 13 candidate logs are clean, with its intentionally terminated child
+retaining two descriptors. Both whole recipes remain outside strict counts.
+The original native xcase helper is pinned and shared, not an applet port.
+[evidence/bash-sigchld-validation.json](evidence/bash-sigchld-validation.json)
+audits the changed trap helper, rebuild, contracts and original evidence.
+
+At the preceding script-input checkpoint, opened descriptors gained exit
+ownership before startup validation.
 Sixteen regular, empty, directory and executable-input contracts pass across
 four shell aliases. The unchanged invocation recipe matches normally. Its
 Valgrind missing-interpreter diagnostic and one incomplete child image match
