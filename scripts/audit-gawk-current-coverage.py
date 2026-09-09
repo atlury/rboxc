@@ -36,7 +36,8 @@ archives = [ROOT/'tests/gawk-original.py', ROOT/'evidence/raw/gawk-array-driver.
             ROOT/'evidence/raw/gawk-directory-driver.py',
             ROOT/'evidence/raw/gawk-before-native-children-driver.py',
             ROOT/'evidence/raw/gawk-before-output-preservation-driver.py',
-            ROOT/'evidence/raw/gawk-before-child-wait-driver.py']
+            ROOT/'evidence/raw/gawk-before-child-wait-driver.py',
+            ROOT/'evidence/raw/gawk-before-self-exec-driver.py']
 driver_versions = {fingerprint(p): str(p.relative_to(ROOT)) for p in archives}
 focused_path = ROOT/'evidence/gawk-source-behavior.json'
 focused = json.loads(focused_path.read_text())
@@ -60,12 +61,18 @@ def check_inputs(data):
         else:
             assert fingerprint(Path(filename)) == expected, filename
 
-def check_memory(recorded, log, expected, candidate, case, focused_case=False, children=None, directory=None, dependencies=None, allow_open=False):
+def check_memory(recorded, log, expected, candidate, case, focused_case=False, children=None, directory=None, dependencies=None, allow_open=False, self_exec_images=None):
     p = ROOT/log
     assert fingerprint(p) == expected
     text = p.read_text()
     commands = re.findall(r'^==[0-9]+== Command: (.*)$', text, re.M)
-    assert len(commands) == 1
+    assert len(commands) == (self_exec_images or 1)
+    if self_exec_images:
+        assert self_exec_images==2 and not focused_case
+        assert re.fullmatch(r'/tmp/rboxc-gawk-original-[A-Za-z0-9_-]+(?:/test)?',directory)
+        assert commands[0].startswith('gawk ')
+        assert commands[1]==directory+'/exec/gawk'+commands[0][4:]
+    assert recorded.get('commands',commands)==commands
     argv = commands[0].split()
     if focused_case:
         assert re.fullmatch(r'/tmp/rboxc-gawk-[^/]+/exec/(awk|gawk|nawk|rboxc)', argv[0])
@@ -81,7 +88,7 @@ def check_memory(recorded, log, expected, candidate, case, focused_case=False, c
     pids = set(re.findall(r'^==([0-9]+)==', text, re.M))
     assert len(pids) == 1
     parsed = runner.parse_memory_log(text, pids.pop(), exec_only=True)
-    assert parsed['complete_exec_log'] and parsed['exec_images'] == 1
+    assert parsed['complete_exec_log'] and parsed['exec_images'] == (self_exec_images or 1)
     assert all(recorded[k] == v for k, v in parsed.items())
     if candidate and not allow_open:
         assert parsed['errors'] == parsed['non_inherited_descriptors'] == 0
@@ -139,6 +146,8 @@ for filename in sorted({r['evidence'] for r in reviewed.values()}):
                     locale_preparation_changes.setdefault(locale_profile,{})[locale_input]={'recorded_build_sha256':expected,'current_host_sha256':actual}
             for name,expected in locale['files'].items():
                 assert fingerprint(Path(locale['runtime_path'])/locale['name']/name)==expected
+        self_exec_images=row.get('self_exec_images')
+        assert result.get('self_exec_images')==self_exec_images
         children=row.get('child_commands',{})
         dependencies=row.get('child_dependencies',{})
         assert result.get('child_dependencies',{})==dependencies
@@ -176,7 +185,7 @@ for filename in sorted({r['evidence'] for r in reviewed.values()}):
                 for memory in outcome['memory']:
                     check_memory(memory, memory['log'], memory['sha256'],
                                  key == 'rboxc-valgrind', result['selection'], children=children,
-                                 directory=outcome.get('private_work_directory'),dependencies=dependencies,allow_open=allow_open)
+                                 directory=outcome.get('private_work_directory'),dependencies=dependencies,allow_open=allow_open,self_exec_images=self_exec_images)
     report_refs[filename] = {'sha256': fingerprint(path), 'passed': data['passed'],
                              'total': data['total'], 'driver_archive': driver_versions[data['driver_sha256']]}
 assert seen == set(reviewed)
@@ -215,6 +224,7 @@ result = {'scope': 'Distinct reviewed Gawk recipes on one immutable candidate. E
           'focused_cases': 85, 'clean_candidate_processes': len(candidate_logs),
           'clean_original_processes': len(candidate_logs)-85,
           'clean_child_dependency_processes':sum(r['role']=='child-dependency' for r in candidate_logs.values()),
+          'clean_original_gawk_execution_images':sum(r['exec_images'] for r in candidate_logs.values() if r['role']=='gawk')-85,
           'clean_original_gawk_processes':sum(r['role']=='gawk' for r in candidate_logs.values())-85,
           'original_reports': report_refs,
           'focused_report': {'path': str(focused_path.relative_to(ROOT)), 'sha256': fingerprint(focused_path)},

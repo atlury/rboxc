@@ -1,6 +1,6 @@
 {
   "provider": "GNU Gawk 5.4.1",
-  "scope": "All 634 original AWK inputs inventoried; 500 recipes reviewed, including seventeen native-extension selections: 491 pass, three assertion failures match GNU, and six additional originals pass assertions with memory/descriptor findings still open. Six auxiliary inputs add no duplicate recipe/process counts. Nine historical reproductions are excluded. Twenty MPFR programs are unavailable in the current build, verified through the unchanged GNU capability guard without executing them; 99 other inputs still await accounting and profiles. Strict aggregate counts exclude all processes from the six open profiles. Full acceptance remains open.",
+  "scope": "All 634 original AWK inputs inventoried; 509 recipes reviewed, including seventeen native-extension selections: 500 pass, three assertion failures match GNU, and six additional originals pass assertions with memory/descriptor findings still open. Six auxiliary inputs add no duplicate recipe/process counts. Twenty-seven historical reproductions are excluded. Twenty MPFR programs are unavailable in the current build, verified through the unchanged GNU capability guard without executing them; 72 other inputs still await accounting and profiles. Strict aggregate counts exclude all processes from the six open profiles. Full acceptance remains open.",
   "registration_sha256": "447e3fdd76fe4ebb4b39427465aa727ed421a5818e568a00e00f2c5a90830ade",
   "inputs": [
     {
@@ -964,7 +964,8 @@
       "path": "test/clobber.awk",
       "sha256": "097f5c2e756d5a85c4e6527c4884cb136f9c1914d7ed8cb1848887aa0eae809f",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "reason": "Original source reviewed read-only. Explicit historical crash, internal-error, memory-corruption or nontermination reproduction; not executed in this compatibility profile. Source is retained unchanged and no original pass is claimed."
     },
     {
       "path": "test/clos1way.awk",
@@ -1412,56 +1413,140 @@
     {
       "path": "test/dbugarray1.awk",
       "sha256": "f728af86e5ebef9102702352573f06710e6383e60d23b3f65e19ac8ebe340fa6",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "dbugarray1",
+      "review": "Complete original programs, debugger command inputs, configured recipes and expected outputs reviewed. Fixed small arrays, bounded nested array traversal, watchpoints, typed regex values, numeric/string evaluation and ordinary undefined-function recovery. Commands only run, inspect, step, evaluate the supplied small expressions or quit; no shell children or external actions.",
+      "fixtures": {
+        "dbugarray1.ok": "ea5f82e68bef64ed93c85927ab3acda53b47262e22c455d74826b20af5f2dbcf",
+        "dbugarray1.in": "32e74d22106e8bbebca3237ed6c7ad6a2420611472c0cceeb1fd41bdb887e161"
+      },
+      "configured_recipe_sha256": "98cffa4492fc81ff3b2163b1874798145f3e7730fc1e51365a292ed58a88c050",
+      "evidence": "evidence/gawk-debugger-restart-original.json",
+      "audit": "evidence/gawk-debugger-restart-memory-audit.json"
     },
     {
       "path": "test/dbugarray2.awk",
       "sha256": "eef19cb50a6b97af4e2d6469d5ca087d507369bf30570bded7c19658aaa2908b",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "dbugarray2",
+      "review": "Complete original programs, debugger command inputs, configured recipes and expected outputs reviewed. Fixed small arrays, bounded nested array traversal, watchpoints, typed regex values, numeric/string evaluation and ordinary undefined-function recovery. Commands only run, inspect, step, evaluate the supplied small expressions or quit; no shell children or external actions.",
+      "fixtures": {
+        "dbugarray2.ok": "0b9141e93436d3dac03c3270e7e80d8512663596dfd1a80518c9405036e4ba5f",
+        "dbugarray2.in": "60f3ee67e0cdc601093ebe9894f3d758d1befc3222edfae6ff5a6e71c0d4a946"
+      },
+      "configured_recipe_sha256": "651a26ec94b04622da6fa530b6a7401a2fe9b9d4400f0a23069fc9abd1aa2734",
+      "evidence": "evidence/gawk-debugger-restart-original.json",
+      "audit": "evidence/gawk-debugger-restart-memory-audit.json"
     },
     {
       "path": "test/dbugarray3.awk",
       "sha256": "4b6d6955557ae351c81ab130a259acbbbe162c0de4bc4be6922d2daf008f74e7",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "dbugarray3",
+      "review": "Complete original programs, debugger command inputs, configured recipes and expected outputs reviewed. Fixed small arrays, bounded nested array traversal, watchpoints, typed regex values, numeric/string evaluation and ordinary undefined-function recovery. Commands only run, inspect, step, evaluate the supplied small expressions or quit; no shell children or external actions.",
+      "fixtures": {
+        "dbugarray3.ok": "def9c276ff29283393cfd4c80d2dea05d6c4fb1aa117788d587fc7c67675bed3",
+        "dbugarray3.in": "60c469edd37bc69dc010c98be7869165fac2ae3ac1f09cc29c779eea4598cd53"
+      },
+      "configured_recipe_sha256": "f0d29ff60d2e18a9882179aa7929c2b69428246fac7d30e9f57b54f41571da87",
+      "evidence": "evidence/gawk-debugger-restart-original.json",
+      "audit": "evidence/gawk-debugger-restart-memory-audit.json"
     },
     {
       "path": "test/dbugarray4.awk",
       "sha256": "7a32a281c6e0233d28f8398afb8d78706bf68b2e8c4f4064f5fb8ca3e6d73c22",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "dbugarray4",
+      "review": "Complete original programs, debugger command inputs, configured recipes and expected outputs reviewed. Fixed small arrays, bounded nested array traversal, watchpoints, typed regex values, numeric/string evaluation and ordinary undefined-function recovery. Commands only run, inspect, step, evaluate the supplied small expressions or quit; no shell children or external actions. The debugger re-execs its pinned private Gawk path once. An inherited append-only Valgrind log retains both images under the same PID instead of overwriting the initial log.",
+      "fixtures": {
+        "dbugarray4.ok": "98cbaafc2ae34e50401e8f9c92429b59d3196b56e728facf7abd33e83b0d2c3d",
+        "dbugarray4.in": "bc16a3c7da0536cbe64fffdddfbfa1c11b28393c15988a36a3698fcb968b8ac3"
+      },
+      "configured_recipe_sha256": "f00bc37a4cc2e95b574ab379b35a0eb888947e75e635a9b0eadede2f75c64b7d",
+      "self_exec_images": 2,
+      "evidence": "evidence/gawk-debugger-restart-original.json",
+      "audit": "evidence/gawk-debugger-restart-memory-audit.json"
     },
     {
       "path": "test/dbugeval2.awk",
       "sha256": "9f7ac36b23b9d4332a54a6912739cf641a47c3cbad82ecc8bc81d9b0f9fa5c66",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "dbugeval2",
+      "review": "Complete original programs, debugger command inputs, configured recipes and expected outputs reviewed. Fixed small arrays, bounded nested array traversal, watchpoints, typed regex values, numeric/string evaluation and ordinary undefined-function recovery. Commands only run, inspect, step, evaluate the supplied small expressions or quit; no shell children or external actions.",
+      "fixtures": {
+        "dbugeval2.ok": "68181c43e748a76eee06e81598f903e993b1b74e852f70d4890a1a7e885323d7",
+        "dbugeval2.in": "dd0dedb190a71a0d84da10a3f06e69fe4099c8927fb0a4220eea6006f5a66e18"
+      },
+      "configured_recipe_sha256": "aa6711393e3b33bc73b692fe961a2408fffb8aeba9e4aa8eaac0ffca3e68c1c0",
+      "evidence": "evidence/gawk-debugger-restart-original.json",
+      "audit": "evidence/gawk-debugger-restart-memory-audit.json"
     },
     {
       "path": "test/dbugeval3.awk",
       "sha256": "cf733d7e7201bcbac635b3d9991a685bbe5bdd07e63aba67e17654880600d62c",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "dbugeval3",
+      "review": "Complete original programs, debugger command inputs, configured recipes and expected outputs reviewed. Fixed small arrays, bounded nested array traversal, watchpoints, typed regex values, numeric/string evaluation and ordinary undefined-function recovery. Commands only run, inspect, step, evaluate the supplied small expressions or quit; no shell children or external actions.",
+      "fixtures": {
+        "dbugeval3.ok": "f0a5131011403db85e52ac101cc32a9dce0554880dc719b26f62b681481dc89a",
+        "dbugeval3.in": "2a9e04d8f08004f988f70e47ad34b69ef0d7cd9a510365228ef7be9a1db44718"
+      },
+      "configured_recipe_sha256": "7818e86a5ba012f6e7f3475cb6c08ca18f92620b6a1cd63c48842100d79e169a",
+      "evidence": "evidence/gawk-debugger-restart-original.json",
+      "audit": "evidence/gawk-debugger-restart-memory-audit.json"
     },
     {
       "path": "test/dbugeval4.awk",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "dbugeval4",
+      "review": "Complete original programs, debugger command inputs, configured recipes and expected outputs reviewed. Fixed small arrays, bounded nested array traversal, watchpoints, typed regex values, numeric/string evaluation and ordinary undefined-function recovery. Commands only run, inspect, step, evaluate the supplied small expressions or quit; no shell children or external actions. The debugger re-execs its pinned private Gawk path once. An inherited append-only Valgrind log retains both images under the same PID instead of overwriting the initial log.",
+      "fixtures": {
+        "dbugeval4.ok": "a206e11a84ed3b195697b4f5dc043ba617049cb07038d774bdf4541ab1a7a1f3",
+        "dbugeval4.in": "78b84e6e2725ddc57685aec762903b10c1159a6d24b993990614b9e825f595a3"
+      },
+      "configured_recipe_sha256": "80d80d4604085f7c094e368cc67d085d24fb3df9c1564d373af7230b82e0ccb8",
+      "self_exec_images": 2,
+      "evidence": "evidence/gawk-debugger-restart-original.json",
+      "audit": "evidence/gawk-debugger-restart-memory-audit.json"
     },
     {
       "path": "test/dbugtypedre1.awk",
       "sha256": "b56bd00e12153006434492bae2208b4af217a27f3a15d7118bd62d9f2cc6afbd",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "dbugtypedre1",
+      "review": "Complete original programs, debugger command inputs, configured recipes and expected outputs reviewed. Fixed small arrays, bounded nested array traversal, watchpoints, typed regex values, numeric/string evaluation and ordinary undefined-function recovery. Commands only run, inspect, step, evaluate the supplied small expressions or quit; no shell children or external actions.",
+      "fixtures": {
+        "dbugtypedre1.ok": "08530cb1a39ca604339c9d9ffd898b41f5775948438dd71928f4b49ec48698fb",
+        "dbugtypedre1.in": "018edd24f07875894758d9c32d35b39c506cf25238f0ae9675a0071cdda1f1b2",
+        "typeof1.awk": "b64aee498cefa8e1252001cf49dcff808fc6b4589fed66254bd829a9c2f36151"
+      },
+      "configured_recipe_sha256": "38ac0ad918caf4d3a2c47677da23511ee077d0c50b0942f227cb83224bf93647",
+      "evidence": "evidence/gawk-debugger-restart-original.json",
+      "audit": "evidence/gawk-debugger-restart-memory-audit.json"
     },
     {
       "path": "test/dbugtypedre2.awk",
       "sha256": "8874608d21cbfff0ca77eb0f3ec304262aced4f3ed7cf1b90feabf535d1259da",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "dbugtypedre2",
+      "review": "Complete original programs, debugger command inputs, configured recipes and expected outputs reviewed. Fixed small arrays, bounded nested array traversal, watchpoints, typed regex values, numeric/string evaluation and ordinary undefined-function recovery. Commands only run, inspect, step, evaluate the supplied small expressions or quit; no shell children or external actions.",
+      "fixtures": {
+        "dbugtypedre2.ok": "fe3b04e659b8e9aa801c0ed95463ebea1c07e6030d391d3d2c9e0d51c31b9b3e",
+        "dbugtypedre2.in": "f2b074bfde0bcc78c5131544463ce220ca753b57dc8d729a507a4b7848938f5c"
+      },
+      "configured_recipe_sha256": "8dc644bc21037ffff646649760e141bfd7173b3261b4a49f95a823545e779e43",
+      "evidence": "evidence/gawk-debugger-restart-original.json",
+      "audit": "evidence/gawk-debugger-restart-memory-audit.json"
     },
     {
       "path": "test/defref.awk",
@@ -3100,7 +3185,8 @@
       "path": "test/getnr2tb.awk",
       "sha256": "a8170d283f8dc7165d612b8dbfa41a048c1e304c5c8854cdf3d1d3c02f377f71",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "reason": "Original source reviewed read-only. Explicit historical crash, internal-error, memory-corruption or nontermination reproduction; not executed in this compatibility profile. Source is retained unchanged and no original pass is claimed."
     },
     {
       "path": "test/getnr2tm.awk",
@@ -3467,7 +3553,8 @@
       "path": "test/ignrcas2.awk",
       "sha256": "e71b470a7cd9a8d7f692a53ae9fec694aa7bf2cb5934719c441e420286af2287",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "reason": "Original source reviewed read-only. Explicit historical crash, internal-error, memory-corruption or nontermination reproduction; not executed in this compatibility profile. Source is retained unchanged and no original pass is claimed."
     },
     {
       "path": "test/ignrcas4.awk",
@@ -3619,7 +3706,8 @@
       "path": "test/indirectbuiltin5.awk",
       "sha256": "79392ad80c45ea00cfc3d0368c5642e56acddb65f95b23d2d8e5abdd7f5ae7c6",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "reason": "Original source reviewed read-only. Explicit historical crash, internal-error, memory-corruption or nontermination reproduction; not executed in this compatibility profile. Source is retained unchanged and no original pass is claimed."
     },
     {
       "path": "test/indirectbuiltin6.awk",
@@ -3759,7 +3847,8 @@
       "path": "test/intformat.awk",
       "sha256": "d448208109e628d67f6ba3b67f19c9eeccb6c1a265685f7766afc9488a25ee51",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "reason": "Original source reviewed read-only. Explicit historical crash, internal-error, memory-corruption or nontermination reproduction; not executed in this compatibility profile. Source is retained unchanged and no original pass is claimed."
     },
     {
       "path": "test/intprec.awk",
@@ -3779,7 +3868,8 @@
       "path": "test/iobug1.awk",
       "sha256": "7bb870b4f2a200457dbf5558d5c071f7896dd2fbc00c9c56b33aea862b1b6d8a",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "reason": "Original source reviewed read-only. Explicit historical crash, internal-error, memory-corruption or nontermination reproduction; not executed in this compatibility profile. Source is retained unchanged and no original pass is claimed."
     },
     {
       "path": "test/iolint.awk",
@@ -4996,13 +5086,15 @@
       "path": "test/noloop1.awk",
       "sha256": "b6a5412e3ff21ffe13575d262a8d65c7e3f850188fbe70552748c92245df5073",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "reason": "Original source reviewed read-only. Explicit historical crash, internal-error, memory-corruption or nontermination reproduction; not executed in this compatibility profile. Source is retained unchanged and no original pass is claimed."
     },
     {
       "path": "test/noloop2.awk",
       "sha256": "b6a5412e3ff21ffe13575d262a8d65c7e3f850188fbe70552748c92245df5073",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "reason": "Original source reviewed read-only. Explicit historical crash, internal-error, memory-corruption or nontermination reproduction; not executed in this compatibility profile. Source is retained unchanged and no original pass is claimed."
     },
     {
       "path": "test/nondec.awk",
@@ -5086,13 +5178,15 @@
       "path": "test/nsawk1.awk",
       "sha256": "5a6eb6c4a2ea8a1da702ed6198f28648435b33df4a4121aec71ad99ff99ef275",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "reason": "Original source reviewed read-only. Explicit historical crash, internal-error, memory-corruption or nontermination reproduction; not executed in this compatibility profile. Source is retained unchanged and no original pass is claimed."
     },
     {
       "path": "test/nsawk2.awk",
       "sha256": "4fd50d90e833764ecf98390564c2e910867bacd015765f98a34a32a7ea56f4dc",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "reason": "Original source reviewed read-only. Explicit historical crash, internal-error, memory-corruption or nontermination reproduction; not executed in this compatibility profile. Source is retained unchanged and no original pass is claimed."
     },
     {
       "path": "test/nsbad.awk",
@@ -5268,7 +5362,8 @@
       "path": "test/nulrsend.awk",
       "sha256": "0e29eb859139ce1f081dba3db86492680576a2114d7c0cd8eaa91557f6f721ad",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "reason": "Original source reviewed read-only. Explicit historical crash, internal-error, memory-corruption or nontermination reproduction; not executed in this compatibility profile. Source is retained unchanged and no original pass is claimed."
     },
     {
       "path": "test/numindex.awk",
@@ -5563,7 +5658,8 @@
       "path": "test/paramtyp.awk",
       "sha256": "40daabb2c2075496c66c861444b699e99b0521b3c8668636599d8c3c312d7b1f",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "reason": "Original source reviewed read-only. Explicit historical crash, internal-error, memory-corruption or nontermination reproduction; not executed in this compatibility profile. Source is retained unchanged and no original pass is claimed."
     },
     {
       "path": "test/paramuninitglobal.awk",
@@ -5670,7 +5766,8 @@
       "path": "test/pipeio1.awk",
       "sha256": "2ef52fab72b52175cd76ced2a7e7ac7a0f3856c53241bf57bbf0aa855ef2f0ba",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "reason": "Original source reviewed read-only. Explicit historical crash, internal-error, memory-corruption or nontermination reproduction; not executed in this compatibility profile. Source is retained unchanged and no original pass is claimed."
     },
     {
       "path": "test/pipeio2.awk",
@@ -5824,7 +5921,8 @@
       "path": "test/printfbad1.awk",
       "sha256": "1e98fcca4e12d242ac8c8e3a6ac5ebc7c3ae7891d55cc0734b269af7d206d379",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "reason": "Original source reviewed read-only. Explicit historical crash, internal-error, memory-corruption or nontermination reproduction; not executed in this compatibility profile. Source is retained unchanged and no original pass is claimed."
     },
     {
       "path": "test/printfbad2.awk",
@@ -7827,7 +7925,8 @@
       "path": "test/switch2.awk",
       "sha256": "464450cbbcf57a824c0415d8bdc9360d83c398be77bce13e7783d6c9f0d9cb7e",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "reason": "Original source reviewed read-only. Explicit historical crash, internal-error, memory-corruption or nontermination reproduction; not executed in this compatibility profile. Source is retained unchanged and no original pass is claimed."
     },
     {
       "path": "test/symtab1.awk",
@@ -7861,7 +7960,8 @@
       "path": "test/symtab11.awk",
       "sha256": "886780032b7fc0ae66d7d863a348ced47f01a73751a3140bcbcefa3e02295952",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "reason": "Original source reviewed read-only. Explicit historical crash, internal-error, memory-corruption or nontermination reproduction; not executed in this compatibility profile. Source is retained unchanged and no original pass is claimed."
     },
     {
       "path": "test/symtab12.awk",
@@ -8021,7 +8121,8 @@
       "path": "test/synerr2.awk",
       "sha256": "141655fcce66bea35614dcf6cbe247cdaa3969fc93742de5c9bb1e0ddc6c2226",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "reason": "Original source reviewed read-only. Explicit historical crash, internal-error, memory-corruption or nontermination reproduction; not executed in this compatibility profile. Source is retained unchanged and no original pass is claimed."
     },
     {
       "path": "test/synerr3.awk",
@@ -8123,7 +8224,8 @@
       "path": "test/tweakfld.awk",
       "sha256": "66c58b17583d8c6313fab273cc6a34595060e35584538d1ad853080c3aec25b5",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded",
+      "reason": "Original source reviewed read-only. Explicit historical crash, internal-error, memory-corruption or nontermination reproduction; not executed in this compatibility profile. Source is retained unchanged and no original pass is claimed."
     },
     {
       "path": "test/typedregex1.awk",

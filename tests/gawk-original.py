@@ -102,9 +102,13 @@ def run_selection(row):
                 (work/'exec/gawk').symlink_to(profile.oracle if implementation=='gnu' else profile.binary)
                 argv=['gawk']
                 if instrument:argv=['/usr/bin/valgrind','--leak-check=full','--show-leak-kinds=all',
-                    '--track-fds=yes','--trace-children=yes','--log-file='+str(work/'memory/%p.log'),*argv]
+                    '--track-fds=yes','--trace-children=yes',
+                    '--log-fd=9' if row.get('self_exec_images') else '--log-file='+str(work/'memory/%p.log'),*argv]
+                if instrument and row.get('self_exec_images'):
+                    argv[1:1]=['--exit-on-first-error=yes','--error-exitcode=125']
                 wrapper=work/'awk-wrapper'
-                wrapper.write_text('#!/bin/sh\nexec '+shlex.join(argv)+' "$@"\n');wrapper.chmod(0o755)
+                append_log = ('exec 9>>'+shlex.quote(str(work/'memory'))+'/"$$.log"\n') if instrument and row.get('self_exec_images') else ''
+                wrapper.write_text('#!/bin/sh\n'+append_log+'exec '+shlex.join(argv)+' "$@"\n');wrapper.chmod(0o755)
                 command=['/usr/bin/make','--no-print-directory','-f',str(makefile),
                     'top_builddir='+str(ROOT/'build/gnu-gawk'),'top_srcdir='+str(source),
                     'srcdir='+str(source/'test'),'AWKPROG='+str(wrapper),'CMP='+str(helpers['cmp']),name]
@@ -157,14 +161,21 @@ def run_selection(row):
                 logs=[]
                 for p in sorted((saved/'memory').glob('*.log')):
                     text=p.read_text();commands=re.findall(r'^==[0-9]+== Command: (.*)$',text,re.M)
-                    assert len(commands)==1
+                    if row.get('self_exec_images'):
+                        assert row['self_exec_images']==2 and len(commands)==2
+                        assert commands[0].startswith('gawk ')
+                        assert commands[1]==str(work/'exec/gawk')+commands[0][4:]
+                    else:
+                        assert len(commands)==1
                     command=commands[0]
                     role='gawk' if command.split()[0]=='gawk' else 'child-dependency'
                     canonical = command if role=='gawk' else canonical_child(command, row.get('child_commands',{}), str(work), row.get('child_dependencies'))
                     logs.append({**runner.parse_memory_log(text,p.stem,exec_only=True),
                         'log':str(p.relative_to(ROOT)),'sha256':fingerprint(p),
-                        'command':command,'canonical_command':canonical,'role':role})
+                        'command':command,'commands':commands,'canonical_command':canonical,'role':role})
                 if instrument:
+                    if row.get('self_exec_images'):
+                        assert len(logs)==1 and logs[0]['exec_images']==row['self_exec_images']
                     assert any(m['role']=='gawk' for m in logs)
                     assert Counter(m['canonical_command'] for m in logs if m['role']=='child-dependency')==row.get('child_commands',{})
                 clean=bool(logs) and all(m['complete_exec_log'] and m['errors']==0
@@ -176,7 +187,7 @@ def run_selection(row):
                     'memory':logs,'memory_clean':clean if instrument else None}
     passed=all(o['assertions_pass'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
     baseline_matches=bool(row.get('expected_baseline_output')) and all(o['baseline_failure_matches'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
-    return {'child_dependencies':row.get('child_dependencies',{}),'baseline_failure_matches':baseline_matches,'child_commands':row.get('child_commands',{}),'locale_profile':row.get('locale_profile'),'extension_profile':row.get('extension_profile'),'working_files':row.get('working_files',{}),'selection':name,'source':row['path'],'source_sha256':row['sha256'],
+    return {'self_exec_images':row.get('self_exec_images'),'child_dependencies':row.get('child_dependencies',{}),'baseline_failure_matches':baseline_matches,'child_commands':row.get('child_commands',{}),'locale_profile':row.get('locale_profile'),'extension_profile':row.get('extension_profile'),'working_files':row.get('working_files',{}),'selection':name,'source':row['path'],'source_sha256':row['sha256'],
             'pass':passed,'outcomes':outcomes}
 
 results=[]

@@ -99,6 +99,8 @@ for row in original['results']:
     else:
         assert not row['baseline_failure_matches']
     assert row['locale_profile']==reviewed_rows[row['selection']].get('locale_profile')
+    self_exec_images=reviewed_rows[row['selection']].get('self_exec_images')
+    assert row.get('self_exec_images')==self_exec_images
     children=reviewed_rows[row['selection']].get('child_commands',{})
     dependencies=reviewed_rows[row['selection']].get('child_dependencies',{})
     assert row.get('child_dependencies',{}) == dependencies
@@ -145,7 +147,13 @@ for row in original['results']:
         for log in outcome['memory']:
             contents=(ROOT/log['log']).read_text()
             commands=re.findall(r'^==[0-9]+== Command: (.*)$',contents,re.M)
-            assert len(commands)==1
+            assert len(commands)==(self_exec_images or 1)
+            if self_exec_images:
+                assert self_exec_images==2 and commands[0].startswith('gawk ')
+                directory=outcome['private_work_directory']
+                assert re.fullmatch(r'/tmp/rboxc-gawk-original-[A-Za-z0-9_-]+(?:/test)?',directory)
+                assert commands[1]==directory+'/exec/gawk'+commands[0][4:]
+            assert log.get('commands',commands)==commands
             command=commands[0]
             if command.split()[0]=='gawk':
                 gawk_processes+=1
@@ -172,5 +180,6 @@ report['selected_targets']=requested
 report['extension_selections']=[n for n,r in reviewed_rows.items() if r.get('extension_profile')]
 report['child_dependency_processes']=sum(sum(r.get('child_commands',{}).values()) for r in reviewed_rows.values())
 report['original_gawk_processes']=original_processes-report['child_dependency_processes']
+report['original_gawk_execution_images']=sum(m['exec_images'] for r in original['results'] for m in r['outcomes']['rboxc-valgrind']['memory'] if m['role']=='gawk')
 target.write_text(json.dumps(report,indent=2)+'\n')
 print('Audited 85 focused cases,',len(reviewed),'GNU original selections, and',len(processes),'clean candidate processes')
