@@ -77,7 +77,7 @@ there where available.
 | Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 542 reviewed originals pass; six failures match GNU; twelve memory profiles and one timing profile remain open |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
-| Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
+| Inetutils | 2.8 | All 13 entries compile; original interface and local hostname tests pass with clean Valgrind; original Inetd reloads pass, with signal-exit resources recorded; other service profiles remain open |
 | Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 53 original recipes (54 scripts) pass on their recorded candidates with 12765 clean process logs; six memory/signal profiles and seven instrumentation/environment baselines remain open |
 | Less | 704 | Ten focused checks, one production terminal check and all 18 original screen replays pass across declared profiles |
 | Screen | 5.0.2 | All three original targets pass across declared profiles; daemon cleanup and socket recovery pass Valgrind |
@@ -2845,3 +2845,16 @@ is **14,725,368 bytes**, SHA-256
 `0634c6cd9e7e5333e1f1093fd87f1a99c89cbd436ae3bd6a8af1128d9767c956`,
 832 bytes larger than the preceding candidate. The installed release remains
 separate. This does not certify all Inetutils service or shutdown profiles.
+
+Two additional unchanged Inetutils 2.8 originals, `tests/ifconfig.sh` and
+`tests/dnsdomainname.sh`, pass normally and under Valgrind on the Inetd cleanup
+candidate. Their 24 and three candidate command images are clean. Interface
+checks cover the original output-format matrix and ten rejected prefix-length
+arguments; local hostname lookup succeeds against an isolated hosts file.
+Both scripts run as `nobody` in private network, mount and UTS namespaces with
+loopback only and files-only name resolution. Hostname and host configuration
+files are verified unchanged outside those namespaces.
+[evidence/inetutils-local-original-validation.json](evidence/inetutils-local-original-validation.json)
+verifies all 27 command images and identical GNU/Rboxc argument inventories.
+GNU's three interface-enumeration descriptor findings remain recorded. These
+two original passes do not establish completion of the remaining service tests.
