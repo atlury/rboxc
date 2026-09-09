@@ -3377,8 +3377,26 @@
     {
       "path": "test/getlnhd.awk",
       "sha256": "9a998628b027ae6bac2f6aecfbd634738ccde4df44e63a1e1c3e9ffff49b9bbc",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-assertions-memory-open",
+      "target": "getlnhd",
+      "review": "Original recipe and applicable source behavior reviewed. Profile5 selects only pretty printing; GNU main.c explicitly skips interpret(code_block). It has no parse-time include/load directives, so no example BEGIN/function code executes. Nonfatal3 attempts only loopback localhost port zero and checks the connection error. Getlnhd reads fixed text from a cat here-document; it performs no database operation. All four original assertion profiles pass. Native shell stdout restoration and native cat cached splice descriptors remain open in both binaries; Gawk is clean.",
+      "fixtures": {
+        "getlnhd.ok": "8a69454ad8e3ef5a5444b1feebb4dc2d2637a91792c52129e345958a756d7ee4"
+      },
+      "configured_recipe_sha256": "11d66c8d4626514a5f7bbb05fd7f9b9b9b9b84e2b7c3999da81f5f876d9dffc5",
+      "child_dependencies": {
+        "cat": {
+          "path": "/root/rboxc/build/gawk-cat-helper/coreutils",
+          "sha256": "11d6087a6954e72d9acac9b2ea4795bb2ef52e175d3720f0054236e76d7f0184"
+        }
+      },
+      "child_commands": {
+        "/bin/sh -c cat\\ \\<\\<EOF_select\\ *\\ from\\ user_\\ \\ where\\ Name\\ =\\ 'O\\\\'Donell'_EOF_": 1,
+        "cat": 1
+      },
+      "evidence": "evidence/gawk-print-local-input-counted-original.json",
+      "audit": "evidence/gawk-print-local-input-coverage.json"
     },
     {
       "path": "test/getnr2tb.awk",
@@ -5514,8 +5532,16 @@
     {
       "path": "test/nonfatal3.awk",
       "sha256": "4282b44ace8586b3350fa5a972a5a62938343ce37d5833a2c82032b967a13ff8",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "nonfatal3",
+      "review": "Original recipe and applicable source behavior reviewed. Profile5 selects only pretty printing; GNU main.c explicitly skips interpret(code_block). It has no parse-time include/load directives, so no example BEGIN/function code executes. Nonfatal3 attempts only loopback localhost port zero and checks the connection error. Getlnhd reads fixed text from a cat here-document; it performs no database operation.",
+      "fixtures": {
+        "nonfatal3.ok": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+      },
+      "configured_recipe_sha256": "ebe7cde9d1534f41e25398e491ce4c41a26be1dc957872cff2fe92cbfaa2170d",
+      "evidence": "evidence/gawk-print-local-input-counted-original.json",
+      "audit": "evidence/gawk-print-local-input-coverage.json"
     },
     {
       "path": "test/nonl.awk",
@@ -6396,7 +6422,10 @@
       "path": "test/printfloat.awk",
       "sha256": "91541b8122801d6b1daa44e52c2f623ba843de50d3684934886f6c0a33d9dddc",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "reviewed-helper-pass",
+      "evidence": "evidence/gawk-distributed-helper-comparison.json",
+      "audit": "evidence/gawk-distributed-helper-validation.json",
+      "review": "Reviewed distributed utility comparison passes against pinned GNU in normal and Valgrind profiles. Separate utility coverage; no original assertion pass is claimed."
     },
     {
       "path": "test/printhuge.awk",
@@ -6416,7 +6445,10 @@
       "path": "test/printlang.awk",
       "sha256": "092a87f9c978620a319b3c7032e367ddc0db8506e8fd37c487a866d9b864f745",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "reviewed-helper-pass",
+      "evidence": "evidence/gawk-distributed-helper-comparison.json",
+      "audit": "evidence/gawk-distributed-helper-validation.json",
+      "review": "Reviewed distributed utility comparison passes against pinned GNU in normal and Valgrind profiles. Separate utility coverage; no original assertion pass is claimed."
     },
     {
       "path": "test/prmarscl.awk",
@@ -6646,8 +6678,16 @@
     {
       "path": "test/profile5.awk",
       "sha256": "f165ecda9f19c7f3156712134db288260e856522e8339f9a35ecae07f034f676",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "profile5",
+      "review": "Original recipe and applicable source behavior reviewed. Profile5 selects only pretty printing; GNU main.c explicitly skips interpret(code_block). It has no parse-time include/load directives, so no example BEGIN/function code executes. Nonfatal3 attempts only loopback localhost port zero and checks the connection error. Getlnhd reads fixed text from a cat here-document; it performs no database operation.",
+      "fixtures": {
+        "profile5.ok": "70e86cbec29f5a360e538f8892f046fe2ba6cec0f89929c818b3eb97a3fb98c6"
+      },
+      "configured_recipe_sha256": "e641bd61f9959fd426b7181d9a90ea2411ffcaff986dd14de7a1ca7632714374",
+      "evidence": "evidence/gawk-print-local-input-counted-original.json",
+      "audit": "evidence/gawk-print-local-input-coverage.json"
     },
     {
       "path": "test/profile6.awk",
@@ -9066,7 +9106,10 @@
       "path": "test/valgrind.awk",
       "sha256": "c9b5d060ef24859b6c4e49f08322eb72c7ceaa365c688ba80d8c4101b42e2eba",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "reviewed-helper-pass",
+      "evidence": "evidence/gawk-distributed-helper-comparison.json",
+      "audit": "evidence/gawk-distributed-helper-validation.json",
+      "review": "Reviewed distributed utility comparison passes against pinned GNU in normal and Valgrind profiles. Separate utility coverage; no original assertion pass is claimed."
     },
     {
       "path": "test/watchpoint1.awk",

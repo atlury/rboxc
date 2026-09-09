@@ -74,7 +74,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 228 of 244 original groups validated across recorded profiles |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 535 reviewed originals pass; six failures match GNU and eight memory profiles remain open |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 537 reviewed originals pass; six failures match GNU and nine memory profiles remain open |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -238,19 +238,21 @@ Seven further unchanged Gawk recipes pass for numeric and string formatting,
 separator arrays, record reading, multibyte substitution, process identifiers and
 script shebang dispatch. Recipe helpers use pinned GNU implementations; the
 substitution recipe uses the verified English UTF-8 profile.
-`evidence/gawk-locale-directory-coverage.json` audits **535 passing original recipes,
-six unchanged GNU baseline failures and 697 clean processes**: 560 original
+`evidence/gawk-print-local-input-coverage.json` audits **537 passing original recipes,
+six unchanged GNU baseline failures and 699 clean processes**: 562 original
 Gawk invocations, thirty-two shell children, twenty native helper children and
 85 focused cases counted once.
 Nine auxiliary inputs are accounted with reviewed recipes, including one unread
 second source argument and one program used solely as cross-reference text. Forty
 historical reproductions are excluded after source review. Twenty MPFR inputs and
 one ARRAYDEBUG input are unavailable in this build, verified by unchanged GNU
-capability guards; 15 other pending inputs remain. Eight further reviewed originals pass their
-assertions but retain memory/descriptor findings; their 53 candidate logs are
+capability guards; nine other pending inputs remain. Three distributed utilities pass separate comparisons, adding no original-assertion count. Nine further reviewed originals pass their
+assertions but retain memory/descriptor findings; their 56 candidate logs are
 verified separately and excluded from the strict clean-process totals. The latest seven unchanged recipes cover indirect function calls, POSIX conversion
 and field behavior, namespace pretty printing, formatting, lint diagnostics and
 text matching. The installed release is unchanged, and full GNU acceptance remains open.
+
+Two further originals pass for a large pretty-print program and a loopback connection-error diagnostic. Pretty printing does not execute the example program. A fixed here-document recipe passes its original assertions with clean Gawk logs; shell and cat descriptor findings remain open in both builds. Three distributed utility comparisons separately pass: 24,000 floating-format lines, locale display, and scanning a preserved local Valgrind log. Their three clean processes are outside the original/focused aggregate.
 
 Three additional originals pass for Greek eight-bit case matching, French plural
 and positional translations, and directory walking. Private locales use the pinned
@@ -301,7 +303,7 @@ Nine debugger originals now pass for arrays, expression evaluation and typed
 regular expressions. Two restart the same process: their append-only Valgrind
 logs preserve both execution headers, with first-error termination enabled.
 Each restart counts as one process and two execution images; the strict aggregate
-contains 562 original Gawk execution images. Heap and descriptor summaries describe
+contains 564 original Gawk execution images. Heap and descriptor summaries describe
 the final image, not a separate pre-restart exit. The inherited log descriptor is
 part of the harness. Initial incomplete and intermediate runs remain preserved.
 
@@ -312,7 +314,7 @@ bounded debugger watchpoint session. All twelve Gawk/child logs are clean.
 guard with two clean candidate logs: both configured binaries lack MPFR. Its
 twenty distributed programs and one inline recipe are accounted as unavailable,
 with no execution or original-pass claim. These guard logs are outside the
-697-process aggregate.
+699-process aggregate.
 
 Eleven more originals now match GNU output for pipes, half-close diagnostics,
 inherited descriptors, getline side effects, virtual I/O and pretty printing.
