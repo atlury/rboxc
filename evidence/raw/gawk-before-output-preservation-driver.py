@@ -108,11 +108,6 @@ def run_selection(row):
                 (saved/'driver.log').write_bytes(done.stdout)
                 residual=work/('_'+name)
                 if residual.exists():shutil.copy2(residual,saved/'actual-output')
-                # Keep multi-output recipe failures as well as the conventional _TARGET.
-                for output_file in work.glob('_*'):
-                    if output_file.is_file():
-                        (saved/'outputs').mkdir(exist_ok=True)
-                        shutil.copy2(output_file,saved/'outputs'/output_file.name)
                 # GNU's recipes ignore Make failures but leave _TARGET on a
                 # comparison failure. Require the success cleanup and target echo.
                 passed=(done.returncode==0 and not residual.exists()

@@ -180,12 +180,8 @@ for row in manifest['inputs']:
     report=json.loads((ROOT/owner['evidence']).read_text())
     result=next(r for r in report['results'] if r['selection']==owner['target'])
     assert result['pass']
-    execution_name=name
-    if row.get('coverage_kind')=='included-source':
-        assert re.search(r'^@include[ \t]+\"'+re.escape(name)+r'\"[ \t]*$',(source/owner['path']).read_text(),re.M)
-        execution_name=Path(owner['path']).name
     for key in ('gnu-valgrind','rboxc-valgrind'):
-        assert any(re.search(r'Command: gawk .*?-f (?:[^\n ]*/)?'+re.escape(execution_name)+r'(?: |\n)',
+        assert any(re.search(r'Command: gawk .*?-f (?:[^\n ]*/)?'+re.escape(name)+r'(?: |\n)',
             (ROOT/m['log']).read_text()) for m in result['outcomes'][key]['memory'])
     auxiliary_inputs[row['path']]={'sha256':row['sha256'],'covered_by':owner['target'],'report':row['evidence']}
 counts = Counter(r['state'] for r in manifest['inputs'])

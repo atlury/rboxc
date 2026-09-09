@@ -74,7 +74,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 228 of 244 original groups validated across recorded profiles |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 467 reviewed originals pass; three original failures match GNU |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 473 reviewed originals pass; three original failures match GNU |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -235,15 +235,20 @@ Seven further unchanged Gawk recipes pass for numeric and string formatting,
 separator arrays, record reading, multibyte substitution, process identifiers and
 script shebang dispatch. Recipe helpers use pinned GNU implementations; the
 substitution recipe uses the verified English UTF-8 profile.
-`evidence/gawk-utf8-exit-coverage.json` audits **467 passing original recipes,
-three unchanged GNU baseline failures and 589 clean processes**: 482 original
+`evidence/gawk-language-includes-coverage.json` audits **473 passing original recipes,
+three unchanged GNU baseline failures and 595 clean processes**: 488 original
 Gawk invocations, seventeen shell children, five native helper children and
 85 focused cases counted once.
-Three auxiliary inputs are already covered by passing recipes; nine exclusions
-and 152 pending inputs remain. The latest seven unchanged recipes cover indirect function calls, POSIX conversion
+Four auxiliary inputs are already covered by passing recipes; nine exclusions
+and 145 pending inputs remain. The latest seven unchanged recipes cover indirect function calls, POSIX conversion
 and field behavior, namespace pretty printing, formatting, lint diagnostics and
 text matching. The candidate and installed
 release are unchanged, and full GNU acceptance remains open.
+
+Six more unchanged recipes pass for Greek case matching, Hebrew substitution,
+syntax diagnostics, file/stdout/stderr routing, and library inclusion. The included
+library is accounted as an auxiliary source without adding a process or recipe.
+Multi-output recipe failures are now preserved alongside conventional outputs.
 
 Six further originals validate locale grouping, UTF-8 field widths and formatting,
 substring indices, and explicit exit status during function argument evaluation.
