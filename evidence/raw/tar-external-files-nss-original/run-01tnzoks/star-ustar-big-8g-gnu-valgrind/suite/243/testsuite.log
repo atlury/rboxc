@@ -1,0 +1,16 @@
+#                             -*- compilation -*-
+243. ustar-big-8g.at:21: testing ustar-big-8g ...
+/opt/src/tar-1.35/tests/ustar-big-8g.at:26:
+test "${TARTEST_SKIP_LARGE_FILES:-0}" != 0 && exit 77
+
+cat /dev/null | bzip2 - > /dev/null 2>&1 || exit 77
+
+
+test -z "$STAR_TESTSCRIPTS" && exit 77
+tarball_prereq ustar-big-8g.tar.bz2 60ff503fa4b8288bef7ada89e9c91b0f $STAR_TESTSCRIPTS $STAR_DATA_URL || exit 77
+
+
+tar --utc -tvjf $STAR_TESTSCRIPTS/ustar-big-8g.tar.bz2
+
+stderr:
+243. ustar-big-8g.at:21: 243. ustar-big-8g (ustar-big-8g.at:21): ok     (3m55.479s 0m10.226s)

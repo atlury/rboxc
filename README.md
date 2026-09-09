@@ -71,7 +71,7 @@ there where available.
 | BC | 1.08.2 | `bc`, `dc` installed |
 | Ed | 1.22.6 | `ed` installed |
 | Findutils | 4.11.0 | `find`, `xargs`, `locate` installed; `updatedb` and private `frcode` integrated in candidate |
-| Tar | 1.35 | `tar` installed; 218 of 244 original groups validated across recorded profiles |
+| Tar | 1.35 | `tar` installed; 228 of 244 original groups validated across recorded profiles |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
 | Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 461 reviewed originals pass; three original failures match GNU |
@@ -1244,9 +1244,21 @@ The registration inventory now distinguishes **244 registered groups** from
 the generated suite but their standalone sources are absent from the signed
 release archive. `sparsemvp.at` supplies shared macros rather than its own group;
 `testsuite.at` directly registers six compression groups. Across recorded
-candidate profiles, 218 groups from 213 input files are validated. The remaining
-26 groups without a passing original stay explicit in `inventory/tar-groups.json`; full
+candidate profiles, 228 groups from 221 distributed input files and two generated
+source groups are validated. The remaining 16 groups without a passing original stay explicit in `inventory/tar-groups.json`; full
 acceptance and release activation remain open.
+
+Ten additional originals pass for the two generated VCS-exclusion groups, a
+20,961,034,240-byte sparse-file listing, multi-volume fixtures and archive members
+up to 10 GiB. The nine external fixtures match the digests embedded in the signed
+Tar release; their download provenance and SHA-256 hashes are recorded in
+`evidence/tar-external-fixtures.json`. The initial host account-library findings
+remain in `tar-external-large-original.json`. With private files-only account
+lookup, all seven external-fixture groups pass unchanged. The two audits
+`tar-generated-large-sparse-audited.json` and `tar-external-files-nss-audited.json`
+reparse 49 clean Tar and three native bzip2 process logs. Large fixtures and their
+original observations are preserved locally; only compact fixtures and evidence
+are committed.
 
 Thirteen preceding unchanged GNU Tar groups pass on the current 187-command
 candidate, covering recursion toggles, long-name appends, create/append archive

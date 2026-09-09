@@ -32,8 +32,19 @@ for number, basename, line, title in re.findall(r'^\s*(\d+):\s+([^ :]+):(\d+)\s+
     number = int(number)
     row = by_basename.get(basename)
     if row is None:
-        groups.append({'number':number, 'source':'tests/'+basename, 'line':int(line), 'title':title.strip(),
-            'source_sha256':None, 'state':'pending-generated-source-review', 'evidence':None})
+        group = {'number':number, 'source':'tests/'+basename, 'line':int(line), 'title':title.strip(),
+                 'source_sha256':None, 'state':'pending-generated-source-review', 'evidence':None}
+        generated = manifest.get('generated_groups', {}).get(str(number))
+        if generated:
+            assert generated['registered_source'] == group['source']
+            execution = source/generated['execution_source']
+            assert digest(execution) == generated['generated_suite_sha256']
+            body = execution.read_text().split('#AT_START_'+str(number)+'\n', 1)[1].split('#AT_STOP_'+str(number)+'\n', 1)[0]
+            assert hashlib.sha256(body.encode()).hexdigest() == generated['group_sha256']
+            group.update(state=generated['state'], execution_source=generated['execution_source'],
+                         generated_suite_sha256=generated['generated_suite_sha256'],
+                         group_sha256=generated['group_sha256'], evidence=generated.get('evidence'))
+        groups.append(group)
         continue
     assert 0 < int(line) <= len((source/row['path']).read_text().splitlines())
     covered = row.get('autotest_numbers', [row['autotest_number']] if 'autotest_number' in row else [])

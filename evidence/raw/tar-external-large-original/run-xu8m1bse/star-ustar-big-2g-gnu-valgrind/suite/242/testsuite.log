@@ -1,0 +1,16 @@
+#                             -*- compilation -*-
+242. ustar-big-2g.at:21: testing ustar-big-2g ...
+/opt/src/tar-1.35/tests/ustar-big-2g.at:26:
+test "${TARTEST_SKIP_LARGE_FILES:-0}" != 0 && exit 77
+
+cat /dev/null | bzip2 - > /dev/null 2>&1 || exit 77
+
+
+test -z "$STAR_TESTSCRIPTS" && exit 77
+tarball_prereq ustar-big-2g.tar.bz2 b63979733629c8fcdf40b60065422767 $STAR_TESTSCRIPTS $STAR_DATA_URL || exit 77
+
+
+tar --utc -tvjf $STAR_TESTSCRIPTS/ustar-big-2g.tar.bz2
+
+stderr:
+242. ustar-big-2g.at:21: 242. ustar-big-2g (ustar-big-2g.at:21): ok     (1m1.571s 0m2.746s)

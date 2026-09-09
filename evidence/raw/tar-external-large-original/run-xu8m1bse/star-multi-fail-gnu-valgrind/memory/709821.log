@@ -1,0 +1,199 @@
+==709821== Memcheck, a memory error detector
+==709821== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==709821== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+==709821== Command: tar --utc -tvM -f /tmp/rboxc-tar-original-4j1i8b4g/download/gnu-multi-fail-volume1.gtar -f /tmp/rboxc-tar-original-4j1i8b4g/download/gnu-multi-fail-volume2.gtar
+==709821== Parent PID: 709813
+==709821== 
+==709821== File descriptor -1 Invalid file descriptor
+==709821==    at 0x4A1691B: fstat (fstat64.c:39)
+==709821==    by 0x50AB5C4: ??? (in /usr/lib/x86_64-linux-gnu/libnss_sss.so.2)
+==709821==    by 0x50AB89F: ??? (in /usr/lib/x86_64-linux-gnu/libnss_sss.so.2)
+==709821==    by 0x50AC654: _nss_sss_getpwnam_r (in /usr/lib/x86_64-linux-gnu/libnss_sss.so.2)
+==709821==    by 0x4A64778: getpwnam_r@@GLIBC_2.2.5 (getXXbyYY_r.c:265)
+==709821==    by 0x4A645AD: getpwnam (getXXbyYY.c:140)
+==709821==    by 0x402971F: uname_to_uid (names.c:546)
+==709821==    by 0x402457F: decode_header (list.c:694)
+==709821==    by 0x4025616: read_and (list.c:194)
+==709821==    by 0x400CD4B: main (tar.c:2832)
+==709821== 
+==709821== FILE DESCRIPTORS: 1 open (0 inherited) at exit.
+==709821== Open file descriptor 0: /dev/full
+==709821==    at 0x4A1A9E6: open (open64.c:41)
+==709821==    by 0x4050574: open (fcntl2.h:55)
+==709821==    by 0x4050574: stdopen (stdopen.c:51)
+==709821==    by 0x400BE26: main (tar.c:2773)
+==709821== 
+==709821== 
+==709821== HEAP SUMMARY:
+==709821==     in use at exit: 8,593 bytes in 16 blocks
+==709821==   total heap usage: 1,138 allocs, 1,122 frees, 1,051,962 bytes allocated
+==709821== 
+==709821== 3 bytes in 1 blocks are still reachable in loss record 1 of 15
+==709821==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==709821==    by 0x405185D: xmalloc (xmalloc.c:45)
+==709821==    by 0x405185D: xmemdup (xmalloc.c:314)
+==709821==    by 0x405185D: xstrdup (xmalloc.c:339)
+==709821==    by 0x402644F: assign_string (misc.c:58)
+==709821==    by 0x4029806: gname_to_gid (names.c:584)
+==709821==    by 0x402455F: decode_header (list.c:699)
+==709821==    by 0x4025616: read_and (list.c:194)
+==709821==    by 0x400CD4B: main (tar.c:2832)
+==709821== 
+==709821== 6 bytes in 1 blocks are still reachable in loss record 2 of 15
+==709821==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==709821==    by 0x405185D: xmalloc (xmalloc.c:45)
+==709821==    by 0x405185D: xmemdup (xmalloc.c:314)
+==709821==    by 0x405185D: xstrdup (xmalloc.c:339)
+==709821==    by 0x402644F: assign_string (misc.c:58)
+==709821==    by 0x4029766: uname_to_uid (names.c:554)
+==709821==    by 0x402457F: decode_header (list.c:694)
+==709821==    by 0x4025616: read_and (list.c:194)
+==709821==    by 0x400CD4B: main (tar.c:2832)
+==709821== 
+==709821== 16 bytes in 1 blocks are still reachable in loss record 3 of 15
+==709821==    at 0x48C4E43: calloc (vg_replace_malloc.c:1678)
+==709821==    by 0x40516F1: xcalloc (xmalloc.c:298)
+==709821==    by 0x40516F1: xzalloc (xmalloc.c:283)
+==709821==    by 0x400BEF9: decode_options (tar.c:2297)
+==709821==    by 0x400BEF9: main (tar.c:2792)
+==709821== 
+==709821== 36 bytes in 1 blocks are still reachable in loss record 4 of 15
+==709821==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==709821==    by 0x409EB1F: malloc (rtld-malloc.h:56)
+==709821==    by 0x409EB1F: strdup (strdup.c:42)
+==709821==    by 0x408AAAF: _dl_load_cache_lookup (dl-cache.c:498)
+==709821==    by 0x407CE27: _dl_map_new_object (dl-load.c:2073)
+==709821==    by 0x40759FC: openaux (dl-deps.c:64)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x4075E2F: _dl_map_object_deps (dl-deps.c:232)
+==709821==    by 0x4080E17: dl_open_worker_begin (dl-open.c:609)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x408020B: dl_open_worker (dl-open.c:762)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x4080749: _dl_open (dl-open.c:900)
+==709821== 
+==709821== 36 bytes in 1 blocks are still reachable in loss record 5 of 15
+==709821==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==709821==    by 0x407FFD8: malloc (rtld-malloc.h:56)
+==709821==    by 0x407FFD8: _dl_new_object (dl-object.c:199)
+==709821==    by 0x407AEA0: _dl_map_object_from_fd (dl-load.c:1065)
+==709821==    by 0x407C989: _dl_map_new_object (dl-load.c:2206)
+==709821==    by 0x40759FC: openaux (dl-deps.c:64)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x4075E2F: _dl_map_object_deps (dl-deps.c:232)
+==709821==    by 0x4080E17: dl_open_worker_begin (dl-open.c:609)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x408020B: dl_open_worker (dl-open.c:762)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x4080749: _dl_open (dl-open.c:900)
+==709821== 
+==709821== 46 bytes in 1 blocks are still reachable in loss record 6 of 15
+==709821==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==709821==    by 0x409EB1F: malloc (rtld-malloc.h:56)
+==709821==    by 0x409EB1F: strdup (strdup.c:42)
+==709821==    by 0x408AAAF: _dl_load_cache_lookup (dl-cache.c:498)
+==709821==    by 0x407CE27: _dl_map_new_object (dl-load.c:2073)
+==709821==    by 0x4081460: dl_open_worker_begin (dl-open.c:535)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x408020B: dl_open_worker (dl-open.c:762)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x4080749: _dl_open (dl-open.c:900)
+==709821==    by 0x4A86344: do_dlopen (dl-libc.c:95)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x4074658: _dl_catch_error (dl-catch.c:260)
+==709821== 
+==709821== 46 bytes in 1 blocks are still reachable in loss record 7 of 15
+==709821==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==709821==    by 0x407FFD8: malloc (rtld-malloc.h:56)
+==709821==    by 0x407FFD8: _dl_new_object (dl-object.c:199)
+==709821==    by 0x407AEA0: _dl_map_object_from_fd (dl-load.c:1065)
+==709821==    by 0x407C989: _dl_map_new_object (dl-load.c:2206)
+==709821==    by 0x4081460: dl_open_worker_begin (dl-open.c:535)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x408020B: dl_open_worker (dl-open.c:762)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x4080749: _dl_open (dl-open.c:900)
+==709821==    by 0x4A86344: do_dlopen (dl-libc.c:95)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x4074658: _dl_catch_error (dl-catch.c:260)
+==709821== 
+==709821== 80 bytes in 1 blocks are still reachable in loss record 8 of 15
+==709821==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==709821==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==709821==    by 0x400BE43: main (tar.c:2781)
+==709821== 
+==709821== 102 bytes in 1 blocks are still reachable in loss record 9 of 15
+==709821==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==709821==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==709821==    by 0x4029881: name_init (names.c:869)
+==709821==    by 0x400C94C: main (tar.c:2794)
+==709821== 
+==709821== 1,250 bytes in 1 blocks are still reachable in loss record 12 of 15
+==709821==    at 0x48C4E43: calloc (vg_replace_malloc.c:1678)
+==709821==    by 0x407FCAC: calloc (rtld-malloc.h:44)
+==709821==    by 0x407FCAC: _dl_new_object (dl-object.c:92)
+==709821==    by 0x407AEA0: _dl_map_object_from_fd (dl-load.c:1065)
+==709821==    by 0x407C989: _dl_map_new_object (dl-load.c:2206)
+==709821==    by 0x40759FC: openaux (dl-deps.c:64)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x4075E2F: _dl_map_object_deps (dl-deps.c:232)
+==709821==    by 0x4080E17: dl_open_worker_begin (dl-open.c:609)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x408020B: dl_open_worker (dl-open.c:762)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x4080749: _dl_open (dl-open.c:900)
+==709821== 
+==709821== 1,260 bytes in 1 blocks are still reachable in loss record 13 of 15
+==709821==    at 0x48C4E43: calloc (vg_replace_malloc.c:1678)
+==709821==    by 0x407FCAC: calloc (rtld-malloc.h:44)
+==709821==    by 0x407FCAC: _dl_new_object (dl-object.c:92)
+==709821==    by 0x407AEA0: _dl_map_object_from_fd (dl-load.c:1065)
+==709821==    by 0x407C989: _dl_map_new_object (dl-load.c:2206)
+==709821==    by 0x4081460: dl_open_worker_begin (dl-open.c:535)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x408020B: dl_open_worker (dl-open.c:762)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x4080749: _dl_open (dl-open.c:900)
+==709821==    by 0x4A86344: do_dlopen (dl-libc.c:95)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x4074658: _dl_catch_error (dl-catch.c:260)
+==709821== 
+==709821== 1,320 bytes in 2 blocks are still reachable in loss record 14 of 15
+==709821==    at 0x48C4E43: calloc (vg_replace_malloc.c:1678)
+==709821==    by 0x408A2BD: calloc (rtld-malloc.h:44)
+==709821==    by 0x408A2BD: _dl_check_map_versions (dl-version.c:280)
+==709821==    by 0x408110C: dl_open_worker_begin (dl-open.c:617)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x408020B: dl_open_worker (dl-open.c:762)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x4080749: _dl_open (dl-open.c:900)
+==709821==    by 0x4A86344: do_dlopen (dl-libc.c:95)
+==709821==    by 0x4074512: _dl_catch_exception (dl-catch.c:241)
+==709821==    by 0x4074658: _dl_catch_error (dl-catch.c:260)
+==709821==    by 0x4A864A8: dlerror_run (dl-libc.c:45)
+==709821==    by 0x4A864A8: __libc_dlopen_mode (dl-libc.c:162)
+==709821==    by 0x4A55E73: module_load (nss_module.c:187)
+==709821== 
+==709821== 4,064 bytes in 1 blocks are still reachable in loss record 15 of 15
+==709821==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==709821==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==709821==    by 0x404A07D: call_chunkfun (obstack.c:88)
+==709821==    by 0x404A07D: _obstack_begin_worker.isra.0 (obstack.c:135)
+==709821==    by 0x404A0A8: _obstack_begin (obstack.c:157)
+==709821==    by 0x4032C57: _transform_name_to_obstack (transform.c:592)
+==709821==    by 0x4032C57: transform_name_fp (transform.c:614)
+==709821==    by 0x4023670: transform_member_name (list.c:114)
+==709821==    by 0x4023670: transform_stat_info.part.0 (list.c:150)
+==709821==    by 0x4025850: transform_stat_info (list.c:227)
+==709821==    by 0x4025850: read_and (list.c:227)
+==709821==    by 0x400CD4B: main (tar.c:2832)
+==709821== 
+==709821== LEAK SUMMARY:
+==709821==    definitely lost: 0 bytes in 0 blocks
+==709821==    indirectly lost: 0 bytes in 0 blocks
+==709821==      possibly lost: 0 bytes in 0 blocks
+==709821==    still reachable: 8,265 bytes in 14 blocks
+==709821==         suppressed: 328 bytes in 2 blocks
+==709821== 
+==709821== For lists of detected and suppressed errors, rerun with: -s
+==709821== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)

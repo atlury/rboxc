@@ -1,0 +1,16 @@
+#                             -*- compilation -*-
+244. pax-big-10g.at:21: testing pax-big-10g ...
+/opt/src/tar-1.35/tests/pax-big-10g.at:26:
+test "${TARTEST_SKIP_LARGE_FILES:-0}" != 0 && exit 77
+
+cat /dev/null | bzip2 - > /dev/null 2>&1 || exit 77
+
+
+test -z "$STAR_TESTSCRIPTS" && exit 77
+tarball_prereq pax-big-10g.tar.bz2 ca15c23acc8d8bb1f27e60113a5f8bff $STAR_TESTSCRIPTS $STAR_DATA_URL || exit 77
+
+
+tar --utc -tvjf $STAR_TESTSCRIPTS/pax-big-10g.tar.bz2
+
+stderr:
+244. pax-big-10g.at:21: 244. pax-big-10g (pax-big-10g.at:21): ok     (5m0.207s 0m12.538s)

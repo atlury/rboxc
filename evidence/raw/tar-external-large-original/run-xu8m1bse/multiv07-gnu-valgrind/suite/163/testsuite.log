@@ -1,0 +1,17 @@
+#                             -*- compilation -*-
+163. multiv07.at:28: testing volumes split at an extended header ...
+/opt/src/tar-1.35/tests/multiv07.at:31:
+
+
+test -z "$TEST_DATA_DIR" && exit 77
+tarball_prereq xsplit-1.tar 0e008c84c517e48fbf23ca6a7033cde6 $TEST_DATA_DIR $TEST_DATA_URL || exit 77
+
+test -z "$TEST_DATA_DIR" && exit 77
+tarball_prereq xsplit-2.tar 03150b9852d285458f43734e9e0b9a45 $TEST_DATA_DIR $TEST_DATA_URL || exit 77
+
+exec <&-
+
+cd $TEST_DATA_DIR
+tar -t -M -fxsplit-1.tar -fxsplit-2.tar
+
+163. multiv07.at:28: 163. volumes split at an extended header (multiv07.at:28): ok     (0m0.801s 0m0.041s)

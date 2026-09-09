@@ -1,0 +1,16 @@
+#                             -*- compilation -*-
+241. multi-fail.at:21: testing multi-fail ...
+/opt/src/tar-1.35/tests/multi-fail.at:26:
+
+test -z "$STAR_TESTSCRIPTS" && exit 77
+tarball_prereq gnu-multi-fail-volume1.gtar 7c28663dd98b0bd91ceb4be7af55254e $STAR_TESTSCRIPTS $STAR_DATA_URL || exit 77
+
+
+test -z "$STAR_TESTSCRIPTS" && exit 77
+tarball_prereq gnu-multi-fail-volume2.gtar b5d41c4c3ec440687d4a44957b5079a8 $STAR_TESTSCRIPTS $STAR_DATA_URL || exit 77
+
+
+tar --utc -tvM -f $STAR_TESTSCRIPTS/gnu-multi-fail-volume1.gtar \
+               -f $STAR_TESTSCRIPTS/gnu-multi-fail-volume2.gtar <&-
+
+241. multi-fail.at:21: 241. multi-fail (multi-fail.at:21): ok     (0m0.628s 0m0.045s)
