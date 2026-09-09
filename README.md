@@ -78,7 +78,7 @@ there where available.
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
-| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 35 original recipes (36 scripts) pass on the current candidate with 982 clean process logs; five further scripts match assertions with memory/descriptor findings |
+| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 37 original recipes (38 scripts) pass on the current candidate with 1020 clean process logs; three further scripts match assertions with memory/descriptor findings |
 | Less | 704 | Ten focused checks, one production terminal check and all 18 original screen replays pass across declared profiles |
 | Screen | 5.0.2 | All three original targets pass across declared profiles; daemon cleanup and socket recovery pass Valgrind |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
@@ -105,14 +105,14 @@ The public terminal cleanup API alone retains the shared parameter cache in
 this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
-The current 187-command candidate is **14,719,872 bytes**, at
-`target/bash-owned-close-candidate/release/rboxc`, SHA-256
-`88ee0672f6cf454be4bdb9cfd7da0d4b7f2487494d9bbd0bc7032724f452bd27`.
+The current 187-command candidate is **14,720,192 bytes**, at
+`target/bash-parser-cleanup-candidate/release/rboxc`, SHA-256
+`6592541d522385e74b64e4a1dfefb0015cd524bcb287286d5fd67eaace0d27b7`.
 An independent rebuild is byte-identical. All 428 Coreutils smoke checks,
 11 dispatcher checks, 44 focused Bash comparisons and 69 shell-adapter checks
-pass. Across the recorded batches, **36 Bash scripts from 35 original recipes pass
-strictly**, with **982 clean candidate process logs**. Five further original
-scripts match GNU assertions but retain memory/descriptor findings; their 240
+pass. All 41 reviewed Bash scripts were rerun. **38 scripts from 37 original recipes
+pass strictly**, with **1020 clean candidate process logs**. Three further original
+scripts match GNU assertions but retain memory/descriptor findings; their 202
 process logs are excluded as complete profiles from strict counts. This includes the original trace
 script and two further quoting scripts. The native GNU trace finding remains
 preserved; the candidate avoids its duplicate close syscall while preserving
@@ -120,10 +120,14 @@ close results, errno and backup ownership. Seven ownership contracts pass
 natively and under Valgrind, including late close errors and descriptor reuse.
 [evidence/bash-owned-close-validation.json](evidence/bash-owned-close-validation.json)
 audits the owned-close increment and its 29 original scripts.
-[evidence/bash-expanded-coverage.json](evidence/bash-expanded-coverage.json)
-accounts for all 88 recipes and the twelve further reviewed scripts: seven pass
-strictly, while comsub-eof, parser, lastpipe, posixexp2 and set-e have open
-cleanup findings. Their expected outputs match unchanged GNU assertions.
+[evidence/bash-parser-cleanup-validation.json](evidence/bash-parser-cleanup-validation.json)
+audits the current parser/expansion increment. Discarded lexer words and saved
+compound-assignment parser state now receive their required destructors; a
+heap-owned word descriptor survives nonlocal string-expansion errors. Both
+comsub-eof and parser originals now pass strictly with unchanged output.
+The earlier twelve-script findings remain in
+[evidence/bash-expanded-coverage.json](evidence/bash-expanded-coverage.json).
+Lastpipe, posixexp2 and set-e still have open pipeline/subshell cleanup findings.
 The runner bounds each private process group and preserves timeout output;
 absolute true/false helpers use private mounts and host files remain unchanged.
 Two recipe dispatchers are accounted as orchestration, not runtime passes;
