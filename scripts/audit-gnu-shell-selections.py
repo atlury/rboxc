@@ -24,7 +24,7 @@ def module(name, path):
 
 
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--group', choices=('shell', 'file'), default='shell')
+parser.add_argument('--group', choices=('shell', 'file', 'option'), default='shell')
 group = parser.parse_args().group
 prefix = 'gnu-' + group + '-selection'
 runner_path = f'evidence/raw/{prefix}-final-driver.py'
@@ -40,16 +40,18 @@ historic = {
     'tests/gnu/reviewed-original.py': runner_path,
     'scripts/gnu_shell_selections.py': selector_path,
 }
-expected = ({'tests/shred/shred-passes.sh': 4, 'tests/od/od-N.sh': 10,
+expected = {'shell': {'tests/shred/shred-passes.sh': 4, 'tests/od/od-N.sh': 10,
              'tests/tac/tac-2-nonseekable.sh': 6, 'tests/cksum/b2sum.sh': 48,
-             'tests/cksum/cksum-c.sh': 44} if group == 'shell' else
-            {'tests/ln/misc.sh': 24, 'tests/ln/relative.sh': 9,
-             'tests/split/line-bytes.sh': 221, 'tests/sort/sort-merge-fdlimit.sh': 5})
+             'tests/cksum/cksum-c.sh': 44},
+            'file': {'tests/ln/misc.sh': 24, 'tests/ln/relative.sh': 9,
+             'tests/split/line-bytes.sh': 221, 'tests/sort/sort-merge-fdlimit.sh': 5},
+            'option': {'tests/ls/w-option.sh': 11, 'tests/csplit/csplit.sh': 6,
+                       'tests/shuf/shuf.sh': 26}}[group]
 
 
 def report_stem(script):
-    if group == 'file':
-        return 'gnu-file-selections'
+    if group in ('file', 'option'):
+        return f'gnu-{group}-selections'
     return ('gnu-shell-selection-cksum' if script.endswith('/cksum-c.sh')
             else 'gnu-shell-selections-ready')
 
@@ -121,6 +123,14 @@ for selected in review['selections']:
             outcome = result[implementation]
             assert saved['outcomes'][implementation]['result'] == outcome
             assert outcome['status'] == 0
+            if group == 'option':
+                staged = outcome['selected_runtime_script']
+                assert staged['sha256'] == metadata['selected_sha256']
+                assert re.fullmatch(r'/tmp/rboxc-upstream-[a-z0-9_]+/selected/'
+                                    + re.escape(Path(script).name), staged['path'])
+                assert staged['launch_credentials'] == (
+                    {'user': 65534, 'group': 65534, 'extra_groups': []}
+                    if script == 'tests/shuf/shuf.sh' else {})
             assert outcome['binary_sha256'] == context['binaries'][implementation]
             binary = ('build/gnu-coreutils/src/coreutils' if implementation == 'gnu'
                       else 'target/iconv-charmap-cleanup-candidate/release/rboxc')
@@ -151,6 +161,13 @@ for selected in review['selections']:
                 assert image.split()[0] in definition['commands'], image
                 if private_file:
                     image = image.replace(private_file, '$PRIVATE/tln-file')
+                if script == 'tests/ls/w-option.sh':
+                    private_run = str(Path(staged['path']).parents[1])
+                    if image == f'ls -d {private_run}/src/.':
+                        image = 'ls -d $PRIVATE/src/.'
+                    elif re.fullmatch('ls -dgo ' + re.escape(private_run)
+                                      + r'/gt-w-option\.sh\.[A-Za-z0-9]+', image):
+                        image = 'ls -dgo $PRIVATE/fixture'
                 command_images.append(image)
                 errors = list(re.finditer('ERROR SUMMARY:', text))
                 fds = list(re.finditer('FILE DESCRIPTORS:', text))
@@ -169,6 +186,11 @@ for selected in review['selections']:
             }
     assert images[script, 'gnu'] == images[script, 'rboxc']
     assert totals[script]['rboxc']['images'] == expected[script]
+    if script == 'tests/ls/w-option.sh':
+        for command in ('ls -d $PRIVATE/src/.', 'ls -d /opt/gnu/coreutils-9.11/bin/.',
+                        'ls -d /usr/bin/.', 'ls -d /bin/.', 'ls -dgo $PRIVATE/fixture'):
+            assert images[script, 'rboxc'][command] == 1
+        totals[script]['framework_images_per_implementation'] = 5
 
 # Retain the earlier fixture omissions as skips, never as coverage.
 for stem in (('gnu-shell-selections-original', 'gnu-shell-selections-ready-original',
@@ -182,8 +204,8 @@ for stem in (('gnu-shell-selections-original', 'gnu-shell-selections-ready-origi
         pin(row[implementation]['log'])
         assert 'shuf: not built' in (ROOT/row[implementation]['log']).read_text()
 
-base_path = ROOT/('evidence/gnu-cut-selection-coverage.json' if group == 'shell'
-                  else 'evidence/gnu-shell-selection-coverage.json')
+base_path = ROOT/('evidence/gnu-'+{'shell': 'cut', 'file': 'shell', 'option': 'file'}[group]
+                  +'-selection-coverage.json')
 base = json.loads(base_path.read_text())
 pin(base_path)
 coverage = copy.deepcopy(base)

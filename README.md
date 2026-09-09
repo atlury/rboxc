@@ -2325,10 +2325,10 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. The current
-[evidence/gnu-file-selection-coverage.json](evidence/gnu-file-selection-coverage.json)
-extends the preserved `evidence/gnu-suite-coverage.json` checkpoint by twelve
-reviewed selections: 639 scripts passed, 25 have selected coverage, five
-are skipped, 29 are excluded and 35 remain pending.
+[evidence/gnu-option-selection-coverage.json](evidence/gnu-option-selection-coverage.json)
+extends the preserved `evidence/gnu-suite-coverage.json` checkpoint by fifteen
+reviewed selections: 639 scripts passed, 28 have selected coverage, five
+are skipped, 29 are excluded and 32 remain pending.
 
 All 197 reviewed `env -S` cases pass normally against GNU. The original table
 contains 199 cases; two historical reproduction cases remain unexecuted.
@@ -2370,8 +2370,20 @@ normally and under Valgrind, adding **259 clean candidate images** on the same
 filename; every source interval and command image is retained in
 [evidence/gnu-file-selection-validation.json](evidence/gnu-file-selection-validation.json).
 Historical memory/crash sections and split's separate address-space-limit
-profile remain held. The Valgrind ledger now has 589 passed scripts, 19 passed
-selections, 39 open profiles, 57 pending and 29 exclusions. Installed-release
+profile remain held.
+Three further selections pass `ls` width parsing/layout, `csplit` suffix
+formatting/diagnostics/empty input, and `shuf` permutations, ranges, repeats,
+zero counts, option diagnostics and unreadable files. They add **43 clean
+candidate process images**, including five `ls` calls from GNU's framework.
+Shuf runs as UID/GID 65534 with no supplementary groups, so the unreadable-file
+branch executes. The runner copies the exact selected source into its private
+fixture for that user; checkout permissions remain unchanged. The audit
+verifies source identity, launch credentials, original assertions and all
+command images, normalizing only the two private `ls` framework paths:
+[evidence/gnu-option-selection-validation.json](evidence/gnu-option-selection-validation.json).
+Historical memory/crash/hang sections and separate resource/strace/ASLR
+profiles remain held. The Valgrind ledger now has 589 passed scripts, 22 passed
+selections, 39 open profiles, 54 pending and 29 exclusions. Installed-release
 evidence is unchanged.
 
 Three SELinux-only scripts whose names do
