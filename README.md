@@ -2287,10 +2287,10 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. The current
-[evidence/gnu-env-s-selection-coverage.json](evidence/gnu-env-s-selection-coverage.json)
-extends the preserved `evidence/gnu-suite-coverage.json` checkpoint by one
-reviewed selection: 639 scripts passed, 14 have selected-case coverage, five
-are skipped, 29 are excluded and 46 remain pending.
+[evidence/gnu-cut-selection-coverage.json](evidence/gnu-cut-selection-coverage.json)
+extends the preserved `evidence/gnu-suite-coverage.json` checkpoint by three
+reviewed selections: 639 scripts passed, 16 have selected-case coverage, five
+are skipped, 29 are excluded and 44 remain pending.
 
 All 197 reviewed `env -S` cases pass normally against GNU. The original table
 contains 199 cases; two historical reproduction cases remain unexecuted.
@@ -2301,8 +2301,19 @@ process logs, including the 90 instrumentation baselines; the Valgrind
 selection remains open. Its audit verifies the exact case selection, raw
 output differences and matching command-image inventories:
 [evidence/gnu-env-s-selection-validation.json](evidence/gnu-env-s-selection-validation.json).
-The Valgrind ledger now has 589 passed scripts, eight passed selections,
-39 open profiles, 68 pending and 29 exclusions. Installed-release evidence is
+The unchanged ordinary `cut` and `ptx` matrices add **877 and 21 selected
+cases**, respectively, passing both normally and under full-child Valgrind
+tracing. Their candidate runs have **878 and 22 clean process images**,
+including version checks. File, stdin and pipe variants are retained; the cut
+profile also covers the original multibyte locale. Cut uses GNU’s explicit
+multicall dispatcher to preserve diagnostic command names. The earlier
+native-launcher deadline and stopped candidate attempt remain preserved and
+unaccepted. Thirty-two cut cases and ten ptx cases remain held.
+[evidence/gnu-cut-selection-validation.json](evidence/gnu-cut-selection-validation.json)
+and [evidence/gnu-ptx-selection-validation.json](evidence/gnu-ptx-selection-validation.json)
+verify the source selections, checkpoints and every command image.
+The Valgrind ledger now has 589 passed scripts, ten passed selections,
+39 open profiles, 66 pending and 29 exclusions. Installed-release evidence is
 unchanged.
 
 Three SELinux-only scripts whose names do

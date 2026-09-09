@@ -180,7 +180,7 @@ def main():
             assert row.get('valgrind_vgdb') is False, 'credential changes require disabling vgdb files'
         if row.get('valgrind_multicall'):
             assert not row.get('native_launcher') and row.get('trace_children')
-            assert row['script'] in ('tests/chroot/chroot-fail.sh', 'tests/cut/cut.pl'), 'multicall tracing requires a reviewed profile'
+            assert row['script'] == 'tests/chroot/chroot-fail.sh', 'multicall tracing requires a reviewed profile'
         if row.get('extra_real_aliases'):
             assert row['script'] == 'tests/misc/coreutils.sh' and row.get('native_launcher')
             assert row['extra_real_aliases'] == ['blah'], 'only the original unknown-command alias is reviewed'
