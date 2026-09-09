@@ -1,0 +1,21 @@
+#                             -*- compilation -*-
+213. remfiles08a.at:28: testing remove-files deleting two subdirs in -c/non-incr. mode ...
+/opt/src/tar-1.35/tests/remfiles08a.at:31:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+mkdir foo
+mkdir bar
+echo foo/foo_file > foo/foo_file
+echo bar/bar_file > bar/bar_file
+decho A
+tar -cvf foo.tar --remove-files -C foo . -C ../bar .
+decho B
+find .
+)
+213. remfiles08a.at:28: 213. remove-files deleting two subdirs in -c/non-incr. mode (remfiles08a.at:28): ok     (0m0.005s 0m0.018s)

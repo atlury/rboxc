@@ -1,0 +1,27 @@
+#                             -*- compilation -*-
+219. remfiles10.at:20: testing remove-files ...
+/opt/src/tar-1.35/tests/remfiles10.at:23:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+mkdir foo
+echo foo/file > foo/file
+decho A
+(cd foo && tar -cvf ../foo.tar --remove-files .)
+tar_status=$?
+decho B
+find foo
+exit $tar_status
+)
+stderr:
+A
+tar: .: Cannot rmdir: Invalid argument
+tar: Exiting with failure status due to previous errors
+B
+/opt/src/tar-1.35/tests/remfiles10.at:44: sed '2s/:[^:]*$//' stderr
+219. remfiles10.at:20: 219. remove-files (remfiles10.at:20): ok     (0m0.005s 0m0.025s)

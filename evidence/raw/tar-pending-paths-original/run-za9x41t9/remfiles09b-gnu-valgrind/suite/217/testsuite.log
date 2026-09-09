@@ -1,0 +1,19 @@
+#                             -*- compilation -*-
+217. remfiles09b.at:29: testing remove-files on full directory in -c/incr. mode ...
+/opt/src/tar-1.35/tests/remfiles09b.at:32:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+mkdir foo
+echo foo/file > foo/file
+decho A
+tar -cvf foo.tar --incremental --remove-files foo
+decho B
+find .
+)
+217. remfiles09b.at:29: 217. remove-files on full directory in -c/incr. mode (remfiles09b.at:29): ok     (0m0.646s 0m0.044s)

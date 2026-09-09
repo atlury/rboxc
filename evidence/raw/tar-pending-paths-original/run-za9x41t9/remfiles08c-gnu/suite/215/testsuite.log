@@ -1,0 +1,27 @@
+#                             -*- compilation -*-
+215. remfiles08c.at:28: testing remove-files deleting two subdirs in -r mode ...
+/opt/src/tar-1.35/tests/remfiles08c.at:31:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+mkdir foo
+mkdir bar
+echo foo/foo_file > foo/foo_file
+echo bar/bar_file > bar/bar_file
+tar -cf foo.tar -C foo . -C ../bar .
+decho A
+find . | sort
+decho B
+tar -rvf foo.tar --remove-files -C foo . -C ../bar .
+decho C
+find .
+)
+215. remfiles08c.at:28: 215. remove-files deleting two subdirs in -r mode (remfiles08c.at:28): ok     (0m0.011s 0m0.025s)

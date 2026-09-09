@@ -1,0 +1,52 @@
+==606518== Memcheck, a memory error detector
+==606518== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==606518== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+==606518== Command: tar cf arc a
+==606518== Parent PID: 606512
+==606518== 
+==606518== 
+==606518== FILE DESCRIPTORS: 1 open (1 inherited) at exit.
+==606518== 
+==606518== HEAP SUMMARY:
+==606518==     in use at exit: 4,262 bytes in 4 blocks
+==606518==   total heap usage: 39 allocs, 35 frees, 68,361 bytes allocated
+==606518== 
+==606518== 16 bytes in 1 blocks are still reachable in loss record 1 of 4
+==606518==    at 0x5875E43: calloc (vg_replace_malloc.c:1678)
+==606518==    by 0x469E501: rboxc_tar_xzalloc (in /root/rboxc/target/screen-owned-candidate/release/rboxc)
+==606518==    by 0x4477AF5: single_binary_main_tar (in /root/rboxc/target/screen-owned-candidate/release/rboxc)
+==606518==    by 0x5A18600: (below main) (libc_start_call_main.h:59)
+==606518== 
+==606518== 80 bytes in 1 blocks are still reachable in loss record 2 of 4
+==606518==    at 0x586E858: malloc (vg_replace_malloc.c:447)
+==606518==    by 0x469E0DC: rboxc_tar_xmalloc (in /root/rboxc/target/screen-owned-candidate/release/rboxc)
+==606518==    by 0x4477A00: single_binary_main_tar (in /root/rboxc/target/screen-owned-candidate/release/rboxc)
+==606518==    by 0x5A18600: (below main) (libc_start_call_main.h:59)
+==606518== 
+==606518== 102 bytes in 1 blocks are still reachable in loss record 3 of 4
+==606518==    at 0x586E858: malloc (vg_replace_malloc.c:447)
+==606518==    by 0x469E0DC: rboxc_tar_xmalloc (in /root/rboxc/target/screen-owned-candidate/release/rboxc)
+==606518==    by 0x46734A1: rboxc_tar_name_init (in /root/rboxc/target/screen-owned-candidate/release/rboxc)
+==606518==    by 0x4478A7A: single_binary_main_tar (in /root/rboxc/target/screen-owned-candidate/release/rboxc)
+==606518==    by 0x5A18600: (below main) (libc_start_call_main.h:59)
+==606518== 
+==606518== 4,064 bytes in 1 blocks are still reachable in loss record 4 of 4
+==606518==    at 0x586E858: malloc (vg_replace_malloc.c:447)
+==606518==    by 0x469E0DC: rboxc_tar_xmalloc (in /root/rboxc/target/screen-owned-candidate/release/rboxc)
+==606518==    by 0x4695FFD: _obstack_begin_worker.isra.0 (in /root/rboxc/target/screen-owned-candidate/release/rboxc)
+==606518==    by 0x4696028: rboxc_tar__obstack_begin (in /root/rboxc/target/screen-owned-candidate/release/rboxc)
+==606518==    by 0x4679CD7: rboxc_tar_transform_name_fp (in /root/rboxc/target/screen-owned-candidate/release/rboxc)
+==606518==    by 0x46632A4: dump_file0 (in /root/rboxc/target/screen-owned-candidate/release/rboxc)
+==606518==    by 0x46643E9: rboxc_tar_create_archive (in /root/rboxc/target/screen-owned-candidate/release/rboxc)
+==606518==    by 0x4478AF8: single_binary_main_tar (in /root/rboxc/target/screen-owned-candidate/release/rboxc)
+==606518==    by 0x5A18600: (below main) (libc_start_call_main.h:59)
+==606518== 
+==606518== LEAK SUMMARY:
+==606518==    definitely lost: 0 bytes in 0 blocks
+==606518==    indirectly lost: 0 bytes in 0 blocks
+==606518==      possibly lost: 0 bytes in 0 blocks
+==606518==    still reachable: 4,262 bytes in 4 blocks
+==606518==         suppressed: 0 bytes in 0 blocks
+==606518== 
+==606518== For lists of detected and suppressed errors, rerun with: -s
+==606518== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

@@ -1,0 +1,143 @@
+==609119== Memcheck, a memory error detector
+==609119== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==609119== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+==609119== Command: tar -c --mtime 2016-01-15T00:00:00 --clamp-mtime -f archive.tar dir
+==609119== Parent PID: 609102
+==609119== 
+==609119== 
+==609119== FILE DESCRIPTORS: 1 open (1 inherited) at exit.
+==609119== 
+==609119== HEAP SUMMARY:
+==609119==     in use at exit: 4,639 bytes in 14 blocks
+==609119==   total heap usage: 111 allocs, 97 frees, 111,276 bytes allocated
+==609119== 
+==609119== 5 bytes in 1 blocks are still reachable in loss record 1 of 11
+==609119==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==609119==    by 0x405185D: xmalloc (xmalloc.c:45)
+==609119==    by 0x405185D: xmemdup (xmalloc.c:314)
+==609119==    by 0x405185D: xstrdup (xmalloc.c:339)
+==609119==    by 0x402644F: assign_string (misc.c:58)
+==609119==    by 0x4029612: uid_to_uname (names.c:490)
+==609119==    by 0x40155F3: start_header (create.c:931)
+==609119==    by 0x40167F9: dump_dir0 (create.c:1123)
+==609119==    by 0x40167F9: dump_dir (create.c:1320)
+==609119==    by 0x40167F9: dump_file0 (create.c:1757)
+==609119==    by 0x4017589: dump_file (create.c:1968)
+==609119==    by 0x4017589: create_archive (create.c:1412)
+==609119==    by 0x400CD90: main (tar.c:2818)
+==609119== 
+==609119== 5 bytes in 1 blocks are still reachable in loss record 2 of 11
+==609119==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==609119==    by 0x405185D: xmalloc (xmalloc.c:45)
+==609119==    by 0x405185D: xmemdup (xmalloc.c:314)
+==609119==    by 0x405185D: xstrdup (xmalloc.c:339)
+==609119==    by 0x402644F: assign_string (misc.c:58)
+==609119==    by 0x40296A2: gid_to_gname (names.c:520)
+==609119==    by 0x40155DB: start_header (create.c:936)
+==609119==    by 0x40167F9: dump_dir0 (create.c:1123)
+==609119==    by 0x40167F9: dump_dir (create.c:1320)
+==609119==    by 0x40167F9: dump_file0 (create.c:1757)
+==609119==    by 0x4017589: dump_file (create.c:1968)
+==609119==    by 0x4017589: create_archive (create.c:1412)
+==609119==    by 0x400CD90: main (tar.c:2818)
+==609119== 
+==609119== 7 bytes in 2 blocks are indirectly lost in loss record 3 of 11
+==609119==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==609119==    by 0x40387DD: wsnode_quoteremoval (wordsplit.c:651)
+==609119==    by 0x4039CFD: wordsplit_process_list (wordsplit.c:2390)
+==609119==    by 0x403A562: wordsplit_run.constprop.0 (wordsplit.c:2434)
+==609119==    by 0x400BFFA: parse_default_options (tar.c:2256)
+==609119==    by 0x400BFFA: decode_options (tar.c:2378)
+==609119==    by 0x400BFFA: main (tar.c:2792)
+==609119== 
+==609119== 7 bytes in 2 blocks are definitely lost in loss record 4 of 11
+==609119==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==609119==    by 0x403A1FB: wordsplit_finish (wordsplit.c:836)
+==609119==    by 0x400BFFA: parse_default_options (tar.c:2256)
+==609119==    by 0x400BFFA: decode_options (tar.c:2378)
+==609119==    by 0x400BFFA: main (tar.c:2792)
+==609119== 
+==609119== 16 bytes in 1 blocks are still reachable in loss record 5 of 11
+==609119==    at 0x48C4E43: calloc (vg_replace_malloc.c:1678)
+==609119==    by 0x40516F1: xcalloc (xmalloc.c:298)
+==609119==    by 0x40516F1: xzalloc (xmalloc.c:283)
+==609119==    by 0x400BEF9: decode_options (tar.c:2297)
+==609119==    by 0x400BEF9: main (tar.c:2792)
+==609119== 
+==609119== 17 bytes in 1 blocks are still reachable in loss record 6 of 11
+==609119==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==609119==    by 0x405185D: xmalloc (xmalloc.c:45)
+==609119==    by 0x405185D: xmemdup (xmalloc.c:314)
+==609119==    by 0x405185D: xstrdup (xmalloc.c:339)
+==609119==    by 0x402644F: assign_string (misc.c:58)
+==609119==    by 0x401E7A6: xheader_xhdr_name (xheader.c:393)
+==609119==    by 0x4014297: write_extended.part.0 (create.c:713)
+==609119==    by 0x4014896: write_extended (create.c:699)
+==609119==    by 0x4014896: finish_header (create.c:1024)
+==609119==    by 0x4016C5E: dump_dir0 (create.c:1137)
+==609119==    by 0x4016C5E: dump_dir (create.c:1320)
+==609119==    by 0x4016C5E: dump_file0 (create.c:1757)
+==609119==    by 0x4017589: dump_file (create.c:1968)
+==609119==    by 0x4017589: create_archive (create.c:1412)
+==609119==    by 0x400CD90: main (tar.c:2818)
+==609119== 
+==609119== 80 bytes in 1 blocks are still reachable in loss record 7 of 11
+==609119==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==609119==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==609119==    by 0x400BE43: main (tar.c:2781)
+==609119== 
+==609119== 87 (80 direct, 7 indirect) bytes in 2 blocks are definitely lost in loss record 8 of 11
+==609119==    at 0x48C4E43: calloc (vg_replace_malloc.c:1678)
+==609119==    by 0x403959D: wsnode_new (wordsplit.c:422)
+==609119==    by 0x403959D: wordsplit_add_segm (wordsplit.c:523)
+==609119==    by 0x4039854: scan_word (wordsplit.c:2062)
+==609119==    by 0x4039C7C: wordsplit_process_list (wordsplit.c:2358)
+==609119==    by 0x403A562: wordsplit_run.constprop.0 (wordsplit.c:2434)
+==609119==    by 0x400BFFA: parse_default_options (tar.c:2256)
+==609119==    by 0x400BFFA: decode_options (tar.c:2378)
+==609119==    by 0x400BFFA: main (tar.c:2792)
+==609119== 
+==609119== 102 bytes in 1 blocks are still reachable in loss record 9 of 11
+==609119==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==609119==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==609119==    by 0x4029881: name_init (names.c:869)
+==609119==    by 0x400C94C: main (tar.c:2794)
+==609119== 
+==609119== 256 bytes in 1 blocks are still reachable in loss record 10 of 11
+==609119==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==609119==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==609119==    by 0x401D274: xattr_encode_keyword (xheader.c:833)
+==609119==    by 0x401D274: xheader_print_n (xheader.c:876)
+==609119==    by 0x401D604: xheader_print (xheader.c:899)
+==609119==    by 0x401D604: code_time (xheader.c:1043)
+==609119==    by 0x401D604: atime_coder (xheader.c:1143)
+==609119==    by 0x40153D0: start_header (create.c:888)
+==609119==    by 0x40167F9: dump_dir0 (create.c:1123)
+==609119==    by 0x40167F9: dump_dir (create.c:1320)
+==609119==    by 0x40167F9: dump_file0 (create.c:1757)
+==609119==    by 0x4017589: dump_file (create.c:1968)
+==609119==    by 0x4017589: create_archive (create.c:1412)
+==609119==    by 0x400CD90: main (tar.c:2818)
+==609119== 
+==609119== 4,064 bytes in 1 blocks are still reachable in loss record 11 of 11
+==609119==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==609119==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==609119==    by 0x404A07D: call_chunkfun (obstack.c:88)
+==609119==    by 0x404A07D: _obstack_begin_worker.isra.0 (obstack.c:135)
+==609119==    by 0x404A0A8: _obstack_begin (obstack.c:157)
+==609119==    by 0x4032C57: _transform_name_to_obstack (transform.c:592)
+==609119==    by 0x4032C57: transform_name_fp (transform.c:614)
+==609119==    by 0x4016444: dump_file0 (create.c:1657)
+==609119==    by 0x4017589: dump_file (create.c:1968)
+==609119==    by 0x4017589: create_archive (create.c:1412)
+==609119==    by 0x400CD90: main (tar.c:2818)
+==609119== 
+==609119== LEAK SUMMARY:
+==609119==    definitely lost: 87 bytes in 4 blocks
+==609119==    indirectly lost: 7 bytes in 2 blocks
+==609119==      possibly lost: 0 bytes in 0 blocks
+==609119==    still reachable: 4,545 bytes in 8 blocks
+==609119==         suppressed: 0 bytes in 0 blocks
+==609119== 
+==609119== For lists of detected and suppressed errors, rerun with: -s
+==609119== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)

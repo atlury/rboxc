@@ -1,0 +1,19 @@
+#                             -*- compilation -*-
+149. longv7.at:24: testing long names in V7 archives ...
+/opt/src/tar-1.35/tests/longv7.at:30:
+mkdir v7
+(cd v7
+TEST_TAR_FORMAT=v7
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H v7"
+export TAR_OPTIONS
+rm -rf *
+
+mkdir this_is_a_very_long_name_for_a_directory_which_causes_problems
+touch this_is_a_very_long_name_for_a_directory_which_causes_problems/this_is_a_very_long_file_name_which_raises_issues.c
+
+tar cf archive this_is_a_very_long_name_for_a_directory_which_causes_problems
+echo separator
+tar tf archive
+)
+149. longv7.at:24: 149. long names in V7 archives (longv7.at:24): ok     (0m0.006s 0m0.023s)

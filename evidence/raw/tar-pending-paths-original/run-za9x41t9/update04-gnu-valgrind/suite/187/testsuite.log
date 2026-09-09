@@ -1,0 +1,133 @@
+#                             -*- compilation -*-
+187. update04.at:20: testing update with wildcards ...
+/opt/src/tar-1.35/tests/update04.at:23:
+mkdir v7
+(cd v7
+TEST_TAR_FORMAT=v7
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H v7"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --file file.a
+genfile --file file.b
+genfile --file file.c
+echo Create
+tar cf archive ./file.*
+sleep 1
+echo "update" > file.b
+echo First update
+tar ufv archive --wildcards './file.*'
+
+echo "Second update"
+tar ufv archive --wildcards './file.*'
+
+echo "Non-matching pattern"
+tar ufv archive --wildcards './file.*' './foo.*'
+echo $?
+)
+/opt/src/tar-1.35/tests/update04.at:23:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --file file.a
+genfile --file file.b
+genfile --file file.c
+echo Create
+tar cf archive ./file.*
+sleep 1
+echo "update" > file.b
+echo First update
+tar ufv archive --wildcards './file.*'
+
+echo "Second update"
+tar ufv archive --wildcards './file.*'
+
+echo "Non-matching pattern"
+tar ufv archive --wildcards './file.*' './foo.*'
+echo $?
+)
+/opt/src/tar-1.35/tests/update04.at:23:
+mkdir ustar
+(cd ustar
+TEST_TAR_FORMAT=ustar
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H ustar"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --file file.a
+genfile --file file.b
+genfile --file file.c
+echo Create
+tar cf archive ./file.*
+sleep 1
+echo "update" > file.b
+echo First update
+tar ufv archive --wildcards './file.*'
+
+echo "Second update"
+tar ufv archive --wildcards './file.*'
+
+echo "Non-matching pattern"
+tar ufv archive --wildcards './file.*' './foo.*'
+echo $?
+)
+/opt/src/tar-1.35/tests/update04.at:23:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --file file.a
+genfile --file file.b
+genfile --file file.c
+echo Create
+tar cf archive ./file.*
+sleep 1
+echo "update" > file.b
+echo First update
+tar ufv archive --wildcards './file.*'
+
+echo "Second update"
+tar ufv archive --wildcards './file.*'
+
+echo "Non-matching pattern"
+tar ufv archive --wildcards './file.*' './foo.*'
+echo $?
+)
+/opt/src/tar-1.35/tests/update04.at:23:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --file file.a
+genfile --file file.b
+genfile --file file.c
+echo Create
+tar cf archive ./file.*
+sleep 1
+echo "update" > file.b
+echo First update
+tar ufv archive --wildcards './file.*'
+
+echo "Second update"
+tar ufv archive --wildcards './file.*'
+
+echo "Non-matching pattern"
+tar ufv archive --wildcards './file.*' './foo.*'
+echo $?
+)
+187. update04.at:20: 187. update with wildcards (update04.at:20): ok     (0m11.210s 0m0.782s)

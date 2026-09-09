@@ -1,0 +1,26 @@
+#                             -*- compilation -*-
+156. time02.at:20: testing time: clamping mtime ...
+/opt/src/tar-1.35/tests/time02.at:23:
+mkdir pax
+(cd pax
+TEST_TAR_FORMAT=pax
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H pax"
+export TAR_OPTIONS
+rm -rf *
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+export TZ=UTC0
+mkdir dir
+
+touch -d 2015-12-01T00:00:00 dir/a >/dev/null 2>&1 || exit 77
+touch -d 2016-01-01T00:00:00 dir/b >/dev/null 2>&1 || exit 77
+touch -d 2016-02-01T00:00:00 dir/c >/dev/null 2>&1 || exit 77
+touch -d 2038-01-01T00:00:00 dir/d >/dev/null 2>&1 || exit 77
+
+tar -c --mtime 2016-01-15T00:00:00 --clamp-mtime -f archive.tar dir
+tar -d -f archive.tar dir|sort
+)
+156. time02.at:20: 156. time: clamping mtime (time02.at:20): ok     (0m0.009s 0m0.042s)

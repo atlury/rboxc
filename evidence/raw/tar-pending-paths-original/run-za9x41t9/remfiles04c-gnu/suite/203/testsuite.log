@@ -1,0 +1,25 @@
+#                             -*- compilation -*-
+203. remfiles04c.at:33: testing remove-files with -C:rel in -r mode ...
+/opt/src/tar-1.35/tests/remfiles04c.at:36:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+mkdir foo
+echo bar > bar
+echo foobar > foo/bar
+tar -cf foo.tar -C foo bar
+echo A
+find . | sort
+tar -rf foo.tar --remove-files -C foo bar
+echo B
+find . | sort
+)
+203. remfiles04c.at:33: 203. remove-files with -C:rel in -r mode (remfiles04c.at:33): ok     (0m0.005s 0m0.029s)

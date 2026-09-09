@@ -111,6 +111,40 @@ selections.update({
     'rename06': (142, 'rename06.at'),
 })
 permission_selections['listed03'] = selections['listed03']
+selections.update({
+    'remfiles03': (200, 'remfiles03.at'),
+    'remfiles04a': (201, 'remfiles04a.at'),
+    'remfiles04b': (202, 'remfiles04b.at'),
+    'remfiles04c': (203, 'remfiles04c.at'),
+    'remfiles05a': (204, 'remfiles05a.at'),
+    'remfiles05b': (205, 'remfiles05b.at'),
+    'remfiles05c': (206, 'remfiles05c.at'),
+    'remfiles06a': (207, 'remfiles06a.at'),
+    'remfiles06b': (208, 'remfiles06b.at'),
+    'remfiles06c': (209, 'remfiles06c.at'),
+    'remfiles07a': (210, 'remfiles07a.at'),
+    'remfiles07b': (211, 'remfiles07b.at'),
+    'remfiles07c': (212, 'remfiles07c.at'),
+    'remfiles08a': (213, 'remfiles08a.at'),
+    'remfiles08b': (214, 'remfiles08b.at'),
+    'remfiles08c': (215, 'remfiles08c.at'),
+    'remfiles09a': (216, 'remfiles09a.at'),
+    'remfiles09b': (217, 'remfiles09b.at'),
+    'remfiles09c': (218, 'remfiles09c.at'),
+    'remfiles10': (219, 'remfiles10.at'),
+    'update01': (184, 'update01.at'),
+    'update02': (185, 'update02.at'),
+    'update03': (186, 'update03.at'),
+    'update04': (187, 'update04.at'),
+    'long01': (150, 'long01.at'),
+    'longv7': (149, 'longv7.at'),
+    'lustar01': (151, 'lustar01.at'),
+    'lustar02': (152, 'lustar02.at'),
+    'lustar03': (153, 'lustar03.at'),
+    'time01': (155, 'time01.at'),
+    'time02': (156, 'time02.at'),
+    'options': (3, 'options.at'),
+})
 selected = profile.options.commands or list(selections)
 assert set(selected) <= set(selections)
 helpers = {n: ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','mkdir','chmod','touch','sort','echo','basename','cp','ln','true','false','sleep','ls','mv','mktemp','cut','id','date','printf','dd','rmdir','expr','tr','wc','head','tail','uname','cksum')}

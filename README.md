@@ -71,7 +71,7 @@ there where available.
 | BC | 1.08.2 | `bc`, `dc` installed |
 | Ed | 1.22.6 | `ed` installed |
 | Findutils | 4.11.0 | `find`, `xargs`, `locate` installed; `updatedb` and private `frcode` integrated in candidate |
-| Tar | 1.35 | `tar` installed; 118 of 244 original groups validated across recorded profiles |
+| Tar | 1.35 | `tar` installed; 150 of 244 original groups validated across recorded profiles |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
 | Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 448 reviewed originals pass; three original failures match GNU |
@@ -1161,13 +1161,20 @@ and pass their own native and Valgrind checks. The completed unchanged rerun has
 processes on the current 187-command candidate**. Native GNU findings remain
 separate in `evidence/tar-incremental-recovery.json`.
 
+Thirty-two further unchanged groups pass for update behavior, long names,
+timestamps, option syntax and removal of archived input files through relative
+and absolute directory changes. Their audit reparses 134 clean Tar processes.
+`evidence/tar-pending-current-paths-audited.json` combines all 66 disjoint
+current-candidate groups and 535 clean Tar processes without counting earlier
+reruns twice.
+
 The registration inventory now distinguishes **244 registered groups** from
 237 distributed `.at` files. Two groups (`exclude17` and `exclude18`) exist in
 the generated suite but their standalone sources are absent from the signed
 release archive. `sparsemvp.at` supplies shared macros rather than its own group;
 `testsuite.at` directly registers six compression groups. Across recorded
-candidate profiles, 118 groups from 117 input files are validated. The remaining
-126 registered groups stay explicit in `inventory/tar-groups.json`; full
+candidate profiles, 150 groups from 149 input files are validated. The remaining
+94 registered groups stay explicit in `inventory/tar-groups.json`; full
 acceptance and release activation remain open.
 
 Thirteen preceding unchanged GNU Tar groups pass on the current 187-command

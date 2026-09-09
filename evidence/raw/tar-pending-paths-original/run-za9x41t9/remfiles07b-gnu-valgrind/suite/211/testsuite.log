@@ -1,0 +1,26 @@
+#                             -*- compilation -*-
+211. remfiles07b.at:25: testing remove-files with -C:abs,rel in -c/incr. mode ...
+/opt/src/tar-1.35/tests/remfiles07b.at:28:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+mkdir foo
+mkdir bar
+echo file > file
+echo foo/file > foo/file
+echo bar/file > bar/file
+DIR=`pwd`
+decho A
+tar -cvf foo.tar --incremental --remove-files -C $DIR/foo file -C ../bar file
+decho B
+find . | sort
+)
+211. remfiles07b.at:25: 211. remove-files with -C:abs,rel in -c/incr. mode (remfiles07b.at:25): ok     (0m0.634s 0m0.062s)
