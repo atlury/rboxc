@@ -74,7 +74,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 228 of 244 original groups validated across recorded profiles |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 537 reviewed originals pass; six failures match GNU and nine memory profiles remain open |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 537 reviewed originals pass; six failures match GNU; ten memory profiles and one timing profile remain open |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -246,11 +246,13 @@ Nine auxiliary inputs are accounted with reviewed recipes, including one unread
 second source argument and one program used solely as cross-reference text. Forty
 historical reproductions are excluded after source review. Twenty MPFR inputs and
 one ARRAYDEBUG input are unavailable in this build, verified by unchanged GNU
-capability guards; nine other pending inputs remain. Three distributed utilities pass separate comparisons, adding no original-assertion count. Nine further reviewed originals pass their
-assertions but retain memory/descriptor findings; their 56 candidate logs are
+capability guards; seven other pending inputs remain. Three distributed utilities pass separate comparisons, adding no original-assertion count. Ten further reviewed originals pass their
+assertions but retain memory/descriptor findings. One timeout original passes normally but changes retry counts under Valgrind child startup in both GNU and Rboxc. These eleven open profiles have 64 candidate logs, which are
 verified separately and excluded from the strict clean-process totals. The latest seven unchanged recipes cover indirect function calls, POSIX conversion
 and field behavior, namespace pretty printing, formatting, lint diagnostics and
 text matching. The installed release is unchanged, and full GNU acceptance remains open.
+
+The unchanged PTY original passes its assertions through a private `tr` coprocess. Candidate Gawk logs are clean; native shell descriptor restoration and tr allocation findings remain open. The timeout original passes normally, but tracing its children delays startup beyond its 400 ms read deadline. Both instrumented binaries produce identical changed retry output with clean logs; this timing limitation adds no strict original-pass count. Initial incomplete child-classification runs are preserved.
 
 Two further originals pass for a large pretty-print program and a loopback connection-error diagnostic. Pretty printing does not execute the example program. A fixed here-document recipe passes its original assertions with clean Gawk logs; shell and cat descriptor findings remain open in both builds. Three distributed utility comparisons separately pass: 24,000 floating-format lines, locale display, and scanning a preserved local Valgrind log. Their three clean processes are outside the original/focused aggregate.
 

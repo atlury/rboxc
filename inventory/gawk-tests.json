@@ -6783,8 +6783,26 @@
     {
       "path": "test/pty2.awk",
       "sha256": "64b53ccc1ccba5a7fed4bd0f7d9dfe0288de5a3daba63892005757994e1a735f",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-assertions-memory-open",
+      "target": "pty2",
+      "fixtures": {
+        "pty2.ok": "5b805503cf8afac60d792be2285608fcca8b4bfd1dd5b377a6a905e6a81c6d7d"
+      },
+      "configured_recipe_sha256": "99f52dafb64d556d5987de51c7e79550b8da09daa69a150e22bdc9475837f389",
+      "review": "Complete original source, configured recipe and expected output reviewed. One private PTY coprocess lowercases ABCD with tr; the original od/AWK pipeline normalizes its five output bytes. No historical pty1 hang input is selected. Assertions pass in all four profiles; shell restored descriptors and native tr buffers remain open. Candidate Gawk logs are clean.",
+      "child_commands": {
+        "/bin/sh -c tr\\ '[A-Z]'\\ '[a-z]'\\ 2\\>\\ /dev/null": 1,
+        "tr [A-Z] [a-z]": 1
+      },
+      "child_dependencies": {
+        "tr": {
+          "path": "/root/rboxc/build/gnu-coreutils/src/coreutils",
+          "sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4"
+        }
+      },
+      "evidence": "evidence/gawk-pty-timeout-startup-original.json",
+      "audit": "evidence/gawk-pty-timeout-coverage.json"
     },
     {
       "path": "test/rand.awk",
@@ -8703,8 +8721,28 @@
     {
       "path": "test/timeout.awk",
       "sha256": "5095f6c14eb8005438d229986437c1b66b8e35c61a1376d557142803dec10475",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-timing-open",
+      "target": "timeout",
+      "fixtures": {
+        "timeout.ok": "5b9ef77539a8501a1fbaa7ab41ae49ff261dc882ee03fe5ed2a86aaa6b8262eb"
+      },
+      "configured_recipe_sha256": "8b3fe5ff209e151ba016d692b1c0045b27b807dcbad4694247d09b646b9a404d",
+      "review": "Complete original source, configured recipe and expected output reviewed. Two fixed private shell producers print hello, sleep one second, and print goodbye; 400 ms reads compare timeout and retry behavior. Harness enforces bounded process-group lifetime. Normal profiles pass. Instrumented native GNU and Rboxc produce the same changed retry counts because traced child startup exceeds 400 ms. All eight instrumented processes are clean, but this is an original-assertion timing limitation, not a pass.",
+      "child_commands": {
+        "/bin/sh -c echo\\ hello;\\ sleep\\ 1;\\ echo\\ goodbye": 2,
+        "sleep 1": 1
+      },
+      "child_dependencies": {
+        "sleep": {
+          "path": "/root/rboxc/build/gnu-coreutils/src/coreutils",
+          "sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4"
+        }
+      },
+      "evidence": "evidence/gawk-pty-timeout-startup-original.json",
+      "audit": "evidence/gawk-pty-timeout-coverage.json",
+      "instrumented_baseline_output": "With timeouts\n-1 1 1\n1\n\nWith timeouts and retries\n1 timed out; trying again\nhello\n1 timed out; trying again\n2 timed out; trying again\n3 timed out; trying again\n4 timed out; trying again\ngoodbye\n0\n",
+      "instrumented_baseline_driver_sha256": "c92514a883829f1c19e80c2e7c4169787b3d834561f874e35f63896423126b85"
     },
     {
       "path": "test/tradanch.awk",

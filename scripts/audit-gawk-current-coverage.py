@@ -161,23 +161,30 @@ for filename in sorted({r['evidence'] for r in reviewed.values()}):
             assert data['inputs'][entry['path']]==entry['sha256']
         assert result.get('child_commands',{})==children
         baseline = row.get('expected_baseline_output')
-        allow_open = row['state']=='reviewed-original-assertions-memory-open'
+        timing_open = row['state']=='reviewed-original-timing-open'
+        allow_open = row['state']=='reviewed-original-assertions-memory-open' or timing_open
         assert not (baseline and allow_open)
         assert result['pass'] == (baseline is None and not allow_open)
         if allow_open:
-            open_originals[result['selection']]={'report':filename,'source':row['path'],'review':row['review']}
-            assert all(o['assertions_pass'] for o in result['outcomes'].values())
-            assert not result['outcomes']['rboxc-valgrind']['memory_clean']
+            open_originals[result['selection']]={'report':filename,'source':row['path'],'review':row['review'],'kind':'timing' if timing_open else 'memory'}
+            if timing_open:
+                assert result['selection']=='timeout'
+                assert all(o['assertions_pass']==(not k.endswith('-valgrind')) for k,o in result['outcomes'].items())
+                assert result['outcomes']['rboxc-valgrind']['memory_clean']
+            else:
+                assert all(o['assertions_pass'] for o in result['outcomes'].values())
+                assert not result['outcomes']['rboxc-valgrind']['memory_clean']
         for key, outcome in result['outcomes'].items():
             assert not outcome.get('timed_out') and not outcome.get('child_wait_timeout')
-            assert outcome['status'] == 0 and outcome['assertions_pass'] == (result['pass'] or allow_open)
+            instrumented_timing = timing_open and key.endswith('-valgrind')
+            assert outcome['status'] == 0 and outcome['assertions_pass'] == ((result['pass'] or allow_open) and not instrumented_timing)
             log = ROOT/outcome['driver_log']
             assert fingerprint(log) == outcome['driver_log_sha256']
-            if baseline is not None:
+            if baseline is not None or instrumented_timing:
                 actual = ROOT/outcome['actual_output']
                 assert fingerprint(actual) == outcome['actual_output_sha256']
-                assert actual.read_bytes() == baseline.encode()
-                assert fingerprint(log) == row['expected_baseline_driver_sha256']
+                assert actual.read_bytes() == (row['instrumented_baseline_output'] if instrumented_timing else baseline).encode()
+                assert fingerprint(log) == row['instrumented_baseline_driver_sha256' if instrumented_timing else 'expected_baseline_driver_sha256']
             else:
                 assert outcome['actual_output'] is None and outcome['actual_output_sha256'] is None
                 assert result['selection'] in log.read_text().splitlines() and b'Error ' not in log.read_bytes()
