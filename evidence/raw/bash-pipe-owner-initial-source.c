@@ -190,7 +190,6 @@ int rboxc_bash_owned_close(int fd) {
   /* Linux releases the descriptor before reporting late close errors.
      EBADF also means this ownership record is no longer valid. */
   forget_bash_backup(fd);
-  if (fd >= 0 && fd < 3) bash_owned_standard[fd] = 0;
   errno = saved;
   return result;
 }

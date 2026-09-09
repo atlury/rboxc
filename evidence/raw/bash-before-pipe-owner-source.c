@@ -98,30 +98,15 @@ static void release_bash_standard(void) {
   }
   errno = saved;
 }
-static void track_bash_standard(int fd) {
-  int saved = errno;
-  if (fd >= 0 && fd < 3 && fstat(fd, &bash_standard_identity[fd]) == 0) {
-    bash_owned_standard[fd] = 1;
+int rboxc_bash_owned_dup2(int from, int to) {
+  int result = dup2(from, to), saved = errno;
+  if (result >= 0 && from != to && to >= 0 && to < 3 &&
+      fstat(to, &bash_standard_identity[to]) == 0) {
+    bash_owned_standard[to] = 1;
     if (!bash_standard_cleanup_registered) {
       if (atexit(release_bash_standard)) _exit(2);
       bash_standard_cleanup_registered = 1;
     }
-  }
-  errno = saved;
-}
-int rboxc_bash_owned_dup2(int from, int to) {
-  int result = dup2(from, to), saved = errno;
-  if (result >= 0 && from != to) track_bash_standard(to);
-  errno = saved;
-  return result;
-}
-int rboxc_bash_owned_pipe(int fds[2]) {
-  int result = pipe(fds), saved = errno;
-  /* A pipe can allocate a closed standard slot without calling dup2. Its
-     lifetime and visibility stay unchanged until the shell exits. */
-  if (result == 0) {
-    track_bash_standard(fds[0]);
-    track_bash_standard(fds[1]);
   }
   errno = saved;
   return result;
@@ -190,7 +175,6 @@ int rboxc_bash_owned_close(int fd) {
   /* Linux releases the descriptor before reporting late close errors.
      EBADF also means this ownership record is no longer valid. */
   forget_bash_backup(fd);
-  if (fd >= 0 && fd < 3) bash_owned_standard[fd] = 0;
   errno = saved;
   return result;
 }

@@ -116,7 +116,7 @@ def prepare_archives(root,provider,mapping):
     for index,source in enumerate(native_inputs(root,provider)):
         target=root/'build/helpers'/f'{provider}-{index:03}-{source.name}'
         temporary=target.with_name(target.name+'.tmp')
-        subprocess.run(['objcopy','--redefine-syms='+str(definitions),*(['--redefine-sym=dup2=rboxc_bash_owned_dup2','--redefine-sym=close=rboxc_bash_owned_close','--redefine-sym=pipe=rboxc_bash_owned_pipe'] if provider=='bash' else []),adapted.get(source.name,source),temporary],check=True)
+        subprocess.run(['objcopy','--redefine-syms='+str(definitions),*(['--redefine-sym=dup2=rboxc_bash_owned_dup2','--redefine-sym=close=rboxc_bash_owned_close'] if provider=='bash' else []),adapted.get(source.name,source),temporary],check=True)
         if source.suffix=='.a':subprocess.run(['ranlib',temporary],check=True)
         temporary.replace(target);outputs.append(target)
     expected=defined_symbols(native_inputs(root,provider))
