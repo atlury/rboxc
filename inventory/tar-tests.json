@@ -1,6 +1,6 @@
 {
   "provider": "GNU Tar 1.35",
-  "scope": "All 237 original input files are inventoried; 221 files provide 228 strictly passing registered groups. The child-input candidate fixes diagnostic naming and owned input pipes; 15 selected groups have 87 clean Tar and 61 clean native dependency processes. All 16 selected assertions match GNU; native XZ findings remain separate. Earlier actual candidate hashes, capability baseline and SIGPIPE observations are preserved; full acceptance is open.",
+  "scope": "All 237 distributed original input files and 244 registered groups are accounted. 221 distributed files plus two generated-source groups provide 228 strictly passing groups. One further group passes natively but Valgrind cannot start under the original low descriptor limit. Ten reviewed historical reproductions are held and two SELinux groups are excluded by user scope. Three further profiles retain native XZ helper findings, a SIGPIPE-owned archive descriptor, and the host getcap output-format baseline. No group remains unreviewed; full acceptance remains open.",
   "registration_sha256": "9d21de7d9f2c5872939735ed2c08d186aa2ddee28926a32dd8d4d33ed07f9ad7",
   "inputs": [
     {
@@ -77,7 +77,8 @@
       "path": "tests/T-empty.at",
       "sha256": "2b3129aa3d7dd0ea67a102d42627de18c3f85b2b8fc500cd9322a00660b1cc7e",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "reviewed-held-historical-reproduction",
+      "review": "Original source reviewed read-only. Explicit historical crash, memory-corruption, nontermination or archive-validation reproduction; excluded from execution in the current validation profile. Preserved unchanged and not counted as an original pass."
     },
     {
       "path": "tests/T-mult.at",
@@ -669,7 +670,8 @@
       "path": "tests/delete06.at",
       "sha256": "37d01d758d2a7ff78d955ebd6a138e81977174f1c27d7235abf56bf807ca4df6",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "reviewed-held-historical-reproduction",
+      "review": "Original source reviewed read-only. Explicit historical crash, memory-corruption, nontermination or archive-validation reproduction; excluded from execution in the current validation profile. Preserved unchanged and not counted as an original pass."
     },
     {
       "path": "tests/difflink.at",
@@ -1135,7 +1137,8 @@
       "path": "tests/extrac03.at",
       "sha256": "2d1a83b86bd54eaa444ab37301839086e7ac2b48695cf48ce038cd341cefcd6e",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "reviewed-held-historical-reproduction",
+      "review": "Original source reviewed read-only. Explicit historical crash, memory-corruption, nontermination or archive-validation reproduction; excluded from execution in the current validation profile. Preserved unchanged and not counted as an original pass."
     },
     {
       "path": "tests/extrac04.at",
@@ -1274,8 +1277,11 @@
     {
       "path": "tests/extrac11.at",
       "sha256": "dda80742c12f2b761cafc6a17686458452ecfa291218faf9759c4f12924e4ae5",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "original-native-validated-instrumentation-unavailable",
+      "autotest_number": 94,
+      "evidence": "evidence/tar-scarce-descriptors-validation.json",
+      "review": "Complete unchanged original reviewed. Creates eleven nested directories with three short text files each in private fixtures, then checks creation/extraction under local child-process descriptor limits 100, 4 and 10. Limits do not alter the host or parent runner. The limit-4 branch expects command failure; instrumentation startup limitations will be recorded separately."
     },
     {
       "path": "tests/extrac12.at",
@@ -1646,7 +1652,8 @@
       "path": "tests/incr04.at",
       "sha256": "0036a48aeab7f52801dbd1c55d687b607733d648b581acd21656403667793d4c",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "reviewed-held-historical-reproduction",
+      "review": "Original source reviewed read-only. Explicit historical crash, memory-corruption, nontermination or archive-validation reproduction; excluded from execution in the current validation profile. Preserved unchanged and not counted as an original pass."
     },
     {
       "path": "tests/incr05.at",
@@ -2076,7 +2083,8 @@
       "path": "tests/multiv09.at",
       "sha256": "4215729bc0fed8b42a67081d5a4123d04c6c3045ade124713828e3f09a6e4ec4",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "reviewed-held-historical-reproduction",
+      "review": "Original source reviewed read-only. Explicit historical crash, memory-corruption, nontermination or archive-validation reproduction; excluded from execution in the current validation profile. Preserved unchanged and not counted as an original pass."
     },
     {
       "path": "tests/multiv10.at",
@@ -2405,7 +2413,8 @@
       "path": "tests/options03.at",
       "sha256": "a3b10f2286a86ecc77b1d603e2e17866789f8ea4b6a8f579ea1b72e9e81c366e",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "reviewed-held-historical-reproduction",
+      "review": "Original source reviewed read-only. Explicit historical crash, memory-corruption, nontermination or archive-validation reproduction; excluded from execution in the current validation profile. Preserved unchanged and not counted as an original pass."
     },
     {
       "path": "tests/owner.at",
@@ -2916,13 +2925,15 @@
       "path": "tests/selacl01.at",
       "sha256": "b2c3b0b1ebc78a2de837fc7853c8f8dd3e1778eb7ae6d6aad8ba7d30763f472d",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded-user-scope",
+      "review": "SELinux-specific original; excluded by the user-directed scope. Source is preserved and not executed or counted as passing."
     },
     {
       "path": "tests/selnx01.at",
       "sha256": "531fde714a1718db2a52cac7fe846c4701623b78cc063469049e69a082325a0c",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "excluded-user-scope",
+      "review": "SELinux-specific original; excluded by the user-directed scope. Source is preserved and not executed or counted as passing."
     },
     {
       "path": "tests/shortfile.at",
@@ -3090,19 +3101,22 @@
       "path": "tests/sptrcreat.at",
       "sha256": "c1e61add537acadd68c300cf14383596fab81b688274a5c1c1ffa316e2ee551b",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "reviewed-held-historical-reproduction",
+      "review": "Original source reviewed read-only. Explicit historical crash, memory-corruption, nontermination or archive-validation reproduction; excluded from execution in the current validation profile. Preserved unchanged and not counted as an original pass."
     },
     {
       "path": "tests/sptrdiff00.at",
       "sha256": "4a9c8c22a8b1717ceb5397f6df59374c971ad000194265a85e4e586e93239483",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "reviewed-held-historical-reproduction",
+      "review": "Original source reviewed read-only. Explicit historical crash, memory-corruption, nontermination or archive-validation reproduction; excluded from execution in the current validation profile. Preserved unchanged and not counted as an original pass."
     },
     {
       "path": "tests/sptrdiff01.at",
       "sha256": "fa697967bfa1f5e39a993bf7227b4feae944891d6c6b6212618aca08024db749",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "reviewed-held-historical-reproduction",
+      "review": "Original source reviewed read-only. Explicit historical crash, memory-corruption, nontermination or archive-validation reproduction; excluded from execution in the current validation profile. Preserved unchanged and not counted as an original pass."
     },
     {
       "path": "tests/star/gtarfail.at",
@@ -3345,7 +3359,8 @@
       "path": "tests/volsize.at",
       "sha256": "2173e7502442edc6f5e8307119890dc854717a30f309adf6fa7fb1a8722ed795",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "reviewed-held-historical-reproduction",
+      "review": "Original source reviewed read-only. Explicit historical crash, memory-corruption, nontermination or archive-validation reproduction; excluded from execution in the current validation profile. Preserved unchanged and not counted as an original pass."
     },
     {
       "path": "tests/volume.at",
@@ -3562,6 +3577,15 @@
       "state": "original-validated",
       "evidence": "evidence/tar-generated-large-sparse-audited.json",
       "review": "The original generated group is present in the signed release even though its standalone .at file is absent. All five format bodies were reviewed and differ only by format. Ordinary VCS exclusion fixtures are created, archived, listed, extracted and compared in private directories."
+    }
+  },
+  "group_observations": {
+    "19": {
+      "source": "tests/testsuite.at",
+      "selection": "compress-xz",
+      "state": "original-assertions-native-helper-open",
+      "evidence": "evidence/tar-child-input-compression-original.json",
+      "review": "Original assertions pass and all Tar logs are complete and clean; native XZ helper memory/descriptor findings remain separate. Not counted among strict original passes."
     }
   }
 }

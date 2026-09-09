@@ -1249,8 +1249,10 @@ the generated suite but their standalone sources are absent from the signed
 release archive. `sparsemvp.at` supplies shared macros rather than its own group;
 `testsuite.at` directly registers six compression groups. Across recorded
 candidate profiles, 228 groups from 221 distributed input files and two generated
-source groups are validated. The remaining 16 groups without a passing original stay explicit in `inventory/tar-groups.json`; full
-acceptance and release activation remain open.
+source groups are validated. The remaining 16 groups are explicitly accounted in
+`inventory/tar-groups.json`: ten held historical reproductions, two user-excluded
+SELinux groups, and four profiles with the limitations described below. No Tar
+group remains unreviewed; full acceptance and release activation remain open.
 
 Ten additional originals pass for the two generated VCS-exclusion groups, a
 20,961,034,240-byte sparse-file listing, multi-volume fixtures and archive members
@@ -1263,6 +1265,16 @@ lookup, all seven external-fixture groups pass unchanged. The two audits
 reparse 49 clean Tar and three native bzip2 process logs. Large fixtures and their
 original observations are preserved locally; only compact fixtures and evidence
 are committed.
+
+The descriptor-limit original passes unchanged for both GNU and Rboxc natively
+using a Bash launcher. The original Dash wrapper fails at limit 10. Calling the
+Valgrind binary directly with its wrapper environment reveals that Valgrind
+itself cannot initialize at that limit. `tar-scarce-descriptors-validation.json`
+preserves all three attempts and nine clean candidate logs. Those logs cover only
+the version prerequisite and limit-100 creation/extraction; no instrumented
+limit-4 or limit-10 execution is claimed. Together with the native XZ helper
+findings, SIGPIPE descriptor observation and getcap formatting baseline, this
+remains an explicit validation limit.
 
 Thirteen preceding unchanged GNU Tar groups pass on the current 187-command
 candidate, covering recursion toggles, long-name appends, create/append archive

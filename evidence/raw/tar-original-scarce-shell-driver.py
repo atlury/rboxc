@@ -291,10 +291,6 @@ if set(selected) & {'spmvp00', 'spmvp01', 'spmvp10'}:
     assert fingerprint(support) == registered['tests/sparsemvp.at']['sha256']
     inputs[support] = fingerprint(support)
 external_fixtures = {}
-if 'extrac11' in selected:
-    for p in (Path('/usr/bin/valgrind'), Path('/usr/bin/valgrind.bin')):
-        inputs[p] = fingerprint(p)
-
 if set(selected) & external_selections:
     fixture_manifest = ROOT/'evidence/tar-external-fixtures.json'
     inputs[fixture_manifest] = fingerprint(fixture_manifest)
@@ -364,11 +360,10 @@ def run_selection(name):
                 (work/'real/tar').symlink_to(executable(profile.oracle if implementation == 'gnu' else profile.binary))
                 invocation = ['tar']
                 if instrument:
-                    invocation = ['/usr/bin/valgrind.bin' if name == 'extrac11' else '/usr/bin/valgrind', '--leak-check=full', '--show-leak-kinds=all', '--track-fds=yes', '--trace-children=yes', '--log-file='+str(work/'memory/%p.log'), *invocation]
+                    invocation = ['/usr/bin/valgrind', '--leak-check=full', '--show-leak-kinds=all', '--track-fds=yes', '--trace-children=yes', '--log-file='+str(work/'memory/%p.log'), *invocation]
                 path = str(work/'real')+':'+str(work/'deps')+':/usr/bin:/bin'
                 wrapper = work/'exec/tar'
-                wrapper_shell = '/bin/bash' if name == 'extrac11' else '/bin/sh'
-                wrapper.write_text('#!'+wrapper_shell+'\nPATH='+shlex.quote(path)+'\nexport PATH\nexec '+shlex.join(invocation)+' "$@"\n')
+                wrapper.write_text('#!/bin/sh\nPATH='+shlex.quote(path)+'\nexport PATH\nexec '+shlex.join(invocation)+' "$@"\n')
                 wrapper.chmod(0o755)
                 config = (ROOT/'build/gnu-tar/tests/atconfig').read_text()
                 config = config.replace(str(ROOT/'build/gnu-tar/tests'), directory).replace(str(ROOT/'build/gnu-tar'), directory)
@@ -376,9 +371,6 @@ def run_selection(name):
                 shutil.copy2(ROOT/'build/gnu-tar/tests/atlocal', work/'atlocal')
                 environment = {'PATH': str(work/'deps')+':/usr/bin:/bin', 'HOME': directory, 'TMPDIR': directory,
                                'LC_ALL': 'C', 'LANGUAGE': 'C', 'TZ': 'UTC0', 'CONFIG_SHELL': '/bin/bash'}
-                if name == 'extrac11' and instrument:
-                    # Match the distro wrapper without launching dash under RLIMIT_NOFILE=10.
-                    environment.update(LD_LIBRARY_PATH='/usr/lib/debug', GLIBCPP_FORCE_NEW='1', GLIBCXX_FORCE_NEW='1')
                 if copied_fixtures:
                     environment.update(TEST_DATA_DIR=str(work/'download'), STAR_TESTSCRIPTS=str(work/'download'))
                 command = ['/bin/bash', str(source/'tests/testsuite'), '--debug', str(number),

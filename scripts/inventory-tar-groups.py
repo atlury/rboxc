@@ -52,6 +52,15 @@ for number, basename, line, title in re.findall(r'^\s*(\d+):\s+([^ :]+):(\d+)\s+
     groups.append({'number':number, 'source':row['path'], 'line':int(line), 'title':title.strip(),
         'source_sha256':row['sha256'], 'state':'original-validated' if validated else row['state'] if row['state']!='original-validated' else 'pending-group-validation',
         'evidence':row.get('evidence') if validated else None})
+for number, observation in manifest.get('group_observations', {}).items():
+    group = next(r for r in groups if r['number'] == int(number))
+    assert group['source'] == observation['source']
+    assert observation['state'] != 'original-validated'
+    data = json.loads((ROOT/observation['evidence']).read_text())
+    row = next(r for r in data['results'] if r['selection'] == observation['selection'])
+    assert row['autotest_number'] == int(number)
+    assert row['assertions_pass'] and not row['pass']
+    group.update(state=observation['state'], evidence=observation['evidence'], review=observation['review'])
 assert [r['number'] for r in groups] == list(range(1, len(groups)+1))
 assert len(groups) > 0
 registered = {r['source'] for r in groups}
