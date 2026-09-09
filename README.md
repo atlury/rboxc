@@ -2326,7 +2326,7 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. The current
-[evidence/gnu-sort-fd-profile-coverage.json](evidence/gnu-sort-fd-profile-coverage.json)
+[evidence/gnu-io-error-original-coverage.json](evidence/gnu-io-error-original-coverage.json)
 extends the preserved suite checkpoints: **648 scripts passed**, 32 have
 selected coverage, five are skipped, 29 are excluded and 19 remain pending.
 Excluding the 29 exclusions, 648/704 scripts (92.0%) have whole-script passes;
@@ -2858,3 +2858,18 @@ files are verified unchanged outside those namespaces.
 verifies all 27 command images and identical GNU/Rboxc argument inventories.
 GNU's three interface-enumeration descriptor findings remain recorded. These
 two original passes do not establish completion of the remaining service tests.
+
+The complete finite Coreutils `tests/misc/io-errors.sh` comparison now finishes
+with status zero for both GNU and the preceding `pr-page-cleanup` candidate.
+Each implementation executes the same **262 writer checks**: 131 `/dev/full`
+checks and 131 closed-pipe checks, with **1,336 matching process images**.
+Rboxc has 1,070 clean images. The other 266 consist of 132 native Dash invalid
+closes, 131 native Dash pipe-stdin descriptors, and the original default-SIGPIPE
+exits of `cat`, `dd` and `tac`. Those three commands retain one live descriptor
+each at signal termination; `tac` also has 16,388 bytes classified as possibly
+lost at that point. These findings are retained, and this profile remains open
+for strict memory acceptance. GNU has 409 finding images in its separate logs.
+[evidence/gnu-io-error-original-validation.json](evidence/gnu-io-error-original-validation.json)
+reparses every log, verifies the original assertions and equal command-image
+inventories, and accounts for every candidate finding. No suppression, signal
+policy change or increase in whole-script/strict Valgrind counts is applied.
