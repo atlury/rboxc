@@ -2,7 +2,6 @@
 """Run individually reviewed GNU Tar Autotest selections unchanged."""
 # SPDX-License-Identifier: GPL-3.0-or-later
 import importlib.util
-from concurrent.futures import ThreadPoolExecutor
 import json
 import os
 from pathlib import Path
@@ -88,15 +87,6 @@ selections.update({
     'onetop01': (234, 'onetop01.at'), 'onetop02': (235, 'onetop02.at'),
     'onetop03': (236, 'onetop03.at'), 'onetop04': (237, 'onetop04.at'),
 })
-selections.update({
-    'T-recurse': (30, 'T-recurse.at'), 'T-recurse2': (31, 'T-recurse.at'),
-    'append01': (50, 'append01.at'), 'append02': (51, 'append02.at'),
-    'append04': (53, 'append04.at'), 'append05': (54, 'append05.at'),
-    'delete01': (78, 'delete01.at'), 'delete04': (81, 'delete04.at'),
-    'delete05': (82, 'delete05.at'),
-    'backup01': (109, 'backup01.at'), 'difflink': (110, 'difflink.at'),
-    'old': (154, 'old.at'), 'verify': (188, 'verify.at'),
-})
 selected = profile.options.commands or list(selections)
 assert set(selected) <= set(selections)
 helpers = {n: ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','mkdir','chmod','touch','sort','echo','basename','cp','ln','true','false','sleep','ls','mv','mktemp','cut','id','date','printf','dd','rmdir','expr','tr','wc','head','tail','uname','cksum')}
@@ -110,19 +100,15 @@ inputs = {p: fingerprint(p) for p in {*helpers.values(), profile.oracle, source/
 for filename in ('genfile.c', 'argcv.c', 'argcv.h', 'Makefile.am'):
     path = source/'tests'/filename
     inputs[path] = fingerprint(path)
-manifest = json.loads((ROOT/'inventory/tar-tests.json').read_text())
-registered = {row['path']: row for row in manifest['inputs']}
-assert fingerprint(source/'tests/testsuite.at') == manifest['registration_sha256']
 for name in selected:
     path = source/'tests'/selections[name][1]
-    reviewed = registered[str(path.relative_to(source))]
-    assert reviewed['reviewed'] and fingerprint(path) == reviewed['sha256']
     inputs[path] = fingerprint(path)
 if 'owner' in selected:
     for filename in ('/etc/nsswitch.conf', '/etc/passwd', '/etc/group', '/usr/bin/unshare', '/usr/bin/mount'):
         path = Path(filename)
         inputs[path] = fingerprint(path)
-def run_selection(name):
+results = []
+for name in selected:
     number, filename = selections[name]
     unprivileged = name in permission_selections
     outcomes = {}
@@ -212,17 +198,12 @@ def run_selection(name):
     row = {'selection': name, 'autotest_number': number, 'source': 'tests/'+filename, 'source_sha256': inputs[source/'tests'/filename],
            'outcomes': outcomes, 'assertions_pass': all(r['assertions_pass'] for r in outcomes.values())}
     row['pass'] = row['assertions_pass'] and outcomes['rboxc-valgrind']['memory_clean']
-    return row
-
-results = []
-with ThreadPoolExecutor(max_workers=4) as pool:
-  for row in pool.map(run_selection, selected):
     results.append(row)
     assert all(fingerprint(p) == expected for p, expected in inputs.items())
     report = {'scope': 'Unchanged reviewed GNU Tar Autotest selections, including every archive format registered by each selected original. Native atlocal is copied unchanged; atconfig build paths point into private fixtures. AUTOTEST_PATH selects a wrapper preserving argv[0]=tar and instruments every Tar invocation with child tracing. Permission selections run as uid/gid 65534 with no supplementary groups using byte-verified private executable copies. Test helpers are native dependencies, not ports.',
               **profile.metadata(), 'inputs': {str(p): value for p, value in inputs.items()},
-              'selected': selected, 'parallel_selections': 4, 'planned_total': len(selected), 'complete': len(results) == len(selected),
+              'selected': selected, 'planned_total': len(selected), 'complete': len(results) == len(selected),
               'passed': sum(r['pass'] for r in results), 'total': len(results), 'results': results}
     profile.report.write_text(json.dumps(report, indent=2)+'\n')
-    print('PASS' if row['pass'] else 'OPEN', row['selection'], flush=True)
+    print('PASS' if row['pass'] else 'OPEN', name, flush=True)
 raise SystemExit(any(not r['pass'] for r in results))

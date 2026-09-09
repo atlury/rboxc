@@ -71,7 +71,7 @@ there where available.
 | BC | 1.08.2 | `bc`, `dc` installed |
 | Ed | 1.22.6 | `ed` installed |
 | Findutils | 4.11.0 | `find`, `xargs`, `locate` installed; `updatedb` and private `frcode` integrated in candidate |
-| Tar | 1.35 | `tar` installed; 84 reviewed originals validated |
+| Tar | 1.35 | `tar` installed; 97 original groups across 96 input files validated |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
 | Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 448 reviewed originals pass; three original failures match GNU |
@@ -1150,7 +1150,18 @@ read and write, and closes owned local archive handles on fatal exit while
 invalidating every explicitly closed handle. The owner original uses files-only
 NSS in a private mount namespace; its earlier host SSSD diagnostic remains in
 the baseline report. Earlier allocation and descriptor findings are preserved.
-The completed audit now verifies all 84 selected originals and 905 clean Tar
+Thirteen additional unchanged GNU Tar groups pass on the current 187-command
+candidate, covering recursion toggles, long-name appends, create/append archive
+equality, changed blocking factors, deletion, backups, link comparison, old
+archive format and verification. `evidence/tar-pending-archive-audited.json`
+reparses 194 clean Tar process logs. The driver checks selected source hashes
+against the review inventory and runs independent private selections with four
+workers. Across the preserved candidate profiles, 97 original groups from 96
+input files are now validated; `T-recurse.at` registers two groups. The other
+141 inventoried input files remain open. These counts do not imply all earlier
+tests were rerun on the current binary. The installed release is unchanged.
+
+The preceding completed audit verifies all 84 selected originals and 905 clean Tar
 processes on these bytes. Coreutils help/version checks pass 428/428. This
 candidate is not installed or fully certified.
 
