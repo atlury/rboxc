@@ -1,0 +1,93 @@
+==688521== Memcheck, a memory error detector
+==688521== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==688521== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+==688521== Command: tar --use-compress-program false -cf a.tar .
+==688521== Parent PID: 688519
+==688521== 
+==688521== 
+==688521== FILE DESCRIPTORS: 3 open (3 inherited) at exit.
+==688521== 
+==688521== HEAP SUMMARY:
+==688521==     in use at exit: 18,640 bytes in 8 blocks
+==688521==   total heap usage: 79 allocs, 71 frees, 89,461 bytes allocated
+==688521== 
+==688521== 5 bytes in 1 blocks are still reachable in loss record 1 of 8
+==688521==    at 0x586E858: malloc (vg_replace_malloc.c:447)
+==688521==    by 0x469E72D: rboxc_tar_xstrdup (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x467000F: rboxc_tar_assign_string (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x46732F2: rboxc_tar_uid_to_uname (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x4662513: rboxc_tar_start_header (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x4663719: dump_file0 (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x46644A9: rboxc_tar_create_archive (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x440EEB8: single_binary_main_tar (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x5A18600: (below main) (libc_start_call_main.h:59)
+==688521== 
+==688521== 5 bytes in 1 blocks are still reachable in loss record 2 of 8
+==688521==    at 0x586E858: malloc (vg_replace_malloc.c:447)
+==688521==    by 0x469E72D: rboxc_tar_xstrdup (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x467000F: rboxc_tar_assign_string (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x4673382: rboxc_tar_gid_to_gname (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x46624FB: rboxc_tar_start_header (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x4663719: dump_file0 (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x46644A9: rboxc_tar_create_archive (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x440EEB8: single_binary_main_tar (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x5A18600: (below main) (libc_start_call_main.h:59)
+==688521== 
+==688521== 16 bytes in 1 blocks are still reachable in loss record 3 of 8
+==688521==    at 0x5875E43: calloc (vg_replace_malloc.c:1678)
+==688521==    by 0x469E5C1: rboxc_tar_xzalloc (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x440DEB5: single_binary_main_tar (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x5A18600: (below main) (libc_start_call_main.h:59)
+==688521== 
+==688521== 32 bytes in 1 blocks are still reachable in loss record 4 of 8
+==688521==    at 0x586E858: malloc (vg_replace_malloc.c:447)
+==688521==    by 0x469E19C: rboxc_tar_xmalloc (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x4404C40: rboxc::applet_tar::set_use_compress_program_option (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x44057AF: rboxc::applet_tar::parse_opt (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x468D183: rboxc_tar_argp_parse (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x440E3E5: single_binary_main_tar (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x5A18600: (below main) (libc_start_call_main.h:59)
+==688521== 
+==688521== 80 bytes in 1 blocks are still reachable in loss record 5 of 8
+==688521==    at 0x586E858: malloc (vg_replace_malloc.c:447)
+==688521==    by 0x469E19C: rboxc_tar_xmalloc (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x440DDC0: single_binary_main_tar (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x5A18600: (below main) (libc_start_call_main.h:59)
+==688521== 
+==688521== 102 bytes in 1 blocks are still reachable in loss record 6 of 8
+==688521==    at 0x586E858: malloc (vg_replace_malloc.c:447)
+==688521==    by 0x469E19C: rboxc_tar_xmalloc (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x4673561: rboxc_tar_name_init (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x440EE3A: single_binary_main_tar (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x5A18600: (below main) (libc_start_call_main.h:59)
+==688521== 
+==688521== 4,064 bytes in 1 blocks are still reachable in loss record 7 of 8
+==688521==    at 0x586E858: malloc (vg_replace_malloc.c:447)
+==688521==    by 0x469E19C: rboxc_tar_xmalloc (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x46960BD: _obstack_begin_worker.isra.0 (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x46960E8: rboxc_tar__obstack_begin (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x4679D97: rboxc_tar_transform_name_fp (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x4663364: dump_file0 (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x46644A9: rboxc_tar_create_archive (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x440EEB8: single_binary_main_tar (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x5A18600: (below main) (libc_start_call_main.h:59)
+==688521== 
+==688521== 14,336 bytes in 1 blocks are still reachable in loss record 8 of 8
+==688521==    at 0x586E858: malloc (vg_replace_malloc.c:447)
+==688521==    by 0x469E19C: rboxc_tar_xmalloc (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x4671812: rboxc_tar_page_aligned_alloc (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x465A2C3: init_buffer (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x465D9BF: rboxc_tar_open_archive (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x46643FE: rboxc_tar_create_archive (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x440EEB8: single_binary_main_tar (in /root/rboxc/target/tar-child-prefix-candidate/release/rboxc)
+==688521==    by 0x5A18600: (below main) (libc_start_call_main.h:59)
+==688521== 
+==688521== LEAK SUMMARY:
+==688521==    definitely lost: 0 bytes in 0 blocks
+==688521==    indirectly lost: 0 bytes in 0 blocks
+==688521==      possibly lost: 0 bytes in 0 blocks
+==688521==    still reachable: 18,640 bytes in 8 blocks
+==688521==         suppressed: 0 bytes in 0 blocks
+==688521== 
+==688521== For lists of detected and suppressed errors, rerun with: -s
+==688521== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

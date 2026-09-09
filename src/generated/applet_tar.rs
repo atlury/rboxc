@@ -7886,7 +7886,8 @@ extern "C" {
 }
 static mut RBOXC_INVOCATION: *const ::core::ffi::c_char = ::core::ptr::null();
 unsafe extern "C" fn rboxc_tar_error_prefix() {
-    libc::fprintf(stderr.cast(), b"%s: \0".as_ptr().cast(), RBOXC_INVOCATION);
+    let prefix = if program_name.is_null() { RBOXC_INVOCATION } else { program_name };
+    libc::fprintf(stderr.cast(), b"%s: \0".as_ptr().cast(), prefix);
 }
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_tar(

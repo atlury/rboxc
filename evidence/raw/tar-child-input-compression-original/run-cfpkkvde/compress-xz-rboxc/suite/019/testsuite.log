@@ -1,0 +1,32 @@
+#                             -*- compilation -*-
+19. testsuite.at:244: testing compress: xz ...
+/opt/src/tar-1.35/tests/testsuite.at:244:
+
+cat /dev/null | xz - > /dev/null 2>&1 || exit 77
+
+unset TAR_OPTIONS
+
+touch empty
+set -e
+: create with --xz
+tar --xz -cf k.tar.xz empty
+tar tf k.tar.xz
+
+
+echo testing .xz
+tar -acf k2.tar.xz empty
+cat k2.tar.xz | xz -d > k.xz.tar
+tar tf k.xz.tar
+
+echo testing .txz
+tar -acf k2.tar.txz empty
+cat k2.tar.txz | xz -d > k.txz.tar
+tar tf k.txz.tar
+
+
+# Extraction: ensure compressed format is correctly recognized
+rm -f empty
+tar xf k.tar.xz
+test -f empty
+
+19. testsuite.at:244: 19. compress: xz (testsuite.at:244): ok     (0m0.033s 0m0.065s)

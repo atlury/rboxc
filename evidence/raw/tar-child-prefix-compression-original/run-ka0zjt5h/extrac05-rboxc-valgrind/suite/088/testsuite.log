@@ -1,0 +1,27 @@
+#                             -*- compilation -*-
+88. extrac05.at:30: testing extracting selected members from pax ...
+/opt/src/tar-1.35/tests/extrac05.at:38:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --sparse --file sparsefile 0 ABCD 1M EFGH 2000K IJKL || exit 77
+genfile --length 118 --file jeden
+genfile --length 223 --file dwa
+genfile --length 517 --file trzy
+genfile --length 110 --file cztery
+
+tar cf archive jeden dwa trzy cztery || exit 1
+
+mkdir dir
+cd dir
+
+tar xvfT ../archive ../../list --warning=no-timestamp || exit 1
+
+cd ..
+)
+88. extrac05.at:30: 88. extracting selected members from pax (extrac05.at:30): ok     (0m1.662s 0m0.114s)

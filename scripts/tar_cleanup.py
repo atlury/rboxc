@@ -14,7 +14,7 @@ def prepare(root):
     records = [json.loads(p.read_text()) for p in (root/'build/tar-cc-records').glob('*.json')]
     outputs = {}
     evidence = []
-    for name in ('misc', 'names', 'compare', 'wordsplit', 'incremen', 'buffer', 'map'):
+    for name in ('misc', 'names', 'compare', 'wordsplit', 'incremen', 'buffer', 'map', 'system'):
         relative = ('lib/' if name == 'wordsplit' else 'src/')+name+'.c'
         original = Path(pin['source'])/relative
         expected = pin['native_cleanup_source_sha256'][relative] if name == 'wordsplit' else pin['helper_source_sha256'][relative]
@@ -95,6 +95,49 @@ rboxc_release_diff_buffer (void)
     }
   rboxc_release_diff_buffer ();
   diff_buffer = page_aligned_alloc (&rboxc_diff_allocation, record_size);''')
+        elif name == 'system':
+            # Child stdin is a replacement pipe, not an inherited standard
+            # stream. Only its owning process finalizes it on a non-exec exit.
+            replace('      xclose (from);\n    }\n}\n\n/* Propagate',
+                    '      xclose (from);\n      if (into == STDIN_FILENO)\n        rboxc_record_child_input ();\n    }\n}\n\n/* Propagate')
+            anchor = 'static _Noreturn void\nxexec (const char *cmd)'
+            replace(anchor, '''static pid_t rboxc_input_owner;
+static struct stat rboxc_input_identity;
+static bool rboxc_input_active;
+static bool rboxc_input_cleanup_registered;
+
+static void
+rboxc_release_child_input (void)
+{
+  int saved_errno = errno;
+  struct stat current;
+  if (rboxc_input_active && rboxc_input_owner == getpid ()
+      && fstat (STDIN_FILENO, &current) == 0
+      && current.st_dev == rboxc_input_identity.st_dev
+      && current.st_ino == rboxc_input_identity.st_ino
+      && current.st_mode == rboxc_input_identity.st_mode
+      && current.st_rdev == rboxc_input_identity.st_rdev)
+    close (STDIN_FILENO);
+  rboxc_input_active = false;
+  errno = saved_errno;
+}
+
+static void
+rboxc_record_child_input (void)
+{
+  int saved_errno = errno;
+  rboxc_input_active = fstat (STDIN_FILENO, &rboxc_input_identity) == 0;
+  rboxc_input_owner = getpid ();
+  if (!rboxc_input_cleanup_registered)
+    {
+      if (atexit (rboxc_release_child_input))
+        xalloc_die ();
+      rboxc_input_cleanup_registered = true;
+    }
+  errno = saved_errno;
+}
+
+'''+anchor)
         elif name == 'map':
             # getline owns this buffer even for an empty map; parsed names
             # were duplicated into the table before its lifetime ends.

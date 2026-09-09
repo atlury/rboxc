@@ -1,0 +1,32 @@
+#                             -*- compilation -*-
+18. testsuite.at:243: testing compress: bzip2 ...
+/opt/src/tar-1.35/tests/testsuite.at:243:
+
+cat /dev/null | bzip2 - > /dev/null 2>&1 || exit 77
+
+unset TAR_OPTIONS
+
+touch empty
+set -e
+: create with --bzip2
+tar --bzip2 -cf k.tar.bz2 empty
+tar tf k.tar.bz2
+
+
+echo testing .bz2
+tar -acf k2.tar.bz2 empty
+cat k2.tar.bz2 | bzip2 -d > k.bz2.tar
+tar tf k.bz2.tar
+
+echo testing .tbz2
+tar -acf k2.tar.tbz2 empty
+cat k2.tar.tbz2 | bzip2 -d > k.tbz2.tar
+tar tf k.tbz2.tar
+
+
+# Extraction: ensure compressed format is correctly recognized
+rm -f empty
+tar xf k.tar.bz2
+test -f empty
+
+18. testsuite.at:243: 18. compress: bzip2 (testsuite.at:243): ok     (0m9.285s 0m0.627s)

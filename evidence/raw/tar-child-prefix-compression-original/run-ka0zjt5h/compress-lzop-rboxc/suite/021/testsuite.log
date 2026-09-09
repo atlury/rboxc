@@ -1,0 +1,27 @@
+#                             -*- compilation -*-
+21. testsuite.at:247: testing compress: lzop ...
+/opt/src/tar-1.35/tests/testsuite.at:247:
+
+cat /dev/null | lzop - > /dev/null 2>&1 || exit 77
+
+unset TAR_OPTIONS
+
+touch empty
+set -e
+: create with --lzop
+tar --lzop -cf k.tar.lzo empty
+tar tf k.tar.lzo
+
+
+echo testing .lzo
+tar -acf k2.tar.lzo empty
+cat k2.tar.lzo | lzop -d > k.lzo.tar
+tar tf k.lzo.tar
+
+
+# Extraction: ensure compressed format is correctly recognized
+rm -f empty
+tar xf k.tar.lzo
+test -f empty
+
+21. testsuite.at:247: 21. compress: lzop (testsuite.at:247): ok     (0m0.019s 0m0.047s)

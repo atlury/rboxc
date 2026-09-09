@@ -1,6 +1,6 @@
 {
   "scope": "Keep GNU selection and directory behavior, while tracking live name allocations independently of discarded selection cursors, releasing consumed directory/option records, closing/freeing owned working-directory state, retaining/freeing the aligned comparison allocation, freeing consumed wordsplit nodes after copying their output, retaining/freeing option-file words after GNU finishes borrowing them, and releasing the incremental snapshot parser obstack on return or process exit. Map input line buffers are freed after parsing, and compression probe headers start initialized before reading an empty or partial archive. Native oracle objects remain unchanged.",
-  "driver_sha256": "b394c0653ff05d78d90710d59b432744abe56265b754b05f7e803d99b72198e5",
+  "driver_sha256": "b36a38b80e330e469875aaac99e52b6db72aa11fc1ca2aa9fadd8ea65d2ae140",
   "adaptations": [
     {
       "source": "/opt/src/tar-1.35/src/misc.c",
@@ -243,6 +243,41 @@
         "-I/opt/src/tar-1.35/src"
       ],
       "log": "evidence/raw/tar-map-cleanup-build.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/opt/src/tar-1.35/src/system.c",
+      "original_sha256": "505b0ff19bd12b372d966acc3df5107f311f70249964edb5ea40d31b57effa65",
+      "adapted_source": "build/tar-cleanup/system.c",
+      "adapted_source_sha256": "126382729e0af5aa23bf7d743e592121b11e523483f8c1e0397aee4996d6c07c",
+      "object": "build/tar-cleanup/system.o",
+      "object_sha256": "4335387f150dae74f104b54c7f041ca90cdd3ea0c1e10d79739eca15074baa5d",
+      "compiler_arguments": [
+        "gcc",
+        "-DHAVE_CONFIG_H",
+        "-I.",
+        "-I/opt/src/tar-1.35/src",
+        "-I..",
+        "-I/opt/src/tar-1.35/gnu",
+        "-I../",
+        "-I../gnu",
+        "-I/opt/src/tar-1.35/lib",
+        "-I../lib",
+        "-g",
+        "-O2",
+        "-MT",
+        "system.o",
+        "-MD",
+        "-MP",
+        "-MF",
+        ".deps/system.Tpo",
+        "-c",
+        "-o",
+        "/root/rboxc/build/tar-cleanup/system.o",
+        "/root/rboxc/build/tar-cleanup/system.c",
+        "-I/opt/src/tar-1.35/src"
+      ],
+      "log": "evidence/raw/tar-system-cleanup-build.log",
       "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
   ]

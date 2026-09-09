@@ -71,7 +71,7 @@ there where available.
 | BC | 1.08.2 | `bc`, `dc` installed |
 | Ed | 1.22.6 | `ed` installed |
 | Findutils | 4.11.0 | `find`, `xargs`, `locate` installed; `updatedb` and private `frcode` integrated in candidate |
-| Tar | 1.35 | `tar` installed; 216 of 244 original groups validated across recorded profiles |
+| Tar | 1.35 | `tar` installed; 218 of 244 original groups validated across recorded profiles |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
 | Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 448 reviewed originals pass; three original failures match GNU |
@@ -105,8 +105,8 @@ The public terminal cleanup API alone retains the shared parameter cache in
 this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
-The current 187-command candidate is **14,717,048 bytes**, at
-`target/tar-map-probe-candidate/release/rboxc`, with a byte-identical independent
+The current 187-command candidate is **14,717,568 bytes**, at
+`target/tar-child-input-candidate/release/rboxc`, with a byte-identical independent
 rebuild. All 428 Coreutils smoke checks, 11 dispatcher checks and 57 Tar
 comparisons pass; preceding Screen evidence retains its actual candidate hash. The installed 133-command release remains unchanged;
 full GNU-wide acceptance remains open.
@@ -1212,13 +1212,28 @@ compression-failure originals expose a Tar child diagnostic-prefix mismatch.
 The audit identifies each dependency through its exact private execution path
 and pinned executable hash; these dependencies add no applet ports.
 
+The `tar-child-input` candidate resolves both compression-failure originals.
+Its Rust diagnostic callback follows GNU’s current program name, including
+child and grandchild names. The private native helper releases the owning
+child’s replacement input pipe while preserving inherited or reused descriptors.
+Four independent lifetime contracts pass with five clean process logs. The
+harness now waits for live compressor children before copying their logs and
+removing fixtures; earlier incomplete observations remain preserved.
+
+`evidence/tar-child-input-validation.json` verifies 15 strictly passing original
+groups (87 Tar and 61 native child processes), all 16 selected assertion groups,
+57 focused comparisons, 428 smoke checks, 11 dispatcher checks and a
+byte-identical rebuild. The remaining XZ finding belongs to its native helper.
+The initial isolated failed-stat probe deliberately used a closed descriptor
+and remains recorded separately from the four clean lifetime contracts.
+
 The registration inventory now distinguishes **244 registered groups** from
 237 distributed `.at` files. Two groups (`exclude17` and `exclude18`) exist in
 the generated suite but their standalone sources are absent from the signed
 release archive. `sparsemvp.at` supplies shared macros rather than its own group;
 `testsuite.at` directly registers six compression groups. Across recorded
-candidate profiles, 216 groups from 211 input files are validated. The remaining
-28 groups without a passing original stay explicit in `inventory/tar-groups.json`; full
+candidate profiles, 218 groups from 213 input files are validated. The remaining
+26 groups without a passing original stay explicit in `inventory/tar-groups.json`; full
 acceptance and release activation remain open.
 
 Thirteen preceding unchanged GNU Tar groups pass on the current 187-command

@@ -9,9 +9,11 @@ from pathlib import Path
 import re
 import shlex
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
+import time
 from comparison_profile import ComparisonProfile, fingerprint
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -343,7 +345,43 @@ def run_selection(name):
                         if not entry.is_symlink():
                             os.chown(entry, 65534, 65534)
                     credentials = {'user': 65534, 'group': 65534, 'extra_groups': []}
-                done = subprocess.run(command, cwd=work, env=environment, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=300, **credentials)
+                process = subprocess.Popen(command, cwd=work, env=environment,
+                    stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT, start_new_session=True, **credentials)
+                timed_out = False
+                try:
+                    output, _ = process.communicate(timeout=300)
+                except subprocess.TimeoutExpired:
+                    timed_out = True
+                    os.killpg(process.pid, signal.SIGKILL)
+                    output, _ = process.communicate()
+                done = subprocess.CompletedProcess(command, process.returncode, output)
+                # Compressors can outlive the test shell after a failed pipe.
+                # Keep the fixture and memory-log directory until every live
+                # process in this private session has finished writing logs.
+                waited_children = set()
+                child_wait_timeout = False
+                deadline = time.monotonic() + 30
+                while True:
+                    active = set()
+                    for entry in Path('/proc').iterdir():
+                        if not entry.name.isdecimal():
+                            continue
+                        try:
+                            fields = (entry/'stat').read_text().rpartition(') ')[2].split()
+                        except (FileNotFoundError, ProcessLookupError):
+                            continue
+                        if int(fields[2]) == process.pid and fields[0] != 'Z':
+                            active.add(int(entry.name))
+                    if not active:
+                        break
+                    waited_children.update(active)
+                    if time.monotonic() >= deadline:
+                        assert not child_wait_timeout, 'test child processes did not finish after termination'
+                        child_wait_timeout = True
+                        os.killpg(process.pid, signal.SIGKILL)
+                        deadline = time.monotonic() + 5
+                    time.sleep(0.05)
                 if nss:
                     assert Path('/etc/nsswitch.conf').read_text() == host_nss
                 assert all(fingerprint(copied) == expected for copied, expected in copies.values()), 'private executable changed'
@@ -364,10 +402,13 @@ def run_selection(name):
                 shutil.copytree(work/'memory', saved/'memory')
                 output = done.stdout.decode(errors='replace')
                 assertions = re.findall(r'^\s*(\d+):\s+.*?\s+(ok|FAILED|skipped|expected failure)(?: \([^\n]*\))?\s*$', output, re.M)
-                passed = done.returncode == 0 and assertions == [(str(number), 'ok')]
+                passed = (not timed_out and not child_wait_timeout and done.returncode == 0
+                          and assertions == [(str(number), 'ok')])
                 logs = [{**runner.parse_memory_log(p.read_text(), p.stem, exec_only=True), 'log': str(p.relative_to(ROOT)), 'sha256': fingerprint(p)} for p in sorted((saved/'memory').glob('*.log'))]
                 clean = bool(logs) and all(m['complete_exec_log'] and m['errors'] == 0 and m['non_inherited_descriptors'] == 0 and not any(m['heap_bytes'].get(k, 0) for k in ('definitely lost','indirectly lost','possibly lost')) for m in logs)
                 outcomes[key] = {'status': done.returncode, 'assertions': assertions, 'assertions_pass': passed,
+                                 'process_group': process.pid, 'waited_children': sorted(waited_children),
+                                 'timed_out': timed_out, 'child_wait_timeout': child_wait_timeout,
                                  'nss': nss, 'private_mount_namespace': name == 'listed05',
                                  'execution_uid': 65534 if unprivileged else os.geteuid(),
                                  'execution_gid': 65534 if unprivileged else os.getegid(),

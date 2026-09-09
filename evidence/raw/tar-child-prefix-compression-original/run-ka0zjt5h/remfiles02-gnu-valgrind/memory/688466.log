@@ -1,0 +1,155 @@
+==688466== Memcheck, a memory error detector
+==688466== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==688466== Using Valgrind-3.26.0 and LibVEX; rerun with -h for copyright info
+==688466== Command: tar -c -f a -z --remove-files b c
+==688466== Parent PID: 688445
+==688466== 
+==688466== 
+==688466== FILE DESCRIPTORS: 3 open (3 inherited) at exit.
+==688466== 
+==688466== HEAP SUMMARY:
+==688466==     in use at exit: 19,012 bytes in 15 blocks
+==688466==   total heap usage: 73 allocs, 58 frees, 80,906 bytes allocated
+==688466== 
+==688466== 4 bytes in 2 blocks are still reachable in loss record 1 of 13
+==688466==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==688466==    by 0x405185D: xmalloc (xmalloc.c:45)
+==688466==    by 0x405185D: xmemdup (xmalloc.c:314)
+==688466==    by 0x405185D: xstrdup (xmalloc.c:339)
+==688466==    by 0x4033024: queue_deferred_unlink (unlink.c:221)
+==688466==    by 0x4016AA4: dump_file0 (create.c:1860)
+==688466==    by 0x4017589: dump_file (create.c:1968)
+==688466==    by 0x4017589: create_archive (create.c:1412)
+==688466==    by 0x400CD90: main (tar.c:2818)
+==688466== 
+==688466== 5 bytes in 1 blocks are still reachable in loss record 2 of 13
+==688466==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==688466==    by 0x405185D: xmalloc (xmalloc.c:45)
+==688466==    by 0x405185D: xmemdup (xmalloc.c:314)
+==688466==    by 0x405185D: xstrdup (xmalloc.c:339)
+==688466==    by 0x402644F: assign_string (misc.c:58)
+==688466==    by 0x4029612: uid_to_uname (names.c:490)
+==688466==    by 0x40155F3: start_header (create.c:931)
+==688466==    by 0x4015798: dump_regular_file (create.c:1050)
+==688466==    by 0x40165E2: dump_file0 (create.c:1773)
+==688466==    by 0x4017589: dump_file (create.c:1968)
+==688466==    by 0x4017589: create_archive (create.c:1412)
+==688466==    by 0x400CD90: main (tar.c:2818)
+==688466== 
+==688466== 5 bytes in 1 blocks are still reachable in loss record 3 of 13
+==688466==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==688466==    by 0x405185D: xmalloc (xmalloc.c:45)
+==688466==    by 0x405185D: xmemdup (xmalloc.c:314)
+==688466==    by 0x405185D: xstrdup (xmalloc.c:339)
+==688466==    by 0x402644F: assign_string (misc.c:58)
+==688466==    by 0x40296A2: gid_to_gname (names.c:520)
+==688466==    by 0x40155DB: start_header (create.c:936)
+==688466==    by 0x4015798: dump_regular_file (create.c:1050)
+==688466==    by 0x40165E2: dump_file0 (create.c:1773)
+==688466==    by 0x4017589: dump_file (create.c:1968)
+==688466==    by 0x4017589: create_archive (create.c:1412)
+==688466==    by 0x400CD90: main (tar.c:2818)
+==688466== 
+==688466== 16 bytes in 1 blocks are still reachable in loss record 4 of 13
+==688466==    at 0x48C4E43: calloc (vg_replace_malloc.c:1678)
+==688466==    by 0x40516F1: xcalloc (xmalloc.c:298)
+==688466==    by 0x40516F1: xzalloc (xmalloc.c:283)
+==688466==    by 0x400BEF9: decode_options (tar.c:2297)
+==688466==    by 0x400BEF9: main (tar.c:2792)
+==688466== 
+==688466== 32 bytes in 1 blocks are still reachable in loss record 5 of 13
+==688466==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==688466==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==688466==    by 0x402F07B: optloc_save (tar.c:926)
+==688466==    by 0x402FFB0: set_use_compress_program_option (tar.c:985)
+==688466==    by 0x4030B0E: parse_opt (tar.c:1777)
+==688466==    by 0x404233D: group_parse (argp-parse.c:233)
+==688466==    by 0x404233D: parser_parse_opt (argp-parse.c:736)
+==688466==    by 0x404233D: parser_parse_next (argp-parse.c:859)
+==688466==    by 0x404233D: argp_parse (argp-parse.c:927)
+==688466==    by 0x400C045: decode_options (tar.c:2380)
+==688466==    by 0x400C045: main (tar.c:2792)
+==688466== 
+==688466== 32 bytes in 1 blocks are still reachable in loss record 6 of 13
+==688466==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==688466==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==688466==    by 0x401407E: file_count_links (create.c:1522)
+==688466==    by 0x401407E: file_count_links (create.c:1508)
+==688466==    by 0x4016A58: dump_file0 (create.c:1779)
+==688466==    by 0x4017589: dump_file (create.c:1968)
+==688466==    by 0x4017589: create_archive (create.c:1412)
+==688466==    by 0x400CD90: main (tar.c:2818)
+==688466== 
+==688466== 80 bytes in 1 blocks are still reachable in loss record 7 of 13
+==688466==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==688466==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==688466==    by 0x400BE43: main (tar.c:2781)
+==688466== 
+==688466== 80 bytes in 1 blocks are still reachable in loss record 8 of 13
+==688466==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==688466==    by 0x4047846: hash_initialize (hash.c:523)
+==688466==    by 0x401411B: file_count_links (create.c:1530)
+==688466==    by 0x401411B: file_count_links (create.c:1508)
+==688466==    by 0x4016A58: dump_file0 (create.c:1779)
+==688466==    by 0x4017589: dump_file (create.c:1968)
+==688466==    by 0x4017589: create_archive (create.c:1412)
+==688466==    by 0x400CD90: main (tar.c:2818)
+==688466== 
+==688466== 80 bytes in 2 blocks are still reachable in loss record 9 of 13
+==688466==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==688466==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==688466==    by 0x4033157: dunlink_alloc (unlink.c:63)
+==688466==    by 0x4033157: queue_deferred_unlink (unlink.c:218)
+==688466==    by 0x4016AA4: dump_file0 (create.c:1860)
+==688466==    by 0x4017589: dump_file (create.c:1968)
+==688466==    by 0x4017589: create_archive (create.c:1412)
+==688466==    by 0x400CD90: main (tar.c:2818)
+==688466== 
+==688466== 102 bytes in 1 blocks are still reachable in loss record 10 of 13
+==688466==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==688466==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==688466==    by 0x4029881: name_init (names.c:869)
+==688466==    by 0x400C94C: main (tar.c:2794)
+==688466== 
+==688466== 176 bytes in 1 blocks are still reachable in loss record 11 of 13
+==688466==    at 0x48C4E43: calloc (vg_replace_malloc.c:1678)
+==688466==    by 0x404789C: hash_initialize (hash.c:544)
+==688466==    by 0x401411B: file_count_links (create.c:1530)
+==688466==    by 0x401411B: file_count_links (create.c:1508)
+==688466==    by 0x4016A58: dump_file0 (create.c:1779)
+==688466==    by 0x4017589: dump_file (create.c:1968)
+==688466==    by 0x4017589: create_archive (create.c:1412)
+==688466==    by 0x400CD90: main (tar.c:2818)
+==688466== 
+==688466== 4,064 bytes in 1 blocks are still reachable in loss record 12 of 13
+==688466==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==688466==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==688466==    by 0x404A07D: call_chunkfun (obstack.c:88)
+==688466==    by 0x404A07D: _obstack_begin_worker.isra.0 (obstack.c:135)
+==688466==    by 0x404A0A8: _obstack_begin (obstack.c:157)
+==688466==    by 0x4032C57: _transform_name_to_obstack (transform.c:592)
+==688466==    by 0x4032C57: transform_name_fp (transform.c:614)
+==688466==    by 0x4016444: dump_file0 (create.c:1657)
+==688466==    by 0x4017589: dump_file (create.c:1968)
+==688466==    by 0x4017589: create_archive (create.c:1412)
+==688466==    by 0x400CD90: main (tar.c:2818)
+==688466== 
+==688466== 14,336 bytes in 1 blocks are still reachable in loss record 13 of 13
+==688466==    at 0x48BD858: malloc (vg_replace_malloc.c:447)
+==688466==    by 0x40512CC: xmalloc (xmalloc.c:45)
+==688466==    by 0x4027C22: page_aligned_alloc (misc.c:1235)
+==688466==    by 0x400D5A3: init_buffer (buffer.c:657)
+==688466==    by 0x4010B3B: _open_archive (buffer.c:725)
+==688466==    by 0x4010B3B: open_archive (buffer.c:2025)
+==688466==    by 0x40174DE: create_archive (create.c:1343)
+==688466==    by 0x400CD90: main (tar.c:2818)
+==688466== 
+==688466== LEAK SUMMARY:
+==688466==    definitely lost: 0 bytes in 0 blocks
+==688466==    indirectly lost: 0 bytes in 0 blocks
+==688466==      possibly lost: 0 bytes in 0 blocks
+==688466==    still reachable: 19,012 bytes in 15 blocks
+==688466==         suppressed: 0 bytes in 0 blocks
+==688466== 
+==688466== For lists of detected and suppressed errors, rerun with: -s
+==688466== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

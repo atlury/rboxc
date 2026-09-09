@@ -1,0 +1,24 @@
+#                             -*- compilation -*-
+199. remfiles02.at:28: testing remove-files with compression: grand-child ...
+/opt/src/tar-1.35/tests/remfiles02.at:32:
+
+cat /dev/null | gzip - > /dev/null 2>&1 || exit 77
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+
+mkdir dir
+cd dir
+mkdir a
+genfile --file b
+mkdir c
+
+tar -c -f a -z --remove-files b c 2>err
+EC=$?
+sed -n '/(child)/p' err >&2
+rm err
+find . | sort
+exit $EC
+
+199. remfiles02.at:28: 199. remove-files with compression: grand-child (remfiles02.at:28): ok     (0m0.015s 0m0.028s)

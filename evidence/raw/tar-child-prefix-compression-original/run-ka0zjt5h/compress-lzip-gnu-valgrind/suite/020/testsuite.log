@@ -1,0 +1,27 @@
+#                             -*- compilation -*-
+20. testsuite.at:246: testing compress: lzip ...
+/opt/src/tar-1.35/tests/testsuite.at:246:
+
+cat /dev/null | lzip - > /dev/null 2>&1 || exit 77
+
+unset TAR_OPTIONS
+
+touch empty
+set -e
+: create with --lzip
+tar --lzip -cf k.tar.lz empty
+tar tf k.tar.lz
+
+
+echo testing .lz
+tar -acf k2.tar.lz empty
+cat k2.tar.lz | lzip -d > k.lz.tar
+tar tf k.lz.tar
+
+
+# Extraction: ensure compressed format is correctly recognized
+rm -f empty
+tar xf k.tar.lz
+test -f empty
+
+20. testsuite.at:246: 20. compress: lzip (testsuite.at:246): ok     (0m6.564s 0m0.447s)

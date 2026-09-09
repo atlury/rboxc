@@ -89,7 +89,8 @@ extern "C" {
 }
 static mut RBOXC_INVOCATION: *const ::core::ffi::c_char = ::core::ptr::null();
 unsafe extern "C" fn rboxc_tar_error_prefix() {
-    libc::fprintf(stderr.cast(), b"%s: \\0".as_ptr().cast(), RBOXC_INVOCATION);
+    let prefix = if program_name.is_null() { RBOXC_INVOCATION } else { program_name };
+    libc::fprintf(stderr.cast(), b"%s: \\0".as_ptr().cast(), prefix);
 }
 #[no_mangle]
 pub unsafe extern "C" fn single_binary_main_tar(
@@ -223,7 +224,7 @@ report = {'provider': 'tar', 'version': pin['version'], 'command': name,
           'scope': 'C2Rust entry with namespaced GNU native helpers. Compilation and behavior validation are separate.',
           'rust_file': str(target.relative_to(ROOT)), 'rust_sha256': fingerprint(target),
           'raw_translation_sha256': fingerprint(outputs[0]), 'compile_database_sha256': fingerprint(database),
-          'adaptations': ['Preserve full argv[0] diagnostics through GNU error_print_progname.',
+          'adaptations': ['Preserve GNU program_name diagnostics, including full argv[0] and child/grandchild renaming, through error_print_progname.',
                           'Free the default-settings help string after copying it into the obstack.',
                           'Retain environment option words and owned old-style arguments until exit, then release them.',
                           'Close only standard-descriptor replacements opened by GNU stdopen at exit, preserving errno.',
