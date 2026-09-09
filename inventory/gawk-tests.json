@@ -1,6 +1,6 @@
 {
   "provider": "GNU Gawk 5.4.1",
-  "scope": "All 634 original AWK inputs inventoried; 492 recipes reviewed, including seventeen native-extension selections: 483 pass, three assertion failures match GNU, and six additional originals pass assertions with memory/descriptor findings still open. Six further inputs are executed or included auxiliary programs and add no duplicate recipe/process counts. Nine historical crash/memory reproductions are excluded; 127 inputs still await individual accounting and optional profiles. Strict aggregate counts exclude every process from the six open profiles, whose logs are verified and retained separately. Full acceptance remains open.",
+  "scope": "All 634 original AWK inputs inventoried; 500 recipes reviewed, including seventeen native-extension selections: 491 pass, three assertion failures match GNU, and six additional originals pass assertions with memory/descriptor findings still open. Six auxiliary inputs add no duplicate recipe/process counts. Nine historical reproductions are excluded. Twenty MPFR programs are unavailable in the current build, verified through the unchanged GNU capability guard without executing them; 99 other inputs still await accounting and profiles. Strict aggregate counts exclude all processes from the six open profiles. Full acceptance remains open.",
   "registration_sha256": "447e3fdd76fe4ebb4b39427465aa727ed421a5818e568a00e00f2c5a90830ade",
   "inputs": [
     {
@@ -849,8 +849,17 @@
     {
       "path": "test/badbuild.awk",
       "sha256": "ecce8a6f1afa67db5239297677dd8c4657145b493a58b2406fbe7875761213d6",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "badbuild",
+      "review": "Complete original source, configured Make recipe and supplied input/expected fixtures reviewed. Ordinary GNU regex boundaries, block scope, identifier/symbol queries, expected syntax/file-policy diagnostics and a bounded debugger watchpoint session. The debugger script only lists, watches/displays variables, sets one breakpoint, runs/continues and quits; it executes no shell commands. Sorting helpers are separately pinned.",
+      "fixtures": {
+        "badbuild.ok": "3d4ad81146504adf11ce12418095e12799d4ec5665880cbb277c187812c35334",
+        "badbuild.in": "a863c304d619b7e8d3816482b8c14cd0bce693cc6634499fac214b781fdf0d33"
+      },
+      "configured_recipe_sha256": "5ae506666fd183b6b4200f7138ed2d7df2f620834424ee5c84366bd7952114e7",
+      "evidence": "evidence/gawk-symbol-debug-original.json",
+      "audit": "evidence/gawk-symbol-debug-memory-audit.json"
     },
     {
       "path": "test/beginfile1.awk",
@@ -3102,8 +3111,16 @@
     {
       "path": "test/gnuops2.awk",
       "sha256": "1cc80e1558539bb17cf2d34e7194d9aae8c50255564f8cb9a84fc77aece73a2b",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "gnuops2",
+      "review": "Complete original source, configured Make recipe and supplied input/expected fixtures reviewed. Ordinary GNU regex boundaries, block scope, identifier/symbol queries, expected syntax/file-policy diagnostics and a bounded debugger watchpoint session. The debugger script only lists, watches/displays variables, sets one breakpoint, runs/continues and quits; it executes no shell commands. Sorting helpers are separately pinned.",
+      "fixtures": {
+        "gnuops2.ok": "0e6f726486b5745d3def0fbf8d0011fd2cde8b996b07ba6c7f03958b035afacf"
+      },
+      "configured_recipe_sha256": "5f586fe97350fbcabaad7537af149687c83b7a152543746c31bcf60047c43b16",
+      "evidence": "evidence/gawk-symbol-debug-original.json",
+      "audit": "evidence/gawk-symbol-debug-memory-audit.json"
     },
     {
       "path": "test/gnuops3.awk",
@@ -3122,8 +3139,16 @@
     {
       "path": "test/gnureops.awk",
       "sha256": "afd4726b60b7fc1cf4dfb30ef81b81cef632be052dcdfaa71e3b5b696daec3cd",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "gnureops",
+      "review": "Complete original source, configured Make recipe and supplied input/expected fixtures reviewed. Ordinary GNU regex boundaries, block scope, identifier/symbol queries, expected syntax/file-policy diagnostics and a bounded debugger watchpoint session. The debugger script only lists, watches/displays variables, sets one breakpoint, runs/continues and quits; it executes no shell commands. Sorting helpers are separately pinned.",
+      "fixtures": {
+        "gnureops.ok": "736b9e25282074a1b401301dbbff7e8b1f5b7759304b02898a27328f556f6ab9"
+      },
+      "configured_recipe_sha256": "0befe844be925fc0ca24118f0dc48d268f3e3bdf47aa5c52e073770b1cee7001",
+      "evidence": "evidence/gawk-symbol-debug-original.json",
+      "audit": "evidence/gawk-symbol-debug-memory-audit.json"
     },
     {
       "path": "test/greek-8bit.awk",
@@ -3396,8 +3421,26 @@
     {
       "path": "test/id.awk",
       "sha256": "db716aba179cf3d076151a29ef0c9123793a9e53c56f717785a206a210db0fef",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "id",
+      "review": "Complete original source, configured Make recipe and supplied input/expected fixtures reviewed. Ordinary GNU regex boundaries, block scope, identifier/symbol queries, expected syntax/file-policy diagnostics and a bounded debugger watchpoint session. The debugger script only lists, watches/displays variables, sets one breakpoint, runs/continues and quits; it executes no shell commands. Sorting helpers are separately pinned.",
+      "fixtures": {
+        "id.ok": "97f54b93f4e78ee396aec3c569e1109db0d7478460b07c82b5a9de04aeb192b0"
+      },
+      "configured_recipe_sha256": "d08de1ed03d0e237680c12e2bc2fcc1fe902bb415b0c979db143c0d1682294e2",
+      "child_commands": {
+        "/bin/sh -c sort": 1,
+        "sort": 1
+      },
+      "child_dependencies": {
+        "sort": {
+          "path": "/root/rboxc/build/gawk-sort-helper/coreutils",
+          "sha256": "55d6a3487eed83a8b2b37aeaba723c3244c994663e58261cdccf9ecb97e70e32"
+        }
+      },
+      "evidence": "evidence/gawk-symbol-debug-original.json",
+      "audit": "evidence/gawk-symbol-debug-memory-audit.json"
     },
     {
       "path": "test/igncdym.awk",
@@ -4516,121 +4559,181 @@
       "path": "test/mpfranswer42.awk",
       "sha256": "1e95b694fd2a4457ed9017665f99e1b852c4c10dfef143656f78c0e4ccd1a055",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpfranswer42",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mpfrbigint.awk",
       "sha256": "d6474312efc258bc5aab11cadd3ecc7ea827e4f429784d0375696771d6786e93",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpfrbigint",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mpfrbigint2.awk",
       "sha256": "6d5cb224895b3651f72572cd277768828552e2e9b5e7c8aa2cf3247dcb688388",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpfrbigint2",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mpfrcase.awk",
       "sha256": "7b018e04142e31c31528753551362b91a2e7e8cf584dc307f189ea8120672ab9",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpfrcase",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mpfrcase2.awk",
       "sha256": "6bde374d5dc45753bad22c36402ebdc12473d4d2d3c4ab040634d8bed2a13f38",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpfrcase2",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mpfrexprange.awk",
       "sha256": "2d6f8b261231b70cc6f264fce20b59bd0b9aea734203bb1b661f3fcc800d4286",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpfrexprange",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mpfrfield.awk",
       "sha256": "63ee53154896f1a25e26a3a2d149fa2ad1a929a7821fa7327138edcbf6065e82",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpfrfield",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mpfrieee.awk",
       "sha256": "957ed242102b979bc494b58cb7bdc2aad0e4c07b78b688b7db8b7a10b52a5f04",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpfrieee",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mpfrmemok1.awk",
       "sha256": "3b5082428bbca1992018cbec209f9f87302d6e2b63f2aa85094dda436ce98bc4",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpfrmemok1",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mpfrnegzero.awk",
       "sha256": "18cc890da5fc32421b33329c601b52c31f987a19213523880b90c7c5504c8e63",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpfrnegzero",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mpfrnegzero2.awk",
       "sha256": "683b45ac3bfac1ce927ce74b8d5b2acda21c68f5ad80fbf9a53dbcb1db9bdef4",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpfrnegzero2",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mpfrnonum.awk",
       "sha256": "cb265d339957e8173f6bfdae4083bab1b76f42d6ce5b8c1c32406f5fb9e82b32",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpfrnonum",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mpfrnr.awk",
       "sha256": "bfd9abd804fd3db325f473c97a58c46b99b0e892b764b5195d2ebadc4f401c0a",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpfrnr",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mpfrrem.awk",
       "sha256": "59f848628ab1527d332d05f339bdc5c4df83573c7f0a79c54834f655ee62ae50",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpfrrem",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mpfrrnd.awk",
       "sha256": "61d2e49994acf38b35452056ea2e7d0eccd8e0f61b9d8c3144fa3a0a9bcc6d05",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpfrrnd",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mpfrrndeval.awk",
       "sha256": "1f6990252468b0d542260946cf69bce599cffbba73e7ab1a4a3dfa87feb17a29",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpfrrndeval",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mpfrsort.awk",
       "sha256": "c9491c9eb7618eaa55d54f76cafb51d69724706826576fcd3c99e08d7250658e",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpfrsort",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mpfrsqrt.awk",
       "sha256": "a06b1b92b061652145a3072a4e254d1d31b40b17a20c38be1cfd7d3a454c1c69",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpfrsqrt",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mpfrstrtonum.awk",
       "sha256": "4ae18e7d43371835d33313dd433424680b8e9d7499004c1dff38bf9ad21a7e41",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpfrstrtonum",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mpgforcenum.awk",
       "sha256": "a474e6fb4e0cfcd2b927dda9440b729073fc3526a64e66162b30aea43241743f",
       "reviewed": false,
-      "state": "pending-review"
+      "state": "unavailable-build-profile",
+      "target": "mpgforcenum",
+      "evidence": "evidence/gawk-mpfr-guard-validation.json",
+      "review": "Configured HAVE_MPFR is undefined and the unchanged GNU mpfr-tests capability guard reports unsupported for both binaries. This program is registered by NEED_MPFR but not executed in this build. Only the capability guard and registration are reviewed here; no source-program or memory pass is claimed."
     },
     {
       "path": "test/mtchi18n.awk",
@@ -4740,8 +4843,17 @@
     {
       "path": "test/nested.awk",
       "sha256": "ffd1011cf70f2ffa2a8a8eb10181f24b2e5f9075ba1c05559839ac3756a0619b",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "nested",
+      "review": "Complete original source, configured Make recipe and supplied input/expected fixtures reviewed. Ordinary GNU regex boundaries, block scope, identifier/symbol queries, expected syntax/file-policy diagnostics and a bounded debugger watchpoint session. The debugger script only lists, watches/displays variables, sets one breakpoint, runs/continues and quits; it executes no shell commands. Sorting helpers are separately pinned.",
+      "fixtures": {
+        "nested.ok": "7da0810372718aaba44c608981aa81247cee8c3fc0ece1f7f7dd0e3152b41715",
+        "nested.in": "87a1422dae2f03bdff40431e7ba4e35c5bbc0aad2287c254e3920b357b928b14"
+      },
+      "configured_recipe_sha256": "54bc81cf18b6ce74739ff694f94925d34c573ad35914bac75b7a610c8bcbb5d9",
+      "evidence": "evidence/gawk-symbol-debug-original.json",
+      "audit": "evidence/gawk-symbol-debug-memory-audit.json"
     },
     {
       "path": "test/nfldstr.awk",
@@ -7008,8 +7120,16 @@
     {
       "path": "test/sandbox1.awk",
       "sha256": "b3ff3659d75ffc6d1a5dd130d606b440be9c99bcc92592f7feccafe0635a00d2",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "sandbox1",
+      "review": "Complete original source, configured Make recipe and supplied input/expected fixtures reviewed. Ordinary GNU regex boundaries, block scope, identifier/symbol queries, expected syntax/file-policy diagnostics and a bounded debugger watchpoint session. The debugger script only lists, watches/displays variables, sets one breakpoint, runs/continues and quits; it executes no shell commands. Sorting helpers are separately pinned.",
+      "fixtures": {
+        "sandbox1.ok": "29e9a3ffdc1e594701c5eb305abb4eaad1ff6dcc4ce6fe135638c2ce2f93c4da"
+      },
+      "configured_recipe_sha256": "934e9d774b023e37f4fa20adc8caf66b7d7adc9e955cb79fd5b1fdfe6b4d504f",
+      "evidence": "evidence/gawk-symbol-debug-original.json",
+      "audit": "evidence/gawk-symbol-debug-memory-audit.json"
     },
     {
       "path": "test/scalar.awk",
@@ -7746,8 +7866,26 @@
     {
       "path": "test/symtab12.awk",
       "sha256": "1628c97f1e565a25d2d8cbe2e197f8728fdc2525888a1cd27925c540dc22f136",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "symtab12",
+      "review": "Complete original source, configured Make recipe and supplied input/expected fixtures reviewed. Ordinary GNU regex boundaries, block scope, identifier/symbol queries, expected syntax/file-policy diagnostics and a bounded debugger watchpoint session. The debugger script only lists, watches/displays variables, sets one breakpoint, runs/continues and quits; it executes no shell commands. Sorting helpers are separately pinned.",
+      "fixtures": {
+        "symtab12.ok": "938ad89011971a68ad7a702eee778fe56fc893ce7c5ebffd8db69e4b1df737c3"
+      },
+      "configured_recipe_sha256": "3a9e117423c8a6f9780f9108739192cf861f2cb8e10bbd86ad29058831fcc62a",
+      "child_commands": {
+        "/bin/sh -c sort": 1,
+        "sort": 1
+      },
+      "child_dependencies": {
+        "sort": {
+          "path": "/root/rboxc/build/gawk-sort-helper/coreutils",
+          "sha256": "55d6a3487eed83a8b2b37aeaba723c3244c994663e58261cdccf9ecb97e70e32"
+        }
+      },
+      "evidence": "evidence/gawk-symbol-debug-original.json",
+      "audit": "evidence/gawk-symbol-debug-memory-audit.json"
     },
     {
       "path": "test/symtab2.awk",
@@ -8355,8 +8493,18 @@
     {
       "path": "test/watchpoint1.awk",
       "sha256": "96f89f03195b2b989d2fc1f905e271066c23b89b0c665addb62fb4b9445132be",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "watchpoint1",
+      "review": "Complete original source, configured Make recipe and supplied input/expected fixtures reviewed. Ordinary GNU regex boundaries, block scope, identifier/symbol queries, expected syntax/file-policy diagnostics and a bounded debugger watchpoint session. The debugger script only lists, watches/displays variables, sets one breakpoint, runs/continues and quits; it executes no shell commands. Sorting helpers are separately pinned.",
+      "fixtures": {
+        "watchpoint1.ok": "3dc184fbbfb97e19fb48b9f2cbef18594079741456375fa2aaf1a3b07ea3f75b",
+        "watchpoint1.in": "86bf80d92e9fe3ed3eb517d3deb6a651b3878d2c126397076b343e4a7c24ce80",
+        "watchpoint1.script": "3752ce79951d14a228587f75f187f8bbbbd2845860f67a4b821a4f727ead89d5"
+      },
+      "configured_recipe_sha256": "18e96010d9175831d43825d413f7c6a53f1c1f840b48314509e2a4d39d7957d1",
+      "evidence": "evidence/gawk-symbol-debug-original.json",
+      "audit": "evidence/gawk-symbol-debug-memory-audit.json"
     },
     {
       "path": "test/wideidx.awk",
