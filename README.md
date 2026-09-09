@@ -2543,6 +2543,26 @@ terminal process findings and both builds. The current Valgrind ledger has
 591 passed scripts, 29 passed selections, 41 open profiles, 43 pending and 29
 exclusions.
 
+Current-candidate reruns of six ordinary tail follow originals retain their
+behavioral passes, but their signal-terminated followers keep the strict
+Valgrind profiles open. Thirteen focused checks now verify natural completion
+through `--pid` and controlling-terminal EOF, including appended, renamed and
+newly created files, two-file headers, polling and inotify. All **13 candidate
+Valgrind processes are clean** and all outputs/statuses match GNU. Initially
+missing files correctly retain GNU's exit status 1 even after appearing; the
+first focused report's incorrect status-0 expectation is preserved separately.
+These focused passes do not replace the signal-terminated originals.
+
+The current `install/strip-program.sh` run has clean install process images;
+its full-child profile remains open for matching findings in native shell,
+sed and grep helpers. The `ls/stat-free-symlinks.sh` profile has nine clean
+candidate images, but both implementations fail its syscall-count assertion
+under Valgrind (353 baseline calls versus 355 with operands, where one added
+call is expected). No assertions or memory findings are suppressed.
+[evidence/gnu-current-lifecycle-validation.json](evidence/gnu-current-lifecycle-validation.json)
+pins all eight open original profiles and the separate natural-exit evidence;
+these checks change no whole-script or strict Valgrind totals.
+
 Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
 explicitly excluded with source hashes in inventory/gnu-suite-exclusions.json.
