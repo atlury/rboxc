@@ -78,7 +78,7 @@ there where available.
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
-| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 25 original recipes (26 scripts) pass on the current candidate; one deliberate descriptor-close profile remains open |
+| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 28 original recipes (29 scripts) pass on the current candidate with 862 clean process logs; broader original-suite coverage remains open |
 | Less | 704 | Ten focused checks, one production terminal check and all 18 original screen replays pass across declared profiles |
 | Screen | 5.0.2 | All three original targets pass across declared profiles; daemon cleanup and socket recovery pass Valgrind |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
@@ -105,30 +105,33 @@ The public terminal cleanup API alone retains the shared parameter cache in
 this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
-The current 187-command candidate is **14,719,808 bytes**, at
-`target/bash-trap-restart-final-candidate/release/rboxc`, SHA-256
-`b00869258dca564ea767195be3238bbb7b7cbdd928d7b8c5dad36e6f21c2ead9`.
+The current 187-command candidate is **14,719,872 bytes**, at
+`target/bash-owned-close-candidate/release/rboxc`, SHA-256
+`88ee0672f6cf454be4bdb9cfd7da0d4b7f2487494d9bbd0bc7032724f452bd27`.
 An independent rebuild is byte-identical. All 428 Coreutils smoke checks,
 11 dispatcher checks, 44 focused Bash comparisons and 69 shell-adapter checks
-pass. All 27 reviewed Bash scripts were rerun: 26 pass strictly with 717 clean
-candidate process logs; the trace script retains its deliberate closed-descriptor
-finding. All **84 trap ownership/control-flow contracts pass**, with 88 clean
-candidate process logs. The four previously open RETURN restart cases now pass,
-as do DEBUG, ERR, self-directed INT/USR1, nested handlers, handler resets and
-returns from signal handlers inside functions.
+pass. All **29 reviewed Bash scripts from 28 original recipes pass strictly**,
+with **862 clean candidate process logs**. This includes the original trace
+script and two further quoting scripts. The native GNU trace finding remains
+preserved; the candidate avoids its duplicate close syscall while preserving
+close results, errno and backup ownership. Seven ownership contracts pass
+natively and under Valgrind, including late close errors and descriptor reuse.
+[evidence/bash-owned-close-validation.json](evidence/bash-owned-close-validation.json)
+audits these results. The two top-level recipe dispatchers are accounted as
+orchestration, not runtime passes; 57 recipes remain pending and one mixed
+reproduction recipe remains held.
 
-Only the Bash trap helper changed. Saved parser state, PIPESTATUS and
-BASH_TRAPSIG copies are released when the interpreter abandons their frames.
-Active handler borrows are tracked through replacement and actual string release;
-restart also detaches still-inherited handlers before freeing them. Normal
-returns preserve GNU restoration. Nonlocal returns complete GNU's interrupted
-parse cleanup before removing the new ownership registrations. Intermediate
-allocation findings, including the draft cleanup-order regression, remain
-preserved and are excluded from strict counts.
-[evidence/bash-trap-restart-validation.json](evidence/bash-trap-restart-validation.json)
-audits the source/object boundary, immutable rebuild, raw process logs and
-current comparisons. The 354 deferred commands remain untouched until the
-current GNU providers have completed validation and we review them together.
+The preceding trap candidate, SHA-256
+`b00869258dca564ea767195be3238bbb7b7cbdd928d7b8c5dad36e6f21c2ead9`,
+passed all 84 trap ownership/control-flow contracts with 88 clean candidate
+process logs. Saved parser, PIPESTATUS and BASH_TRAPSIG copies and active handler
+borrows are released when the interpreter abandons their frames. Normal and
+nonlocal returns retain the appropriate GNU cleanup order. The four previously
+open RETURN restart cases are resolved, together with DEBUG, ERR, self-directed
+INT/USR1, nested handlers and handler resets. Its immutable reports remain in
+[evidence/bash-trap-restart-validation.json](evidence/bash-trap-restart-validation.json);
+intermediate findings remain excluded from strict counts. The 354 deferred
+commands remain untouched until current GNU validation is complete and reviewed.
 Gawk's 561 reviewed recipes remain pinned to the preserved preceding
 `target/gawk-format-lifetime-candidate/release/rboxc` candidate, SHA-256
 `df802022e1d85caf26f6d514459110657e06e6bf0e44407f0573e93f8e74652e`.
@@ -2223,19 +2226,19 @@ Build products and raw test logs stay outside Git; source, scripts, pins, and
 result summaries are committed. `evidence/status.json` records the binary hash
 and current results.
 
-The Bash RETURN-trap fix retains the active handler's borrowed command string
+At the earlier RETURN-trap checkpoint, the fix retained the active handler's borrowed command string
 while freeing superseded restoration copies before replacement or reset. Only
 its isolated `trap.o` helper changes; translated Rust entries and pinned GNU
 sources remain unchanged. Both debug-support originals now pass with clean
 candidate logs. `evidence/bash-return-trap-validation.json` verifies the identical
 rebuild, all reviewed originals and shared checks, and the twelve repaired
 ownership cases through four aliases. Initial findings are preserved. Interpreter
-restart from a RETURN handler still loses saved parser and status allocations;
-that separate cleanup is the next unit.
+restart findings recorded at that checkpoint are resolved by the subsequent
+trap-restart unit described above.
 
-Five further Bash scripts pass from four original recipes: both directory-stack scripts, command/function printing, dynamic variables and additional tilde expansion. Their 21 candidate process logs are clean. The existing files-only passwd profile avoids host SSSD findings for an undefined directory-stack tilde lookup. The trace recipe also matches original output, but deliberately closes descriptor 4 after unsetting BASH_XTRACEFD has already closed it; its five process logs and one expected close finding remain outside strict counts. Reviewed Bash coverage is now 24 recipes containing 25 scripts, with 23 recipes/24 scripts passing strictly across recorded candidates.
+At the earlier directory-stack checkpoint, five further Bash scripts passed from four original recipes: both directory-stack scripts, command/function printing, dynamic variables and additional tilde expansion. Their 21 candidate process logs are clean. The existing files-only passwd profile avoids host SSSD findings for an undefined directory-stack tilde lookup. The trace recipe also matches original output, but deliberately closes descriptor 4 after unsetting BASH_XTRACEFD has already closed it; its five process logs and one close finding were outside strict counts at that checkpoint. The current owned-close candidate resolves this finding. That checkpoint covered 24 recipes containing 25 scripts, with 23 recipes/24 scripts passing strictly.
 
-Two more complete Bash originals now pass: alias expansion and command/function descriptions, including all twelve subsidiary scripts. Their 69 candidate process logs are clean on the current 187-command candidate. The original scripts use absolute helper paths; private mounts supply matching native GNU or integrated Rboxc tools there. Initial host Rust Coreutils/Valgrind startup failures remain preserved, and host executables are unchanged. This raises reviewed Bash coverage from seventeen to nineteen scripts across recorded candidates; broader Bash acceptance remains open.
+At the earlier alias checkpoint, two more complete Bash originals passed: alias expansion and command/function descriptions, including all twelve subsidiary scripts. Their 69 candidate process logs were clean on that recorded 187-command candidate. The original scripts use absolute helper paths; private mounts supply matching native GNU or integrated Rboxc tools there. Initial host Rust Coreutils/Valgrind startup failures remain preserved, and host executables are unchanged. That raised reviewed Bash coverage from seventeen to nineteen scripts; broader Bash acceptance remains open.
 
 ## Build and reproduce
 

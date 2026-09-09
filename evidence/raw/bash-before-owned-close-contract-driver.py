@@ -1,19 +1,13 @@
 #!/usr/bin/env python3
 """Check backup ownership through normal closes, late errors and descriptor reuse."""
 # SPDX-License-Identifier: GPL-3.0-or-later
-import argparse,errno,hashlib,importlib.util,json,re,subprocess,sys,tempfile
+import errno,hashlib,importlib.util,json,re,subprocess,sys,tempfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
 sys.path.insert(0,str(ROOT/'tests/gnu'))
 spec=importlib.util.spec_from_file_location('reviewed',ROOT/'tests/gnu/reviewed-original.py')
 runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner)
-parser=argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--report-name',default='bash-backup-contract')
-options=parser.parse_args()
-assert re.fullmatch(r'[a-z0-9][a-z0-9-]*',options.report_name)
-target=ROOT/'evidence'/(options.report_name+'.json')
-assert not target.exists(), 'preserve existing evidence; choose a new report name'
 stage=Path(tempfile.mkdtemp(prefix='bash-backup-contract-',dir=ROOT/'build'))
 harness=stage/'contract.c'
 harness.write_text(r'''#include <errno.h>
@@ -29,8 +23,7 @@ static int injected, owned_exit;
 static FILE *reused;
 static const char *path;
 int __wrap_close(int fd) {
-  /* Already-closed descriptors now reach the real syscall if production
-     fails to check them; Valgrind must catch any duplicate close. */
+  if (fd==10 && injected==-1) { injected=0; errno=EBADF; return -1; }
   int r=__real_close(fd);
   if (r==0 && fd==10 && injected) { errno=injected; injected=0; return -1; }
   return r;
@@ -91,8 +84,8 @@ for name,mode in [('success',0),('late-eio',errno.EIO),('interrupted',errno.EINT
                 outcome['pass']=passed and clean
             outcomes.append(outcome)
     results.append({'case':name,'pass':all(o['pass'] for o in outcomes),'outcomes':outcomes})
-report={'scope':'Native and Valgrind checks of owned backup cleanup and same-inode descriptor reuse after successful close, simulated Linux late close errors, and an already-closed descriptor. The wrapper closes the real descriptor before returning a simulated late error. An already-closed descriptor reaches real close if the production guard fails, so duplicate-close findings cannot be hidden by the test wrapper. No filesystem fault or malformed input is required.',
+report={'scope':'Native and Valgrind checks of owned backup cleanup and same-inode descriptor reuse after successful close, simulated Linux late close errors, and an already-closed descriptor. The test wrapper closes the real descriptor before returning a simulated late error; it returns EBADF without issuing a second invalid close for the already-closed case. The initial report preserves Valgrind findings from that intentional duplicate syscall. No filesystem fault or malformed input is required.',
         'driver_sha256':sha(__file__),'runtime_source_sha256':sha(source),'harness_sha256':sha(harness),'binary_sha256':sha(binary),'compile_arguments':args,'build_log_sha256':sha(build),'passed':sum(r['pass'] for r in results),'total':len(results),'results':results}
-target.write_text(json.dumps(report,indent=2)+'\n')
+(ROOT/'evidence/bash-backup-contract.json').write_text(json.dumps(report,indent=2)+'\n')
 print('Bash backup ownership:',report['passed'],'/',report['total'])
 raise SystemExit(report['passed']!=report['total'])

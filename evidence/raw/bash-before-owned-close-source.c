@@ -27,7 +27,6 @@ char **rboxc_shell_arguments(int argc, char **argv, const char *script) {
 
 #include <stdio.h>
 #include <unistd.h>
-#include <fcntl.h>
 #include <sys/types.h>
 /* Private command paths let GNU updatedb use ordinary exec/pipeline semantics. */
 static char private_directory[] = "/tmp/rboxc-updatedb-XXXXXX";
@@ -162,16 +161,7 @@ void rboxc_bash_track_backup(int fd) {
   errno = saved;
 }
 int rboxc_bash_owned_close(int fd) {
-  int result, saved = errno;
-  /* A trace stream can already have closed this descriptor through fclose.
-     Preserve close's EBADF result without issuing a duplicate close syscall. */
-  if (fcntl(fd, F_GETFD) < 0 && errno == EBADF)
-    result = -1;
-  else {
-    errno = saved;
-    result = close(fd);
-  }
-  saved = errno;
+  int result = close(fd), saved = errno;
   /* Linux releases the descriptor before reporting late close errors.
      EBADF also means this ownership record is no longer valid. */
   forget_bash_backup(fd);
