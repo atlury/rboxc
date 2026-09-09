@@ -2326,7 +2326,7 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. The current
-[evidence/gnu-resource-partial-expansion-coverage.json](evidence/gnu-resource-partial-expansion-coverage.json)
+[evidence/gnu-tr-expanded-coverage.json](evidence/gnu-tr-expanded-coverage.json)
 extends the preserved suite checkpoints: **640 scripts passed**, 29 have
 selected coverage, five are skipped, 29 are excluded and 30 remain pending.
 Excluding the 29 exclusions, 640/704 scripts (90.9%) have whole-script passes;
@@ -2429,6 +2429,14 @@ regeneration recipe, identical rebuild and shared checks are independently
 verified in [evidence/expr-value-cleanup-validation.json](evidence/expr-value-cleanup-validation.json).
 The tac, seq and od runs use the preceding iconv candidate; expr uses the new
 cleanup candidate. Existing evidence is not relabeled as a run on the new build.
+
+The `tr` Perl selection expands from 56 to **128/134 cases**, preserving both
+redirected and piped stdin variants. All 129 candidate process images are
+clean under Valgrind; the six omitted historical assertion cases remain held.
+[evidence/gnu-tr-expanded-validation.json](evidence/gnu-tr-expanded-validation.json)
+verifies the exact source/generator, case names, assertions and raw summaries.
+Its ledger has 590 passed scripts, 26 passed selections, 39 open profiles,
+49 pending and 29 exclusions under Valgrind.
 
 Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
