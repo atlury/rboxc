@@ -74,7 +74,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 218 of 244 original groups validated across recorded profiles |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 455 reviewed originals pass; three original failures match GNU |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 461 reviewed originals pass; three original failures match GNU |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -235,14 +235,24 @@ Seven further unchanged Gawk recipes pass for numeric and string formatting,
 separator arrays, record reading, multibyte substitution, process identifiers and
 script shebang dispatch. Recipe helpers use pinned GNU implementations; the
 substitution recipe uses the verified English UTF-8 profile.
-`evidence/gawk-format-lint-match-coverage.json` audits **455 passing original recipes,
-three unchanged GNU baseline failures and 567 clean processes**: 470 original
-Gawk invocations, twelve shell children and 85 focused cases counted once.
+`evidence/gawk-native-child-coverage.json` audits **461 passing original recipes,
+three unchanged GNU baseline failures and 583 clean processes**: 476 original
+Gawk invocations, seventeen shell children, five native helper children and
+85 focused cases counted once.
 Three auxiliary inputs are already covered by passing recipes; nine exclusions
-and 164 pending inputs remain. The latest seven unchanged recipes cover indirect function calls, POSIX conversion
+and 158 pending inputs remain. The latest seven unchanged recipes cover indirect function calls, POSIX conversion
 and field behavior, namespace pretty printing, formatting, lint diagnostics and
 text matching. The candidate and installed
 release are unchanged, and full GNU acceptance remains open.
+
+Six additional unchanged recipes cover whitespace classes, namespaced identifiers,
+word counting, indirect builtin calls, an empty array index and nonfatal output
+diagnostics. `evidence/gawk-native-helper-validation.json` preserves three
+8-byte leaks in the original native GNU sort helper and verifies a separate helper
+with the existing normal-exit filename-vector cleanup. Its only changed archive
+member is the native sort entry. All six Gawk and ten child process logs are clean;
+the original helper and Rboxc binaries are unchanged. Exact private helper paths,
+executable hashes and child counts are checked independently by the audits.
 
 Five preceding unchanged Gawk recipes pass for directory entries, fixed-width
 fields, message extraction, POSIX string comparisons and string-length updates.

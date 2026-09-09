@@ -12,6 +12,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT/'tests'), str(ROOT/'tests/gnu')]
 from comparison_profile import fingerprint
+from gawk_child_profile import canonical_child
 spec = importlib.util.spec_from_file_location('reviewed', ROOT/'tests/gnu/reviewed-original.py')
 runner = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runner)
@@ -32,7 +33,8 @@ archives = [ROOT/'tests/gawk-original.py', ROOT/'evidence/raw/gawk-array-driver.
             ROOT/'evidence/raw/gawk-language-time-driver.py',
             ROOT/'evidence/raw/gawk-working-fixtures-driver.py',
             ROOT/'evidence/raw/gawk-shell-driver.py',
-            ROOT/'evidence/raw/gawk-directory-driver.py']
+            ROOT/'evidence/raw/gawk-directory-driver.py',
+            ROOT/'evidence/raw/gawk-before-native-children-driver.py']
 driver_versions = {fingerprint(p): str(p.relative_to(ROOT)) for p in archives}
 focused_path = ROOT/'evidence/gawk-source-behavior.json'
 focused = json.loads(focused_path.read_text())
@@ -53,7 +55,7 @@ def check_inputs(data):
         else:
             assert fingerprint(Path(filename)) == expected, filename
 
-def check_memory(recorded, log, expected, candidate, case, focused_case=False, children=None):
+def check_memory(recorded, log, expected, candidate, case, focused_case=False, children=None, directory=None, dependencies=None):
     p = ROOT/log
     assert fingerprint(p) == expected
     text = p.read_text()
@@ -65,7 +67,9 @@ def check_memory(recorded, log, expected, candidate, case, focused_case=False, c
         if Path(argv[0]).name == 'rboxc':
             assert candidate and argv[1] in ('awk', 'gawk', 'nawk')
     else:
-        assert argv[0] == 'gawk' or commands[0] in (children or {})
+        if argv[0] != 'gawk':
+            canonical=canonical_child(commands[0],children or {},directory,dependencies)
+            assert recorded.get('canonical_command',canonical)==canonical
     role='child-dependency' if not focused_case and argv[0]!='gawk' else 'gawk'
     assert recorded.get('role',role)==role
     assert recorded.get('command',commands[0])==commands[0]
@@ -131,6 +135,10 @@ for filename in sorted({r['evidence'] for r in reviewed.values()}):
             for name,expected in locale['files'].items():
                 assert fingerprint(Path(locale['runtime_path'])/locale['name']/name)==expected
         children=row.get('child_commands',{})
+        dependencies=row.get('child_dependencies',{})
+        assert result.get('child_dependencies',{})==dependencies
+        for entry in dependencies.values():
+            assert data['inputs'][entry['path']]==entry['sha256']
         assert result.get('child_commands',{})==children
         baseline = row.get('expected_baseline_output')
         assert result['pass'] == (baseline is None)
@@ -148,14 +156,15 @@ for filename in sorted({r['evidence'] for r in reviewed.values()}):
                 assert result['selection'] in log.read_text().splitlines() and b'Error ' not in log.read_bytes()
             if key.endswith('-valgrind'):
                 assert outcome['memory']
-                assert Counter(m['command'] for m in outcome['memory']
+                assert Counter(canonical_child(m['command'],children,outcome.get('private_work_directory'),dependencies) for m in outcome['memory']
                     if m.get('role')=='child-dependency')==children
                 assert any(m.get('role','gawk')=='gawk' for m in outcome['memory'])
                 if key == 'rboxc-valgrind':
                     assert outcome['memory_clean']
                 for memory in outcome['memory']:
                     check_memory(memory, memory['log'], memory['sha256'],
-                                 key == 'rboxc-valgrind', result['selection'], children=children)
+                                 key == 'rboxc-valgrind', result['selection'], children=children,
+                                 directory=outcome.get('private_work_directory'),dependencies=dependencies)
     report_refs[filename] = {'sha256': fingerprint(path), 'passed': data['passed'],
                              'total': data['total'], 'driver_archive': driver_versions[data['driver_sha256']]}
 assert seen == set(reviewed)

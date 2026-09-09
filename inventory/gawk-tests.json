@@ -1,6 +1,6 @@
 {
   "provider": "GNU Gawk 5.4.1",
-  "scope": "All 634 original AWK inputs inventoried; 458 recipes reviewed, including ten native-extension interoperation selections: 455 pass and three assertion failures match GNU. Three further inputs are executed auxiliary programs of passing recipes and add no duplicate recipe/process counts. Nine historical crash/memory reproductions are excluded; 164 inputs still await individual accounting and optional profiles. Five pipe and exit-status recipes account for twelve shell children separately. Separate reports retain their selected scopes and original failures; full acceptance remains open.",
+  "scope": "All 634 original AWK inputs inventoried; 464 recipes reviewed, including ten native-extension interoperation selections: 461 pass and three assertion failures match GNU. Three further inputs are executed auxiliary programs of passing recipes and add no duplicate recipe/process counts. Nine historical crash/memory reproductions are excluded; 158 inputs still await individual accounting and optional profiles. Nine pipe, sorting and exit-status recipes account for seventeen shell children and five native helper children separately. Separate reports retain their selected scopes and original failures; full acceptance remains open.",
   "registration_sha256": "447e3fdd76fe4ebb4b39427465aa727ed421a5818e568a00e00f2c5a90830ade",
   "inputs": [
     {
@@ -3185,8 +3185,28 @@
     {
       "path": "test/indirectbuiltin.awk",
       "sha256": "982d31bef2bb19a11000baff833ae038950130e1870653359debff5e3e66ea9f",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "indirectbuiltin",
+      "review": "Complete original program, unchanged configured Make recipe and all expected/input fixtures reviewed. Ordinary finite whitespace classes, namespaced identifiers, manual word counting, indirect builtin calls, empty array index, or nonexistent-output diagnostics. Only declared sort and rm children execute, using pinned GNU helpers in the private test directory. No files under /dev are created: the original nonexistent parent is verified absent.",
+      "fixtures": {
+        "indirectbuiltin.ok": "618687e50c03fe555c97b8405876d5767e0c41df3bac4a68a121f923595a2744"
+      },
+      "configured_recipe_sha256": "d2e194cfb26124f28039076a2febbf6ff3632a6a7038bc13930670628f7648fa",
+      "child_commands": {
+        "/bin/sh -c rm\\ x1.out": 1,
+        "rm x1.out": 1,
+        "/bin/sh -c rm\\ x2.out": 1,
+        "rm x2.out": 1
+      },
+      "child_dependencies": {
+        "rm": {
+          "path": "/root/rboxc/build/gnu-coreutils/src/coreutils",
+          "sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4"
+        }
+      },
+      "evidence": "evidence/gawk-native-child-clean-original.json",
+      "audit": "evidence/gawk-native-child-memory-audit.json"
     },
     {
       "path": "test/indirectbuiltin2.awk",
@@ -3691,8 +3711,27 @@
     {
       "path": "test/longwrds.awk",
       "sha256": "e18114ded8978bbb58f18e83704056076750bacd5863d33030e963093b7fd98e",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "longwrds",
+      "review": "Complete original program, unchanged configured Make recipe and all expected/input fixtures reviewed. Ordinary finite whitespace classes, namespaced identifiers, manual word counting, indirect builtin calls, empty array index, or nonexistent-output diagnostics. Only declared sort and rm children execute, using pinned GNU helpers in the private test directory. No files under /dev are created: the original nonexistent parent is verified absent. Native sort uses the separately recorded existing normal-exit vector cleanup; initial original-helper findings are preserved.",
+      "fixtures": {
+        "longwrds.ok": "2ddf41e000074878c10983751b57ccea141520f6499430a5932344194696c7f5",
+        "longwrds.in": "5e820760bef1500e80f8f4a4d4d9c0c2e7f10af58b729f9c97ccc6edceb91836"
+      },
+      "configured_recipe_sha256": "0d8a7ec0ba33a3762338390fc94b796a3efe78843e747dbf520370b988a7c3ed",
+      "child_commands": {
+        "/bin/sh -c sort": 1,
+        "sort": 1
+      },
+      "child_dependencies": {
+        "sort": {
+          "path": "/root/rboxc/build/gawk-sort-helper/coreutils",
+          "sha256": "55d6a3487eed83a8b2b37aeaba723c3244c994663e58261cdccf9ecb97e70e32"
+        }
+      },
+      "evidence": "evidence/gawk-native-child-clean-original.json",
+      "audit": "evidence/gawk-native-child-memory-audit.json"
     },
     {
       "path": "test/manglprm.awk",
@@ -4451,8 +4490,18 @@
     {
       "path": "test/nlstrina.awk",
       "sha256": "a0fab1ef89156bce8f190b1c685edb5171be2bbd9bafc1df0049877d844e4b63",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "nlstrina",
+      "review": "Complete original program, unchanged configured Make recipe and all expected/input fixtures reviewed. Ordinary finite whitespace classes, namespaced identifiers, manual word counting, indirect builtin calls, empty array index, or nonexistent-output diagnostics. Only declared sort and rm children execute, using pinned GNU helpers in the private test directory. No files under /dev are created: the original nonexistent parent is verified absent.",
+      "fixtures": {
+        "nlstrina.ok": "c6e0003fba5c29e81bc3579c8105314057651c647b625888348358ebec8ce507"
+      },
+      "configured_recipe_sha256": "607b1c99adf2d283898e183b6876500a7a61895e4168faf29904357e48e5133f",
+      "child_commands": {},
+      "child_dependencies": {},
+      "evidence": "evidence/gawk-native-child-clean-original.json",
+      "audit": "evidence/gawk-native-child-memory-audit.json"
     },
     {
       "path": "test/nlstringtest.awk",
@@ -4530,8 +4579,18 @@
     {
       "path": "test/nonfatal2.awk",
       "sha256": "a99ce1a1399b640a5c1d4653d38e3064b1470b59a354760222dca5a6b0d6a625",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "nonfatal2",
+      "review": "Complete original program, unchanged configured Make recipe and all expected/input fixtures reviewed. Ordinary finite whitespace classes, namespaced identifiers, manual word counting, indirect builtin calls, empty array index, or nonexistent-output diagnostics. Only declared sort and rm children execute, using pinned GNU helpers in the private test directory. No files under /dev are created: the original nonexistent parent is verified absent.",
+      "fixtures": {
+        "nonfatal2.ok": "7833838098dff21a62433384c486ade9ca1da78ee9f7995fa051640e4a6db5e4"
+      },
+      "configured_recipe_sha256": "0bea869c2bffcbef554181f27e30cbbc267efc8865bd07e7cb5944c9d513295b",
+      "child_commands": {},
+      "child_dependencies": {},
+      "evidence": "evidence/gawk-native-child-clean-original.json",
+      "audit": "evidence/gawk-native-child-memory-audit.json"
     },
     {
       "path": "test/nonfatal3.awk",
@@ -4653,8 +4712,26 @@
     {
       "path": "test/nsidentifier.awk",
       "sha256": "d5c65621a7e92c4a8aa4260a3defd17253d67e29f85206b6c40eac5746b596d5",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "nsidentifier",
+      "review": "Complete original program, unchanged configured Make recipe and all expected/input fixtures reviewed. Ordinary finite whitespace classes, namespaced identifiers, manual word counting, indirect builtin calls, empty array index, or nonexistent-output diagnostics. Only declared sort and rm children execute, using pinned GNU helpers in the private test directory. No files under /dev are created: the original nonexistent parent is verified absent. Native sort uses the separately recorded existing normal-exit vector cleanup; initial original-helper findings are preserved.",
+      "fixtures": {
+        "nsidentifier.ok": "f0cae6770fba53242b29c58975876b0d98fa4cc07874a9ad8d8ac1f0da392204"
+      },
+      "configured_recipe_sha256": "6939125053cd096f059cd6d6c2f535660ed6bbd6eff0ba3821572095e2dd8114",
+      "child_commands": {
+        "/bin/sh -c LC_ALL=C\\ sort": 1,
+        "sort": 1
+      },
+      "child_dependencies": {
+        "sort": {
+          "path": "/root/rboxc/build/gawk-sort-helper/coreutils",
+          "sha256": "55d6a3487eed83a8b2b37aeaba723c3244c994663e58261cdccf9ecb97e70e32"
+        }
+      },
+      "evidence": "evidence/gawk-native-child-clean-original.json",
+      "audit": "evidence/gawk-native-child-memory-audit.json"
     },
     {
       "path": "test/nsindirect1.awk",
@@ -6617,8 +6694,26 @@
     {
       "path": "test/spacere.awk",
       "sha256": "c9131ab47b01f7a879dbd3c735952588b5bc7d515241f1da6b56d870bdfd0faa",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "spacere",
+      "review": "Complete original program, unchanged configured Make recipe and all expected/input fixtures reviewed. Ordinary finite whitespace classes, namespaced identifiers, manual word counting, indirect builtin calls, empty array index, or nonexistent-output diagnostics. Only declared sort and rm children execute, using pinned GNU helpers in the private test directory. No files under /dev are created: the original nonexistent parent is verified absent. Native sort uses the separately recorded existing normal-exit vector cleanup; initial original-helper findings are preserved.",
+      "fixtures": {
+        "spacere.ok": "4fd0adeeeb51fac7b81cdcc03b5590cc6fc97c0b399f77e39f9dfdab6eb6079c"
+      },
+      "configured_recipe_sha256": "0647970acbfdb7e5586f18e3a7baffd42ebdfd7818c58b48147ead5c799a7aa3",
+      "child_commands": {
+        "/bin/sh -c sort": 1,
+        "sort": 1
+      },
+      "child_dependencies": {
+        "sort": {
+          "path": "/root/rboxc/build/gawk-sort-helper/coreutils",
+          "sha256": "55d6a3487eed83a8b2b37aeaba723c3244c994663e58261cdccf9ecb97e70e32"
+        }
+      },
+      "evidence": "evidence/gawk-native-child-clean-original.json",
+      "audit": "evidence/gawk-native-child-memory-audit.json"
     },
     {
       "path": "test/split_after_fpat.awk",

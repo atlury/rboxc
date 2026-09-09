@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'tests'))
 sys.path.insert(0, str(ROOT/'tests/gnu'))
 from comparison_profile import fingerprint
+from gawk_child_profile import canonical_child
 spec = importlib.util.spec_from_file_location('reviewed', ROOT/'tests/gnu/reviewed-original.py')
 runner = importlib.util.module_from_spec(spec); spec.loader.exec_module(runner)
 parser = argparse.ArgumentParser(description=__doc__)
@@ -99,6 +100,10 @@ for row in original['results']:
         assert not row['baseline_failure_matches']
     assert row['locale_profile']==reviewed_rows[row['selection']].get('locale_profile')
     children=reviewed_rows[row['selection']].get('child_commands',{})
+    dependencies=reviewed_rows[row['selection']].get('child_dependencies',{})
+    assert row.get('child_dependencies',{}) == dependencies
+    for entry in dependencies.values():
+        assert original['inputs'][entry['path']] == entry['sha256']
     assert row.get('child_commands',{})==children
     working_files=reviewed_rows[row['selection']].get('working_files',{})
     assert row.get('working_files',{})==working_files
@@ -145,9 +150,10 @@ for row in original['results']:
                 gawk_processes+=1
                 assert log.get('role','gawk')=='gawk'
             else:
-                assert command in children, 'unclassified child process'
+                canonical=canonical_child(command,children,outcome.get('private_work_directory'),dependencies)
+                assert log.get('canonical_command',canonical)==canonical
                 assert log['role']=='child-dependency'
-                observed_children[command]+=1
+                observed_children[canonical]+=1
             assert log.get('command',command)==command
             audit(log['log'],log['sha256'],log,key=='rboxc-valgrind',row['source'])
         if key.endswith('-valgrind'):

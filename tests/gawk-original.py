@@ -14,6 +14,7 @@ import subprocess
 import sys
 import tempfile
 from comparison_profile import ComparisonProfile,fingerprint
+from gawk_child_profile import canonical_child
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tests/gnu'))
@@ -35,12 +36,22 @@ helpers={'cmp':ROOT/'build/gnu-diffutils/src/cmp',
          'egrep':ROOT/'build/gnu-grep/src/egrep',
          'sed':ROOT/'build/gnu-sed/sed/sed',
          **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('rm','echo','od','tr','cp','sort','ls','stat','uname','basename','chmod')}}
+helper_profile_path=ROOT/'evidence/gawk-sort-helper.json'
+helper_profile=json.loads(helper_profile_path.read_text())
+helpers['sort']=Path(helper_profile['binary'])
+assert fingerprint(helpers['sort'])==helper_profile['binary_sha256']
 inputs={p:fingerprint(p) for p in {makefile,source/'test/Makefile.am',source/'test/Makefile.in',
-    Path(__file__),Path('/usr/bin/make'),Path('/bin/bash').resolve(),Path('/bin/sh').resolve(),*helpers.values(),profile.oracle}}
+    Path(__file__),ROOT/'tests/gawk_child_profile.py',Path('/usr/bin/make'),Path('/bin/bash').resolve(),Path('/bin/sh').resolve(),*helpers.values(),profile.oracle}}
+inputs[helper_profile_path]=fingerprint(helper_profile_path)
+inputs.update({Path(p):h for p,h in helper_profile['inputs'].items()})
 for row in selected:
     inputs[source/row['path']]=row['sha256']
     inputs.update({source/'test'/n:h for n,h in row['fixtures'].items()})
     inputs.update({Path(v['path']):v['sha256'] for v in row.get('working_files',{}).values()})
+    for name, entry in row.get('child_dependencies', {}).items():
+        assert name in helpers and str(helpers[name]) == entry['path']
+        assert fingerprint(helpers[name]) == entry['sha256']
+        inputs[helpers[name]] = entry['sha256']
     extension=row.get('extension_profile')
     if extension:
         inputs.update({Path(p):h for p,h in extension['inputs'].items()})
@@ -78,6 +89,8 @@ def run_selection(row):
                     shutil.copy2(entry['path'],work/filename)
                     assert fingerprint(work/filename)==entry['sha256']
                 for n,p in helpers.items():(work/'deps'/n).symlink_to(p)
+                for n,entry in row.get('child_dependencies',{}).items():
+                    assert (work/'deps'/n).resolve() == Path(entry['path']).resolve()
                 (work/'exec/gawk').symlink_to(profile.oracle if implementation=='gnu' else profile.binary)
                 argv=['gawk']
                 if instrument:argv=['/usr/bin/valgrind','--leak-check=full','--show-leak-kinds=all',
@@ -109,23 +122,23 @@ def run_selection(row):
                     assert len(commands)==1
                     command=commands[0]
                     role='gawk' if command.split()[0]=='gawk' else 'child-dependency'
-                    assert role=='gawk' or command in row.get('child_commands',{})
+                    canonical = command if role=='gawk' else canonical_child(command, row.get('child_commands',{}), str(work), row.get('child_dependencies'))
                     logs.append({**runner.parse_memory_log(text,p.stem,exec_only=True),
                         'log':str(p.relative_to(ROOT)),'sha256':fingerprint(p),
-                        'command':command,'role':role})
+                        'command':command,'canonical_command':canonical,'role':role})
                 if instrument:
                     assert any(m['role']=='gawk' for m in logs)
-                    assert Counter(m['command'] for m in logs if m['role']=='child-dependency')==row.get('child_commands',{})
+                    assert Counter(m['canonical_command'] for m in logs if m['role']=='child-dependency')==row.get('child_commands',{})
                 clean=bool(logs) and all(m['complete_exec_log'] and m['errors']==0
                     and m['non_inherited_descriptors']==0 and not any(m['heap_bytes'].get(k,0)
                     for k in ('definitely lost','indirectly lost','possibly lost')) for m in logs)
-                outcomes[key]={'status':done.returncode,'assertions_pass':passed,
+                outcomes[key]={'private_work_directory':str(work),'status':done.returncode,'assertions_pass':passed,
                     'baseline_failure_matches':baseline_matches,'actual_output':str((saved/'actual-output').relative_to(ROOT)) if residual.exists() else None,'actual_output_sha256':fingerprint(saved/'actual-output') if residual.exists() else None,
                     'driver_log':str((saved/'driver.log').relative_to(ROOT)),'driver_log_sha256':fingerprint(saved/'driver.log'),
                     'memory':logs,'memory_clean':clean if instrument else None}
     passed=all(o['assertions_pass'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
     baseline_matches=bool(row.get('expected_baseline_output')) and all(o['baseline_failure_matches'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
-    return {'baseline_failure_matches':baseline_matches,'child_commands':row.get('child_commands',{}),'locale_profile':row.get('locale_profile'),'extension_profile':row.get('extension_profile'),'working_files':row.get('working_files',{}),'selection':name,'source':row['path'],'source_sha256':row['sha256'],
+    return {'child_dependencies':row.get('child_dependencies',{}),'baseline_failure_matches':baseline_matches,'child_commands':row.get('child_commands',{}),'locale_profile':row.get('locale_profile'),'extension_profile':row.get('extension_profile'),'working_files':row.get('working_files',{}),'selection':name,'source':row['path'],'source_sha256':row['sha256'],
             'pass':passed,'outcomes':outcomes}
 
 results=[]
