@@ -22,7 +22,7 @@ source = Path(json.loads((ROOT/'inventory/sources.json').read_text())['glibc']['
 script = source/'iconv/tst-iconv_prog-buffer.sh'
 manifest = ROOT/'inventory/glibc-utility-tests.json'
 row = next(r for r in json.loads(manifest.read_text())['tests'] if r['path'] == str(script.relative_to(source)))
-assert row['state'] in ('reviewed-ready','reviewed-passing')
+assert row['state'] == 'reviewed-ready'
 assert fingerprint(script) == row['source_sha256']
 inputs = {p: fingerprint(p) for p in [Path(__file__), manifest, script,
           source/'iconv/Makefile', Path('/bin/bash'), ROOT/'tests/gnu/reviewed-original.py']}

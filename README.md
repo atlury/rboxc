@@ -105,19 +105,35 @@ The public terminal cleanup API alone retains the shared parameter cache in
 this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
-The current 187-command candidate is **14,721,608 bytes**, at
-`target/executable-name-candidate/release/rboxc`, SHA-256
-`beba519009c2fd02ffbc4df73978cc368aae687ecc3f93f28cd1177ea04f01a7`.
+The current 187-command candidate is **14,724,336 bytes**, at
+`target/iconv-charmap-cleanup-candidate/release/rboxc`, SHA-256
+`7a05a47ffcad4cca61b11910ecb670f61eca76cc6a2207f84bde189ee995d796`.
 An independent rebuild is byte-identical. All 428 Coreutils smoke checks,
-11 dispatcher checks, 44 focused Bash comparisons and 69 shell-adapter checks
-pass. Bash has **54 strict scripts from 53 original recipes**, with **12765 clean
+11 dispatcher checks and 50 focused glibc utility comparisons pass. The
+preceding dispatch checkpoint also passed 44 Bash and 69 adapter comparisons.
+Bash has **54 strict scripts from 53 original recipes**, with **12765 clean
 candidate process logs** across their recorded immutable candidates.
 [evidence/bash-executable-name-coverage.json](evidence/bash-executable-name-coverage.json)
 accounts for 67 reviewed scripts and all 88 original recipes; 17 recipes remain
 pending, two are orchestration and three are held outside execution.
 
 
-Linux applet selection now uses the kernel's executed pathname when it names
+The iconv charmap path now releases its map/hash pools, consumed parser
+strings, reader filenames, Unicode-symbol scratch buffers, conversion nodes,
+owned converted values and reusable input buffer. Borrowed map values retain
+their original lifetime through conversion. Only three isolated native GNU
+helpers change; their sources, objects and compiler logs rebuild identically.
+All **eight charmap comparisons** pass normally and under Valgrind, with no
+heap allocations outstanding. The three original buffer profiles and 50
+utility comparisons pass with **227 clean candidate process logs**:
+[evidence/iconv-charmap-buffer-validation.json](evidence/iconv-charmap-buffer-validation.json).
+The complete ordinary conversion tables also pass **676 calls per native
+implementation**, covering 136 data round trips, 134 ASCII round trips, 63
+charmap round trips and eight byte-order checks. Their full Valgrind matrix
+is still running. The separate historical decoder loop remains unexecuted;
+this is selected command coverage, with pinned shared host conversion modules.
+
+At the preceding dispatch checkpoint, Linux applet selection gained use of the kernel's executed pathname when it names
 an applet, while passing the caller's `argv[0]` unchanged to GNU. This fixes
 `exec -a specialname bash ...`, names that collide with other applets, and
 `exec -l printenv`. All **28 normal comparisons** now match GNU, up from four.

@@ -78,6 +78,9 @@ def symbol_map(root,provider):
 
 def prepare_archives(root,provider,mapping):
     adapted={}
+    if provider=='iconv':
+        from iconv_charmap_cleanup import prepare
+        prepare(root, adapted)
     if provider=='bash':
         from bash_cleanup import prepare
         adapted=prepare(root)

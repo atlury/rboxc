@@ -1,0 +1,781 @@
+{
+  "scope": "Eight ordinary charmap conversions cover from-only, to-only, both/reverse maps, output files, empty input, unavailable target encoding and missing input. Canonical GNU 2.43 charmaps are pinned. Exact outputs, status and files compare GNU and Rboxc normally and under Valgrind; only private fixture paths are normalized.",
+  "runtime_helpers": {
+    "/root/rboxc/target/executable-name-candidate/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174"
+  },
+  "binary": "/root/rboxc/target/executable-name-candidate/release/rboxc",
+  "binary_sha256": "beba519009c2fd02ffbc4df73978cc368aae687ecc3f93f28cd1177ea04f01a7",
+  "gnu_binary_sha256": "205ce3b79b83300de75fee6c4cfdf26e2e68a78672221718ad71683910c7cfb5",
+  "oracles": {
+    "iconv": {
+      "path": "/root/rboxc/build/gnu-glibc/iconv/iconv_prog",
+      "sha256": "205ce3b79b83300de75fee6c4cfdf26e2e68a78672221718ad71683910c7cfb5"
+    }
+  },
+  "driver_sha256": "f491950512073299b463845df570e170980411d6757c14b8d670a55e43bf812e",
+  "fixtures": {
+    "/opt/src/glibc-2.43/localedata/charmaps/ISO-8859-1": "5b35b5a2ac507daee9f274e71b87edeb516c728be384f5a3b8858251b6b300f7",
+    "/opt/src/glibc-2.43/localedata/charmaps/UTF-8": "e190bf505fc8a5aa22ca22adbbdcb416a196bced8d6d7efac8ab03f95be32d42"
+  },
+  "planned_total": 8,
+  "complete": true,
+  "passed": 0,
+  "total": 8,
+  "results": [
+    {
+      "name": "from-map",
+      "command": "iconv",
+      "arguments": [
+        "-f",
+        "/opt/src/glibc-2.43/localedata/charmaps/ISO-8859-1",
+        "-t",
+        "UTF-8"
+      ],
+      "input": "636166e90a",
+      "fixture_files": {},
+      "pass": false,
+      "equivalent": true,
+      "memory_clean": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "raw_stdout": "636166c3a90a",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-vimtgcld",
+          "stdout": "636166c3a90a",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "raw_stdout": "636166c3a90a",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-lvc3k5tw",
+          "stdout": "636166c3a90a",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": [],
+          "memory": {
+            "errors": 9,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 19610,
+              "indirectly lost": 74272,
+              "possibly lost": 0,
+              "still reachable": 32768
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "1059113"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/iconv-charmap-before-contract/run-c9jtsyra/000-gnu-valgrind.log",
+          "log_sha256": "e83f6bf5e0e62a73aeb3ddc6037682bde50efacd483590cc30153e94832c6a73"
+        },
+        "rboxc": {
+          "status": 0,
+          "raw_stdout": "636166c3a90a",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-mb8pvwc5",
+          "stdout": "636166c3a90a",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "raw_stdout": "636166c3a90a",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-z3fuxkwe",
+          "stdout": "636166c3a90a",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": [],
+          "memory": {
+            "errors": 9,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 19610,
+              "indirectly lost": 74272,
+              "possibly lost": 0,
+              "still reachable": 32768
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "1059115"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/iconv-charmap-before-contract/run-c9jtsyra/000-rboxc-valgrind.log",
+          "log_sha256": "75bab9e65e1427d2c50b6cdd5b1f5999842357d9da6c8219c847245c88ffa1b5"
+        }
+      }
+    },
+    {
+      "name": "to-map",
+      "command": "iconv",
+      "arguments": [
+        "-f",
+        "UTF-8",
+        "-t",
+        "/opt/src/glibc-2.43/localedata/charmaps/ISO-8859-1"
+      ],
+      "input": "636166c3a90a",
+      "fixture_files": {},
+      "pass": false,
+      "equivalent": true,
+      "memory_clean": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "raw_stdout": "636166e90a",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-9cik36nn",
+          "stdout": "636166e90a",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "raw_stdout": "636166e90a",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-09exthkj",
+          "stdout": "636166e90a",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": [],
+          "memory": {
+            "errors": 9,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 19482,
+              "indirectly lost": 74272,
+              "possibly lost": 0,
+              "still reachable": 32768
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "1059133"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/iconv-charmap-before-contract/run-c9jtsyra/001-gnu-valgrind.log",
+          "log_sha256": "1d804090d8fb49d4a35fdb7a0a7b14c3b2bfc836182106c6121d371079d80cb7"
+        },
+        "rboxc": {
+          "status": 0,
+          "raw_stdout": "636166e90a",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-0n4ewwe6",
+          "stdout": "636166e90a",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "raw_stdout": "636166e90a",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-l7scsgh3",
+          "stdout": "636166e90a",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": [],
+          "memory": {
+            "errors": 9,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 19482,
+              "indirectly lost": 74272,
+              "possibly lost": 0,
+              "still reachable": 32768
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "1059135"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/iconv-charmap-before-contract/run-c9jtsyra/001-rboxc-valgrind.log",
+          "log_sha256": "10c5ec263b82dacb461656b7de667c52af7f96fe3f719e89d1b09f446caa93a2"
+        }
+      }
+    },
+    {
+      "name": "both-maps",
+      "command": "iconv",
+      "arguments": [
+        "-f",
+        "/opt/src/glibc-2.43/localedata/charmaps/ISO-8859-1",
+        "-t",
+        "/opt/src/glibc-2.43/localedata/charmaps/UTF-8"
+      ],
+      "input": "636166e90a",
+      "fixture_files": {},
+      "pass": false,
+      "equivalent": true,
+      "memory_clean": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "raw_stdout": "636166c3a90a",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-my8dm71w",
+          "stdout": "636166c3a90a",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "raw_stdout": "636166c3a90a",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-qyef42f_",
+          "stdout": "636166c3a90a",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": [],
+          "memory": {
+            "errors": 27,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 3389186,
+              "indirectly lost": 26588353,
+              "possibly lost": 40834896,
+              "still reachable": 32768
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "1059137"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/iconv-charmap-before-contract/run-c9jtsyra/002-gnu-valgrind.log",
+          "log_sha256": "494aff434aa9b66c25915105f2a7f576c9a93539b208b1c1ff1949ea41c82f9c"
+        },
+        "rboxc": {
+          "status": 0,
+          "raw_stdout": "636166c3a90a",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-zupo0f68",
+          "stdout": "636166c3a90a",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "raw_stdout": "636166c3a90a",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-lyjmjj75",
+          "stdout": "636166c3a90a",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": [],
+          "memory": {
+            "errors": 27,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 3389186,
+              "indirectly lost": 26588353,
+              "possibly lost": 40834896,
+              "still reachable": 32768
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "1059139"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/iconv-charmap-before-contract/run-c9jtsyra/002-rboxc-valgrind.log",
+          "log_sha256": "7d04ad8af5efd7d4eac245d23895931e912f1a4abffec4df2f326c5640171183"
+        }
+      }
+    },
+    {
+      "name": "reverse-maps",
+      "command": "iconv",
+      "arguments": [
+        "-f",
+        "/opt/src/glibc-2.43/localedata/charmaps/UTF-8",
+        "-t",
+        "/opt/src/glibc-2.43/localedata/charmaps/ISO-8859-1"
+      ],
+      "input": "636166c3a90a",
+      "fixture_files": {},
+      "pass": false,
+      "equivalent": true,
+      "memory_clean": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "raw_stdout": "636166e90a",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-5qccb_cc",
+          "stdout": "636166e90a",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "raw_stdout": "636166e90a",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-kw9v5rh3",
+          "stdout": "636166e90a",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": [],
+          "memory": {
+            "errors": 28,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 3393538,
+              "indirectly lost": 26588353,
+              "possibly lost": 40834896,
+              "still reachable": 32768
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "1059141"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/iconv-charmap-before-contract/run-c9jtsyra/003-gnu-valgrind.log",
+          "log_sha256": "f96583fcb0de04bba98cb380282270183946688bc5c8a93df9a9e5e3e0361e3a"
+        },
+        "rboxc": {
+          "status": 0,
+          "raw_stdout": "636166e90a",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-nzpa0qpd",
+          "stdout": "636166e90a",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "raw_stdout": "636166e90a",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-jmhbag1c",
+          "stdout": "636166e90a",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": [],
+          "memory": {
+            "errors": 29,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 3393482,
+              "indirectly lost": 26588353,
+              "possibly lost": 40834952,
+              "still reachable": 32768
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "1059143"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/iconv-charmap-before-contract/run-c9jtsyra/003-rboxc-valgrind.log",
+          "log_sha256": "59d12f7e6ad7c40dde3ac350d5b05f5bfb9444b165c998b232138b509f37fdbc"
+        }
+      }
+    },
+    {
+      "name": "output-file",
+      "command": "iconv",
+      "arguments": [
+        "-f",
+        "/opt/src/glibc-2.43/localedata/charmaps/ISO-8859-1",
+        "-t",
+        "/opt/src/glibc-2.43/localedata/charmaps/UTF-8",
+        "-o",
+        "output"
+      ],
+      "input": "636166e90a",
+      "fixture_files": {},
+      "pass": false,
+      "equivalent": true,
+      "memory_clean": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-y0ek0zc7",
+          "stdout": "",
+          "stderr": "",
+          "tree": {
+            "output": {
+              "sha256": "7b49b9e063bd91a4f9252b413261f5557b9c570aa61516989499f64a62dbcdd6",
+              "bytes": 6,
+              "mode": 420
+            }
+          },
+          "archive_observations": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-zg4_4m8_",
+          "stdout": "",
+          "stderr": "",
+          "tree": {
+            "output": {
+              "sha256": "7b49b9e063bd91a4f9252b413261f5557b9c570aa61516989499f64a62dbcdd6",
+              "bytes": 6,
+              "mode": 420
+            }
+          },
+          "archive_observations": [],
+          "memory": {
+            "errors": 27,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 3389186,
+              "indirectly lost": 26588353,
+              "possibly lost": 40834896,
+              "still reachable": 32768
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "1059162"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/iconv-charmap-before-contract/run-c9jtsyra/004-gnu-valgrind.log",
+          "log_sha256": "99f62243d59d70d62c83b8c89956acaa6ed05013d2a954b4f8ffd9de404dc66a"
+        },
+        "rboxc": {
+          "status": 0,
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-5g2cn1yi",
+          "stdout": "",
+          "stderr": "",
+          "tree": {
+            "output": {
+              "sha256": "7b49b9e063bd91a4f9252b413261f5557b9c570aa61516989499f64a62dbcdd6",
+              "bytes": 6,
+              "mode": 420
+            }
+          },
+          "archive_observations": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-222hokrf",
+          "stdout": "",
+          "stderr": "",
+          "tree": {
+            "output": {
+              "sha256": "7b49b9e063bd91a4f9252b413261f5557b9c570aa61516989499f64a62dbcdd6",
+              "bytes": 6,
+              "mode": 420
+            }
+          },
+          "archive_observations": [],
+          "memory": {
+            "errors": 27,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 3389186,
+              "indirectly lost": 26588353,
+              "possibly lost": 40834896,
+              "still reachable": 32768
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "1059202"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/iconv-charmap-before-contract/run-c9jtsyra/004-rboxc-valgrind.log",
+          "log_sha256": "a20f4e8c91c22ad17bd3e02a7d5711f48ab981596a93f1775d3cab837368d681"
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "command": "iconv",
+      "arguments": [
+        "-f",
+        "/opt/src/glibc-2.43/localedata/charmaps/ISO-8859-1",
+        "-t",
+        "UTF-8"
+      ],
+      "input": "",
+      "fixture_files": {},
+      "pass": false,
+      "equivalent": true,
+      "memory_clean": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-ksy8kvit",
+          "stdout": "",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-61phcmot",
+          "stdout": "",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": [],
+          "memory": {
+            "errors": 9,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 19610,
+              "indirectly lost": 74272,
+              "possibly lost": 0,
+              "still reachable": 32768
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "1059204"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/iconv-charmap-before-contract/run-c9jtsyra/005-gnu-valgrind.log",
+          "log_sha256": "f4b1d3354b66fbf110071a1f21860e64d79335692d6171fe3beffc681b5a480b"
+        },
+        "rboxc": {
+          "status": 0,
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-kmprbhl8",
+          "stdout": "",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-33wqbhe_",
+          "stdout": "",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": [],
+          "memory": {
+            "errors": 9,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 19610,
+              "indirectly lost": 74272,
+              "possibly lost": 0,
+              "still reachable": 32768
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "1059206"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/iconv-charmap-before-contract/run-c9jtsyra/005-rboxc-valgrind.log",
+          "log_sha256": "432173ea1c6c05bd9232d7a8f4da6d3a4cd3432d42d3a624bc8391e1e32bd0b4"
+        }
+      }
+    },
+    {
+      "name": "unknown-target",
+      "command": "iconv",
+      "arguments": [
+        "-f",
+        "/opt/src/glibc-2.43/localedata/charmaps/ISO-8859-1",
+        "-t",
+        "RBOXC_UNKNOWN_ENCODING"
+      ],
+      "input": "636166650a",
+      "fixture_files": {},
+      "pass": false,
+      "equivalent": true,
+      "memory_clean": false,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-rm3urwpg",
+          "stdout": "",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-ly0e8wv7",
+          "stdout": "",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": [],
+          "memory": {
+            "errors": 8,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 15130,
+              "indirectly lost": 74272,
+              "possibly lost": 0,
+              "still reachable": 0
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "1059208"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/iconv-charmap-before-contract/run-c9jtsyra/006-gnu-valgrind.log",
+          "log_sha256": "f2826a8f81b041678b3908b29acbba7af69d2bdb8b3ee727017349f7e36e2847"
+        },
+        "rboxc": {
+          "status": 1,
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-66ny15hc",
+          "stdout": "",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "fixture": "/tmp/rboxc-entry-ekp4xext",
+          "stdout": "",
+          "stderr": "",
+          "tree": {},
+          "archive_observations": [],
+          "memory": {
+            "errors": 8,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 15130,
+              "indirectly lost": 74272,
+              "possibly lost": 0,
+              "still reachable": 0
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "1059210"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/iconv-charmap-before-contract/run-c9jtsyra/006-rboxc-valgrind.log",
+          "log_sha256": "4b3e78789eedc32e41fd6a766567f23726b3d6da9b62f0d3080d3da37f22b482"
+        }
+      }
+    },
+    {
+      "name": "missing-input",
+      "command": "iconv",
+      "arguments": [
+        "-f",
+        "/opt/src/glibc-2.43/localedata/charmaps/ISO-8859-1",
+        "-t",
+        "/opt/src/glibc-2.43/localedata/charmaps/UTF-8",
+        "missing"
+      ],
+      "input": "",
+      "fixture_files": {},
+      "pass": false,
+      "equivalent": true,
+      "memory_clean": false,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d656e7472792d6a743568633577752f657865632f69636f6e763a2063616e6e6f74206f70656e20696e7075742066696c6520606d697373696e67273a204e6f20737563682066696c65206f72206469726563746f72790a",
+          "fixture": "/tmp/rboxc-entry-jt5hc5wu",
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f69636f6e763a2063616e6e6f74206f70656e20696e7075742066696c6520606d697373696e67273a204e6f20737563682066696c65206f72206469726563746f72790a",
+          "tree": {},
+          "archive_observations": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d656e7472792d6472366f756578772f657865632f69636f6e763a2063616e6e6f74206f70656e20696e7075742066696c6520606d697373696e67273a204e6f20737563682066696c65206f72206469726563746f72790a",
+          "fixture": "/tmp/rboxc-entry-dr6ouexw",
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f69636f6e763a2063616e6e6f74206f70656e20696e7075742066696c6520606d697373696e67273a204e6f20737563682066696c65206f72206469726563746f72790a",
+          "tree": {},
+          "archive_observations": [],
+          "memory": {
+            "errors": 27,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 3389186,
+              "indirectly lost": 26588353,
+              "possibly lost": 40834896,
+              "still reachable": 0
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "1059212"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/iconv-charmap-before-contract/run-c9jtsyra/007-gnu-valgrind.log",
+          "log_sha256": "8be5bc9053703b946f51cede7506c5352f02d14232ce722ea3b5f46c9018c6f2"
+        },
+        "rboxc": {
+          "status": 1,
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d656e7472792d7a766a756377386b2f657865632f69636f6e763a2063616e6e6f74206f70656e20696e7075742066696c6520606d697373696e67273a204e6f20737563682066696c65206f72206469726563746f72790a",
+          "fixture": "/tmp/rboxc-entry-zvjucw8k",
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f69636f6e763a2063616e6e6f74206f70656e20696e7075742066696c6520606d697373696e67273a204e6f20737563682066696c65206f72206469726563746f72790a",
+          "tree": {},
+          "archive_observations": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "raw_stdout": "",
+          "raw_stderr": "2f746d702f72626f78632d656e7472792d76695f7030646a792f657865632f69636f6e763a2063616e6e6f74206f70656e20696e7075742066696c6520606d697373696e67273a204e6f20737563682066696c65206f72206469726563746f72790a",
+          "fixture": "/tmp/rboxc-entry-vi_p0djy",
+          "stdout": "",
+          "stderr": "3c666978747572653e2f657865632f69636f6e763a2063616e6e6f74206f70656e20696e7075742066696c6520606d697373696e67273a204e6f20737563682066696c65206f72206469726563746f72790a",
+          "tree": {},
+          "archive_observations": [],
+          "memory": {
+            "errors": 27,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 3389186,
+              "indirectly lost": 26588353,
+              "possibly lost": 40834896,
+              "still reachable": 0
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "1059214"
+            ],
+            "complete_exec_log": true
+          },
+          "log": "evidence/raw/iconv-charmap-before-contract/run-c9jtsyra/007-rboxc-valgrind.log",
+          "log_sha256": "81feadbdfbdb270c1c34dbfe5455b4f031efdb0e31f370a5a52548f10974bd2a"
+        }
+      }
+    }
+  ]
+}
