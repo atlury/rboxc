@@ -1,0 +1,178 @@
+#                             -*- compilation -*-
+64. exclude05.at:21: testing exclude: lots of excludes ...
+/opt/src/tar-1.35/tests/exclude05.at:24:
+mkdir v7
+(cd v7
+TEST_TAR_FORMAT=v7
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H v7"
+export TAR_OPTIONS
+rm -rf *
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+
+rm -rf testdir exclfile
+mkdir -p testdir
+awk 'BEGIN {for (i=9; i < 100; ++i ) { print "testdir/file" i; }}' < /dev/null | \
+ while read name
+ do
+   genfile --file $name
+ done
+
+awk 'BEGIN {for (i=1000000; i >= 12; --i ) { print "testdir/file" i }}' < /dev/null > exclfile
+
+tar cf archive --anchored --exclude-from=exclfile \
+               testdir
+tar tf archive | sort
+
+echo "NEXT"
+tar cf archive --exclude-from=exclfile \
+               testdir
+tar tf archive | sort
+
+rm -rf testdir exclfile
+
+)
+/opt/src/tar-1.35/tests/exclude05.at:24:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+
+rm -rf testdir exclfile
+mkdir -p testdir
+awk 'BEGIN {for (i=9; i < 100; ++i ) { print "testdir/file" i; }}' < /dev/null | \
+ while read name
+ do
+   genfile --file $name
+ done
+
+awk 'BEGIN {for (i=1000000; i >= 12; --i ) { print "testdir/file" i }}' < /dev/null > exclfile
+
+tar cf archive --anchored --exclude-from=exclfile \
+               testdir
+tar tf archive | sort
+
+echo "NEXT"
+tar cf archive --exclude-from=exclfile \
+               testdir
+tar tf archive | sort
+
+rm -rf testdir exclfile
+
+)
+/opt/src/tar-1.35/tests/exclude05.at:24:
+mkdir ustar
+(cd ustar
+TEST_TAR_FORMAT=ustar
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H ustar"
+export TAR_OPTIONS
+rm -rf *
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+
+rm -rf testdir exclfile
+mkdir -p testdir
+awk 'BEGIN {for (i=9; i < 100; ++i ) { print "testdir/file" i; }}' < /dev/null | \
+ while read name
+ do
+   genfile --file $name
+ done
+
+awk 'BEGIN {for (i=1000000; i >= 12; --i ) { print "testdir/file" i }}' < /dev/null > exclfile
+
+tar cf archive --anchored --exclude-from=exclfile \
+               testdir
+tar tf archive | sort
+
+echo "NEXT"
+tar cf archive --exclude-from=exclfile \
+               testdir
+tar tf archive | sort
+
+rm -rf testdir exclfile
+
+)
+/opt/src/tar-1.35/tests/exclude05.at:24:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+
+rm -rf testdir exclfile
+mkdir -p testdir
+awk 'BEGIN {for (i=9; i < 100; ++i ) { print "testdir/file" i; }}' < /dev/null | \
+ while read name
+ do
+   genfile --file $name
+ done
+
+awk 'BEGIN {for (i=1000000; i >= 12; --i ) { print "testdir/file" i }}' < /dev/null > exclfile
+
+tar cf archive --anchored --exclude-from=exclfile \
+               testdir
+tar tf archive | sort
+
+echo "NEXT"
+tar cf archive --exclude-from=exclfile \
+               testdir
+tar tf archive | sort
+
+rm -rf testdir exclfile
+
+)
+/opt/src/tar-1.35/tests/exclude05.at:24:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+
+test -z "`sort < /dev/null 2>&1`" || exit 77
+
+
+rm -rf testdir exclfile
+mkdir -p testdir
+awk 'BEGIN {for (i=9; i < 100; ++i ) { print "testdir/file" i; }}' < /dev/null | \
+ while read name
+ do
+   genfile --file $name
+ done
+
+awk 'BEGIN {for (i=1000000; i >= 12; --i ) { print "testdir/file" i }}' < /dev/null > exclfile
+
+tar cf archive --anchored --exclude-from=exclfile \
+               testdir
+tar tf archive | sort
+
+echo "NEXT"
+tar cf archive --exclude-from=exclfile \
+               testdir
+tar tf archive | sort
+
+rm -rf testdir exclfile
+
+)
+64. exclude05.at:21: 64. exclude: lots of excludes (exclude05.at:21): ok     (1m17.763s 0m3.535s)

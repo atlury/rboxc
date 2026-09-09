@@ -1,0 +1,57 @@
+#                             -*- compilation -*-
+135. dirrem01.at:38: testing directory removed before reading ...
+/opt/src/tar-1.35/tests/dirrem01.at:41:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+mkdir dir
+mkdir dir/sub
+genfile --file dir/file1
+genfile --file dir/sub/file2
+
+case "$TEST_TAR_FORMAT" in
+posix) CPT=5;;
+gnu)   CPT=3;;
+*)     exit 77
+esac
+
+genfile --run --checkpoint=$CPT --unlink dir/sub/file2 --unlink dir/sub -- \
+       tar --blocking-factor=1 -c -f archive.tar \
+       --listed-incremental db \
+       --warning=no-file-changed \
+       -v dir >/dev/null
+)
+stdout:
+/opt/src/tar-1.35/tests/dirrem01.at:41:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+mkdir dir
+mkdir dir/sub
+genfile --file dir/file1
+genfile --file dir/sub/file2
+
+case "$TEST_TAR_FORMAT" in
+posix) CPT=5;;
+gnu)   CPT=3;;
+*)     exit 77
+esac
+
+genfile --run --checkpoint=$CPT --unlink dir/sub/file2 --unlink dir/sub -- \
+       tar --blocking-factor=1 -c -f archive.tar \
+       --listed-incremental db \
+       --warning=no-file-changed \
+       -v dir >/dev/null
+)
+stdout:
+135. dirrem01.at:38: 135. directory removed before reading (dirrem01.at:38): ok     (0m1.376s 0m0.105s)

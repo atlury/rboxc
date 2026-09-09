@@ -1,0 +1,88 @@
+#                             -*- compilation -*-
+194. truncate.at:29: testing truncate ...
+/opt/src/tar-1.35/tests/truncate.at:32:
+mkdir v7
+(cd v7
+TEST_TAR_FORMAT=v7
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H v7"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --file foo --length 200k
+genfile --file baz
+genfile --run --checkpoint 10 --length 195k --truncate foo -- \
+  tar -vcf bar foo baz
+echo Exit status: $?
+echo separator
+genfile --file foo --seek 195k --length 5k --pattern=zeros
+tar dvf bar|sed '/foo: Mod time differs/d')
+/opt/src/tar-1.35/tests/truncate.at:32:
+mkdir oldgnu
+(cd oldgnu
+TEST_TAR_FORMAT=oldgnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H oldgnu"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --file foo --length 200k
+genfile --file baz
+genfile --run --checkpoint 10 --length 195k --truncate foo -- \
+  tar -vcf bar foo baz
+echo Exit status: $?
+echo separator
+genfile --file foo --seek 195k --length 5k --pattern=zeros
+tar dvf bar|sed '/foo: Mod time differs/d')
+/opt/src/tar-1.35/tests/truncate.at:32:
+mkdir ustar
+(cd ustar
+TEST_TAR_FORMAT=ustar
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H ustar"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --file foo --length 200k
+genfile --file baz
+genfile --run --checkpoint 10 --length 195k --truncate foo -- \
+  tar -vcf bar foo baz
+echo Exit status: $?
+echo separator
+genfile --file foo --seek 195k --length 5k --pattern=zeros
+tar dvf bar|sed '/foo: Mod time differs/d')
+/opt/src/tar-1.35/tests/truncate.at:32:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --file foo --length 200k
+genfile --file baz
+genfile --run --checkpoint 10 --length 195k --truncate foo -- \
+  tar -vcf bar foo baz
+echo Exit status: $?
+echo separator
+genfile --file foo --seek 195k --length 5k --pattern=zeros
+tar dvf bar|sed '/foo: Mod time differs/d')
+/opt/src/tar-1.35/tests/truncate.at:32:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+genfile --file foo --length 200k
+genfile --file baz
+genfile --run --checkpoint 10 --length 195k --truncate foo -- \
+  tar -vcf bar foo baz
+echo Exit status: $?
+echo separator
+genfile --file foo --seek 195k --length 5k --pattern=zeros
+tar dvf bar|sed '/foo: Mod time differs/d')
+194. truncate.at:29: 194. truncate (truncate.at:29): ok     (0m0.041s 0m0.103s)

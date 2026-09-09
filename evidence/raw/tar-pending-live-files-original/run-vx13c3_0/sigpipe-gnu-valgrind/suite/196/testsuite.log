@@ -1,0 +1,19 @@
+#                             -*- compilation -*-
+196. sigpipe.at:21: testing sigpipe handling ...
+/opt/src/tar-1.35/tests/sigpipe.at:30:
+
+case `(cat "$at_myself" 2>&3 | :) 3>&1 >/dev/null` in #(
+?*) exit 77;;
+esac
+
+
+genfile --length 2048 --file first
+genfile --length 2048 --file second
+genfile --length 2049 --file third
+
+tar cf archive first second third
+
+# Discard diagnostics that some shells generate about broken pipes.
+(tar tf archive 2>&3 | :) 3>&2 2>/dev/null
+
+196. sigpipe.at:21: 196. sigpipe handling (sigpipe.at:21): ok     (0m1.121s 0m0.085s)

@@ -1,0 +1,41 @@
+#                             -*- compilation -*-
+133. filerem01.at:36: testing file removed as we read it ...
+/opt/src/tar-1.35/tests/filerem01.at:39:
+mkdir gnu
+(cd gnu
+TEST_TAR_FORMAT=gnu
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H gnu"
+export TAR_OPTIONS
+rm -rf *
+
+mkdir dir
+mkdir dir/sub
+genfile --file dir/file1
+genfile --file dir/sub/file2
+
+genfile --run --checkpoint=3 --unlink dir/file1 -- \
+       tar --blocking-factor=1 -c -f archive.tar \
+       --listed-incremental db -v dir >/dev/null
+)
+stdout:
+/opt/src/tar-1.35/tests/filerem01.at:39:
+mkdir posix
+(cd posix
+TEST_TAR_FORMAT=posix
+export TEST_TAR_FORMAT
+TAR_OPTIONS="-H posix"
+export TAR_OPTIONS
+rm -rf *
+
+mkdir dir
+mkdir dir/sub
+genfile --file dir/file1
+genfile --file dir/sub/file2
+
+genfile --run --checkpoint=3 --unlink dir/file1 -- \
+       tar --blocking-factor=1 -c -f archive.tar \
+       --listed-incremental db -v dir >/dev/null
+)
+stdout:
+133. filerem01.at:36: 133. file removed as we read it (filerem01.at:36): ok     (0m0.012s 0m0.049s)

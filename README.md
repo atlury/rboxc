@@ -71,7 +71,7 @@ there where available.
 | BC | 1.08.2 | `bc`, `dc` installed |
 | Ed | 1.22.6 | `ed` installed |
 | Findutils | 4.11.0 | `find`, `xargs`, `locate` installed; `updatedb` and private `frcode` integrated in candidate |
-| Tar | 1.35 | `tar` installed; 195 of 244 original groups validated across recorded profiles |
+| Tar | 1.35 | `tar` installed; 203 of 244 original groups validated across recorded profiles |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
 | Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 448 reviewed originals pass; three original failures match GNU |
@@ -1197,13 +1197,20 @@ no passing group. The initial dispatcher run used the installed 133-command
 expectation; its two list mismatches remain separate from the passing explicit
 187-command profile. Earlier passing reports retain their actual binary hashes.
 
+Eight additional originals pass for remounted directories, files removed or
+changed during archiving, and one million exclusion patterns. Remounting stays
+inside a private mount namespace. The combined current-candidate audit now
+contains 34 groups and 455 clean Tar processes. The separate SIGPIPE original
+passes every assertion, but its signal-termination snapshot retains an owned
+archive descriptor; strict-clean acceptance remains open for that group.
+
 The registration inventory now distinguishes **244 registered groups** from
 237 distributed `.at` files. Two groups (`exclude17` and `exclude18`) exist in
 the generated suite but their standalone sources are absent from the signed
 release archive. `sparsemvp.at` supplies shared macros rather than its own group;
 `testsuite.at` directly registers six compression groups. Across recorded
-candidate profiles, 195 groups from 194 input files are validated. The remaining
-49 groups without a passing original stay explicit in `inventory/tar-groups.json`; full
+candidate profiles, 203 groups from 202 input files are validated. The remaining
+41 groups without a passing original stay explicit in `inventory/tar-groups.json`; full
 acceptance and release activation remain open.
 
 Thirteen preceding unchanged GNU Tar groups pass on the current 187-command

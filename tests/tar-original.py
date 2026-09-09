@@ -201,6 +201,17 @@ selections.update({
 })
 permission_selections['xattr08'] = selections['xattr08']
 nss_selections.update({'acls01', 'acls02', 'acls03', 'opcomp06'})
+selections.update({
+    'listed05': (123, 'listed05.at'),
+    'filerem01': (133, 'filerem01.at'),
+    'filerem02': (134, 'filerem02.at'),
+    'dirrem01': (135, 'dirrem01.at'),
+    'dirrem02': (136, 'dirrem02.at'),
+    'truncate': (194, 'truncate.at'),
+    'grow': (195, 'grow.at'),
+    'exclude05': (64, 'exclude05.at'),
+    'sigpipe': (196, 'sigpipe.at'),
+})
 selected = profile.options.commands or list(selections)
 assert set(selected) <= set(selections)
 helpers = {n: ROOT/'build/gnu-coreutils/src/coreutils' for n in ('cat','rm','mkdir','chmod','touch','sort','echo','basename','cp','ln','true','false','sleep','ls','mv','mktemp','cut','id','date','printf','dd','rmdir','expr','tr','wc','head','tail','uname','cksum','chown')}
@@ -211,6 +222,8 @@ helpers['genfile'] = ROOT/'build/gnu-tar/tests/genfile'
 helpers['ckmtime'] = ROOT/'build/gnu-tar/tests/ckmtime'
 helpers['checkseekhole'] = ROOT/'build/gnu-tar/tests/checkseekhole'
 helpers['find'] = ROOT/'build/gnu-findutils/find/find'
+helpers['mount'] = Path('/usr/bin/mount')
+helpers['umount'] = Path('/usr/bin/umount')
 helpers['xargs'] = ROOT/'build/gnu-findutils/xargs/xargs'
 helpers.update({name: Path('/usr/bin')/name for name in ('getfattr', 'setfattr', 'getfacl', 'setfacl')})
 helpers.update({name: Path('/usr/sbin')/name for name in ('getcap', 'setcap')})
@@ -235,7 +248,7 @@ for name in selected:
     reviewed = registered[str(path.relative_to(source))]
     assert reviewed['reviewed'] and fingerprint(path) == reviewed['sha256']
     inputs[path] = fingerprint(path)
-if set(selected) & nss_selections:
+if set(selected) & (nss_selections | {'listed05'}):
     for filename in ('/etc/nsswitch.conf', '/etc/passwd', '/etc/group', '/usr/bin/unshare', '/usr/bin/mount'):
         path = Path(filename)
         inputs[path] = fingerprint(path)
@@ -295,6 +308,8 @@ def run_selection(name):
                     command = ['/usr/bin/unshare', '--mount', '--propagation', 'private',
                                '/bin/sh', '-c', '/usr/bin/mount --bind "$1" /etc/nsswitch.conf || exit 77; shift; exec "$@"',
                                'local-nss', str(config), *command]
+                if name == 'listed05':
+                    command = ['/usr/bin/unshare', '--mount', '--propagation', 'private', *command]
                 credentials = {}
                 if unprivileged:
                     assert os.geteuid() == 0, 'permission profile needs private uid/gid setup'
@@ -327,7 +342,7 @@ def run_selection(name):
                 logs = [{**runner.parse_memory_log(p.read_text(), p.stem, exec_only=True), 'log': str(p.relative_to(ROOT)), 'sha256': fingerprint(p)} for p in sorted((saved/'memory').glob('*.log'))]
                 clean = bool(logs) and all(m['complete_exec_log'] and m['errors'] == 0 and m['non_inherited_descriptors'] == 0 and not any(m['heap_bytes'].get(k, 0) for k in ('definitely lost','indirectly lost','possibly lost')) for m in logs)
                 outcomes[key] = {'status': done.returncode, 'assertions': assertions, 'assertions_pass': passed,
-                                 'nss': nss,
+                                 'nss': nss, 'private_mount_namespace': name == 'listed05',
                                  'execution_uid': 65534 if unprivileged else os.geteuid(),
                                  'execution_gid': 65534 if unprivileged else os.getegid(),
                                  'copied_executables': [{'source': str(original), 'private_path': str(copied.relative_to(work)), 'sha256': expected} for original, (copied, expected) in copies.items()],
