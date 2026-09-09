@@ -2326,7 +2326,7 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. The current
-[evidence/gnu-close-stdout-profile-coverage.json](evidence/gnu-close-stdout-profile-coverage.json)
+[evidence/gnu-sort-fd-profile-coverage.json](evidence/gnu-sort-fd-profile-coverage.json)
 extends the preserved suite checkpoints: **648 scripts passed**, 32 have
 selected coverage, five are skipped, 29 are excluded and 19 remain pending.
 Excluding the 29 exclusions, 648/704 scripts (92.0%) have whole-script passes;
@@ -2618,6 +2618,22 @@ as `validated-expected-fd-errors`, separate from strict zero-error passes. The
 current Valgrind ledger has 591 passed scripts, 29 passed selections, two adapted
 fixture passes, one validated expected-fd-error profile, 39 open profiles,
 42 pending and 29 exclusions. Native whole-script totals remain unchanged.
+
+The whole `sort/sort-continue.sh` merge assertions now also pass in a declared
+instrumented startup profile. Its shell launcher has a temporary 64-descriptor
+allowance; a client constructor records and restores the effective soft limit
+to **seven before main**. Valgrind rejects changing its hard ceiling to seven,
+so that ceiling remains 64. Neither the GNU nor translated sort source raises
+the effective limit. The original uninstrumented soft/hard seven-descriptor
+profile passes again. Both 31-file merge checks, including the additional stdin
+input, pass with **four clean candidate process logs**. GNU's separate allocation
+findings and three earlier unsuccessful profile setups remain recorded.
+[evidence/gnu-sort-fd-profile-validation.json](evidence/gnu-sort-fd-profile-validation.json)
+verifies all three limited invocations, compiler reproduction, original assertions
+and the explicit hard-limit difference. This adds one `passed-adapted-fixture`
+result: current Valgrind counts are 591 passed scripts, 29 passed selections,
+three adapted fixture passes, one validated expected-fd-error profile, 39 open,
+41 pending and 29 exclusions. Native whole-script counts remain unchanged.
 
 Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are

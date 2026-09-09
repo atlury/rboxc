@@ -211,7 +211,7 @@ def main():
         test_shell = row.get('test_shell', '/bin/sh')
         assert test_shell in ('/bin/sh', '/bin/bash'), 'unsupported test shell'
         context = {**execution_context, 'definition': row, 'shell': fingerprint(Path(test_shell))}
-        if instrument and row.get('sort_fd_profile'):
+        if row.get('sort_fd_profile'):
             assert row['script'] == 'tests/sort/sort-continue.sh' and test_shell == '/bin/bash'
             assert instrument and row['command'] == 'sort' and not row.get('native_launcher')
             context['sort_fd_profile'] = {'library_sha256': fingerprint(sort_fd_library),
@@ -413,10 +413,10 @@ def main():
                                        'TMPDIR='+shlex.quote(str(run))+'\n'
                                        'LD_PRELOAD='+shlex.quote(str(tmpdir_library))+':${LD_PRELOAD-}\n'
                                        'export TMPDIR LD_PRELOAD\n')
-                        if instrument and row.get('sort_fd_profile'):
+                        if row.get('sort_fd_profile'):
                             library = run/'src/.sort-fd-profile.so'
                             if not library.exists(): shutil.copy2(sort_fd_library, library)
-                            startup += ('if [ "${RBOXC_SORT_FD_LIMIT-}" = 7 ]; then\n'
+                            startup += ('if [ "$(ulimit -S -n)" = 7 ]; then\n'
                                 '  ulimit -S -n 64 || exit 125\n'
                                 '  RBOXC_SORT_FD_LIMIT=7\n'
                                 '  RBOXC_SORT_FD_JOURNAL='+shlex.quote(str(run))+'\n'
@@ -466,7 +466,7 @@ def main():
                     'RBOXC_FULL_SUITE': '1' if row.get('full_suite') else '',
                     'VERBOSE': 'yes', 'RBOXC_APPROVED_CASES': ','.join(row.get('cases', [])),
                 }
-                if instrument and row.get('sort_fd_profile'):
+                if row.get('sort_fd_profile'):
                     environment['BASH_ENV'] = str(ROOT/'tests/gnu/sort-fd-profile.bash')
                 if row.get('nproc_policy_profile'):
                     config = run/'nproc-policy-config.json'
@@ -594,14 +594,14 @@ def main():
                                             'watchdog': {'path': str(watchdog), 'sha256': watchdog_hash},
                                             'test_shell': test_shell,
                                             'elapsed_seconds': round(time.monotonic()-started, 3)}
-                if instrument and row.get('sort_fd_profile'):
+                if row.get('sort_fd_profile'):
                     records = [json.loads(p.read_text()) for p in sorted(run.glob('sort-fd-*.json'))]
                     evidence = ROOT/'evidence/raw'/f'reviewed-sort-fd-{run.name}-{implementation}.json'
                     evidence.write_text(json.dumps(records, indent=2)+'\n')
                     outcomes[implementation]['sort_fd_profile'] = {'records': records,
                         'log': str(evidence.relative_to(ROOT)), 'sha256': fingerprint(evidence)}
                     outcomes[implementation]['case_count_pass'] = len(records) == 3 and all(
-                        r['soft'] == 7 and r['hard'] >= 7 and r['before_main'] for r in records)
+                        r['soft'] == r['hard'] == 7 and r['before_main'] for r in records)
                 if row.get('nproc_policy_profile'):
                     journal = run/'nproc-policy-profile.json'
                     record = json.loads(journal.read_text()) if journal.exists() else None

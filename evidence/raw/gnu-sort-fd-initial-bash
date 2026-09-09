@@ -1,0 +1,9 @@
+# Test-only startup allowance. The instrumented client restores both limits to 7.
+# SPDX-License-Identifier: GPL-3.0-or-later
+ulimit() {
+  if [[ $# == 2 && $1 == -n && $2 == 7 ]]; then
+    builtin ulimit -S -n 7
+  else
+    builtin ulimit "$@"
+  fi
+}

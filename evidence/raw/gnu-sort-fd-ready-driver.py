@@ -601,7 +601,7 @@ def main():
                     outcomes[implementation]['sort_fd_profile'] = {'records': records,
                         'log': str(evidence.relative_to(ROOT)), 'sha256': fingerprint(evidence)}
                     outcomes[implementation]['case_count_pass'] = len(records) == 3 and all(
-                        r['soft'] == 7 and r['hard'] >= 7 and r['before_main'] for r in records)
+                        r['soft'] == r['hard'] == 7 and r['before_main'] for r in records)
                 if row.get('nproc_policy_profile'):
                     journal = run/'nproc-policy-profile.json'
                     record = json.loads(journal.read_text()) if journal.exists() else None
