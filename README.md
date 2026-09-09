@@ -2945,3 +2945,28 @@ and a 30-byte trap-restoration leak. Current
 [evidence/bash-execscript-coverage.json](evidence/bash-execscript-coverage.json)
 records 71 original scripts, 55 strict scripts, eight memory/signal profiles,
 eight assertion baselines and 13 recipes pending review.
+
+The shared native `locale` test helper now releases its enumeration tree,
+duplicate keys, directory entries and alias-path buffer. It is built from the
+pinned GNU glibc **2.43** source with host data paths; the original helper and
+adapted helper are compared with `/usr/bin/locale`. All **eight finite
+comparisons** match output/status and have clean adapted Valgrind images,
+including verbose output, real archive entries, directory locales, duplicate
+aliases and empty locale storage. An initial archive-mount fixture mistake
+is preserved separately. This is a **native test dependency**, not a newly
+integrated command. The adapted helper is 153,992 bytes; rboxc is unchanged.
+[evidence/locale-test-helper-validation.json](evidence/locale-test-helper-validation.json)
+pins the source adaptation, compilation, fixtures and process logs.
+
+With this explicitly adapted helper shared by both implementations, the
+**complete original Bash glob and internationalization recipes pass**, including
+all original expected output and the internationalization test counts.
+Their **250 candidate process images are clean** (163 glob, 87 internationalization),
+including five locale-discovery invocations. Previous observations using the
+unmodified helper remain recorded.
+[evidence/bash-locale-helper-validation.json](evidence/bash-locale-helper-validation.json)
+verifies the complete reruns. The current
+[evidence/bash-locale-helper-coverage.json](evidence/bash-locale-helper-coverage.json)
+records **56 strict recipes (57 scripts), 13,435 clean strict process logs**,
+six memory/signal profiles, eight assertion baselines, 13 recipes pending
+review, three held mixed-input recipes and two orchestration recipes.
