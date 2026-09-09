@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT/'tests'), str(ROOT/'tests/gnu')]
 from comparison_profile import fingerprint
 from gawk_child_profile import canonical_child
+import gawk_private_environment
 spec = importlib.util.spec_from_file_location('reviewed', ROOT/'tests/gnu/reviewed-original.py')
 runner = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runner)
@@ -40,6 +41,7 @@ archives = [ROOT/'tests/gawk-original.py', ROOT/'evidence/raw/gawk-array-driver.
             ROOT/'evidence/raw/gawk-before-child-wait-driver.py',
             ROOT/'evidence/raw/gawk-before-self-exec-driver.py']
 archives.append(ROOT/'evidence/raw/gawk-debugger-restart-driver.py')
+archives.append(ROOT/'evidence/raw/gawk-before-private-environment-driver.py')
 driver_versions = {fingerprint(p): str(p.relative_to(ROOT)) for p in archives}
 focused_path = options.focused.resolve()
 focused = json.loads(focused_path.read_text())
@@ -137,7 +139,7 @@ for filename in sorted({r['evidence'] for r in reviewed.values()}):
             assert locale['driver_sha256']==fingerprint(ROOT/locale.get('preparation_driver','scripts/prepare-gawk-locales.py'))
             assert fingerprint(ROOT/locale['build_log'])==locale['build_log_sha256']
             charmap=Path(locale['build_command'][locale['build_command'].index('-f')+1])
-            assert charmap.name in ('UTF-8','ISO-8859-7')
+            assert charmap.name in ('UTF-8','ISO-8859-7','EUC-JP')
             assert fingerprint(charmap)==locale['inputs'][str(charmap)]
             assert locale['probe']=={'status':0,'stdout':charmap.name+'\n','stderr':''}
             if locale.get('alias'):
@@ -175,6 +177,7 @@ for filename in sorted({r['evidence'] for r in reviewed.values()}):
                 assert all(o['assertions_pass'] for o in result['outcomes'].values())
                 assert not result['outcomes']['rboxc-valgrind']['memory_clean']
         for key, outcome in result['outcomes'].items():
+            gawk_private_environment.verify(row, outcome, data['inputs'])
             assert not outcome.get('timed_out') and not outcome.get('child_wait_timeout')
             instrumented_timing = timing_open and key.endswith('-valgrind')
             assert outcome['status'] == 0 and outcome['assertions_pass'] == ((result['pass'] or allow_open) and not instrumented_timing)

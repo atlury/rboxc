@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT/'tests'))
 sys.path.insert(0, str(ROOT/'tests/gnu'))
 from comparison_profile import fingerprint
 from gawk_child_profile import canonical_child
+import gawk_private_environment
 spec = importlib.util.spec_from_file_location('reviewed', ROOT/'tests/gnu/reviewed-original.py')
 runner = importlib.util.module_from_spec(spec); spec.loader.exec_module(runner)
 parser = argparse.ArgumentParser(description=__doc__)
@@ -130,10 +131,11 @@ for row in original['results']:
             assert (base/locale['alias']).readlink()==Path(locale['name'])
         for name,h in locale['files'].items():assert fingerprint(base/locale['name']/name)==h
         charmap=Path(locale['build_command'][locale['build_command'].index('-f')+1])
-        assert charmap.name in ('UTF-8','ISO-8859-7')
+        assert charmap.name in ('UTF-8','ISO-8859-7','EUC-JP')
         assert fingerprint(charmap)==locale['inputs'][str(charmap)]
         assert locale['probe']=={'status':0,'stdout':charmap.name+'\n','stderr':''}
     for key,outcome in row['outcomes'].items():
+        gawk_private_environment.verify(reviewed_rows[row['selection']], outcome, original['inputs'])
         assert not outcome.get('timed_out') and not outcome.get('child_wait_timeout')
         assert outcome['status']==0
         if baseline:

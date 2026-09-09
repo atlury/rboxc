@@ -74,7 +74,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 228 of 244 original groups validated across recorded profiles |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 537 reviewed originals pass; six failures match GNU; ten memory profiles and one timing profile remain open |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 539 reviewed originals pass; six failures match GNU; ten memory profiles and one timing profile remain open |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -238,19 +238,23 @@ Seven further unchanged Gawk recipes pass for numeric and string formatting,
 separator arrays, record reading, multibyte substitution, process identifiers and
 script shebang dispatch. Recipe helpers use pinned GNU implementations; the
 substitution recipe uses the verified English UTF-8 profile.
-`evidence/gawk-print-local-input-coverage.json` audits **537 passing original recipes,
-six unchanged GNU baseline failures and 699 clean processes**: 562 original
+`evidence/gawk-japanese-local-host-coverage.json` audits **539 passing original recipes,
+six unchanged GNU baseline failures and 702 clean processes**: 565 original
 Gawk invocations, thirty-two shell children, twenty native helper children and
 85 focused cases counted once.
 Nine auxiliary inputs are accounted with reviewed recipes, including one unread
 second source argument and one program used solely as cross-reference text. Forty
 historical reproductions are excluded after source review. Twenty MPFR inputs and
 one ARRAYDEBUG input are unavailable in this build, verified by unchanged GNU
-capability guards; seven other pending inputs remain. Three distributed utilities pass separate comparisons, adding no original-assertion count. Ten further reviewed originals pass their
+capability guards; five other pending inputs remain. Three distributed utilities pass separate comparisons, adding no original-assertion count. Ten further reviewed originals pass their
 assertions but retain memory/descriptor findings. One timeout original passes normally but changes retry counts under Valgrind child startup in both GNU and Rboxc. These eleven open profiles have 64 candidate logs, which are
 verified separately and excluded from the strict clean-process totals. The latest seven unchanged recipes cover indirect function calls, POSIX conversion
 and field behavior, namespace pretty printing, formatting, lint diagnostics and
 text matching. The installed release is unchanged, and full GNU acceptance remains open.
+
+Two additional unchanged originals pass in private mount namespaces. The Japanese EUC-JP locale is visible to the original locale-detection script, ensuring Gawk actually executes; the invalid-hostname diagnostic uses only local host data. All three Gawk processes are clean. Host locale and resolver configuration remain unchanged.
+
+A supplemental timeout run passes the unchanged expected output in all four profiles when shell and sleep children run natively. Its one clean candidate Gawk log is audited separately; native child memory is outside that profile, and the full-child timing limitation remains open.
 
 The unchanged PTY original passes its assertions through a private `tr` coprocess. Candidate Gawk logs are clean; native shell descriptor restoration and tr allocation findings remain open. The timeout original passes normally, but tracing its children delays startup beyond its 400 ms read deadline. Both instrumented binaries produce identical changed retry output with clean logs; this timing limitation adds no strict original-pass count. Initial incomplete child-classification runs are preserved.
 
@@ -305,7 +309,7 @@ Nine debugger originals now pass for arrays, expression evaluation and typed
 regular expressions. Two restart the same process: their append-only Valgrind
 logs preserve both execution headers, with first-error termination enabled.
 Each restart counts as one process and two execution images; the strict aggregate
-contains 564 original Gawk execution images. Heap and descriptor summaries describe
+contains 567 original Gawk execution images. Heap and descriptor summaries describe
 the final image, not a separate pre-restart exit. The inherited log descriptor is
 part of the harness. Initial incomplete and intermediate runs remain preserved.
 
@@ -316,7 +320,7 @@ bounded debugger watchpoint session. All twelve Gawk/child logs are clean.
 guard with two clean candidate logs: both configured binaries lack MPFR. Its
 twenty distributed programs and one inline recipe are accounted as unavailable,
 with no execution or original-pass claim. These guard logs are outside the
-699-process aggregate.
+702-process aggregate.
 
 Eleven more originals now match GNU output for pipes, half-close diagnostics,
 inherited descriptors, getline side effects, virtual I/O and pretty printing.

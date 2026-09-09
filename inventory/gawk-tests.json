@@ -4201,8 +4201,20 @@
     {
       "path": "test/jarebug.awk",
       "sha256": "7163e800c17412eca60eafc984a05eb3bee9be986d23bedc3b9f0bc28b184605",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "jarebug",
+      "fixtures": {
+        "jarebug.in": "d2b51ba566be85a2f5e5b4871c986533a9460c6fbd90d2a5f3476eec1d3d2651",
+        "jarebug.ok": "d2b51ba566be85a2f5e5b4871c986533a9460c6fbd90d2a5f3476eec1d3d2651",
+        "jarebug.sh": "c361e464cacbc5723189308973f6ea57eedcc471875ab4d178fc1d3f8a0fdad7"
+      },
+      "configured_recipe_sha256": "d0aee86b020b0f437780f633083fa78d7ce3b991bfb9a3801050596691de3c8b",
+      "private_environment": "japanese-locale-mount",
+      "locale_profile": "evidence/gawk-japanese-locales.json",
+      "review": "Complete original program, shell driver and four short EUC-JP input/expected lines reviewed. Private pinned glibc Japanese locale data is mounted at the normal locale directory inside a private namespace, so unchanged locale -a detection executes Gawk rather than merely copying its input. Source and fixtures remain unchanged.",
+      "evidence": "evidence/gawk-japanese-local-host-original.json",
+      "audit": "evidence/gawk-japanese-local-host-memory-audit.json"
     },
     {
       "path": "test/lc_num1.awk",
@@ -5510,8 +5522,17 @@
     {
       "path": "test/nonfatal1.awk",
       "sha256": "9efa4c5de061a5a78cf721d832b87bedbafc4e928fc4c9532897e9dfeb81b288",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "nonfatal1",
+      "fixtures": {
+        "nonfatal1.ok": "0be0c6f2102d9e9cee9504364d241d9eb22e0c9b0aab606e6959b67ea899d5a2"
+      },
+      "configured_recipe_sha256": "8e5144282b50dce8acb382e61dc5afd1eab2b48905e86a6ad56d11acb886f6bc",
+      "private_environment": "files-only-hosts",
+      "review": "Complete original source, unchanged recipe and expected diagnostic reviewed. Invalid hostname lookup uses only /etc/hosts in a private mount namespace; no DNS or remote service is contacted. The original normalization pipeline is unchanged.",
+      "evidence": "evidence/gawk-japanese-local-host-original.json",
+      "audit": "evidence/gawk-japanese-local-host-memory-audit.json"
     },
     {
       "path": "test/nonfatal2.awk",

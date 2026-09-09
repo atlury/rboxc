@@ -17,7 +17,6 @@ import sys
 import tempfile
 from comparison_profile import ComparisonProfile,fingerprint
 from gawk_child_profile import canonical_child
-import gawk_private_environment
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tests/gnu'))
@@ -48,13 +47,12 @@ cat_profile=json.loads(cat_profile_path.read_text())
 helpers['cat']=Path(cat_profile['binary'])
 assert fingerprint(helpers['cat'])==cat_profile['binary_sha256']
 inputs={p:fingerprint(p) for p in {makefile,source/'test/Makefile.am',source/'test/Makefile.in',
-    Path(__file__),ROOT/'tests/gawk_child_profile.py',ROOT/'tests/gawk_private_environment.py',Path('/usr/bin/make'),Path('/bin/bash').resolve(),Path('/bin/sh').resolve(),*helpers.values(),profile.oracle}}
+    Path(__file__),ROOT/'tests/gawk_child_profile.py',Path('/usr/bin/make'),Path('/bin/bash').resolve(),Path('/bin/sh').resolve(),*helpers.values(),profile.oracle}}
 inputs[helper_profile_path]=fingerprint(helper_profile_path)
 inputs.update({Path(p):h for p,h in helper_profile['inputs'].items()})
 inputs[cat_profile_path]=fingerprint(cat_profile_path)
 inputs.update({Path(p):h for p,h in cat_profile['inputs'].items()})
 for row in selected:
-    inputs.update(gawk_private_environment.inputs_for(row))
     inputs[source/row['path']]=row['sha256']
     inputs.update({source/'test'/n:h for n,h in row['fixtures'].items()})
     inputs.update({Path(v['path']):v['sha256'] for v in row.get('working_files',{}).values()})
@@ -117,7 +115,6 @@ def run_selection(row):
                 env={'PATH':str(work/'exec')+':'+str(work/'deps')+':/usr/bin:/bin','HOME':directory,
                      'TMPDIR':directory,'LC_ALL':'C','LANGUAGE':'C','TZ':'UTC0'}
                 if name in locale_profiles:env['LOCPATH']=locale_profiles[name]
-                command, private_environment = gawk_private_environment.prepare(row, work, saved, command, env)
                 process=subprocess.Popen(command,cwd=work,env=env,stdin=subprocess.DEVNULL,
                     stdout=subprocess.PIPE,stderr=subprocess.STDOUT,start_new_session=True)
                 timed_out=False
@@ -184,7 +181,7 @@ def run_selection(row):
                 clean=bool(logs) and all(m['complete_exec_log'] and m['errors']==0
                     and m['non_inherited_descriptors']==0 and not any(m['heap_bytes'].get(k,0)
                     for k in ('definitely lost','indirectly lost','possibly lost')) for m in logs)
-                outcomes[key]={'private_environment':private_environment,'process_group':process.pid,'timed_out':timed_out,'child_wait_timeout':child_wait_timeout,'waited_children':sorted(waited_children),'private_work_directory':str(work),'status':done.returncode,'assertions_pass':passed,
+                outcomes[key]={'process_group':process.pid,'timed_out':timed_out,'child_wait_timeout':child_wait_timeout,'waited_children':sorted(waited_children),'private_work_directory':str(work),'status':done.returncode,'assertions_pass':passed,
                     'baseline_failure_matches':baseline_matches,'actual_output':str((saved/'actual-output').relative_to(ROOT)) if residual.exists() else None,'actual_output_sha256':fingerprint(saved/'actual-output') if residual.exists() else None,
                     'driver_log':str((saved/'driver.log').relative_to(ROOT)),'driver_log_sha256':fingerprint(saved/'driver.log'),
                     'memory':logs,'memory_clean':clean if instrument else None}
