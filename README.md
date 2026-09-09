@@ -78,7 +78,7 @@ there where available.
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
-| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 17 reviewed originals pass with clean Valgrind; broader acceptance open |
+| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 19 reviewed originals pass across recorded candidates with clean Valgrind; broader acceptance open |
 | Less | 704 | Ten focused checks, one production terminal check and all 18 original screen replays pass across declared profiles |
 | Screen | 5.0.2 | All three original targets pass across declared profiles; daemon cleanup and socket recovery pass Valgrind |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
@@ -2201,6 +2201,8 @@ and source hashes in `inventory/gnu-cp-tests.json`; they are not counted as pass
 Build products and raw test logs stay outside Git; source, scripts, pins, and
 result summaries are committed. `evidence/status.json` records the binary hash
 and current results.
+
+Two more complete Bash originals now pass: alias expansion and command/function descriptions, including all twelve subsidiary scripts. Their 69 candidate process logs are clean on the current 187-command candidate. The original scripts use absolute helper paths; private mounts supply matching native GNU or integrated Rboxc tools there. Initial host Rust Coreutils/Valgrind startup failures remain preserved, and host executables are unchanged. This raises reviewed Bash coverage from seventeen to nineteen scripts across recorded candidates; broader Bash acceptance remains open.
 
 ## Build and reproduce
 

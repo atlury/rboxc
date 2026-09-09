@@ -31,9 +31,6 @@ for helper in runtime_helpers.values():
     inputs[ROOT/helper['source']]=helper['source_sha256']
     inputs[ROOT/helper['binary']]=helper['binary_sha256']
 for row in selected:
-    inputs.update({Path(p):h for p,h in row.get('host_inputs',{}).items()})
-    if row.get('absolute_helpers'):
-        inputs.update({p:fingerprint(p) for p in (Path('/usr/bin/unshare'),Path('/usr/bin/mount'),Path('/bin/sh').resolve())})
     inputs[source/row['recipe']]=row['recipe_sha256']
     inputs.update({source/n:h for n,h in row['fixtures'].items()})
 assert all(fingerprint(p)==h for p,h in inputs.items())
@@ -57,19 +54,6 @@ for row in selected:
                      'TMPDIR':directory,'LC_ALL':'C','LANGUAGE':'C','TZ':'UTC0'}
                 if row.get('runtime_helpers'):
                     env['LD_PRELOAD']=':'.join(str(ROOT/runtime_helpers[n]['binary']) for n in row['runtime_helpers'])
-                private_mounts=[]
-                if row.get('absolute_helpers'):
-                    mount_args=[]
-                    for absolute in row['absolute_helpers']:
-                        assert absolute in ('/bin/echo','/bin/mkdir','/bin/touch','/bin/chmod','/bin/rm')
-                        destination=Path(absolute).resolve()
-                        assert str(destination) in row['host_inputs']
-                        replacement=ROOT/'build/gnu-coreutils/src/coreutils' if implementation=='gnu' else profile.binary
-                        private_mounts.append({'original':absolute,'destination':str(destination),'source':str(replacement),'source_sha256':fingerprint(replacement)})
-                        mount_args += [str(replacement),str(destination)]
-                    argv=['/usr/bin/unshare','--mount','--propagation','private','/bin/sh','-c',
-                        'while [ "$1" != -- ]; do /usr/bin/mount --bind "$1" "$2" || exit 77; shift 2; done; shift; exec "$@"',
-                        'bash-private-helpers',*mount_args,'--',*argv]
                 done=subprocess.run(argv,cwd=work,env=env,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE if row['output_mode']=='stdout' else subprocess.STDOUT,timeout=180)
                 actual=done.stdout
@@ -88,7 +72,7 @@ for row in selected:
                     clean=complete and parsed['errors']==0 and parsed['non_inherited_descriptors']==0 and not any(parsed['heap_bytes'].get(k,0) for k in ('definitely lost','indirectly lost','possibly lost'))
                     logs.append({'log':str(log.relative_to(ROOT)),'sha256':fingerprint(log),'pid':pid,'complete':complete,'clean':clean,**parsed})
                 assert not instrument or logs
-                outcomes[key]={'private_mounts':private_mounts,'status':done.returncode,'expected_output_matches':actual==(source/row['expected']).read_bytes(),
+                outcomes[key]={'status':done.returncode,'expected_output_matches':actual==(source/row['expected']).read_bytes(),
                     'raw':{str(p.relative_to(ROOT)):fingerprint(p) for p in (saved/'stdout',saved/'stderr',saved/'actual')},
                     'memory':logs,'memory_clean':all(m['clean'] for m in logs) if instrument else None}
     passed=all(o['expected_output_matches'] and o['status']==outcomes['gnu']['status'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
