@@ -74,7 +74,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 228 of 244 original groups validated across recorded profiles |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 461 reviewed originals pass; three original failures match GNU |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 467 reviewed originals pass; three original failures match GNU |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -235,15 +235,19 @@ Seven further unchanged Gawk recipes pass for numeric and string formatting,
 separator arrays, record reading, multibyte substitution, process identifiers and
 script shebang dispatch. Recipe helpers use pinned GNU implementations; the
 substitution recipe uses the verified English UTF-8 profile.
-`evidence/gawk-native-child-coverage.json` audits **461 passing original recipes,
-three unchanged GNU baseline failures and 583 clean processes**: 476 original
+`evidence/gawk-utf8-exit-coverage.json` audits **467 passing original recipes,
+three unchanged GNU baseline failures and 589 clean processes**: 482 original
 Gawk invocations, seventeen shell children, five native helper children and
 85 focused cases counted once.
 Three auxiliary inputs are already covered by passing recipes; nine exclusions
-and 158 pending inputs remain. The latest seven unchanged recipes cover indirect function calls, POSIX conversion
+and 152 pending inputs remain. The latest seven unchanged recipes cover indirect function calls, POSIX conversion
 and field behavior, namespace pretty printing, formatting, lint diagnostics and
 text matching. The candidate and installed
 release are unchanged, and full GNU acceptance remains open.
+
+Six further originals validate locale grouping, UTF-8 field widths and formatting,
+substring indices, and explicit exit status during function argument evaluation.
+The four locale recipes use the pinned private English UTF-8 collection.
 
 Six additional unchanged recipes cover whitespace classes, namespaced identifiers,
 word counting, indirect builtin calls, an empty array index and nonfatal output
