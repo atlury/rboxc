@@ -2394,6 +2394,15 @@ assertions and every process summary:
 [evidence/gnu-sort-selection-validation.json](evidence/gnu-sort-selection-validation.json).
 The Valgrind ledger now has 589 passed scripts, 23 passed selections, 39 open
 profiles, 53 pending and 29 exclusions. Installed-release evidence is unchanged.
+All 31 remaining whole-script pending entries now have complete source reviews:
+20 historical reproductions, four resource profiles, four isolation/debugger
+profiles, two mixed scripts needing ordinary selections, and one platform
+resource profile. These reviews add no runtime passes or exclusions. The
+remaining filenames, source hashes and individual reasons are recorded in
+[evidence/gnu-remaining-coreutils-review.json](evidence/gnu-remaining-coreutils-review.json);
+[evidence/gnu-remaining-coreutils-review-validation.json](evidence/gnu-remaining-coreutils-review-validation.json)
+verifies their exact correspondence to the pending ledger and unchanged
+execution states.
 
 Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are

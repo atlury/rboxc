@@ -1,0 +1,295 @@
+{
+  "scope": "Read-only source review of all 31 remaining whole-script pending entries after the separately selected sort matrix. Original sources are preserved. No runtime scripts were executed for this review; it adds no runtime passes and does not certify full Coreutils/GNU coverage. Resource and environment profiles are distinguished from historical reproductions; ordinary sections of mixed scripts can be selected separately.",
+  "source": "GNU coreutils 9.11",
+  "base_report": "evidence/gnu-option-selection-coverage.json",
+  "base_report_sha256": "b64726e74e613d2a6f45a2689e8b0939d3e7c3aee6be38bef9907159e58a563a",
+  "separate_sort_review": "evidence/gnu-sort-case-review.json",
+  "counts": {
+    "historical-reproduction": 20,
+    "isolation-debugger-profile": 4,
+    "mixed-source-selection": 2,
+    "platform-resource-profile": 1,
+    "resource-profile": 4
+  },
+  "results": [
+    {
+      "script": "tests/csplit/csplit-1000.sh",
+      "sha256": "29f06e1ec13c6881d20033a8e0bb3dc5b0286d7e8391a315e91c80d5e23cf955",
+      "lines": 29,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Explicit historical heap-overrun reproduction."
+    },
+    {
+      "script": "tests/csplit/csplit-heap.sh",
+      "sha256": "c02e723502ddbf93bfb9c8d95c15e69d5bb99dd05024f89e1e8bc0fc6b1072e5",
+      "lines": 32,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "resource-profile",
+      "reason": "Original bounded-memory calibration and 2.5-million-line stream need a separate address-space profile; instrumented launcher overhead must be accounted."
+    },
+    {
+      "script": "tests/cut/cut-huge-range.sh",
+      "sha256": "fa0e9ac5e742e3bf1c512143abd43d815417b4c17eb990fd6038f3667e0c1fe4",
+      "lines": 46,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "resource-profile",
+      "reason": "Original range validation runs under a dynamically calibrated address-space limit; instrumentation overhead needs separate treatment."
+    },
+    {
+      "script": "tests/date/date-tz.sh",
+      "sha256": "ba9060e8e517a27d58e735331320d2b6e718c9fb37a015f893e8cfd0d61fa953",
+      "lines": 32,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Explicit historical heap-overwrite reproduction."
+    },
+    {
+      "script": "tests/du/move-dir-while-traversing.sh",
+      "sha256": "fc751d615777eb4d13ee2de8f6288bfc4213b348d2a087ec4209a9b870b50d54",
+      "lines": 98,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Explicit historical assertion/abort reproduction using concurrent directory moves."
+    },
+    {
+      "script": "tests/fold/fold-zero-width.sh",
+      "sha256": "38f1864d346fef40b2fbf3b17de542c1aec5439837d462adfb8c1405dad9fea4",
+      "lines": 68,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "resource-profile",
+      "reason": "Original zero-width byte/Unicode and bounded-memory ENOSPC checks include locale and address-space profiles."
+    },
+    {
+      "script": "tests/ln/backup-suffix-traversal.sh",
+      "sha256": "d5796222b39fc12e2bf1d97bee9c968cb7c314894d3f5898cd6ace978b6d5fc1",
+      "lines": 65,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "isolation-debugger-profile",
+      "reason": "Backup suffix guard checks include paths outside the immediate working directory; require a private filesystem fixture before execution."
+    },
+    {
+      "script": "tests/ls/infloop.sh",
+      "sha256": "0bf6042d23195c467947656e639e96dd91eb574ff2f59618d283a39d06d7182d",
+      "lines": 41,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Explicit historical nontermination reproduction."
+    },
+    {
+      "script": "tests/mkdir/smack-no-root.sh",
+      "sha256": "38c952d52e1654bb24973adc4596a6229c746e75d63532114919205b3f417a0c",
+      "lines": 37,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Explicit historical crash reproduction requiring SMACK context support."
+    },
+    {
+      "script": "tests/od/big-w.sh",
+      "sha256": "10b1bbaccc77e70cf448723449edcdea8a8e3255c575f859079f1ea2b67180c2",
+      "lines": 43,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "resource-profile",
+      "reason": "Very-expensive width cases can emit over 12 GB per large-width call; require a bounded storage/time profile."
+    },
+    {
+      "script": "tests/printf/printf-surprise.sh",
+      "sha256": "ec08312c62a3c678113cf48981e4f9671356db9b948b15d62477c2739dab730c",
+      "lines": 99,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Low-memory printf behavior includes documented historical libc crashes and deliberate allocation-failure orchestration."
+    },
+    {
+      "script": "tests/ptx/ptx-overrun.sh",
+      "sha256": "01e3c35dfcaa6fba06cf1d01babe0c085902d8ce6e950c0b4a3cf69ed6afe023",
+      "lines": 53,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "mixed-source-selection",
+      "reason": "Ordinary Unicode input checks precede explicit historical invalid-memory reproductions; whole script held, ordinary prefix can be selected separately."
+    },
+    {
+      "script": "tests/rm/hash.sh",
+      "sha256": "25f49dcc6d36ac2b6977deff4cf544a09348e150decad78ee7b15bac25326c94",
+      "lines": 37,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Explicit historical assertion/crash reproduction with deep directory trees."
+    },
+    {
+      "script": "tests/rm/r-root.sh",
+      "sha256": "b81356101eed4cb4c7f0a35a7f40abb10810dd5400bcb9d0934c8289b89a99f4",
+      "lines": 325,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "isolation-debugger-profile",
+      "reason": "Original root-removal guard tests require non-root credentials, a private root, independently verified interception and debugger mapping; not executed against the host root."
+    },
+    {
+      "script": "tests/sort/sort-NaN-infloop.sh",
+      "sha256": "af83658bcc7c57a057b435f54b1486b76af00644b4aa022eaf65bf5c61013b20",
+      "lines": 31,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Explicit historical nontermination reproductions."
+    },
+    {
+      "script": "tests/sort/sort-compress-hang.sh",
+      "sha256": "ee39f35807a6185122b050ba7af609897a7ed83680e35cb989e0b2c3d323d95f",
+      "lines": 57,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Explicit historical compression-subprocess hang reproduction."
+    },
+    {
+      "script": "tests/sort/sort-field-limit.sh",
+      "sha256": "bd484f960d51850e2a20c8e26388991e7e6311aed146eb649bdae74683985938",
+      "lines": 35,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Explicit historical out-of-bounds read reproduction."
+    },
+    {
+      "script": "tests/sort/sort-spinlock-abuse.sh",
+      "sha256": "3546abf5b586361d2b4ab3985bdbe9c558ed1eb5f8a8360a17a87d42dd459b7c",
+      "lines": 48,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Explicit historical CPU-spin reproduction under blocked output."
+    },
+    {
+      "script": "tests/sort/sort-stale-thread-mem.sh",
+      "sha256": "045b232c31839c067f2f5f3c472ee7fbfc3e1caf7bac8a7caa23194e517bf15d",
+      "lines": 52,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Explicit historical stale-thread-memory reproduction repeated under Valgrind."
+    },
+    {
+      "script": "tests/sort/sort-u-FMR.sh",
+      "sha256": "00126b29070c4d3b97bab4cf872c37e7423767f878b39257f27958045af3d16c",
+      "lines": 29,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Explicit historical freed-memory read reproduction."
+    },
+    {
+      "script": "tests/sort/sort-unique-segv.sh",
+      "sha256": "0a96a98ee7bc093d15d32482cb6c6f5fe8f56b50efcb3dd0a227c085d52f0a16",
+      "lines": 48,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Explicit historical parallel-sort crash reproduction."
+    },
+    {
+      "script": "tests/tail/assert-2.sh",
+      "sha256": "f11727c589121d6fec080d66ebef905497acc58ab500f4749db763b1d790edf4",
+      "lines": 57,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Explicit historical uninitialized-read reproduction."
+    },
+    {
+      "script": "tests/tail/assert.sh",
+      "sha256": "33297d9fb25c38bf0e4a0855c1e1bfa75f1b64f21a68d11d0d7152e4570d5070",
+      "lines": 68,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Explicit historical assertion/abort reproduction."
+    },
+    {
+      "script": "tests/tail/basic-seek.sh",
+      "sha256": "d51e91e224763605a47015a4a2b1f8f973f72ac1bd1c9b0848280bab0ba04f3c",
+      "lines": 28,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Explicit historical status-139 reproduction."
+    },
+    {
+      "script": "tests/tail/follow-stdin.sh",
+      "sha256": "e223fc597565f9faf4c84413751228fca5734b889039b260dd3416215eadaca0",
+      "lines": 83,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "mixed-source-selection",
+      "reason": "Ordinary follow/stdin and terminal assertions surround an explicit historical uninitialized-read reproduction; needs a selected process/terminal profile."
+    },
+    {
+      "script": "tests/tail/inotify-hash-abuse.sh",
+      "sha256": "4136c43b58d63ae79d66e73b6f0f541b5dd9a0b6e808e4804b6f9496797e5cfe",
+      "lines": 71,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Explicit historical abort reproduction."
+    },
+    {
+      "script": "tests/tail/inotify-hash-abuse2.sh",
+      "sha256": "a092697ad162a56328816548928a54e7ce73f6dd7bf73da0ea596632cd633022",
+      "lines": 46,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Explicit historical abort reproduction."
+    },
+    {
+      "script": "tests/tail/inotify-race.sh",
+      "sha256": "95c465742ed10380338335c19d2bd5252f1eb50bbb0e879b7d9317118295c878",
+      "lines": 99,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "isolation-debugger-profile",
+      "reason": "Original owned-process timing check depends on breakpoints in GNU tail.c; translated source/debug mapping and debugger lifecycle need an explicit profile."
+    },
+    {
+      "script": "tests/tail/inotify-race2.sh",
+      "sha256": "0fbf209dbdbadbec1cbbd1e1a2d50f1b5128be767184189114767f74e96dd390",
+      "lines": 104,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "isolation-debugger-profile",
+      "reason": "Original owned-process replacement timing check depends on GNU source-line breakpoints; translated debug mapping and lifecycle need an explicit profile."
+    },
+    {
+      "script": "tests/tail/proc-ksyms.sh",
+      "sha256": "1c8eafab47ae2e0356dd9a8e81c39c8b3db08fde12ed900b6f8e55d7043c647d",
+      "lines": 28,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "historical-reproduction",
+      "reason": "Explicit historical crash reproduction; an absent optional input would not establish tested behavior."
+    },
+    {
+      "script": "tests/timeout/timeout-large-parameters.sh",
+      "sha256": "9058b3aa9f6fbcde2f9c6cb658febcbf51abcf6cd7824cf24c8d5240e3542b50",
+      "lines": 46,
+      "review_state": "source-reviewed",
+      "execution_state": "pending",
+      "category": "platform-resource-profile",
+      "reason": "Separated upstream due to kernel timer-overflow behavior; large timer values need an explicitly reviewed platform profile."
+    }
+  ]
+}
