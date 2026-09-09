@@ -2326,11 +2326,11 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. The current
-[evidence/gnu-date-expanded-coverage.json](evidence/gnu-date-expanded-coverage.json)
-extends the preserved suite checkpoints: **640 scripts passed**, 29 have
-selected coverage, five are skipped, 29 are excluded and 30 remain pending.
-Excluding the 29 exclusions, 640/704 scripts (90.9%) have whole-script passes;
-64/704 (9.1%) remain partial, pending or skipped. This measures script coverage,
+[evidence/gnu-native-resource-coverage.json](evidence/gnu-native-resource-coverage.json)
+extends the preserved suite checkpoints: **644 scripts passed**, 29 have
+selected coverage, five are skipped, 29 are excluded and 26 remain pending.
+Excluding the 29 exclusions, 644/704 scripts (91.5%) have whole-script passes;
+60/704 (8.5%) remain partial, pending or skipped. This measures script coverage,
 not remaining engineering effort or complete Valgrind acceptance.
 
 All 197 reviewed `env -S` cases pass normally against GNU. The original table
@@ -2492,9 +2492,22 @@ held; 12 shell selections retain their exact recorded omitted source ranges.
 All selected normal assertions pass. Under Valgrind, 27 selections pass and
 `env -S` plus `numfmt` retain their documented instrumentation differences.
 There are no unexecuted partial-entry Valgrind profiles. This does not convert
-any partial entry into a whole-script pass or complete the remaining 30 pending
-scripts. [evidence/gnu-partial-coverage-validation.json](evidence/gnu-partial-coverage-validation.json)
+any partial entry into a whole-script pass or complete the whole-script
+pending entries. [evidence/gnu-partial-coverage-validation.json](evidence/gnu-partial-coverage-validation.json)
 checks every partial entry against its source review and both execution reports.
+
+Four further whole originals pass: `csplit/csplit-heap.sh`,
+`cut/cut-huge-range.sh`, `fold/fold-zero-width.sh` and
+`timeout/timeout-large-parameters.sh`. The native resource scripts retain their
+original dynamic memory calibration, 2.5-million-line csplit stream, cut range
+validation, Unicode/NUL fold checks and all three ENOSPC branches. Their native
+memory budgets remain below Valgrind startup needs, so their instrumented
+resource profiles remain pending. The finite timeout parameter script also
+passes under Valgrind with **12 clean candidate timeout/sleep process images**.
+[evidence/gnu-native-resource-validation.json](evidence/gnu-native-resource-validation.json)
+pins all original sources, calibrated/exercised limits, locale data, assertions
+and timer process summaries. The ledger now has 591 passed scripts, 27 passed
+selections, 40 open profiles, 46 pending and 29 exclusions under Valgrind.
 
 Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
