@@ -29,21 +29,6 @@ pub unsafe extern "C" fn main(mut argc: c_int, mut argv: *mut *mut c_char) -> c_
     if argc < 1 || argv.is_null() || (*argv).is_null() { return 1; }
     let path = CStr::from_ptr(*argv).to_bytes();
     let mut name = path.rsplit(|byte| *byte == b'/').next().unwrap_or(path);
-    #[cfg(target_os = "linux")]
-    {
-        // exec -a changes argv[0], but the kernel retains the executed path.
-        // A named applet symlink still selects that applet. Pass argv through
-        // unchanged so GNU retains custom names and login-shell semantics.
-        let executable = libc::getauxval(libc::AT_EXECFN) as *const c_char;
-        if !executable.is_null() {
-            let executable_path = CStr::from_ptr(executable).to_bytes();
-            let executable_name = executable_path.rsplit(|byte| *byte == b'/')
-                .next().unwrap_or(executable_path);
-            if APPLETS.iter().any(|(command, _)| executable_name == *command) {
-                name = executable_name;
-            }
-        }
-    }
     let rbox_invocation = name == b"rboxc" || name == b"rbox";
     if rbox_invocation {
         if argc < 2 {

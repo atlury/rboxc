@@ -78,7 +78,7 @@ there where available.
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
-| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 53 original recipes (54 scripts) pass on their recorded candidates with 12765 clean process logs; six memory/signal profiles and six instrumentation/environment baselines remain open |
+| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 53 original recipes (54 scripts) pass on their recorded candidates with 12765 clean process logs; six memory/signal profiles and seven instrumentation/environment baselines remain open |
 | Less | 704 | Ten focused checks, one production terminal check and all 18 original screen replays pass across declared profiles |
 | Screen | 5.0.2 | All three original targets pass across declared profiles; daemon cleanup and socket recovery pass Valgrind |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
@@ -105,19 +105,35 @@ The public terminal cleanup API alone retains the shared parameter cache in
 this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
-The current 187-command candidate is **14,723,208 bytes**, at
-`target/bash-multibyte-cleanup-candidate/release/rboxc`, SHA-256
-`e7e3a22b792bf1f44740e651450114218c1bc8021e5b260739f251cf79841284`.
+The current 187-command candidate is **14,721,608 bytes**, at
+`target/executable-name-candidate/release/rboxc`, SHA-256
+`beba519009c2fd02ffbc4df73978cc368aae687ecc3f93f28cd1177ea04f01a7`.
 An independent rebuild is byte-identical. All 428 Coreutils smoke checks,
 11 dispatcher checks, 44 focused Bash comparisons and 69 shell-adapter checks
 pass. Bash has **54 strict scripts from 53 original recipes**, with **12765 clean
 candidate process logs** across their recorded immutable candidates.
-[evidence/bash-multibyte-coverage.json](evidence/bash-multibyte-coverage.json)
-accounts for 66 reviewed scripts and all 88 original recipes; 18 recipes remain
+[evidence/bash-executable-name-coverage.json](evidence/bash-executable-name-coverage.json)
+accounts for 67 reviewed scripts and all 88 original recipes; 17 recipes remain
 pending, two are orchestration and three are held outside execution.
 
 
-Wide delimiter lists now receive an explicit terminator, including the
+Linux applet selection now uses the kernel's executed pathname when it names
+an applet, while passing the caller's `argv[0]` unchanged to GNU. This fixes
+`exec -a specialname bash ...`, names that collide with other applets, and
+`exec -l printenv`. All **28 normal comparisons** now match GNU, up from four.
+All 28 instrumented comparisons also match GNU; **eight match across all
+modes**, while 20 retain Valgrind's replacement of custom invocation names.
+Their **68 candidate process logs** are clean. The unchanged builtins recipe
+has **111 clean candidate logs** and matches GNU's observed output. Both
+implementations retain two original expected-output differences in help
+formatting and resource limits, plus Valgrind's invocation-name baseline, so
+the recipe remains outside strict counts. Its fixed paths use a private
+`/tmp`, login startup uses a private empty system profile, and the oracle uses
+the unchanged standalone GNU printenv body. The earlier observations remain
+preserved. [evidence/executable-name-validation.json](evidence/executable-name-validation.json)
+audits the source change, byte-identical rebuild, comparisons and fixtures.
+
+At the preceding multibyte checkpoint, wide delimiter lists gained an explicit terminator, including the
 conversion fallback, and missing-command diagnostics release allocated quoted
 names. All original internationalization assertions, including **1770 Unicode
 checks**, match normally and under Valgrind. All **83 candidate applet logs**

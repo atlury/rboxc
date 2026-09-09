@@ -36,9 +36,6 @@ for helper in runtime_helpers.values():
     inputs[ROOT/helper['source']]=helper['source_sha256']
     inputs[ROOT/helper['binary']]=helper['binary_sha256']
 for row in selected:
-    for name,data in row.get('oracle_helpers',{}).items():
-        assert row['target']=='builtins' and name=='printenv'
-        inputs[Path(data['binary'])]=data['binary_sha256']
     for name,data in row.get('build_data',{}).items():
         assert Path(name).name==name and name not in ('.','..')
         inputs[Path(data['path'])]=data['sha256']
@@ -68,9 +65,7 @@ for row in selected:
             with tempfile.TemporaryDirectory(prefix='rboxc-bash-original-',dir=ROOT/'build' if row.get('private_tmp') else None) as directory:
                 work=Path(directory);(work/'exec').mkdir()
                 alias=work/'exec/bash';alias.symlink_to(binary)
-                for n,p in helpers.items():
-                    native=Path(row['oracle_helpers'][n]['binary']) if n in row.get('oracle_helpers',{}) else p
-                    (work/'exec'/n).symlink_to(native if implementation=='gnu' else profile.binary)
+                for n,p in helpers.items():(work/'exec'/n).symlink_to(p if implementation=='gnu' else profile.binary)
                 if row.get('locale_archive'):(work/'exec/locale').symlink_to('/usr/bin/locale')
                 for n,h in fixed_helpers.items():(work/'exec'/n).symlink_to(ROOT/h['binary'])
                 for n in row['fixtures']:shutil.copy2(source/n,work/n)

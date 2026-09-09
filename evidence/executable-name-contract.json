@@ -1,0 +1,3573 @@
+{
+  "runtime_helpers": {
+    "/root/rboxc/target/executable-name-candidate/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174"
+  },
+  "binary": "/root/rboxc/target/executable-name-candidate/release/rboxc",
+  "binary_sha256": "beba519009c2fd02ffbc4df73978cc368aae687ecc3f93f28cd1177ea04f01a7",
+  "gnu_binary_sha256": "bd47035bca2886f8d61f564ae38ca9c807a8b0b98e914d28f909fb7b1bb1366f",
+  "inputs": {
+    "/root/rboxc/build/gnu-bash/bash": "bd47035bca2886f8d61f564ae38ca9c807a8b0b98e914d28f909fb7b1bb1366f",
+    "/root/rboxc/target/executable-name-candidate/release/rboxc": "beba519009c2fd02ffbc4df73978cc368aae687ecc3f93f28cd1177ea04f01a7",
+    "/root/rboxc/build/bash-printenv-helper/printenv": "6b4ede8d692838a895d1228f8be759a44e1ff345232cc8aba1beff18cb4045d4",
+    "/root/rboxc/tests/executable-name-contract.py": "556c2ad28061e97ac434787e2947a20779af227204c92c9114861b72f0fd6f01"
+  },
+  "scope": "Twenty-eight custom invocation comparisons across four shell aliases retain argv[0], login and POSIX behavior, known-applet name collisions and printenv with a login name and clean environment. Pinned standalone native GNU printenv is the oracle; candidate helpers remain integrated. Every traced candidate image requires complete clean heap and descriptor summaries.",
+  "complete": true,
+  "planned_total": 28,
+  "passed": 8,
+  "total": 28,
+  "results": [
+    {
+      "name": "bash:custom",
+      "command": "bash",
+      "args": [
+        "-c",
+        "exec -a specialname \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7370656369616c6e616d650a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "7370656369616c6e616d650a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d656f6679387468642f657865632f626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/0-gnu-valgrind/process-1049656.log",
+              "sha256": "4e9191a565f57617079cd4d412932b77fc038403417087708ced1f56140884dd",
+              "pid": "1049656",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48009
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/0-gnu-valgrind/process-1050699.log",
+              "sha256": "14be3645889d0642c79a0678dd8a98b2d943f49e8f4e31aec777fb0dc789233e",
+              "pid": "1050699",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48680
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/0-gnu-valgrind/process-1050700.log",
+              "sha256": "5785df1432356e46262b7e870cff3527156c6bdc125f04b507925d7b3654bca7",
+              "pid": "1050700",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51995
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7370656369616c6e616d650a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "7370656369616c6e616d650a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d3162616a706364322f657865632f626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/0-rboxc-valgrind/process-1050707.log",
+              "sha256": "1294a59e5b644aaa6a2fe1cf719d304f5b2cd28e0b4f9b2bff367c42de024017",
+              "pid": "1050707",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48617
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/0-rboxc-valgrind/process-1050783.log",
+              "sha256": "30300fd3517984eff8db0938596133f246157b05e7fec6b8a908c6464e3e7131",
+              "pid": "1050783",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49336
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/0-rboxc-valgrind/process-1050784.log",
+              "sha256": "6ca84456c1304eba0a897c7b1db42db7c63b2a8ccbe67012aaf0ae0917872222",
+              "pid": "1050784",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53867
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:known-applet",
+      "command": "bash",
+      "args": [
+        "-c",
+        "exec -a cat \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "6361740a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "6361740a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d6b6b73366b3572322f657865632f626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/1-gnu-valgrind/process-1050791.log",
+              "sha256": "71df4faa08a4b70a9f162a6abb122135f1cf475fb558c95744439f4a270d9b21",
+              "pid": "1050791",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48009
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/1-gnu-valgrind/process-1050799.log",
+              "sha256": "111e23a7396c6f15d68a482061054e5c9fb39e81445f2719713e659eeb7bebb2",
+              "pid": "1050799",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48680
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/1-gnu-valgrind/process-1050800.log",
+              "sha256": "693dccddf2732dc23d2f39e0366ebd9db24ed26d02a7baa2fedd324f58adfcd2",
+              "pid": "1050800",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51995
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "6361740a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "6361740a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d6c306c376f7261742f657865632f626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/1-rboxc-valgrind/process-1050807.log",
+              "sha256": "5728ef09cd37c784df4d4cfde569e0940e903793125fed35deb3ce0cab98a33d",
+              "pid": "1050807",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48617
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/1-rboxc-valgrind/process-1050820.log",
+              "sha256": "d3ca7d2cdaebbed101d185199dd495243bd6a00e674b7ee1a7fbc3825b539ed9",
+              "pid": "1050820",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49336
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/1-rboxc-valgrind/process-1050821.log",
+              "sha256": "36cc56ca66c1daa74e156240b6c9e7c557f2b43eb6554eff13b0609e5ea5eb43",
+              "pid": "1050821",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53867
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:dispatcher-name",
+      "command": "bash",
+      "args": [
+        "-c",
+        "exec -a rboxc \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72626f78630a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "72626f78630a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d707831335f6a6c702f657865632f626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/2-gnu-valgrind/process-1050828.log",
+              "sha256": "8ad0af1d9ea2b7de55109bf305b2694f0ff9e653fcf3cc767c6cdaf729ff0d00",
+              "pid": "1050828",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48009
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/2-gnu-valgrind/process-1050842.log",
+              "sha256": "1f79ddb093597278fda204a2d371e0827e68e4663dba5932984d284a0bcf2a71",
+              "pid": "1050842",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48680
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/2-gnu-valgrind/process-1050843.log",
+              "sha256": "5b7c997d0fd218c10caa51b539363223a2d8cedb1c722c06ddd27822454a970f",
+              "pid": "1050843",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51995
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72626f78630a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "72626f78630a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d38676433786533612f657865632f626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/2-rboxc-valgrind/process-1050849.log",
+              "sha256": "ad3a549ad3977d03158403277a31927b0896042ec509c4d65107469dd243da2c",
+              "pid": "1050849",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48617
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/2-rboxc-valgrind/process-1050858.log",
+              "sha256": "1b76ec7ed9ab4b4f344f53d611d55f438ae656cd58f88393ede255f6880a4522",
+              "pid": "1050858",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49336
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/2-rboxc-valgrind/process-1050859.log",
+              "sha256": "024eaddc74f5a5425bcf9e3fe7387f043a30697c4560200e84cae35d0ea7714d",
+              "pid": "1050859",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53867
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:login",
+      "command": "bash",
+      "args": [
+        "-c",
+        "exec -a -specialname \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "2d7370656369616c6e616d650a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2d7370656369616c6e616d650a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d6c33716d6377326a2f657865632f626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/3-gnu-valgrind/process-1050865.log",
+              "sha256": "6e3ce8f3cd247d1013670052a68280c8aeb4e989d0ee88784ac0de82f605095f",
+              "pid": "1050865",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48009
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/3-gnu-valgrind/process-1050872.log",
+              "sha256": "e9c42c83423b2a6856472d0b987db181aecc5ce6cf3609b4f6094c124b40dc18",
+              "pid": "1050872",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48680
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/3-gnu-valgrind/process-1050873.log",
+              "sha256": "cfd53c95f37ff1f44f34ac968269e87c6aa5b97905d737d61c64991ff796f161",
+              "pid": "1050873",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51995
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "2d7370656369616c6e616d650a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2d7370656369616c6e616d650a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d30707765746d36702f657865632f626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/3-rboxc-valgrind/process-1050877.log",
+              "sha256": "1fb5053a7737e6fe1121916ad07a9652628e8dc0b9bf029144837fa22335658f",
+              "pid": "1050877",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48617
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/3-rboxc-valgrind/process-1050884.log",
+              "sha256": "eb8a8efe09c98a29178a145035cfea24f2226df900b01981ff981f24a9e0546a",
+              "pid": "1050884",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49336
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/3-rboxc-valgrind/process-1050885.log",
+              "sha256": "0c44a57ab55c97a8b4508957994f4d016fc24f6cd5cf28a0cb76a8e85a8df80c",
+              "pid": "1050885",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53867
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:posix-name",
+      "command": "bash",
+      "args": [
+        "-c",
+        "exec -a sh \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "73680a706f7369783a6f6e0a",
+          "stderr": "",
+          "raw_stdout": "73680a706f7369783a6f6e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d63386c6b316d6a752f657865632f626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/4-gnu-valgrind/process-1050889.log",
+              "sha256": "cc85921fb7cfdaf4fb24a135ad46b6da75dbf56dbe1e7e40e1de936eb828c088",
+              "pid": "1050889",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48009
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/4-gnu-valgrind/process-1050913.log",
+              "sha256": "e6ff85e07a02787740f0d1c0e7e04973a3f229ca09b2502ef3be58f9cea7c6f8",
+              "pid": "1050913",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48680
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/4-gnu-valgrind/process-1050915.log",
+              "sha256": "aa442032aeb4b7ff54d93968b076cac97d76232dbf1a3facab966590945d3670",
+              "pid": "1050915",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51995
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "73680a706f7369783a6f6e0a",
+          "stderr": "",
+          "raw_stdout": "73680a706f7369783a6f6e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d7a695f76373071372f657865632f626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/4-rboxc-valgrind/process-1050921.log",
+              "sha256": "88171d30421e198514bb82c7addab85836e81db28ea13861b2b13c01d5d08f9a",
+              "pid": "1050921",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48617
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/4-rboxc-valgrind/process-1050951.log",
+              "sha256": "baf6c75a50fb959b3000010a3210e647a66258dbf1c20f2510420e8211d616ed",
+              "pid": "1050951",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49336
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/4-rboxc-valgrind/process-1050952.log",
+              "sha256": "9d8bec76dfbecffd8305839c73286b0f003d2ae87a735409d436cfb5fec00e3e",
+              "pid": "1050952",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53867
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:printenv-login",
+      "command": "bash",
+      "args": [
+        "-c",
+        "export RBOXC_VALUE=fixture; exec -l printenv RBOXC_VALUE"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "666978747572650a",
+          "stderr": "",
+          "raw_stdout": "666978747572650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "666978747572650a",
+          "stderr": "",
+          "raw_stdout": "666978747572650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/5-gnu-valgrind/process-1050956.log",
+              "sha256": "08652fc0abcbc71cd358dc7008a5704568c590dbed7155ae749944078e08188e",
+              "pid": "1050956",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {}
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "666978747572650a",
+          "stderr": "",
+          "raw_stdout": "666978747572650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "666978747572650a",
+          "stderr": "",
+          "raw_stdout": "666978747572650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/5-rboxc-valgrind/process-1050980.log",
+              "sha256": "52f47e7eec86a3acd286fb88ee70a8d2b310df0e31391fecd0e79c07a6fa36ae",
+              "pid": "1050980",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:printenv-clean-login",
+      "command": "bash",
+      "args": [
+        "-c",
+        "export RBOXC_VALUE=fixture; exec -c -l printenv RBOXC_VALUE"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/6-gnu-valgrind/process-1051008.log",
+              "sha256": "be370e5d3324420f8a15e76144cc502bc301aad2437889f12291a7d34b2f4b8a",
+              "pid": "1051008",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {}
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/6-rboxc-valgrind/process-1051018.log",
+              "sha256": "e63c9a01099a95c92bd3e2993203b3552028e0fe006cd641817bdc4f5a855e6d",
+              "pid": "1051018",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:custom",
+      "command": "sh",
+      "args": [
+        "-c",
+        "exec -a specialname \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7370656369616c6e616d650a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "7370656369616c6e616d650a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f73680a706f7369783a6f6e0a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d653962777537367a2f657865632f73680a706f7369783a6f6e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/7-gnu-valgrind/process-1051032.log",
+              "sha256": "4e2c80c95c624b636ce784706846c212a99d5f5df75ee9c5477a2ed5528b2f8f",
+              "pid": "1051032",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48125
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/7-gnu-valgrind/process-1051041.log",
+              "sha256": "c1e53719da92d0538927184fc29c6a86cdd0ce8dae29ef99092559712b5cbd2a",
+              "pid": "1051041",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48796
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/7-gnu-valgrind/process-1051042.log",
+              "sha256": "cd4b9de69c818468f21a0ae4a7be7506657e5eb1ce88462b36b2bffe1d517278",
+              "pid": "1051042",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52113
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7370656369616c6e616d650a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "7370656369616c6e616d650a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f73680a706f7369783a6f6e0a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d6d766267666b6e342f657865632f73680a706f7369783a6f6e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/7-rboxc-valgrind/process-1051048.log",
+              "sha256": "dc2eb6ec1ed27c578c528f1adfc97f4166145dc95137b43513a3ce1a47837e55",
+              "pid": "1051048",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48733
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/7-rboxc-valgrind/process-1051055.log",
+              "sha256": "3eb2f2ab8227d43a6e47f00c76456bb86df38f655870e2ebb563c0b708b56ea1",
+              "pid": "1051055",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49452
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/7-rboxc-valgrind/process-1051056.log",
+              "sha256": "619b5bb782618bb9c2ed8e555141a5893840cf0ee414fe87af6c977cc3d00959",
+              "pid": "1051056",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53985
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:known-applet",
+      "command": "sh",
+      "args": [
+        "-c",
+        "exec -a cat \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "6361740a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "6361740a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f73680a706f7369783a6f6e0a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d62317638636b6d762f657865632f73680a706f7369783a6f6e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/8-gnu-valgrind/process-1051064.log",
+              "sha256": "7f310a896fd03a770b84d5c78bf67f3081d8cb905bd372216aced5d8e134b4f5",
+              "pid": "1051064",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48125
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/8-gnu-valgrind/process-1051073.log",
+              "sha256": "97119b6a7f714bdac73171286686d14676e01b49050c94189a563094c63e264b",
+              "pid": "1051073",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48796
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/8-gnu-valgrind/process-1051074.log",
+              "sha256": "d3ae56f531e1d6186eb39e77a106a6d7ed44e6d63ad98d0351c97b7fd8e16970",
+              "pid": "1051074",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52113
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "6361740a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "6361740a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f73680a706f7369783a6f6e0a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d36706877707862792f657865632f73680a706f7369783a6f6e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/8-rboxc-valgrind/process-1051078.log",
+              "sha256": "7bfb1d50af668607a25d075affd7e003c596136e83b0e9685d05e2d13da350f8",
+              "pid": "1051078",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48733
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/8-rboxc-valgrind/process-1051092.log",
+              "sha256": "1ba0f93a6d529e32b38b88037cc11247f0e37c6e1eeb671b4fba0a1020fc95fd",
+              "pid": "1051092",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49452
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/8-rboxc-valgrind/process-1051093.log",
+              "sha256": "a713f9a9ce7cd6a76d6f2528f9edd57ee8190f260efb54074bfebcc45fe18d38",
+              "pid": "1051093",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53985
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:dispatcher-name",
+      "command": "sh",
+      "args": [
+        "-c",
+        "exec -a rboxc \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72626f78630a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "72626f78630a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f73680a706f7369783a6f6e0a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d31323872687638652f657865632f73680a706f7369783a6f6e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/9-gnu-valgrind/process-1051099.log",
+              "sha256": "131a33793e13195081413e042a232f00d722ea10e69844bfc2b49373cc38412b",
+              "pid": "1051099",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48125
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/9-gnu-valgrind/process-1051108.log",
+              "sha256": "562e187a59828ae4368c12351db7571e29789d425436ae625f00c0b9d80e53be",
+              "pid": "1051108",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48796
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/9-gnu-valgrind/process-1051109.log",
+              "sha256": "67d6063f633296d5ac0312abc4af12c964f7d8d068a45e3de890d7b35a9ddf57",
+              "pid": "1051109",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52113
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72626f78630a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "72626f78630a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f73680a706f7369783a6f6e0a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d736e7767793577682f657865632f73680a706f7369783a6f6e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/9-rboxc-valgrind/process-1051115.log",
+              "sha256": "9a4a24172cad346f96a300314961e8a5b401592c0f32ed8e6252bb90dca96177",
+              "pid": "1051115",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48733
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/9-rboxc-valgrind/process-1051122.log",
+              "sha256": "45b0efa00dd9f82d6fd51b2110244fa4200e78e8039b22d420920b670553ad4c",
+              "pid": "1051122",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49452
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/9-rboxc-valgrind/process-1051125.log",
+              "sha256": "704560b306aae605ea61e9d457856268e4093e7abce6f8d777d75c8a69b5a719",
+              "pid": "1051125",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53985
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:login",
+      "command": "sh",
+      "args": [
+        "-c",
+        "exec -a -specialname \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "2d7370656369616c6e616d650a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2d7370656369616c6e616d650a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f73680a706f7369783a6f6e0a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d696e73313875636b2f657865632f73680a706f7369783a6f6e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/10-gnu-valgrind/process-1051129.log",
+              "sha256": "9e89f131df80fc7331cf8bc1a254f0fa6708a0c494ceb235bc96eb4fae6a2fb3",
+              "pid": "1051129",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48125
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/10-gnu-valgrind/process-1051136.log",
+              "sha256": "ca48622792f126ba1c6735546a9fe8e7405c70e83779c442cf01fa7c589bd901",
+              "pid": "1051136",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48796
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/10-gnu-valgrind/process-1051137.log",
+              "sha256": "a8dc1043ee7f32455dc592b897e09ba91b97ec7bc1efa587ad5a4c0d04720cf1",
+              "pid": "1051137",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52113
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "2d7370656369616c6e616d650a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2d7370656369616c6e616d650a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f73680a706f7369783a6f6e0a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d776d337235776f672f657865632f73680a706f7369783a6f6e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/10-rboxc-valgrind/process-1051141.log",
+              "sha256": "d8b65f4f47158563c774d96cedef2bceba1bc6b34f7fdb8749fa09a7d1d4121b",
+              "pid": "1051141",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48733
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/10-rboxc-valgrind/process-1051150.log",
+              "sha256": "aef4ad043490536bd3f21915124033ced2847ad503e99335e855329629ec2940",
+              "pid": "1051150",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49452
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/10-rboxc-valgrind/process-1051151.log",
+              "sha256": "5ffba80561e9531b098d4f8a8b8c2d409ce9e55b8bda0e8e6d4f64b44306abfd",
+              "pid": "1051151",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53985
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:posix-name",
+      "command": "sh",
+      "args": [
+        "-c",
+        "exec -a sh \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "73680a706f7369783a6f6e0a",
+          "stderr": "",
+          "raw_stdout": "73680a706f7369783a6f6e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f73680a706f7369783a6f6e0a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d6e6e357079736d752f657865632f73680a706f7369783a6f6e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/11-gnu-valgrind/process-1051155.log",
+              "sha256": "c8e3f8a64bce0f455292b29bca752a781fb592ee3a0a0c6ab16d5043eea7db42",
+              "pid": "1051155",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48125
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/11-gnu-valgrind/process-1051164.log",
+              "sha256": "4962a97c7539b096584fac34c7ff7b3b1c93ed12bcc8661678899755563a0b5c",
+              "pid": "1051164",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48796
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/11-gnu-valgrind/process-1051165.log",
+              "sha256": "45264e9b26c20b3e6f99beefdab861323342e34a70e858bfe967c8570250c351",
+              "pid": "1051165",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52113
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "73680a706f7369783a6f6e0a",
+          "stderr": "",
+          "raw_stdout": "73680a706f7369783a6f6e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f73680a706f7369783a6f6e0a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d76716b386a6d647a2f657865632f73680a706f7369783a6f6e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/11-rboxc-valgrind/process-1051169.log",
+              "sha256": "06cdb542a3d43f40f59e500a8ee6cdb07bff0ab02921c1e671931696e5e8cca7",
+              "pid": "1051169",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48733
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/11-rboxc-valgrind/process-1051223.log",
+              "sha256": "1942c6c4e1242cc99e454d2988ae26f645a6358a18c597bda2e497b6713f3a1f",
+              "pid": "1051223",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49452
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/11-rboxc-valgrind/process-1051224.log",
+              "sha256": "fdd7be868c4f78fdde245440d09f66da7e94fe7c7e27491e1675aa2fbc70e833",
+              "pid": "1051224",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53985
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:printenv-login",
+      "command": "sh",
+      "args": [
+        "-c",
+        "export RBOXC_VALUE=fixture; exec -l printenv RBOXC_VALUE"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "666978747572650a",
+          "stderr": "",
+          "raw_stdout": "666978747572650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "666978747572650a",
+          "stderr": "",
+          "raw_stdout": "666978747572650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/12-gnu-valgrind/process-1051242.log",
+              "sha256": "f30db599c3b1e5fe7adf8445107b0309f7172ead7ae2583a7caafb6a7bc2dd02",
+              "pid": "1051242",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {}
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "666978747572650a",
+          "stderr": "",
+          "raw_stdout": "666978747572650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "666978747572650a",
+          "stderr": "",
+          "raw_stdout": "666978747572650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/12-rboxc-valgrind/process-1051250.log",
+              "sha256": "4559cd24efc978091822a48193d5e1ebed81641c3cfdfb03497c6888740a17b3",
+              "pid": "1051250",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:printenv-clean-login",
+      "command": "sh",
+      "args": [
+        "-c",
+        "export RBOXC_VALUE=fixture; exec -c -l printenv RBOXC_VALUE"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/13-gnu-valgrind/process-1051262.log",
+              "sha256": "e247df3fd995e51bab18ef732c89bb522e001e2e52e2d753a36bf062d0f2db20",
+              "pid": "1051262",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {}
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/13-rboxc-valgrind/process-1051268.log",
+              "sha256": "62275cd3f0feff78399c48977f5965409601668e1df1edc06923e1cf6ccdfdf8",
+              "pid": "1051268",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:custom",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "exec -a specialname \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7370656369616c6e616d650a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "7370656369616c6e616d650a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d5f77393463626c6c2f657865632f2d626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/14-gnu-valgrind/process-1051282.log",
+              "sha256": "a577586fafea3350f45ba213ccd1d93afdd29b78410f176a5da0a40bb6df6c35",
+              "pid": "1051282",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48015
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/14-gnu-valgrind/process-1051289.log",
+              "sha256": "e7137ed2f58d1ad269f95f63c332f941f34baae6401a5308ed2dae2e4a6753e0",
+              "pid": "1051289",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48686
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/14-gnu-valgrind/process-1051290.log",
+              "sha256": "d3a7657c36012089e6d1b24f672554e4715598b8870c11788479f50312c7dfa1",
+              "pid": "1051290",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52000
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7370656369616c6e616d650a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "7370656369616c6e616d650a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d657a3264676977672f657865632f2d626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/14-rboxc-valgrind/process-1051296.log",
+              "sha256": "4984e5de8337457ee37dedd29e7312b69d6a475ef5b3c9f8aa15ef2577c4f653",
+              "pid": "1051296",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48623
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/14-rboxc-valgrind/process-1051307.log",
+              "sha256": "f6de32f364873ac1a1dace4637a3c9526f8b521bb302ba7b4b730274494d140d",
+              "pid": "1051307",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49342
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/14-rboxc-valgrind/process-1051308.log",
+              "sha256": "c55932eab06d6299fce829924b05909eb454dbd45621478dd06ffad85dae7ed5",
+              "pid": "1051308",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53872
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:known-applet",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "exec -a cat \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "6361740a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "6361740a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d626d727263786f692f657865632f2d626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/15-gnu-valgrind/process-1051312.log",
+              "sha256": "c2d60f14451735d96fdeab9fecbc1d8bfd58faeb906dd0372dbc5a50803ae333",
+              "pid": "1051312",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48015
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/15-gnu-valgrind/process-1051355.log",
+              "sha256": "1999d70e03973029d8dc7a32aa9a69a38c1ce07d6efe8a612c5aabc4bf35c3fd",
+              "pid": "1051355",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48686
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/15-gnu-valgrind/process-1051356.log",
+              "sha256": "57f9cb485280f77378437a10b76fb76d22e4805d27dfd7a096a4db76b0f984c2",
+              "pid": "1051356",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52000
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "6361740a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "6361740a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d6d72717173386d782f657865632f2d626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/15-rboxc-valgrind/process-1051362.log",
+              "sha256": "8bec27a121b0ec93c3774966498c82a43cccc669c2c1ee461543ebe95b2dd9e5",
+              "pid": "1051362",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48623
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/15-rboxc-valgrind/process-1051371.log",
+              "sha256": "e045635741e4a4b7549a2a1c330974c28edf52c60a4aad06075bf351cae07b18",
+              "pid": "1051371",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49342
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/15-rboxc-valgrind/process-1051372.log",
+              "sha256": "24538975a7d77186383842335a4892f0a17be70add245cb92a7ae18bd3a91e07",
+              "pid": "1051372",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53872
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:dispatcher-name",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "exec -a rboxc \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72626f78630a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "72626f78630a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d687761666e3831392f657865632f2d626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/16-gnu-valgrind/process-1051378.log",
+              "sha256": "9d8e74f7f29f794e7625340bac0ee47cf9e8837f09726a097d28cf828e51ff81",
+              "pid": "1051378",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48015
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/16-gnu-valgrind/process-1051388.log",
+              "sha256": "a71e0fa74fec6ad63ff2672aee0168042543acbdfa7d3228f2e136fae01084cd",
+              "pid": "1051388",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48686
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/16-gnu-valgrind/process-1051389.log",
+              "sha256": "5adf4da632bbb66a03efd61c6c59af2788618c7963180694f623bce46fdebfe0",
+              "pid": "1051389",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52000
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72626f78630a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "72626f78630a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d70306964376437662f657865632f2d626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/16-rboxc-valgrind/process-1051393.log",
+              "sha256": "4b18860deacd66d0df81b9b400deb1a7883c7c52a38ce943f1c103d74595a007",
+              "pid": "1051393",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48623
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/16-rboxc-valgrind/process-1051406.log",
+              "sha256": "72e09a9a9c3fcef03468769380c2afd026249b6bfeda6cbbd7a24e2680b74436",
+              "pid": "1051406",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49342
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/16-rboxc-valgrind/process-1051407.log",
+              "sha256": "5806262da10f5e256e1404eb7c44e843c1cb2194d103816c744fca751870f211",
+              "pid": "1051407",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53872
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:login",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "exec -a -specialname \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "2d7370656369616c6e616d650a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2d7370656369616c6e616d650a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d7066677278796c752f657865632f2d626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/17-gnu-valgrind/process-1051413.log",
+              "sha256": "7f85daff0fc28d0e6cf605c9f02b12f220d65b3a117cbb02430970752a4309a1",
+              "pid": "1051413",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48015
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/17-gnu-valgrind/process-1051423.log",
+              "sha256": "bb8328dcfe4dbc6360e4c4b88fc3955cf30e1e3e65268e2d3b879159589d57ae",
+              "pid": "1051423",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48686
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/17-gnu-valgrind/process-1051424.log",
+              "sha256": "4e9371fa6fb9d213486e60305ed9b6aec176c9bd2521e3cf874111b91668273f",
+              "pid": "1051424",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52000
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "2d7370656369616c6e616d650a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2d7370656369616c6e616d650a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d6d316c786f3567652f657865632f2d626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/17-rboxc-valgrind/process-1051428.log",
+              "sha256": "b973e7aa4dc98639763de2e52d5cab95673951d468e4e10e8032f03d6180fa72",
+              "pid": "1051428",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48623
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/17-rboxc-valgrind/process-1051438.log",
+              "sha256": "a05086094553d918142bce7c6fe7bd2e4ba2bfbb310a5ba319e295f930e1f783",
+              "pid": "1051438",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49342
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/17-rboxc-valgrind/process-1051439.log",
+              "sha256": "c11f7cc52b33fbd8a49e0ebcfdf35513cd39914f8d986c11859ee9b10ef617d9",
+              "pid": "1051439",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53872
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:posix-name",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "exec -a sh \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "73680a706f7369783a6f6e0a",
+          "stderr": "",
+          "raw_stdout": "73680a706f7369783a6f6e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d6a636e68636b657a2f657865632f2d626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/18-gnu-valgrind/process-1051445.log",
+              "sha256": "dfa79144960ebe91c87ac62690957dced6f75e0d5954c19afc1964258ab9b507",
+              "pid": "1051445",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48015
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/18-gnu-valgrind/process-1051450.log",
+              "sha256": "5da1c59ffb22989a7ee64aab4209e72b55c0d3c78d313f2c48bb8064d5252741",
+              "pid": "1051450",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48686
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/18-gnu-valgrind/process-1051451.log",
+              "sha256": "49d4ffda43dfa2f790cb469335af4b0a5941620c0c6493bf7a047baabba499f7",
+              "pid": "1051451",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52000
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "73680a706f7369783a6f6e0a",
+          "stderr": "",
+          "raw_stdout": "73680a706f7369783a6f6e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d626173680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d74667863656472612f657865632f2d626173680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/18-rboxc-valgrind/process-1051456.log",
+              "sha256": "ebc54873bf04ae8fbfff93a4c9cbdb6be9a7742e5315dbf07082b34e7b7b9f52",
+              "pid": "1051456",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48623
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/18-rboxc-valgrind/process-1051477.log",
+              "sha256": "58c287b0278b3c7da464923b25d4073497d7bedcb47cbfaccbcbec1e7bf7e8b1",
+              "pid": "1051477",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49342
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/18-rboxc-valgrind/process-1051478.log",
+              "sha256": "7014a3e0c487daeff8b69c2a981ba936250a509c5ff16ab4ccd5e2ed3da0e991",
+              "pid": "1051478",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53872
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:printenv-login",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "export RBOXC_VALUE=fixture; exec -l printenv RBOXC_VALUE"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "666978747572650a",
+          "stderr": "",
+          "raw_stdout": "666978747572650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "666978747572650a",
+          "stderr": "",
+          "raw_stdout": "666978747572650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/19-gnu-valgrind/process-1051480.log",
+              "sha256": "79058032a3506f1c4a92171b2ec0f388de1203ba809b5911714b3711dfc3dd4b",
+              "pid": "1051480",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {}
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "666978747572650a",
+          "stderr": "",
+          "raw_stdout": "666978747572650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "666978747572650a",
+          "stderr": "",
+          "raw_stdout": "666978747572650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/19-rboxc-valgrind/process-1051484.log",
+              "sha256": "6ce02eb18b26b7352ba8342e071ca07d7df18ececd8c9afffacad44daa127ef9",
+              "pid": "1051484",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:printenv-clean-login",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "export RBOXC_VALUE=fixture; exec -c -l printenv RBOXC_VALUE"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/20-gnu-valgrind/process-1051492.log",
+              "sha256": "4f74b88fdff5fdf7d2dfdfa499263f18dbb8922d8b53de3550ff7b871ec083f5",
+              "pid": "1051492",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {}
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/20-rboxc-valgrind/process-1051497.log",
+              "sha256": "e63776f1088d706601e3cfa5a576dd20309ad25c39b22f58252d9df48f58650e",
+              "pid": "1051497",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:custom",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "exec -a specialname \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7370656369616c6e616d650a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "7370656369616c6e616d650a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d73680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d5f336778396865732f657865632f2d73680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/21-gnu-valgrind/process-1051509.log",
+              "sha256": "e7fde0b782d0dd758bc76b785e6df0e699fdd08bbd5d4543ae4bc9028c35ddb9",
+              "pid": "1051509",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48003
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/21-gnu-valgrind/process-1051514.log",
+              "sha256": "8d1728ac41257ce5d48e6008bc50b760b2247841c41ba557845731503577560f",
+              "pid": "1051514",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48674
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/21-gnu-valgrind/process-1051515.log",
+              "sha256": "e53674705a00508ce3da999287c17f5a107bc2ecded1d7bd5e49a0c33de15866",
+              "pid": "1051515",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51990
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7370656369616c6e616d650a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "7370656369616c6e616d650a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d73680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d39653839633539692f657865632f2d73680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/21-rboxc-valgrind/process-1051519.log",
+              "sha256": "5f56a9ea5e3f664ec2c3b1af7b2e59aceaec888e274c3a3fe61db6c1792d6a65",
+              "pid": "1051519",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48611
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/21-rboxc-valgrind/process-1051528.log",
+              "sha256": "f07bee98d9548c20129bed6d71480b5cd918790d9fd41526df1b2ce1ca632b4f",
+              "pid": "1051528",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49330
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/21-rboxc-valgrind/process-1051529.log",
+              "sha256": "e0ffbb9856fa8478a13593ee430af821338dea679c95e90974375af91b936c71",
+              "pid": "1051529",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53862
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:known-applet",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "exec -a cat \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "6361740a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "6361740a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d73680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d5f316f78786774342f657865632f2d73680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/22-gnu-valgrind/process-1051533.log",
+              "sha256": "900af8646eead014315acdea06126686cff84fc149541a7713ce42b2e52e225c",
+              "pid": "1051533",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48003
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/22-gnu-valgrind/process-1051542.log",
+              "sha256": "b74fcb6e813a8527626de72092582ac5c8a23eaf184fbcffbdf06a71af26ab57",
+              "pid": "1051542",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48674
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/22-gnu-valgrind/process-1051543.log",
+              "sha256": "7b4cd78d5d45c57728f543ef4ccd8cc060b1af5cbf9782ac763eecbb9d1d27df",
+              "pid": "1051543",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51990
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "6361740a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "6361740a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d73680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d6b687a6e767333632f657865632f2d73680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/22-rboxc-valgrind/process-1051547.log",
+              "sha256": "66eeabc1c94f1c65ff42cf996a51777120954ec35aae40d6cda3be0fcfdf5c24",
+              "pid": "1051547",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48611
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/22-rboxc-valgrind/process-1051557.log",
+              "sha256": "de7720c39f07bce0cf45f9907e91b963df18a90e99f387b0b2e5d777dbbef23a",
+              "pid": "1051557",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49330
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/22-rboxc-valgrind/process-1051558.log",
+              "sha256": "6d1ff94daa9cf296f62d30b2e7d8e24408e618ed6324f16ea7b163760271cd24",
+              "pid": "1051558",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53862
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:dispatcher-name",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "exec -a rboxc \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "72626f78630a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "72626f78630a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d73680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d376d78705f7330642f657865632f2d73680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/23-gnu-valgrind/process-1051562.log",
+              "sha256": "fbf2b86019b28427ac9707a15f12249c4202785080bc29e7f84e3deaec315068",
+              "pid": "1051562",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48003
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/23-gnu-valgrind/process-1051571.log",
+              "sha256": "a04e9dffbd7260366e823ed0626b7904a2ac1403b06136c7d1c537f99764b89d",
+              "pid": "1051571",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48674
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/23-gnu-valgrind/process-1051573.log",
+              "sha256": "50301895c78469ddbefda0378a32daf14aa398d1faa49a72cd91cba3c055632f",
+              "pid": "1051573",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51990
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "72626f78630a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "72626f78630a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d73680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d30693464737964322f657865632f2d73680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/23-rboxc-valgrind/process-1051580.log",
+              "sha256": "fce089ef785ed4e8538fcd854b2d84bf93a4b251d59c75cf3aa34c0dd3e9e1ab",
+              "pid": "1051580",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48611
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/23-rboxc-valgrind/process-1051587.log",
+              "sha256": "41409e831d16b58ab16f5f1c950c84891e5d962e130afaa0e6f8edd08e3ee4db",
+              "pid": "1051587",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49330
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/23-rboxc-valgrind/process-1051588.log",
+              "sha256": "57cfc5b72537aa5f7e3d64cc1f4f4c12482a24de3110588d9d91c3328f9e8c7c",
+              "pid": "1051588",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53862
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:login",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "exec -a -specialname \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "2d7370656369616c6e616d650a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2d7370656369616c6e616d650a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d73680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d68646733657670392f657865632f2d73680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/24-gnu-valgrind/process-1051592.log",
+              "sha256": "ed8122701f690ecc0ba4ad0d8f7d845d41747406c87ec02b5dce72e8826a0e22",
+              "pid": "1051592",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48003
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/24-gnu-valgrind/process-1051597.log",
+              "sha256": "704ba7914b9bed784906a84de0d5eee23f0c3c7f0f551c551bf4ec1ba51869e9",
+              "pid": "1051597",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48674
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/24-gnu-valgrind/process-1051598.log",
+              "sha256": "f1e9fbac9be1fbe9ee398ef4cf00531d1fec865dc204078bad878b6582fd258d",
+              "pid": "1051598",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51990
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "2d7370656369616c6e616d650a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2d7370656369616c6e616d650a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d73680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d65616862716f76742f657865632f2d73680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/24-rboxc-valgrind/process-1051602.log",
+              "sha256": "22a63115f09614c86f1a0d06b08a1c37c86c993e0f9e2a95bd3fb37d53530298",
+              "pid": "1051602",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48611
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/24-rboxc-valgrind/process-1051610.log",
+              "sha256": "6d18e33c0c1ef390afb5c255d64dcf85f746415af48978e29b1c76b783e3ee02",
+              "pid": "1051610",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49330
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/24-rboxc-valgrind/process-1051611.log",
+              "sha256": "33d800a01859c83673e1780437077e5667111d12aa9acb0146335c3eef9fa18e",
+              "pid": "1051611",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53862
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:posix-name",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "exec -a sh \"$THIS_SH\" --noprofile --norc -c 'printf \"%s\\n\" \"$0\"; set -o | while read option value; do case $option in posix) printf \"%s:%s\\n\" \"$option\" \"$value\";; esac; done'"
+      ],
+      "input": "",
+      "equivalent": false,
+      "memory_clean": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "73680a706f7369783a6f6e0a",
+          "stderr": "",
+          "raw_stdout": "73680a706f7369783a6f6e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d73680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d6131787964676b342f657865632f2d73680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/25-gnu-valgrind/process-1051635.log",
+              "sha256": "4b15a1542b844988504a10ba81c5c976c18bb93a33a12f1c99e866ff705b1841",
+              "pid": "1051635",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48003
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/25-gnu-valgrind/process-1051656.log",
+              "sha256": "87b3c35f52cf5de8ad6e68411428ca39eba94e43abc98d8b5bfebf17aa8550ae",
+              "pid": "1051656",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48674
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/25-gnu-valgrind/process-1051657.log",
+              "sha256": "90693c6326cc3adbd34b715aabe0e53d0958c41688d752812aabf0842bdeb63a",
+              "pid": "1051657",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51990
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "73680a706f7369783a6f6e0a",
+          "stderr": "",
+          "raw_stdout": "73680a706f7369783a6f6e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "3c666978747572653e2f657865632f2d73680a706f7369783a6f66660a",
+          "stderr": "",
+          "raw_stdout": "2f746d702f72626f78632d626173682d347676673731715f2f657865632f2d73680a706f7369783a6f66660a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/25-rboxc-valgrind/process-1051661.log",
+              "sha256": "aaeb0bf63838590d2c6219d3ac1dd8abf5d86762072e95b1b1012a5b6769a14c",
+              "pid": "1051661",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48611
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/25-rboxc-valgrind/process-1051667.log",
+              "sha256": "6afda91cebad0d2fad2ca5b76276239f08dd756bcb996bba765d99c01f77d5c0",
+              "pid": "1051667",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49330
+              }
+            },
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/25-rboxc-valgrind/process-1051668.log",
+              "sha256": "3c89552bd9e9999344416411f3c6bb420c1556657ba7917e0c0c96c4ded0734b",
+              "pid": "1051668",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53862
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:printenv-login",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "export RBOXC_VALUE=fixture; exec -l printenv RBOXC_VALUE"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "666978747572650a",
+          "stderr": "",
+          "raw_stdout": "666978747572650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "666978747572650a",
+          "stderr": "",
+          "raw_stdout": "666978747572650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/26-gnu-valgrind/process-1051672.log",
+              "sha256": "88df1fb0a989b08f0120e8ede7649c2eb4e5dd369603d386298de54404406e4b",
+              "pid": "1051672",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {}
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "666978747572650a",
+          "stderr": "",
+          "raw_stdout": "666978747572650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "666978747572650a",
+          "stderr": "",
+          "raw_stdout": "666978747572650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/26-rboxc-valgrind/process-1051676.log",
+              "sha256": "8eacc617543e9a5146b7ee51f9962e17932423b2ae275e199f2aeabe962fb79f",
+              "pid": "1051676",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:printenv-clean-login",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "export RBOXC_VALUE=fixture; exec -c -l printenv RBOXC_VALUE"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/27-gnu-valgrind/process-1051685.log",
+              "sha256": "70b5b58d790a3654a105965283f2e0072523fdbf60640cd6d5bdd2699a760d6f",
+              "pid": "1051685",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {}
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "",
+          "raw_stdout": "",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/executable-name-contract/run-n651h_oh/27-rboxc-valgrind/process-1051691.log",
+              "sha256": "5bea57a76ed481c4ff11fb546e68f9aa4868ce7c2d55efcddafa4c9d9616548d",
+              "pid": "1051691",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {}
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

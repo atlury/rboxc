@@ -69,8 +69,7 @@ def baseline_output(result,key):
     directories=set()
     for memory in outcome['memory']:
         text=(ROOT/memory['log']).read_text()
-        parent=str(ROOT/'build') if outcome.get('private_tmp') else '/tmp'
-        directories.update(re.findall(r'^==[0-9]+== Command: ('+re.escape(parent)+r'/rboxc-bash-original-[a-z0-9_]{8})/exec/',text,re.M))
+        directories.update(re.findall(r'^==[0-9]+== Command: (/tmp/rboxc-bash-original-[a-z0-9_]{8})/exec/',text,re.M))
     directory,=directories
     assert directory.encode() in output
     private_directories[result['selection']+':'+key]=directory
@@ -93,21 +92,6 @@ for result in report['results']:
         assert outcome.get('controlling_terminal',False)==bool(row.get('controlling_terminal'))
         assert outcome.get('stdin_terminal',False)==bool(row.get('stdin_terminal'))
         assert any(p.endswith('/terminal-output') for p in outcome['raw'])==bool(row.get('controlling_terminal'))
-        private_tmp=outcome.get('private_tmp')
-        assert bool(private_tmp)==bool(row.get('private_tmp'))
-        assert any(p.endswith('/mountinfo') for p in outcome['raw'])==bool(private_tmp)
-        if private_tmp:
-            assert private_tmp['destination']=='/tmp' and private_tmp['mode']==0o1777
-            scratch=Path(private_tmp['source'])
-            assert scratch.name=='private-tmp' and scratch.parent.parent==ROOT/'build'
-            assert re.fullmatch('rboxc-bash-original-[a-z0-9_]{8}',scratch.parent.name)
-            st=Path('/tmp').stat()
-            assert private_tmp['host_identity']=={k:getattr(st,'st_'+k) for k in ('dev','ino','mode','uid','gid')}
-            mountinfo=next(ROOT/p for p in outcome['raw'] if p.endswith('/mountinfo')).read_text()
-            mounts=[line.split() for line in mountinfo.splitlines() if len(line.split())>5 and line.split()[4]=='/tmp']
-            assert mounts and mounts[-1][3]==str(scratch)
-            assert sum(m[3]==str(scratch) for m in mounts)==1
-            assert not any(m[1]==mounts[-1][0] for m in mounts[:-1])
         private_profile=outcome.get('private_profile')
         private_locale=outcome.get('private_locale')
         assert bool(private_locale)==bool(row.get('locale_archive'))

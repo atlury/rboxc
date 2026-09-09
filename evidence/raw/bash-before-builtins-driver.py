@@ -25,7 +25,7 @@ selected=[{**r,**case,'selection':r['target']+':'+case['script'] if r.get('scrip
 helpers={'sed':ROOT/'build/gnu-sed/sed/sed','grep':ROOT/'build/gnu-grep/src/grep',
          'cmp':ROOT/'build/gnu-diffutils/src/cmp',
          'diff':ROOT/'build/gnu-diffutils/src/diff','awk':ROOT/'build/gnu-gawk/gawk',
-         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('od','mktemp','touch','chmod','rm','cat','tr','mkdir','printenv','sleep','date','wc','seq','tee','expr','ls','ln','cp','uname','env','sort','mkfifo','printf','rmdir')}}
+         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('od','mktemp','touch','chmod','rm','cat','tr','mkdir','printenv','sleep','date','wc','seq','tee','expr','ls','ln','cp','uname','env','sort','mkfifo','printf')}}
 fixed_helpers=inventory.get('fixed_test_helpers',{})
 runtime_helpers=inventory.get('runtime_test_helpers',{})
 inputs={p:fingerprint(p) for p in [Path(__file__),manifest,profile.oracle,*helpers.values()]}
@@ -36,9 +36,6 @@ for helper in runtime_helpers.values():
     inputs[ROOT/helper['source']]=helper['source_sha256']
     inputs[ROOT/helper['binary']]=helper['binary_sha256']
 for row in selected:
-    for name,data in row.get('oracle_helpers',{}).items():
-        assert row['target']=='builtins' and name=='printenv'
-        inputs[Path(data['binary'])]=data['binary_sha256']
     for name,data in row.get('build_data',{}).items():
         assert Path(name).name==name and name not in ('.','..')
         inputs[Path(data['path'])]=data['sha256']
@@ -46,7 +43,7 @@ for row in selected:
     if row.get('locale_archive'):
         archive=row['locale_archive'];inputs[Path(archive['path'])]=archive['sha256']
         inputs[Path('/usr/bin/locale')]=row['host_inputs']['/usr/bin/locale']
-    if row.get('absolute_helpers') or row.get('empty_system_profile') or row.get('locale_archive') or row.get('private_tmp'):
+    if row.get('absolute_helpers') or row.get('empty_system_profile') or row.get('locale_archive'):
         inputs.update({p:fingerprint(p) for p in (Path('/usr/bin/unshare'),Path('/usr/bin/mount'),Path('/bin/sh').resolve())})
     inputs[source/row['recipe']]=row['recipe_sha256']
     inputs.update({source/n:h for n,h in row['fixtures'].items()})
@@ -59,18 +56,15 @@ for row in selected:
     assert type(row.get('controlling_terminal',False)) is bool
     assert type(row.get('stdin_terminal',False)) is bool
     assert type(row.get('empty_system_profile',False)) is bool
-    assert type(row.get('private_tmp',False)) is bool
     if row.get('stdin_terminal'):assert row.get('controlling_terminal') and not row.get('stdin_script')
     for implementation,binary in [('gnu',profile.oracle),('rboxc',profile.binary)]:
         for instrument in (False,True):
             key=implementation+('-valgrind' if instrument else '')
             saved=profile.logs/(name+'-'+key);saved.mkdir()
-            with tempfile.TemporaryDirectory(prefix='rboxc-bash-original-',dir=ROOT/'build' if row.get('private_tmp') else None) as directory:
+            with tempfile.TemporaryDirectory(prefix='rboxc-bash-original-') as directory:
                 work=Path(directory);(work/'exec').mkdir()
                 alias=work/'exec/bash';alias.symlink_to(binary)
-                for n,p in helpers.items():
-                    native=Path(row['oracle_helpers'][n]['binary']) if n in row.get('oracle_helpers',{}) else p
-                    (work/'exec'/n).symlink_to(native if implementation=='gnu' else profile.binary)
+                for n,p in helpers.items():(work/'exec'/n).symlink_to(p if implementation=='gnu' else profile.binary)
                 if row.get('locale_archive'):(work/'exec/locale').symlink_to('/usr/bin/locale')
                 for n,h in fixed_helpers.items():(work/'exec'/n).symlink_to(ROOT/h['binary'])
                 for n in row['fixtures']:shutil.copy2(source/n,work/n)
@@ -90,8 +84,7 @@ for row in selected:
                 private_mounts=[]
                 private_profile=None
                 private_locale=None
-                private_tmp=None
-                if row.get('absolute_helpers') or row.get('empty_system_profile') or row.get('locale_archive') or row.get('private_tmp'):
+                if row.get('absolute_helpers') or row.get('empty_system_profile') or row.get('locale_archive'):
                     mount_args=[]
                     for absolute in row.get('absolute_helpers',[]):
                         assert absolute in ('/bin/echo','/bin/sh','/bin/sed','/bin/ls','/bin/true','/bin/false','/bin/cat','/bin/mkdir','/bin/touch','/bin/chmod','/bin/rm','/usr/bin/true','/usr/bin/false','/usr/bin/printf')
@@ -115,21 +108,9 @@ for row in selected:
                         private_locale={'destination':str(destination),'source':str(archive),'source_sha256':fingerprint(archive),
                                         'native_locale_helper':'/usr/bin/locale'}
                         mount_args += [str(archive),str(destination)]
-                    mount_script='while [ "$1" != -- ]; do /usr/bin/mount --bind "$1" "$2" || exit 77; shift 2; done; shift; '
-                    fixture_args=[]
-                    if row.get('private_tmp'):
-                        scratch=work/'private-tmp';scratch.mkdir();scratch.chmod(0o1777)
-                        def host_tmp_identity():
-                            st=Path('/tmp').stat()
-                            return {k:getattr(st,'st_'+k) for k in ('dev','ino','mode','uid','gid')}
-                        private_tmp={'source':str(scratch),'destination':'/tmp','mode':0o1777,
-                                     'host_identity':host_tmp_identity()}
-                        mount_args += [str(scratch),'/tmp']
-                        mount_script += 'while IFS= read -r line; do printf "%s\\n" "$line"; done < /proc/self/mountinfo > "$1"; shift; '
-                        fixture_args=[str(saved/'mountinfo')]
                     argv=['/usr/bin/unshare','--mount','--propagation','private','/bin/sh','-c',
-                        mount_script+'exec "$@"',
-                        'bash-private-helpers',*mount_args,'--',*fixture_args,*argv]
+                        'while [ "$1" != -- ]; do /usr/bin/mount --bind "$1" "$2" || exit 77; shift 2; done; shift; exec "$@"',
+                        'bash-private-helpers',*mount_args,'--',*argv]
                 script_input=(work/row['script']).open('rb') if row.get('stdin_script') else None
                 terminal_output=bytearray()
                 terminal_options={'start_new_session':True}
@@ -171,7 +152,6 @@ for row in selected:
                     stop_drain.set();drain.join()
                     os.close(slave);os.close(master)
                     (saved/'terminal-output').write_bytes(terminal_output)
-                if private_tmp:assert host_tmp_identity()==private_tmp['host_identity']
                 done=subprocess.CompletedProcess(argv,process.returncode,stdout,stderr)
                 actual=done.stdout
                 # Match run-invert's original `grep -v '^expect'` filter.
@@ -189,8 +169,8 @@ for row in selected:
                     clean=complete and parsed['errors']==0 and parsed['non_inherited_descriptors']==0 and not any(parsed['heap_bytes'].get(k,0) for k in ('definitely lost','indirectly lost','possibly lost'))
                     logs.append({'log':str(log.relative_to(ROOT)),'sha256':fingerprint(log),'pid':pid,'complete':complete,'clean':clean,**parsed})
                 assert not instrument or logs
-                outcomes[key]={'private_mounts':private_mounts,'private_profile':private_profile,'private_locale':private_locale,'private_tmp':private_tmp,'controlling_terminal':bool(row.get('controlling_terminal')),'stdin_terminal':bool(row.get('stdin_terminal')),'status':done.returncode,'timeout_seconds':timeout_seconds,'stdin_script':bool(row.get('stdin_script')),'timed_out':timed_out,'expected_output_matches':actual==(source/row['expected']).read_bytes(),
-                    'raw':{str(p.relative_to(ROOT)):fingerprint(p) for p in [saved/'stdout',saved/'stderr',saved/'actual',*([saved/'terminal-output'] if row.get('controlling_terminal') else []),*([saved/'empty-system-profile'] if row.get('empty_system_profile') else []),*([saved/'mountinfo'] if row.get('private_tmp') else [])]},
+                outcomes[key]={'private_mounts':private_mounts,'private_profile':private_profile,'private_locale':private_locale,'controlling_terminal':bool(row.get('controlling_terminal')),'stdin_terminal':bool(row.get('stdin_terminal')),'status':done.returncode,'timeout_seconds':timeout_seconds,'stdin_script':bool(row.get('stdin_script')),'timed_out':timed_out,'expected_output_matches':actual==(source/row['expected']).read_bytes(),
+                    'raw':{str(p.relative_to(ROOT)):fingerprint(p) for p in [saved/'stdout',saved/'stderr',saved/'actual',*([saved/'terminal-output'] if row.get('controlling_terminal') else []),*([saved/'empty-system-profile'] if row.get('empty_system_profile') else [])]},
                     'memory':logs,'memory_clean':all(m['clean'] for m in logs) if instrument else None}
     passed=all(not o['timed_out'] and o['expected_output_matches'] and o['status']==outcomes['gnu']['status'] for o in outcomes.values()) and outcomes['rboxc-valgrind']['memory_clean']
     results.append({'selection':name,'pass':passed,'outcomes':outcomes})
