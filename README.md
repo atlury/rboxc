@@ -2325,10 +2325,10 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. The current
-[evidence/gnu-option-selection-coverage.json](evidence/gnu-option-selection-coverage.json)
-extends the preserved `evidence/gnu-suite-coverage.json` checkpoint by fifteen
-reviewed selections: 639 scripts passed, 28 have selected coverage, five
-are skipped, 29 are excluded and 32 remain pending.
+[evidence/gnu-sort-selection-coverage.json](evidence/gnu-sort-selection-coverage.json)
+extends the preserved `evidence/gnu-suite-coverage.json` checkpoint by sixteen
+reviewed selections: 639 scripts passed, 29 have selected coverage, five
+are skipped, 29 are excluded and 31 remain pending.
 
 All 197 reviewed `env -S` cases pass normally against GNU. The original table
 contains 199 cases; two historical reproduction cases remain unexecuted.
@@ -2382,9 +2382,18 @@ verifies source identity, launch credentials, original assertions and all
 command images, normalizing only the two private `ls` framework paths:
 [evidence/gnu-option-selection-validation.json](evidence/gnu-option-selection-validation.json).
 Historical memory/crash/hang sections and separate resource/strace/ASLR
-profiles remain held. The Valgrind ledger now has 589 passed scripts, 22 passed
-selections, 39 open profiles, 54 pending and 29 exclusions. Installed-release
-evidence is unchanged.
+profiles remain held.
+The original `sort.pl` matrix adds **446 selected cases**, retaining GNU's
+file, stdin, pipe and French UTF-8 locale variants. Numeric, human-readable
+and general numeric ordering, keys, stability, nonprinting/NUL data, bounded
+line buffers and diagnostics all pass normally and under Valgrind. All **447
+candidate process images** are clean, including the version check. Eleven
+historical cases remain held from the 457 generated cases. The independent
+audit pins the source/generator, selected names, locale files, original
+assertions and every process summary:
+[evidence/gnu-sort-selection-validation.json](evidence/gnu-sort-selection-validation.json).
+The Valgrind ledger now has 589 passed scripts, 23 passed selections, 39 open
+profiles, 53 pending and 29 exclusions. Installed-release evidence is unchanged.
 
 Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are
