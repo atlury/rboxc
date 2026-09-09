@@ -2446,11 +2446,6 @@ unsafe extern "C" fn print_files(
     init_funcs();
     line_number = line_count;
     while print_page() {}
-    let mut column = 0;
-    while column < columns {
-        close_file(column_vector.offset(column as isize));
-        column += 1;
-    }
 }
 unsafe extern "C" fn init_header(
     mut filename: *const ::core::ffi::c_char,

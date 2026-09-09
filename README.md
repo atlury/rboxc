@@ -106,8 +106,8 @@ this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
 The current 187-command candidate is **14,724,536 bytes**, at
-`target/expr-cleanup-candidate/release/rboxc`, SHA-256
-`047ed73ab17d5202acce334bbee11516583cc0c60010782c6f47762e98caeebd`.
+`target/pr-page-cleanup-candidate/release/rboxc`, SHA-256
+`46375a41686040e0a688d9128fd749e7e487621a7c48e8b19b41973c21975e28`.
 An independent rebuild is byte-identical. All 428 Coreutils smoke checks and
 11 dispatcher checks pass. The preceding iconv candidate passed 50 focused
 glibc utility comparisons. The
@@ -2326,7 +2326,7 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. The current
-[evidence/gnu-unexpand-expanded-coverage.json](evidence/gnu-unexpand-expanded-coverage.json)
+[evidence/gnu-pr-expanded-coverage.json](evidence/gnu-pr-expanded-coverage.json)
 extends the preserved suite checkpoints: **640 scripts passed**, 29 have
 selected coverage, five are skipped, 29 are excluded and 30 remain pending.
 Excluding the 29 exclusions, 640/704 scripts (90.9%) have whole-script passes;
@@ -2357,7 +2357,7 @@ Five more ordinary shell selections cover `shred` pass sequences, `od` input
 limits and string output, `tac` pipes and readable proc/sys inputs, BLAKE2b
 tagged/untagged checksums, and `cksum` mixed algorithms and diagnostics.
 GNU's selected assertions remain byte-for-byte intact. All five pass normally
-and under Valgrind on the current `7a05a47f` candidate, with **112 clean candidate
+and under Valgrind on the recorded `7a05a47f` candidate, with **112 clean candidate
 process images**. Source hashes, omitted byte intervals, exact command image
 inventories and complete logs are checked by
 [evidence/gnu-shell-selection-validation.json](evidence/gnu-shell-selection-validation.json).
@@ -2461,6 +2461,23 @@ A source/name audit also confirms that the existing `cksum-base64`, `md5sum`,
 `sha1sum`, `od` and `paste` Perl selections already contain all **119 ordinary
 cases**, with eight historical cases held. This adds no runtime passes:
 [evidence/gnu-unchanged-perl-selection-review.json](evidence/gnu-unchanged-perl-selection-review.json).
+
+The `pr` selection expands from 33 to **717/739 cases**. It found six ordinary
+page-range cases that left an input descriptor open when printing stopped
+before EOF. After the page loop, the translated entry now calls its existing
+column close routine: shared streams close once, already closed columns are
+skipped, and stdin retains its existing final cleanup. All 717 original cases
+pass normally and under Valgrind, with **718 clean candidate process images**.
+Ten focused comparisons cover page limits, shared columns, merged/sequential
+inputs, stdin and EOF; all are clean. The rebuild is byte-identical, and all
+428 smoke checks and 11 dispatcher checks pass on this candidate.
+[evidence/gnu-pr-expanded-validation.json](evidence/gnu-pr-expanded-validation.json)
+and [evidence/pr-page-cleanup-validation.json](evidence/pr-page-cleanup-validation.json)
+verify the source change, preserved six before-fix findings, original fixtures,
+case selection and raw summaries. Twenty-two historical cases remain held.
+The ledger has 590 passed scripts, 27 passed selections, 40 open profiles,
+47 pending and 29 exclusions under Valgrind. Earlier selections retain their
+recorded candidate hashes; the installed release remains unchanged.
 
 Three SELinux-only scripts whose names do
 not identify the feature (id/context, id/no-context, and mkdir/restorecon) are

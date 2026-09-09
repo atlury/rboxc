@@ -460,6 +460,15 @@ unsafe fn rboxc_free_environment() {
                             '        ::libc::free(reservoir.cast());\n    }\n'+anchor)
     if name == 'pr':
         text = replace_once(text, '    cleanup();\n', '    cleanup();\n    free(file_names.cast());\n')
+        # A page limit can stop before EOF. close_file marks shared columns
+        # closed together and leaves stdin to the existing main cleanup.
+        anchor = '    while print_page() {}\n'
+        text = replace_once(text, anchor, anchor+'''    let mut column = 0;
+    while column < columns {
+        close_file(column_vector.offset(column as isize));
+        column += 1;
+    }
+''')
     if name in ('cat', 'tac'):
         from write_cleanup import cleanup_writes
         text = cleanup_writes(name, text, replace_once)
