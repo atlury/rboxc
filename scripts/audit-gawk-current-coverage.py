@@ -35,7 +35,8 @@ archives = [ROOT/'tests/gawk-original.py', ROOT/'evidence/raw/gawk-array-driver.
             ROOT/'evidence/raw/gawk-shell-driver.py',
             ROOT/'evidence/raw/gawk-directory-driver.py',
             ROOT/'evidence/raw/gawk-before-native-children-driver.py',
-            ROOT/'evidence/raw/gawk-before-output-preservation-driver.py']
+            ROOT/'evidence/raw/gawk-before-output-preservation-driver.py',
+            ROOT/'evidence/raw/gawk-before-child-wait-driver.py']
 driver_versions = {fingerprint(p): str(p.relative_to(ROOT)) for p in archives}
 focused_path = ROOT/'evidence/gawk-source-behavior.json'
 focused = json.loads(focused_path.read_text())
@@ -45,6 +46,9 @@ assert focused['complete'] and focused['passed'] == focused['total'] == 85
 assert focused['driver_sha256'] == fingerprint(ROOT/'tests/gawk-behavior.py')
 candidate_logs = {}
 native_logs = {}
+open_candidate_logs = {}
+open_native_logs = {}
+open_originals = {}
 report_refs = {}
 locale_preparation_changes = {}
 seen = set()
@@ -56,7 +60,7 @@ def check_inputs(data):
         else:
             assert fingerprint(Path(filename)) == expected, filename
 
-def check_memory(recorded, log, expected, candidate, case, focused_case=False, children=None, directory=None, dependencies=None):
+def check_memory(recorded, log, expected, candidate, case, focused_case=False, children=None, directory=None, dependencies=None, allow_open=False):
     p = ROOT/log
     assert fingerprint(p) == expected
     text = p.read_text()
@@ -79,11 +83,11 @@ def check_memory(recorded, log, expected, candidate, case, focused_case=False, c
     parsed = runner.parse_memory_log(text, pids.pop(), exec_only=True)
     assert parsed['complete_exec_log'] and parsed['exec_images'] == 1
     assert all(recorded[k] == v for k, v in parsed.items())
-    if candidate:
+    if candidate and not allow_open:
         assert parsed['errors'] == parsed['non_inherited_descriptors'] == 0
         assert not any(parsed['heap_bytes'].get(k, 0)
                        for k in ('definitely lost', 'indirectly lost', 'possibly lost'))
-    collection = candidate_logs if candidate else native_logs
+    collection = (open_candidate_logs if candidate else open_native_logs) if allow_open else (candidate_logs if candidate else native_logs)
     assert log not in collection, 'do not count shared process logs twice'
     collection[log] = {'case': case, 'sha256': expected, 'role':role, **parsed}
 
@@ -142,9 +146,16 @@ for filename in sorted({r['evidence'] for r in reviewed.values()}):
             assert data['inputs'][entry['path']]==entry['sha256']
         assert result.get('child_commands',{})==children
         baseline = row.get('expected_baseline_output')
-        assert result['pass'] == (baseline is None)
+        allow_open = row['state']=='reviewed-original-assertions-memory-open'
+        assert not (baseline and allow_open)
+        assert result['pass'] == (baseline is None and not allow_open)
+        if allow_open:
+            open_originals[result['selection']]={'report':filename,'source':row['path'],'review':row['review']}
+            assert all(o['assertions_pass'] for o in result['outcomes'].values())
+            assert not result['outcomes']['rboxc-valgrind']['memory_clean']
         for key, outcome in result['outcomes'].items():
-            assert outcome['status'] == 0 and outcome['assertions_pass'] == result['pass']
+            assert not outcome.get('timed_out') and not outcome.get('child_wait_timeout')
+            assert outcome['status'] == 0 and outcome['assertions_pass'] == (result['pass'] or allow_open)
             log = ROOT/outcome['driver_log']
             assert fingerprint(log) == outcome['driver_log_sha256']
             if baseline is not None:
@@ -160,16 +171,17 @@ for filename in sorted({r['evidence'] for r in reviewed.values()}):
                 assert Counter(canonical_child(m['command'],children,outcome.get('private_work_directory'),dependencies) for m in outcome['memory']
                     if m.get('role')=='child-dependency')==children
                 assert any(m.get('role','gawk')=='gawk' for m in outcome['memory'])
-                if key == 'rboxc-valgrind':
+                if key == 'rboxc-valgrind' and not allow_open:
                     assert outcome['memory_clean']
                 for memory in outcome['memory']:
                     check_memory(memory, memory['log'], memory['sha256'],
                                  key == 'rboxc-valgrind', result['selection'], children=children,
-                                 directory=outcome.get('private_work_directory'),dependencies=dependencies)
+                                 directory=outcome.get('private_work_directory'),dependencies=dependencies,allow_open=allow_open)
     report_refs[filename] = {'sha256': fingerprint(path), 'passed': data['passed'],
                              'total': data['total'], 'driver_archive': driver_versions[data['driver_sha256']]}
 assert seen == set(reviewed)
 assert len(candidate_logs) == len(native_logs)
+assert len(open_candidate_logs) == len(open_native_logs)
 auxiliary_inputs={}
 for row in manifest['inputs']:
     if row['state']!='covered-original-auxiliary':continue
@@ -208,7 +220,8 @@ result = {'scope': 'Distinct reviewed Gawk recipes on one immutable candidate. E
           'focused_report': {'path': str(focused_path.relative_to(ROOT)), 'sha256': fingerprint(focused_path)},
           'driver_archives': driver_versions, 'driver_sha256': fingerprint(Path(__file__)),
           'memory_parser_sha256': fingerprint(ROOT/'tests/gnu/reviewed-original.py'),
-          'candidate_logs': candidate_logs, 'native_logs': native_logs}
+          'candidate_logs': candidate_logs, 'native_logs': native_logs,
+          'open_originals':open_originals,'open_candidate_logs':open_candidate_logs,'open_native_logs':open_native_logs}
 target.write_text(json.dumps(result, indent=2)+'\n')
 print('Audited', result['original_passed'], 'distinct passing originals,', result['baseline_failures'],
-      'GNU baseline failures and', len(candidate_logs), 'clean candidate process logs')
+      'GNU baseline failures,',len(open_originals),'open original profiles and', len(candidate_logs), 'clean candidate process logs')

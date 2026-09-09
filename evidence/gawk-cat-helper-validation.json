@@ -1,0 +1,144 @@
+{
+  "scope": "GNU cat source is unchanged and only its existing lint normal-exit buffer cleanup is enabled. The unchanged childin original gains a strict pass: Gawk, shell and cat logs are complete and clean. The earlier 262144-byte native cat buffer leak is preserved. Six other original profiles still have descriptor/probe findings and are not claimed fixed; candidate code and bytes are unchanged.",
+  "helper_profile": {
+    "path": "evidence/gawk-cat-helper.json",
+    "sha256": "78f7d2ddf5b43220bcc83d45553198777952609726ccfbf7446ab75ee9bc46e9"
+  },
+  "changed_archive_members": [
+    "libsinglebin_cat_a-cat.o"
+  ],
+  "observations": {
+    "gawk-pipe-lifetime-baseline-original": {
+      "path": "evidence/gawk-pipe-lifetime-baseline-original.json",
+      "sha256": "33a21b855fccc5d34b40f25fb593154c56de3b449fd4f698bd415624fbeb9f1c",
+      "candidate_sha256": "6eca6aac2d29295f2d01f1fd797206c278ee8a7a7fb64fdda5f0d0afd0e29a89",
+      "childin_pass": false,
+      "candidate_processes": [
+        {
+          "command": "gawk -f childin.awk",
+          "log": "evidence/raw/gawk-pipe-lifetime-baseline-original/run-msy9m_ry/childin-rboxc-valgrind/memory/724567.log",
+          "sha256": "4b610db002c7288be261cbc6d7d0d0f21cc4632824a0abdfa2b41ba33abb2bed",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 62483
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "724567"
+          ],
+          "complete_exec_log": true
+        },
+        {
+          "command": "/bin/sh -c cat",
+          "log": "evidence/raw/gawk-pipe-lifetime-baseline-original/run-msy9m_ry/childin-rboxc-valgrind/memory/724594.log",
+          "sha256": "34162ce121ce0ce2f3323d8eca8d453f08f1e02bd7421859e14f8ba3a9f85e78",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 1059
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "724594"
+          ],
+          "complete_exec_log": true
+        },
+        {
+          "command": "/tmp/rboxc-gawk-original-_laxo8g_/deps/cat",
+          "log": "evidence/raw/gawk-pipe-lifetime-baseline-original/run-msy9m_ry/childin-rboxc-valgrind/memory/724597.log",
+          "sha256": "a90d845820a13e98645d9fc6472ad0842be17098f6deca6b27dc45cb83e9d205",
+          "errors": 1,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 262144,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 0
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "724597"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    },
+    "gawk-pipe-cat-lint-original": {
+      "path": "evidence/gawk-pipe-cat-lint-original.json",
+      "sha256": "b90d085fecbf0f079d31221ec6b98acf243de6456a7d98dd136a1538a29d75ec",
+      "candidate_sha256": "6eca6aac2d29295f2d01f1fd797206c278ee8a7a7fb64fdda5f0d0afd0e29a89",
+      "childin_pass": true,
+      "candidate_processes": [
+        {
+          "command": "gawk -f childin.awk",
+          "log": "evidence/raw/gawk-pipe-cat-lint-original/run-6gzeztzb/childin-rboxc-valgrind/memory/725342.log",
+          "sha256": "6a355c3aafd34c9d65abbfd4f95bee6f7416b0232b8f5ad6f34be20980448a2d",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 62483
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "725342"
+          ],
+          "complete_exec_log": true
+        },
+        {
+          "command": "/bin/sh -c cat",
+          "log": "evidence/raw/gawk-pipe-cat-lint-original/run-6gzeztzb/childin-rboxc-valgrind/memory/725368.log",
+          "sha256": "c430593061895db345208a0c6ea5f2fc9cc89ffc965b04ecb7c18b3a2ae190ef",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {
+            "definitely lost": 0,
+            "indirectly lost": 0,
+            "possibly lost": 0,
+            "still reachable": 1059
+          },
+          "exec_images": 1,
+          "log_pids": [
+            "725368"
+          ],
+          "complete_exec_log": true
+        },
+        {
+          "command": "/tmp/rboxc-gawk-original-rny44ckm/deps/cat",
+          "log": "evidence/raw/gawk-pipe-cat-lint-original/run-6gzeztzb/childin-rboxc-valgrind/memory/725373.log",
+          "sha256": "c3552e61915c91d23d7b3f40adc0b8535214b6838314251457ab761218021764",
+          "errors": 0,
+          "non_inherited_descriptors": 0,
+          "heap_bytes": {},
+          "exec_images": 1,
+          "log_pids": [
+            "725373"
+          ],
+          "complete_exec_log": true
+        }
+      ]
+    }
+  },
+  "coverage": {
+    "path": "evidence/gawk-pipe-lifetime-coverage.json",
+    "sha256": "2c605832d4e6281c2e5fbf019cfe9aab42140ff71fdb5bbd11f3b279690dfc04"
+  },
+  "open_originals": [
+    "clos1way2",
+    "clos1way3",
+    "clos1way4",
+    "clos1way6",
+    "getline5",
+    "revtwoway"
+  ],
+  "driver_sha256": "7478e7a1ba01bb36746619ab5eb45a01cfa485281f0d0cb5d088aa00ecc29d19"
+}

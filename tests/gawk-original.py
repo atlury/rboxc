@@ -10,6 +10,8 @@ from pathlib import Path
 import re
 import shlex
 import shutil
+import signal
+import time
 import subprocess
 import sys
 import tempfile
@@ -35,15 +37,21 @@ helpers={'cmp':ROOT/'build/gnu-diffutils/src/cmp',
          'grep':ROOT/'build/gnu-grep/src/grep',
          'egrep':ROOT/'build/gnu-grep/src/egrep',
          'sed':ROOT/'build/gnu-sed/sed/sed',
-         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('rm','echo','od','tr','cp','sort','ls','stat','uname','basename','chmod')}}
+         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('rm','echo','od','tr','cp','sort','ls','stat','uname','basename','chmod','cat','sleep')}}
 helper_profile_path=ROOT/'evidence/gawk-sort-helper.json'
 helper_profile=json.loads(helper_profile_path.read_text())
 helpers['sort']=Path(helper_profile['binary'])
 assert fingerprint(helpers['sort'])==helper_profile['binary_sha256']
+cat_profile_path=ROOT/'evidence/gawk-cat-helper.json'
+cat_profile=json.loads(cat_profile_path.read_text())
+helpers['cat']=Path(cat_profile['binary'])
+assert fingerprint(helpers['cat'])==cat_profile['binary_sha256']
 inputs={p:fingerprint(p) for p in {makefile,source/'test/Makefile.am',source/'test/Makefile.in',
     Path(__file__),ROOT/'tests/gawk_child_profile.py',Path('/usr/bin/make'),Path('/bin/bash').resolve(),Path('/bin/sh').resolve(),*helpers.values(),profile.oracle}}
 inputs[helper_profile_path]=fingerprint(helper_profile_path)
 inputs.update({Path(p):h for p,h in helper_profile['inputs'].items()})
+inputs[cat_profile_path]=fingerprint(cat_profile_path)
+inputs.update({Path(p):h for p,h in cat_profile['inputs'].items()})
 for row in selected:
     inputs[source/row['path']]=row['sha256']
     inputs.update({source/'test'/n:h for n,h in row['fixtures'].items()})
@@ -103,8 +111,33 @@ def run_selection(row):
                 env={'PATH':str(work/'exec')+':'+str(work/'deps')+':/usr/bin:/bin','HOME':directory,
                      'TMPDIR':directory,'LC_ALL':'C','LANGUAGE':'C','TZ':'UTC0'}
                 if name in locale_profiles:env['LOCPATH']=locale_profiles[name]
-                done=subprocess.run(command,cwd=work,env=env,stdin=subprocess.DEVNULL,
-                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=90)
+                process=subprocess.Popen(command,cwd=work,env=env,stdin=subprocess.DEVNULL,
+                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT,start_new_session=True)
+                timed_out=False
+                try:
+                    output,_=process.communicate(timeout=90)
+                except subprocess.TimeoutExpired:
+                    timed_out=True
+                    os.killpg(process.pid,signal.SIGKILL)
+                    output,_=process.communicate()
+                done=subprocess.CompletedProcess(command,process.returncode,output)
+                waited_children=set(); child_wait_timeout=False
+                deadline=time.monotonic()+15
+                while True:
+                    active=set()
+                    for entry in Path('/proc').iterdir():
+                        if not entry.name.isdecimal():continue
+                        try: fields=(entry/'stat').read_text().rpartition(') ')[2].split()
+                        except (FileNotFoundError,ProcessLookupError):continue
+                        if len(fields)>2 and int(fields[2])==process.pid and fields[0]!='Z':active.add(int(entry.name))
+                    if not active:break
+                    waited_children.update(active)
+                    if time.monotonic()>=deadline:
+                        assert not child_wait_timeout, 'private test children did not finish after termination'
+                        child_wait_timeout=True
+                        os.killpg(process.pid,signal.SIGKILL)
+                        deadline=time.monotonic()+5
+                    time.sleep(0.05)
                 (saved/'driver.log').write_bytes(done.stdout)
                 residual=work/('_'+name)
                 if residual.exists():shutil.copy2(residual,saved/'actual-output')
@@ -115,7 +148,7 @@ def run_selection(row):
                         shutil.copy2(output_file,saved/'outputs'/output_file.name)
                 # GNU's recipes ignore Make failures but leave _TARGET on a
                 # comparison failure. Require the success cleanup and target echo.
-                passed=(done.returncode==0 and not residual.exists()
+                passed=(not timed_out and not child_wait_timeout and done.returncode==0 and not residual.exists()
                         and name in done.stdout.decode(errors='replace').splitlines()
                         and b'Error ' not in done.stdout)
                 baseline_output=row.get('expected_baseline_output')
@@ -137,7 +170,7 @@ def run_selection(row):
                 clean=bool(logs) and all(m['complete_exec_log'] and m['errors']==0
                     and m['non_inherited_descriptors']==0 and not any(m['heap_bytes'].get(k,0)
                     for k in ('definitely lost','indirectly lost','possibly lost')) for m in logs)
-                outcomes[key]={'private_work_directory':str(work),'status':done.returncode,'assertions_pass':passed,
+                outcomes[key]={'process_group':process.pid,'timed_out':timed_out,'child_wait_timeout':child_wait_timeout,'waited_children':sorted(waited_children),'private_work_directory':str(work),'status':done.returncode,'assertions_pass':passed,
                     'baseline_failure_matches':baseline_matches,'actual_output':str((saved/'actual-output').relative_to(ROOT)) if residual.exists() else None,'actual_output_sha256':fingerprint(saved/'actual-output') if residual.exists() else None,
                     'driver_log':str((saved/'driver.log').relative_to(ROOT)),'driver_log_sha256':fingerprint(saved/'driver.log'),
                     'memory':logs,'memory_clean':clean if instrument else None}

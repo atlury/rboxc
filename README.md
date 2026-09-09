@@ -74,7 +74,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 228 of 244 original groups validated across recorded profiles |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 478 reviewed originals pass; three original failures match GNU |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 483 reviewed originals pass; three failures match GNU and six memory profiles remain open |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -235,15 +235,28 @@ Seven further unchanged Gawk recipes pass for numeric and string formatting,
 separator arrays, record reading, multibyte substitution, process identifiers and
 script shebang dispatch. Recipe helpers use pinned GNU implementations; the
 substitution recipe uses the verified English UTF-8 profile.
-`evidence/gawk-extension-state-coverage.json` audits **478 passing original recipes,
-three unchanged GNU baseline failures and 607 clean processes**: 495 original
-Gawk invocations, twenty shell children, seven native helper children and
+`evidence/gawk-pipe-lifetime-coverage.json` audits **483 passing original recipes,
+three unchanged GNU baseline failures and 618 clean processes**: 500 original
+Gawk invocations, twenty-three shell children, ten native helper children and
 85 focused cases counted once.
 Six auxiliary inputs are already covered by passing recipes; nine exclusions
-and 138 pending inputs remain. The latest seven unchanged recipes cover indirect function calls, POSIX conversion
+and 127 pending inputs remain. Six further reviewed originals pass their
+assertions but retain memory/descriptor findings; their 21 candidate logs are
+verified separately and excluded from the strict clean-process totals. The latest seven unchanged recipes cover indirect function calls, POSIX conversion
 and field behavior, namespace pretty printing, formatting, lint diagnostics and
 text matching. The candidate and installed
 release are unchanged, and full GNU acceptance remains open.
+
+Eleven more originals now match GNU output for pipes, half-close diagnostics,
+inherited descriptors, getline side effects, virtual I/O and pretty printing.
+Five pass strictly. The runner waits for private children before preserving logs;
+all delays and process groups are bounded. A separate unchanged GNU cat entry
+built with `-Dlint` enables its existing normal-exit buffer cleanup and resolves
+the child-input original. `gawk-cat-helper-validation.json` preserves the earlier
+262,144-byte buffer leak and verifies three clean final processes. The six open
+profiles retain native shell descriptor restoration, cached cat splice-pipe
+descriptors, or the virtual-I/O extension descriptor probe. No Rboxc production
+code or binary changes are part of this checkpoint.
 
 Five additional native-extension originals pass for array and symbol-state
 serialization, input-file/pipe state, directory reparsing and API path strings.

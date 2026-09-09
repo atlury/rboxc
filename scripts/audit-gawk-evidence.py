@@ -127,6 +127,7 @@ for row in original['results']:
         for name,h in locale['files'].items():assert fingerprint(base/locale['name']/name)==h
         assert locale['probe']=={'status':0,'stdout':'UTF-8\n','stderr':''}
     for key,outcome in row['outcomes'].items():
+        assert not outcome.get('timed_out') and not outcome.get('child_wait_timeout')
         assert outcome['status']==0
         if baseline:
             assert not outcome['assertions_pass']

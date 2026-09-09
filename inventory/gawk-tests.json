@@ -1,6 +1,6 @@
 {
   "provider": "GNU Gawk 5.4.1",
-  "scope": "All 634 original AWK inputs inventoried; 481 recipes reviewed, including fifteen native-extension interoperation selections: 478 pass and three assertion failures match GNU. Six further inputs are executed or included auxiliary programs of passing recipes and add no duplicate recipe/process counts. Nine historical crash/memory reproductions are excluded; 138 inputs still await individual accounting and optional profiles. Eleven pipe, sorting, extension and exit-status recipes account for twenty shell children and seven native helper children separately. Separate reports retain their selected scopes and original failures; full acceptance remains open.",
+  "scope": "All 634 original AWK inputs inventoried; 492 recipes reviewed, including seventeen native-extension selections: 483 pass, three assertion failures match GNU, and six additional originals pass assertions with memory/descriptor findings still open. Six further inputs are executed or included auxiliary programs and add no duplicate recipe/process counts. Nine historical crash/memory reproductions are excluded; 127 inputs still await individual accounting and optional profiles. Strict aggregate counts exclude every process from the six open profiles, whose logs are verified and retained separately. Full acceptance remains open.",
   "registration_sha256": "447e3fdd76fe4ebb4b39427465aa727ed421a5818e568a00e00f2c5a90830ade",
   "inputs": [
     {
@@ -929,8 +929,27 @@
     {
       "path": "test/childin.awk",
       "sha256": "c503ea6debfb42d40dfa873c80cefff561a5635be0ef748c0e58b88965202a89",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "childin",
+      "review": "Complete original programs, configured recipe and all fixtures reviewed. Ordinary inherited descriptor reads, getline side effects, bounded pipe input, half-close diagnostics, virtual extension I/O, or comment pretty printing. Pipe data and two-second child delays are fixed. Profile11 selects pretty printing only: the reviewed GNU main.c branch skips interpret(code_block), so the example loops and stat call are printed, never executed.",
+      "fixtures": {
+        "childin.in": "98ea6e4f216f2fb4b69fff9b3a44842c38686ca685f3f55dc48c5d3fb1107be4",
+        "childin.ok": "98ea6e4f216f2fb4b69fff9b3a44842c38686ca685f3f55dc48c5d3fb1107be4"
+      },
+      "configured_recipe_sha256": "63628fa9c0e8a00e954d0bc3d8a7644dfa78187048cd975b40ca90d2f239b2fd",
+      "child_commands": {
+        "/bin/sh -c cat": 1,
+        "cat": 1
+      },
+      "child_dependencies": {
+        "cat": {
+          "path": "/root/rboxc/build/gawk-cat-helper/coreutils",
+          "sha256": "11d6087a6954e72d9acac9b2ea4795bb2ef52e175d3720f0054236e76d7f0184"
+        }
+      },
+      "evidence": "evidence/gawk-pipe-cat-lint-original.json",
+      "audit": "evidence/gawk-pipe-lifetime-coverage.json"
     },
     {
       "path": "test/clobber.awk",
@@ -941,38 +960,167 @@
     {
       "path": "test/clos1way.awk",
       "sha256": "0a27e4c6de449e2e2fbe9fd24f66f228c5fdcd68b34c6ea437db8e8c0dfa5b3b",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "clos1way",
+      "review": "Complete original programs, configured recipe and all fixtures reviewed. Ordinary inherited descriptor reads, getline side effects, bounded pipe input, half-close diagnostics, virtual extension I/O, or comment pretty printing. Pipe data and two-second child delays are fixed. Profile11 selects pretty printing only: the reviewed GNU main.c branch skips interpret(code_block), so the example loops and stat call are printed, never executed.",
+      "fixtures": {
+        "clos1way.ok": "42f464b52933be29c7b2c134c04d3793752e79e9f697730df345ba5ccbf171eb"
+      },
+      "configured_recipe_sha256": "49e158eacfabc01bee68b7546d8447ecc38098c20fe5475e4ac7c20b7285c5f7",
+      "child_commands": {
+        "/bin/sh -c sort": 1,
+        "sort": 1
+      },
+      "child_dependencies": {
+        "sort": {
+          "path": "/root/rboxc/build/gawk-sort-helper/coreutils",
+          "sha256": "55d6a3487eed83a8b2b37aeaba723c3244c994663e58261cdccf9ecb97e70e32"
+        }
+      },
+      "evidence": "evidence/gawk-pipe-cat-lint-original.json",
+      "audit": "evidence/gawk-pipe-lifetime-coverage.json"
     },
     {
       "path": "test/clos1way2.awk",
       "sha256": "9a518f72948935f951d020a0c8c6667b40b836248e3442e75618c782b8a71d3e",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-assertions-memory-open",
+      "target": "clos1way2",
+      "review": "Complete original programs, configured recipe and all fixtures reviewed. Ordinary inherited descriptor reads, getline side effects, bounded pipe input, half-close diagnostics, virtual extension I/O, or comment pretty printing. Pipe data and two-second child delays are fixed. Profile11 selects pretty printing only: the reviewed GNU main.c branch skips interpret(code_block), so the example loops and stat call are printed, never executed. Original assertions pass in all four profiles. Remaining memory/descriptor findings are preserved: native shell standard-descriptor restoration, native cat cached splice pipes, or the native virtual-I/O extension descriptor probe; no strict memory-clean pass is claimed.",
+      "fixtures": {
+        "clos1way2.ok": "7c187b4c101c45d4ff8c93488172aa5630f5036accf45f130339bdfe891e4e04",
+        "clos1way2.in": "f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2"
+      },
+      "configured_recipe_sha256": "2676df62a91962504ff4ddebdea0033d015116ed368090c751af73fccbb595a7",
+      "child_commands": {
+        "/bin/sh -c cat\\ -\\ 1\\>&2\\ &&\\ sleep\\ 2": 1,
+        "sleep 2": 1,
+        "cat -": 1
+      },
+      "child_dependencies": {
+        "sleep": {
+          "path": "/root/rboxc/build/gnu-coreutils/src/coreutils",
+          "sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4"
+        },
+        "cat": {
+          "path": "/root/rboxc/build/gawk-cat-helper/coreutils",
+          "sha256": "11d6087a6954e72d9acac9b2ea4795bb2ef52e175d3720f0054236e76d7f0184"
+        }
+      },
+      "evidence": "evidence/gawk-pipe-cat-lint-original.json",
+      "audit": "evidence/gawk-pipe-lifetime-coverage.json"
     },
     {
       "path": "test/clos1way3.awk",
       "sha256": "c2f04273b6e7c1b894c111f990168da3dc7b9b7012654329dd1459d7cf3be6aa",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-assertions-memory-open",
+      "target": "clos1way3",
+      "review": "Complete original programs, configured recipe and all fixtures reviewed. Ordinary inherited descriptor reads, getline side effects, bounded pipe input, half-close diagnostics, virtual extension I/O, or comment pretty printing. Pipe data and two-second child delays are fixed. Profile11 selects pretty printing only: the reviewed GNU main.c branch skips interpret(code_block), so the example loops and stat call are printed, never executed. Original assertions pass in all four profiles. Remaining memory/descriptor findings are preserved: native shell standard-descriptor restoration, native cat cached splice pipes, or the native virtual-I/O extension descriptor probe; no strict memory-clean pass is claimed.",
+      "fixtures": {
+        "clos1way3.ok": "e3dfe71db7226d2439a8982488d396c9619511f953647bc2dbe77e3379feb51b"
+      },
+      "configured_recipe_sha256": "f49e7c9101a0746510f5a4d6adcc34102cb0887d094eddec8e2d24bcad7a6225",
+      "child_commands": {
+        "/bin/sh -c cat\\ -\\ 1\\>&2\\ &&\\ sleep\\ 2": 1,
+        "sleep 2": 1,
+        "cat -": 1
+      },
+      "child_dependencies": {
+        "sleep": {
+          "path": "/root/rboxc/build/gnu-coreutils/src/coreutils",
+          "sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4"
+        },
+        "cat": {
+          "path": "/root/rboxc/build/gawk-cat-helper/coreutils",
+          "sha256": "11d6087a6954e72d9acac9b2ea4795bb2ef52e175d3720f0054236e76d7f0184"
+        }
+      },
+      "evidence": "evidence/gawk-pipe-cat-lint-original.json",
+      "audit": "evidence/gawk-pipe-lifetime-coverage.json"
     },
     {
       "path": "test/clos1way4.awk",
       "sha256": "cfb1e16f9e18d86205e8839ea7784a6dc2085d0606c3c6b3a3bdb206ea7e4183",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-assertions-memory-open",
+      "target": "clos1way4",
+      "review": "Complete original programs, configured recipe and all fixtures reviewed. Ordinary inherited descriptor reads, getline side effects, bounded pipe input, half-close diagnostics, virtual extension I/O, or comment pretty printing. Pipe data and two-second child delays are fixed. Profile11 selects pretty printing only: the reviewed GNU main.c branch skips interpret(code_block), so the example loops and stat call are printed, never executed. Original assertions pass in all four profiles. Remaining memory/descriptor findings are preserved: native shell standard-descriptor restoration, native cat cached splice pipes, or the native virtual-I/O extension descriptor probe; no strict memory-clean pass is claimed.",
+      "fixtures": {
+        "clos1way4.ok": "36e4fa18887e663e15ce68a1cd07ef4edcce668c40097a0b73330ce1c85c127e"
+      },
+      "configured_recipe_sha256": "81c10e0a3b072d1c484b1fd2dfb670d7f01ad13bcaa1c8ac71808ecefe028426",
+      "child_commands": {
+        "/bin/sh -c cat\\ -\\ 1\\>&2\\ &&\\ sleep\\ 2": 1,
+        "sleep 2": 1,
+        "cat -": 1
+      },
+      "child_dependencies": {
+        "sleep": {
+          "path": "/root/rboxc/build/gnu-coreutils/src/coreutils",
+          "sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4"
+        },
+        "cat": {
+          "path": "/root/rboxc/build/gawk-cat-helper/coreutils",
+          "sha256": "11d6087a6954e72d9acac9b2ea4795bb2ef52e175d3720f0054236e76d7f0184"
+        }
+      },
+      "evidence": "evidence/gawk-pipe-cat-lint-original.json",
+      "audit": "evidence/gawk-pipe-lifetime-coverage.json"
     },
     {
       "path": "test/clos1way5.awk",
       "sha256": "e7523608178805fe9575990589a69a73f6d7dd2efe5e9109ffa1d5b6b813ee3a",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "clos1way5",
+      "review": "Complete original programs, configured recipe and all fixtures reviewed. Ordinary inherited descriptor reads, getline side effects, bounded pipe input, half-close diagnostics, virtual extension I/O, or comment pretty printing. Pipe data and two-second child delays are fixed. Profile11 selects pretty printing only: the reviewed GNU main.c branch skips interpret(code_block), so the example loops and stat call are printed, never executed.",
+      "fixtures": {
+        "clos1way5.ok": "7ac5d3a586637d0e3f6ca2315ab6382e115f2396216dee6ed0392d148f96c7fe"
+      },
+      "configured_recipe_sha256": "08491341900338263f316cec494b229a1a32408fbd1b262e7b2f91a01ec0c0ff",
+      "child_commands": {
+        "/bin/sh -c echo\\ test1&&\\ echo\\ test2&&\\ sleep\\ 2": 1,
+        "sleep 2": 1
+      },
+      "child_dependencies": {
+        "sleep": {
+          "path": "/root/rboxc/build/gnu-coreutils/src/coreutils",
+          "sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4"
+        }
+      },
+      "evidence": "evidence/gawk-pipe-cat-lint-original.json",
+      "audit": "evidence/gawk-pipe-lifetime-coverage.json"
     },
     {
       "path": "test/clos1way6.awk",
       "sha256": "893f50a05ee9b3c434a90ab651b243bbab716ed35983fd1bcdcc0a6540c0af69",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-assertions-memory-open",
+      "target": "clos1way6",
+      "review": "Complete original programs, configured recipe and all fixtures reviewed. Ordinary inherited descriptor reads, getline side effects, bounded pipe input, half-close diagnostics, virtual extension I/O, or comment pretty printing. Pipe data and two-second child delays are fixed. Profile11 selects pretty printing only: the reviewed GNU main.c branch skips interpret(code_block), so the example loops and stat call are printed, never executed. Original assertions pass in all four profiles. Remaining memory/descriptor findings are preserved: native shell standard-descriptor restoration, native cat cached splice pipes, or the native virtual-I/O extension descriptor probe; no strict memory-clean pass is claimed.",
+      "fixtures": {
+        "clos1way6.ok": "db876398ddad9a73d1ba985850c35a301dd4742d6f1fa64d8f482842cd3038fd"
+      },
+      "configured_recipe_sha256": "d8771f7cedd50a1738e1dc7d909ae2674973d9af43b1107d98e09b1c7d769a17",
+      "child_commands": {
+        "/bin/sh -c cat\\ -\\ 1\\>&2;\\ sleep\\ 2": 1,
+        "sleep 2": 1,
+        "cat -": 1
+      },
+      "child_dependencies": {
+        "sleep": {
+          "path": "/root/rboxc/build/gnu-coreutils/src/coreutils",
+          "sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4"
+        },
+        "cat": {
+          "path": "/root/rboxc/build/gawk-cat-helper/coreutils",
+          "sha256": "11d6087a6954e72d9acac9b2ea4795bb2ef52e175d3720f0054236e76d7f0184"
+        }
+      },
+      "evidence": "evidence/gawk-pipe-cat-lint-original.json",
+      "audit": "evidence/gawk-pipe-lifetime-coverage.json"
     },
     {
       "path": "test/close_status.awk",
@@ -1383,8 +1531,20 @@
     {
       "path": "test/devfd1.awk",
       "sha256": "9e6d6ca8644ffb2303da827de0e129a0ed5a113e6daa06de930741a890437226",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "devfd1",
+      "review": "Complete original programs, configured recipe and all fixtures reviewed. Ordinary inherited descriptor reads, getline side effects, bounded pipe input, half-close diagnostics, virtual extension I/O, or comment pretty printing. Pipe data and two-second child delays are fixed. Profile11 selects pretty printing only: the reviewed GNU main.c branch skips interpret(code_block), so the example loops and stat call are printed, never executed.",
+      "fixtures": {
+        "devfd.in1": "a3f702f153d95b4d0b5766e346f5bf02a1116b61cfabe3b1287c2df66f6da911",
+        "devfd.in2": "f6cdfe7d4efb7a9dd880bfa3c333ab5d039f1fd756b5a90d81e1ad50055ec889",
+        "devfd1.ok": "cf187cce88c365e1f52985b024663b882eca1b075d069423d91cff3fe1adb2e8"
+      },
+      "configured_recipe_sha256": "7aa9716033dc9acdc5c90cee47f3c545e51011ba03e52e04a4d3996e1bf975ea",
+      "child_commands": {},
+      "child_dependencies": {},
+      "evidence": "evidence/gawk-pipe-cat-lint-original.json",
+      "audit": "evidence/gawk-pipe-lifetime-coverage.json"
     },
     {
       "path": "test/dfacheck1.awk",
@@ -2855,8 +3015,27 @@
     {
       "path": "test/getline5.awk",
       "sha256": "8b192014b9e67fbefb9f30d104d584c4e39b3b4945d2348e86b99b64d7796df3",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-assertions-memory-open",
+      "target": "getline5",
+      "review": "Complete original programs, configured recipe and all fixtures reviewed. Ordinary inherited descriptor reads, getline side effects, bounded pipe input, half-close diagnostics, virtual extension I/O, or comment pretty printing. Pipe data and two-second child delays are fixed. Profile11 selects pretty printing only: the reviewed GNU main.c branch skips interpret(code_block), so the example loops and stat call are printed, never executed. Original assertions pass in all four profiles. Remaining memory/descriptor findings are preserved: native shell standard-descriptor restoration, native cat cached splice pipes, or the native virtual-I/O extension descriptor probe; no strict memory-clean pass is claimed.",
+      "fixtures": {
+        "getline5.ok": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+      },
+      "configured_recipe_sha256": "c59062516e0935ae6a62733f0965d619ac60dd3390fbb220326fa77d2e687af2",
+      "child_commands": {
+        "/bin/sh -c echo\\ 1\\ \\>\\ f": 1,
+        "/bin/sh -c rm\\ -f\\ f": 1,
+        "rm -f f": 1
+      },
+      "child_dependencies": {
+        "rm": {
+          "path": "/root/rboxc/build/gnu-coreutils/src/coreutils",
+          "sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4"
+        }
+      },
+      "evidence": "evidence/gawk-pipe-cat-lint-original.json",
+      "audit": "evidence/gawk-pipe-lifetime-coverage.json"
     },
     {
       "path": "test/getlnbuf.awk",
@@ -5692,8 +5871,43 @@
     {
       "path": "test/profile11.awk",
       "sha256": "2b13de56aa2fe71e161a753f4917217f58fd70e8159a9bb37a6cf5eff79d0e23",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-pass",
+      "target": "profile11",
+      "review": "Complete original programs, configured recipe and all fixtures reviewed. Ordinary inherited descriptor reads, getline side effects, bounded pipe input, half-close diagnostics, virtual extension I/O, or comment pretty printing. Pipe data and two-second child delays are fixed. Profile11 selects pretty printing only: the reviewed GNU main.c branch skips interpret(code_block), so the example loops and stat call are printed, never executed.",
+      "fixtures": {
+        "profile11.ok": "1ffae8a99821c63bf420090b82d12cad0904b67b0dea831c41705c05586ebb9f"
+      },
+      "configured_recipe_sha256": "5dd69438ed8d9bf87a0a7ab9d4bbe015c1a2234db20e09ca1888554c6e63fa58",
+      "child_commands": {},
+      "child_dependencies": {},
+      "extension_profile": {
+        "scope": "Pinned GNU native extension helpers with the GNU or translated Gawk entry; private test-only library lookup.",
+        "libraries": {
+          "filefuncs.so": {
+            "path": "/root/rboxc/build/gnu-gawk/extension/.libs/filefuncs.so",
+            "sha256": "5d0ff47bff41d7b72ab06bf9d91d43f24c77154fa8b811f9b86fd0825f998f45"
+          }
+        },
+        "inputs": {
+          "/opt/src/gawk-5.4.1/extension/filefuncs.c": "a847860a78d43c3eb4dc4b53e71bf382a30bb340b6decc117c78804bb55fe227",
+          "/opt/src/gawk-5.4.1/extension/ext_custom.h": "70293c4c5e662cd2980b7d29112134aa2102347960471dcb16fd677c3e70af07",
+          "/opt/src/gawk-5.4.1/gawkapi.h": "3480eb870c9b88cca3f4df58e069ba91c944954d7f1610944ef557350c8b0713",
+          "/opt/src/gawk-5.4.1/gettext.h": "d9d2efcd8865ed25b0976aee699b4f82f88fc9acf2b706886027b4a6f5daadf7",
+          "/opt/src/gawk-5.4.1/extension/gawkfts.c": "4c0b2b8d8767a6276debfc468bc233abccb86cae41ce93b359e4d9a20557c29a",
+          "/opt/src/gawk-5.4.1/extension/gawkfts.h": "41925fa51e4ac52aaf679b49cfa01d77bc3ef25471b7302cd344157f7a1ab839",
+          "/opt/src/gawk-5.4.1/extension/gawkdirfd.h": "c16d17e5baa0b2b780e9dfcb29ca87dd8f3cdcbb6eeeeb3b9c052bf27b54d102",
+          "/opt/src/gawk-5.4.1/extension/stack.c": "bdcee0132971c4b44cb4cdbe40fd9ca59c101218d6df3de83eefc9c1c3b7b18b",
+          "/opt/src/gawk-5.4.1/extension/stack.h": "17319501b7e30c1e925fcce50f614b083b9751610ff586a20fa01c094f7939e1",
+          "/root/rboxc/build/gnu-gawk/config.h": "2b3a38ed3f2a47cd81af88f0082d073fadfe7530bd3bf00d42f28b78d9df58a0",
+          "/root/rboxc/build/gnu-gawk/extension/Makefile": "862d1946e6d089d1549d1e0c5ac25ccae045b3cbf5408cee00fe3de13a8d7a12",
+          "/root/rboxc/build/gnu-gawk/extension/.libs/filefuncs.o": "1af931a04651af2c286317cdcc18eab291e836042652cda68fd72f79df28465c",
+          "/root/rboxc/build/gnu-gawk/gawkapi.o": "c154ac8f1e56a497a649f3554ac42054296a22570628808450ceb6d881473a05",
+          "/opt/src/gawk-5.4.1/main.c": "0542fce6748ae8b476b8c39952ab749e65525dd983f88cd7ff8a096aef929c16"
+        }
+      },
+      "evidence": "evidence/gawk-pipe-cat-lint-original.json",
+      "audit": "evidence/gawk-pipe-lifetime-coverage.json"
     },
     {
       "path": "test/profile12.awk",
@@ -6500,8 +6714,36 @@
     {
       "path": "test/revtwoway.awk",
       "sha256": "96dc3b0c00f581acc05ad63b389cbdeac5b9d3677de628e2250ccb8ee8eae303",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-assertions-memory-open",
+      "target": "revtwoway",
+      "review": "Complete original programs, configured recipe and all fixtures reviewed. Ordinary inherited descriptor reads, getline side effects, bounded pipe input, half-close diagnostics, virtual extension I/O, or comment pretty printing. Pipe data and two-second child delays are fixed. Profile11 selects pretty printing only: the reviewed GNU main.c branch skips interpret(code_block), so the example loops and stat call are printed, never executed. Original assertions pass in all four profiles. Remaining memory/descriptor findings are preserved: native shell standard-descriptor restoration, native cat cached splice pipes, or the native virtual-I/O extension descriptor probe; no strict memory-clean pass is claimed.",
+      "fixtures": {
+        "revtwoway.ok": "28e8ecb9e89a49fea457a208a0ba7ac2b50f4f523157b1b6f4a6b8496f2c37eb"
+      },
+      "configured_recipe_sha256": "6d42f454a793764bde1e3e95e7437032754c1a9e3d41f5311bdf31c428219b13",
+      "child_commands": {},
+      "child_dependencies": {},
+      "extension_profile": {
+        "scope": "Pinned GNU virtual I/O extension; /magic/mirror is handled in process, with no real subprocess or filesystem access.",
+        "libraries": {
+          "revtwoway.so": {
+            "path": "/root/rboxc/build/gnu-gawk/extension/.libs/revtwoway.so",
+            "sha256": "8771fee69ea2427b693ffc06886d6a74512415429892c46fdaf1dab4153bdca9"
+          }
+        },
+        "inputs": {
+          "/opt/src/gawk-5.4.1/extension/revtwoway.c": "509666506405ed3dcb53c7a2e840a6ec64266d2106867a179a6e9d32de9b4dcd",
+          "/opt/src/gawk-5.4.1/extension/ext_custom.h": "70293c4c5e662cd2980b7d29112134aa2102347960471dcb16fd677c3e70af07",
+          "/opt/src/gawk-5.4.1/gawkapi.h": "3480eb870c9b88cca3f4df58e069ba91c944954d7f1610944ef557350c8b0713",
+          "/opt/src/gawk-5.4.1/gettext.h": "d9d2efcd8865ed25b0976aee699b4f82f88fc9acf2b706886027b4a6f5daadf7",
+          "/root/rboxc/build/gnu-gawk/config.h": "2b3a38ed3f2a47cd81af88f0082d073fadfe7530bd3bf00d42f28b78d9df58a0",
+          "/root/rboxc/build/gnu-gawk/extension/Makefile": "862d1946e6d089d1549d1e0c5ac25ccae045b3cbf5408cee00fe3de13a8d7a12",
+          "/root/rboxc/build/gnu-gawk/extension/.libs/revtwoway.o": "b3f9483c733844217f2f67ae54a24302739b49a8820bf546782f47393905ae46"
+        }
+      },
+      "evidence": "evidence/gawk-pipe-cat-lint-original.json",
+      "audit": "evidence/gawk-pipe-lifetime-coverage.json"
     },
     {
       "path": "test/rri1.awk",
