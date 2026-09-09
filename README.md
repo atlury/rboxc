@@ -2325,10 +2325,10 @@ Valgrind help paths pass after the change.
 
 The complete pinned suite registration contains 733 scripts, including 41
 root tests and 41 generated factor tests. The current
-[evidence/gnu-cut-selection-coverage.json](evidence/gnu-cut-selection-coverage.json)
-extends the preserved `evidence/gnu-suite-coverage.json` checkpoint by three
-reviewed selections: 639 scripts passed, 16 have selected-case coverage, five
-are skipped, 29 are excluded and 44 remain pending.
+[evidence/gnu-shell-selection-coverage.json](evidence/gnu-shell-selection-coverage.json)
+extends the preserved `evidence/gnu-suite-coverage.json` checkpoint by eight
+reviewed selections: 639 scripts passed, 21 have selected coverage, five
+are skipped, 29 are excluded and 39 remain pending.
 
 All 197 reviewed `env -S` cases pass normally against GNU. The original table
 contains 199 cases; two historical reproduction cases remain unexecuted.
@@ -2350,8 +2350,19 @@ unaccepted. Thirty-two cut cases and ten ptx cases remain held.
 [evidence/gnu-cut-selection-validation.json](evidence/gnu-cut-selection-validation.json)
 and [evidence/gnu-ptx-selection-validation.json](evidence/gnu-ptx-selection-validation.json)
 verify the source selections, checkpoints and every command image.
-The Valgrind ledger now has 589 passed scripts, ten passed selections,
-39 open profiles, 66 pending and 29 exclusions. Installed-release evidence is
+Five more ordinary shell selections cover `shred` pass sequences, `od` input
+limits and string output, `tac` pipes and readable proc/sys inputs, BLAKE2b
+tagged/untagged checksums, and `cksum` mixed algorithms and diagnostics.
+GNU's selected assertions remain byte-for-byte intact. All five pass normally
+and under Valgrind on the current `7a05a47f` candidate, with **112 clean candidate
+process images**. Source hashes, omitted byte intervals, exact command image
+inventories and complete logs are checked by
+[evidence/gnu-shell-selection-validation.json](evidence/gnu-shell-selection-validation.json).
+The original `cksum-c` fixture omission is preserved as a skip; its corrected
+profile registers `shuf` and passes. Historical memory/crash sections and the
+separate strace I/O fault profile remain unexecuted. These are partial script
+results. The Valgrind ledger now has 589 passed scripts, 15 passed selections,
+39 open profiles, 61 pending and 29 exclusions. Installed-release evidence is
 unchanged.
 
 Three SELinux-only scripts whose names do

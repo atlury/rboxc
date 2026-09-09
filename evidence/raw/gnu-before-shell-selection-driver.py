@@ -25,7 +25,6 @@ ROOT_GUARD_COMMANDS = [
     'chgrp -RLh --preserve-root 65534 d']
 sys.path.insert(0, str(ROOT/'scripts'))
 from generated_tests import materialize
-from gnu_shell_selections import materialize_selection
 PERL_SELECTION = r'''
 no warnings 'redefine';
 *main::run_tests = sub ($$$$$) {
@@ -170,8 +169,6 @@ def main():
             continue
         script = materialize(ROOT, SOURCE, row) if row.get('generator_inputs') else SOURCE/row['script']
         assert hashlib.sha256(script.read_bytes()).hexdigest() == row['sha256'], row['script']
-        if row.get('shell_selection'):
-            script = materialize_selection(ROOT, SOURCE, row)
         assert row.get('profile') in (None, 'ordinary-user', 'loopback-device', 'private-mount', 'private-root'), 'unknown execution profile'
         if row.get('profile') == 'private-root':
             assert row['script'] == 'tests/chown/preserve-root.sh'
@@ -203,10 +200,6 @@ def main():
         test_shell = row.get('test_shell', '/bin/sh')
         assert test_shell in ('/bin/sh', '/bin/bash'), 'unsupported test shell'
         context = {**execution_context, 'definition': row, 'shell': fingerprint(Path(test_shell))}
-        if row.get('shell_selection'):
-            context['shell_selection_driver'] = fingerprint(ROOT/'scripts/gnu_shell_selections.py')
-            context['selected_script'] = {'path': str(script.relative_to(ROOT)),
-                                          'sha256': fingerprint(script)}
         if row.get('profile') == 'private-root':
             context['root_driver'] = fingerprint(ROOT/'tests/gnu/private-root-profile.py')
             context['root_tools'] = {name: fingerprint(Path('/usr/bin')/name)
