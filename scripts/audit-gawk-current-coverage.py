@@ -18,6 +18,7 @@ runner = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runner)
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--report-name', default='gawk-current-coverage')
+parser.add_argument('--focused', type=Path, default=ROOT/'evidence/gawk-source-behavior.json')
 options = parser.parse_args()
 assert re.fullmatch(r'[a-z0-9-]+', options.report_name)
 target = ROOT/'evidence'/(options.report_name+'.json')
@@ -39,7 +40,7 @@ archives = [ROOT/'tests/gawk-original.py', ROOT/'evidence/raw/gawk-array-driver.
             ROOT/'evidence/raw/gawk-before-child-wait-driver.py',
             ROOT/'evidence/raw/gawk-before-self-exec-driver.py']
 driver_versions = {fingerprint(p): str(p.relative_to(ROOT)) for p in archives}
-focused_path = ROOT/'evidence/gawk-source-behavior.json'
+focused_path = options.focused.resolve()
 focused = json.loads(focused_path.read_text())
 binary_hash = fingerprint(Path(focused['binary']))
 assert focused['binary_sha256'] == binary_hash
@@ -200,15 +201,18 @@ for row in manifest['inputs']:
     assert row['evidence']==owner['evidence']
     report=json.loads((ROOT/owner['evidence']).read_text())
     result=next(r for r in report['results'] if r['selection']==owner['target'])
-    assert result['pass']
+    assert result['pass'] or (owner.get('expected_baseline_output') and result['baseline_failure_matches'])
     execution_name=name
     if row.get('coverage_kind')=='included-source':
         assert re.search(r'^@include[ \t]+\"'+re.escape(name)+r'\"[ \t]*$',(source/owner['path']).read_text(),re.M)
         execution_name=Path(owner['path']).name
+    if row.get('coverage_kind')=='unread-source-argument':
+        assert owner['target']=='eofsrc1' and name=='eofsrc1b.awk'
+        assert b'source files / command-line arguments must contain complete functions or rules' in (source/'test/eofsrc1.ok').read_bytes()
     for key in ('gnu-valgrind','rboxc-valgrind'):
         assert any(re.search(r'Command: gawk .*?-f (?:[^\n ]*/)?'+re.escape(execution_name)+r'(?: |\n)',
             (ROOT/m['log']).read_text()) for m in result['outcomes'][key]['memory'])
-    auxiliary_inputs[row['path']]={'sha256':row['sha256'],'covered_by':owner['target'],'report':row['evidence']}
+    auxiliary_inputs[row['path']]={'sha256':row['sha256'],'covered_by':owner['target'],'report':row['evidence'], 'coverage_kind':row.get('coverage_kind','executed-source')}
 counts = Counter(r['state'] for r in manifest['inputs'])
 result = {'scope': 'Distinct reviewed Gawk recipes on one immutable candidate. Every current inventory '
           'input, report dependency and raw Valgrind log is verified. Historical driver versions are '

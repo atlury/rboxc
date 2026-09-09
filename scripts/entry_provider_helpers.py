@@ -84,6 +84,8 @@ def prepare_archives(root,provider,mapping):
     if provider=='gawk':
         from gawk_cleanup import prepare
         adapted=prepare(root)
+        from gawk_format_cleanup import prepare as prepare_format
+        adapted.update(prepare_format(root))
     if provider=='patch':
         from patch_cleanup import prepare
         adapted=prepare(root)

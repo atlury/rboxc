@@ -74,7 +74,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 228 of 244 original groups validated across recorded profiles |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 518 reviewed originals pass; five failures match GNU and eight memory profiles remain open |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 525 reviewed originals pass; six failures match GNU and eight memory profiles remain open |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -105,11 +105,14 @@ The public terminal cleanup API alone retains the shared parameter cache in
 this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
-The current 187-command candidate is **14,717,568 bytes**, at
-`target/tar-child-input-candidate/release/rboxc`, with a byte-identical independent
-rebuild. All 428 Coreutils smoke checks, 11 dispatcher checks and 57 Tar
-comparisons pass; preceding Screen evidence retains its actual candidate hash. The installed 133-command release remains unchanged;
-full GNU-wide acceptance remains open.
+The current 187-command candidate is **14,717,992 bytes**, at
+`target/gawk-format-lifetime-candidate/release/rboxc`, SHA-256
+`df802022e1d85caf26f6d514459110657e06e6bf0e44407f0573e93f8e74652e`.
+An independent rebuild is byte-identical. All 428 Coreutils smoke checks,
+11 dispatcher checks, 85 focused Gawk comparisons and 18 formatting ownership
+contracts pass. All 539 reviewed Gawk recipes were rerun on these bytes.
+Earlier Tar and Screen evidence retains its actual candidate hashes. The installed
+133-command release remains unchanged; full GNU-wide acceptance remains open.
 
 Screen's original attach/detach test now passes natively and under Valgrind
 against both GNU and rboxc. Its private profile uses short Unix socket paths,
@@ -235,18 +238,37 @@ Seven further unchanged Gawk recipes pass for numeric and string formatting,
 separator arrays, record reading, multibyte substitution, process identifiers and
 script shebang dispatch. Recipe helpers use pinned GNU implementations; the
 substitution recipe uses the verified English UTF-8 profile.
-`evidence/gawk-regex-allocation-coverage.json` audits **518 passing original recipes,
-five unchanged GNU baseline failures and 659 clean processes**: 537 original
+`evidence/gawk-format-lifetime-coverage.json` audits **525 passing original recipes,
+six unchanged GNU baseline failures and 668 clean processes**: 546 original
 Gawk invocations, twenty-five shell children, twelve native helper children and
 85 focused cases counted once.
-Six auxiliary inputs are already covered by passing recipes; 33 historical
-reproductions are excluded after source review, twenty MPFR inputs are unavailable
-in this build, and 44 other pending inputs remain. Eight further reviewed originals pass their
+Eight auxiliary inputs are accounted with reviewed recipes, including one second
+source argument that the expected parser diagnostic never reads. Thirty-five
+historical reproductions are excluded after source review. Twenty MPFR inputs and
+one ARRAYDEBUG input are unavailable in this build, verified by unchanged GNU
+capability guards; 31 other pending inputs remain. Eight further reviewed originals pass their
 assertions but retain memory/descriptor findings; their 53 candidate logs are
 verified separately and excluded from the strict clean-process totals. The latest seven unchanged recipes cover indirect function calls, POSIX conversion
 and field behavior, namespace pretty printing, formatting, lint diagnostics and
-text matching. The candidate and installed
-release are unchanged, and full GNU acceptance remains open.
+text matching. The installed release is unchanged, and full GNU acceptance remains open.
+
+The formatting ownership fix releases temporary string nodes after `printf` has
+copied their contents, while preserving borrowed argument nodes. Only the isolated
+GNU `printf.o` helper changes; the translated Rust entry and pinned GNU sources
+remain unchanged. The original NaN/infinity formatting recipe previously leaked
+372 bytes in both GNU and Rboxc. Its candidate logs are now clean, with identical
+output; its changed diagnostic wording and extra lint messages remain an original
+assertion baseline. Eighteen ownership contracts pass through all three aliases,
+where twelve initially had allocation findings. `gawk-format-lifetime-validation.json`
+verifies **686 clean candidate processes**, all reviewed originals, shared smoke
+and dispatch checks, and the identical rebuild. Initial findings and the dispatcher
+run that used the installed provider list are preserved separately.
+
+Seven further originals pass for parser source boundaries, array deletion and
+parameter diagnostics, a bounded regex comparison, bibliography parsing, Makefile
+text substitution and opcode-table text generation. The generated text is never
+compiled or executed. The ARRAYDEBUG guard executes no Gawk process and adds no
+original-pass or Valgrind count.
 
 Thirteen additional originals pass for regex anchors, replacement and case behavior,
 NUL and eight-bit matching, and allocation lifetimes for sorting callbacks and typed
@@ -266,7 +288,7 @@ Nine debugger originals now pass for arrays, expression evaluation and typed
 regular expressions. Two restart the same process: their append-only Valgrind
 logs preserve both execution headers, with first-error termination enabled.
 Each restart counts as one process and two execution images; the strict aggregate
-contains 539 original Gawk execution images. Heap and descriptor summaries describe
+contains 548 original Gawk execution images. Heap and descriptor summaries describe
 the final image, not a separate pre-restart exit. The inherited log descriptor is
 part of the harness. Initial incomplete and intermediate runs remain preserved.
 
@@ -277,7 +299,7 @@ bounded debugger watchpoint session. All twelve Gawk/child logs are clean.
 guard with two clean candidate logs: both configured binaries lack MPFR. Its
 twenty distributed programs and one inline recipe are accounted as unavailable,
 with no execution or original-pass claim. These guard logs are outside the
-659-process aggregate.
+668-process aggregate.
 
 Eleven more originals now match GNU output for pipes, half-close diagnostics,
 inherited descriptors, getline side effects, virtual I/O and pretty printing.
@@ -459,7 +481,7 @@ preservation. `evidence/gawk-source-validation.json` audits 197 clean Gawk proce
 logs and seven separate descriptor inspections; all 428 multicall smoke checks
 and 11 dispatcher checks pass. The initial findings remain recorded.
 
-The current 187-command candidate is **14,716,728 bytes**, SHA-256
+That preceding 187-command candidate is **14,716,728 bytes**, SHA-256
 `6eca6aac2d29295f2d01f1fd797206c278ee8a7a7fb64fdda5f0d0afd0e29a89`.
 An independent rebuild is byte-identical. The installed 133-command release is
 unchanged. Original inputs beyond these 105 recipes and extension profiles remain

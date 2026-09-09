@@ -55,8 +55,9 @@ for path, expected in inputs.items():
 baseline_evidence={}
 for recipe in baselines.values():
     previous_path=ROOT/recipe['baseline_report'];previous=json.loads(previous_path.read_text())
-    assert previous['binary_sha256']==original['binary_sha256']
+    assert previous['gnu_binary_sha256']==original['gnu_binary_sha256']
     selection=next(r for r in previous['results'] if r['selection']==recipe['target'])
+    assert selection['source_sha256']==recipe['sha256']
     assert not selection['pass']
     for outcome in selection['outcomes'].values():
         assert not outcome['assertions_pass'] and outcome['driver_log_sha256']==recipe['expected_baseline_driver_sha256']

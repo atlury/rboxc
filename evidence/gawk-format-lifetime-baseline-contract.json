@@ -1,0 +1,1479 @@
+{
+  "runtime_helpers": {
+    "/root/rboxc/target/gawk-source-ownership-candidate/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174"
+  },
+  "binary": "/root/rboxc/target/gawk-source-ownership-candidate/release/rboxc",
+  "binary_sha256": "6eca6aac2d29295f2d01f1fd797206c278ee8a7a7fb64fdda5f0d0afd0e29a89",
+  "gnu_binary_sha256": "9bab2fb134e2092784cff86e875f3855cfd78edf083482b657a3f7b29933f17b",
+  "scope": "Six bounded ownership cases through all three Gawk aliases; original native findings retained. Compare status and exact output in native and instrumented runs. Candidate logs require zero errors, lost allocations and non-inherited descriptors.",
+  "inputs": {
+    "/root/rboxc/tests/gawk-format-ownership.py": "069e1f6f8630c5cce9a01a4e057cf56a3fe22583f57f136d41f73fedfc3cdfef",
+    "/root/rboxc/tests/comparison_profile.py": "9942e93754919c649f328fdd184a75fa4322e0300e8c319243f66ffdc0813d0a",
+    "/root/rboxc/tests/gnu/reviewed-original.py": "e763c88071be34a1d1589a3b819e52c9ded1717cf04c371c86ee05818a04bb14",
+    "/usr/bin/valgrind": "4652774bd116cb49951ef74115ad4237cad5021b2bd4d80002f09d986ec438b9",
+    "/usr/bin/valgrind.bin": "b8d6a5217e6a34d020265be01eb6a243ce5914fe2eac44890140e1787142047b"
+  },
+  "complete": true,
+  "passed": 6,
+  "total": 18,
+  "results": [
+    {
+      "alias": "awk",
+      "name": "borrowed-string",
+      "program": "BEGIN { s=\"alpha\"; print sprintf(\"%1$s|%1$8.3s|%1$-8s\",s); print s }",
+      "equivalent": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "616c7068617c2020202020616c707c616c7068612020200a616c7068610a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-string-gnu/stdout": "a14d331f0900374c6bb505890f63994fd239955a49f7055f2964200eb4b419f5",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-string-gnu/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "616c7068617c2020202020616c707c616c7068612020200a616c7068610a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 58837
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "732335"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-string-gnu-valgrind/memory.log",
+          "memory_clean": true,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-string-gnu-valgrind/stdout": "a14d331f0900374c6bb505890f63994fd239955a49f7055f2964200eb4b419f5",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-string-gnu-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-string-gnu-valgrind/memory.log": "c3be216fc7640f9d98560b2ba2ddbc992656e5a37aec6bb434d76ca8767d0a4c"
+          }
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "616c7068617c2020202020616c707c616c7068612020200a616c7068610a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-string-rboxc/stdout": "a14d331f0900374c6bb505890f63994fd239955a49f7055f2964200eb4b419f5",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-string-rboxc/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "616c7068617c2020202020616c707c616c7068612020200a616c7068610a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 58837
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "732554"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-string-rboxc-valgrind/memory.log",
+          "memory_clean": true,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-string-rboxc-valgrind/stdout": "a14d331f0900374c6bb505890f63994fd239955a49f7055f2964200eb4b419f5",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-string-rboxc-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-string-rboxc-valgrind/memory.log": "9ae76cac2b055a4113e465707d3130cf33066085896347174a788093767eb64b"
+          }
+        }
+      }
+    },
+    {
+      "alias": "awk",
+      "name": "borrowed-number",
+      "program": "BEGIN { x=42; print sprintf(\"%1$s|%1$04d|%1$s\",x); print x+1 }",
+      "equivalent": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "34327c303034327c34320a34330a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-number-gnu/stdout": "82d03786431c8276125eece74fc55a4727e7f3c0b59fb41b1bbfcbb1b4148f74",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-number-gnu/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "34327c303034327c34320a34330a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 58901
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733219"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-number-gnu-valgrind/memory.log",
+          "memory_clean": true,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-number-gnu-valgrind/stdout": "82d03786431c8276125eece74fc55a4727e7f3c0b59fb41b1bbfcbb1b4148f74",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-number-gnu-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-number-gnu-valgrind/memory.log": "d5e935c03fcea20e2cb032a9c3c6503aceb520050324e04d5efd690a1ca3a762"
+          }
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "34327c303034327c34320a34330a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-number-rboxc/stdout": "82d03786431c8276125eece74fc55a4727e7f3c0b59fb41b1bbfcbb1b4148f74",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-number-rboxc/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "34327c303034327c34320a34330a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 58901
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733246"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-number-rboxc-valgrind/memory.log",
+          "memory_clean": true,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-number-rboxc-valgrind/stdout": "82d03786431c8276125eece74fc55a4727e7f3c0b59fb41b1bbfcbb1b4148f74",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-number-rboxc-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-borrowed-number-rboxc-valgrind/memory.log": "6b5df3f3899438c5903a3de3ece66b95b5d553f3b6119fdf2a3b311232f972f9"
+          }
+        }
+      }
+    },
+    {
+      "alias": "awk",
+      "name": "infinity-position",
+      "program": "BEGIN { x=-log(0); print sprintf(\"%1$s|%1$10s|%1$-8.3s\",x); print x>0 }",
+      "equivalent": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "2b696e667c2020202020202b696e667c2b696e20202020200a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-infinity-position-gnu/stdout": "b093688be47e527fbdfa8e008dc2842eca9382fbb61a235b68643facd88144e6",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-infinity-position-gnu/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "2b696e667c2020202020202b696e667c2b696e20202020200a",
+          "stderr": "",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 264,
+              "indirectly lost": 15,
+              "possibly lost": 0,
+              "still reachable": 59019
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733255"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-infinity-position-gnu-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-infinity-position-gnu-valgrind/stdout": "b093688be47e527fbdfa8e008dc2842eca9382fbb61a235b68643facd88144e6",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-infinity-position-gnu-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-infinity-position-gnu-valgrind/memory.log": "68237820906bdcc90d17ae943a4a5217b7f73a72c900c35824064ea89d328402"
+          }
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "2b696e667c2020202020202b696e667c2b696e20202020200a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-infinity-position-rboxc/stdout": "b093688be47e527fbdfa8e008dc2842eca9382fbb61a235b68643facd88144e6",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-infinity-position-rboxc/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "2b696e667c2020202020202b696e667c2b696e20202020200a",
+          "stderr": "",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 264,
+              "indirectly lost": 15,
+              "possibly lost": 0,
+              "still reachable": 59019
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733264"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-infinity-position-rboxc-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-infinity-position-rboxc-valgrind/stdout": "b093688be47e527fbdfa8e008dc2842eca9382fbb61a235b68643facd88144e6",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-infinity-position-rboxc-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-infinity-position-rboxc-valgrind/memory.log": "731bc6f8a3167c8461ba9de4480093e8fa287e224e37176bca4e8b05f4600083"
+          }
+        }
+      }
+    },
+    {
+      "alias": "awk",
+      "name": "nan-signs",
+      "program": "BEGIN { x=sqrt(-1); print sprintf(\"%s|%s\",x,-x); print typeof(x) }",
+      "equivalent": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "2d6e616e7c2b6e616e0a6e756d6265720a",
+          "stderr": "61776b3a20636d642e206c696e653a313a207761726e696e673a20737172743a207265636569766564206e6567617469766520617267756d656e74202d310a",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-nan-signs-gnu/stdout": "1a0ed19b43265c4aa96809c6287bc30b87b5331f5ce5721542b93f4bf9b8099c",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-nan-signs-gnu/stderr": "53f5bdd9f588d5c34eb096c772f7f92c42fedd06ee241c5e3bf4f8d4240d1f3c"
+          }
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "2d6e616e7c2b6e616e0a6e756d6265720a",
+          "stderr": "61776b3a20636d642e206c696e653a313a207761726e696e673a20737172743a207265636569766564206e6567617469766520617267756d656e74202d310a",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 176,
+              "indirectly lost": 10,
+              "possibly lost": 0,
+              "still reachable": 58907
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733271"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-nan-signs-gnu-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-nan-signs-gnu-valgrind/stdout": "1a0ed19b43265c4aa96809c6287bc30b87b5331f5ce5721542b93f4bf9b8099c",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-nan-signs-gnu-valgrind/stderr": "53f5bdd9f588d5c34eb096c772f7f92c42fedd06ee241c5e3bf4f8d4240d1f3c",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-nan-signs-gnu-valgrind/memory.log": "d97a4cc7fc867bdd03476e7fc86dbc4f41ea743297bd35910de0cd2fc98d4d18"
+          }
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "2d6e616e7c2b6e616e0a6e756d6265720a",
+          "stderr": "61776b3a20636d642e206c696e653a313a207761726e696e673a20737172743a207265636569766564206e6567617469766520617267756d656e74202d310a",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-nan-signs-rboxc/stdout": "1a0ed19b43265c4aa96809c6287bc30b87b5331f5ce5721542b93f4bf9b8099c",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-nan-signs-rboxc/stderr": "53f5bdd9f588d5c34eb096c772f7f92c42fedd06ee241c5e3bf4f8d4240d1f3c"
+          }
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "2d6e616e7c2b6e616e0a6e756d6265720a",
+          "stderr": "61776b3a20636d642e206c696e653a313a207761726e696e673a20737172743a207265636569766564206e6567617469766520617267756d656e74202d310a",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 176,
+              "indirectly lost": 10,
+              "possibly lost": 0,
+              "still reachable": 58907
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733294"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-nan-signs-rboxc-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-nan-signs-rboxc-valgrind/stdout": "1a0ed19b43265c4aa96809c6287bc30b87b5331f5ce5721542b93f4bf9b8099c",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-nan-signs-rboxc-valgrind/stderr": "53f5bdd9f588d5c34eb096c772f7f92c42fedd06ee241c5e3bf4f8d4240d1f3c",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-nan-signs-rboxc-valgrind/memory.log": "58e20c979c935b43f841e0510fc05c9e27cd70fb8ecf1170676779b49a9914e3"
+          }
+        }
+      }
+    },
+    {
+      "alias": "awk",
+      "name": "mixed-tail",
+      "program": "BEGIN { x=-log(0); print sprintf(\"%s%c%s:%d\",x,65,-x,7); print typeof(x) }",
+      "equivalent": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "2b696e66412d696e663a370a6e756d6265720a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-mixed-tail-gnu/stdout": "5d73d8f5c0097b8d47ac15af21e883465eb28b5e45e8952678aaf0f1314bd0a8",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-mixed-tail-gnu/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "2b696e66412d696e663a370a6e756d6265720a",
+          "stderr": "",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 176,
+              "indirectly lost": 10,
+              "possibly lost": 0,
+              "still reachable": 59127
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733301"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-mixed-tail-gnu-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-mixed-tail-gnu-valgrind/stdout": "5d73d8f5c0097b8d47ac15af21e883465eb28b5e45e8952678aaf0f1314bd0a8",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-mixed-tail-gnu-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-mixed-tail-gnu-valgrind/memory.log": "a316af790d41d94b1f6ac4a9a1af6d9b4592e5f2454b68aca6a52f91d6626366"
+          }
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "2b696e66412d696e663a370a6e756d6265720a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-mixed-tail-rboxc/stdout": "5d73d8f5c0097b8d47ac15af21e883465eb28b5e45e8952678aaf0f1314bd0a8",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-mixed-tail-rboxc/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "2b696e66412d696e663a370a6e756d6265720a",
+          "stderr": "",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 176,
+              "indirectly lost": 10,
+              "possibly lost": 0,
+              "still reachable": 59127
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733308"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-mixed-tail-rboxc-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-mixed-tail-rboxc-valgrind/stdout": "5d73d8f5c0097b8d47ac15af21e883465eb28b5e45e8952678aaf0f1314bd0a8",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-mixed-tail-rboxc-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-mixed-tail-rboxc-valgrind/memory.log": "018f8a81cc5943744d992112ef54e4710f9f2f515126f35ba041886a7f04ee66"
+          }
+        }
+      }
+    },
+    {
+      "alias": "awk",
+      "name": "repeated-conversion",
+      "program": "BEGIN { x=-log(0); for(i=0;i<200;i++) { s=sprintf(\"%s|%s|%s\",x,-x,\"done\"); n+=length(s) } print n,s,typeof(x) }",
+      "equivalent": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "32383030202b696e667c2d696e667c646f6e65206e756d6265720a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-repeated-conversion-gnu/stdout": "1e01a0c2d089c341ec709c6315a12e6697870a3b9aa42cee7b0238450f5e8e9f",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-repeated-conversion-gnu/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "32383030202b696e667c2d696e667c646f6e65206e756d6265720a",
+          "stderr": "",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 35200,
+              "indirectly lost": 2000,
+              "possibly lost": 0,
+              "still reachable": 60753
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733332"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-repeated-conversion-gnu-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-repeated-conversion-gnu-valgrind/stdout": "1e01a0c2d089c341ec709c6315a12e6697870a3b9aa42cee7b0238450f5e8e9f",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-repeated-conversion-gnu-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-repeated-conversion-gnu-valgrind/memory.log": "547d6bbde0f29e8c005b6032f077568fa192f5892c4cdea6c2de0c04e0fcb9af"
+          }
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "32383030202b696e667c2d696e667c646f6e65206e756d6265720a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-repeated-conversion-rboxc/stdout": "1e01a0c2d089c341ec709c6315a12e6697870a3b9aa42cee7b0238450f5e8e9f",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-repeated-conversion-rboxc/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "32383030202b696e667c2d696e667c646f6e65206e756d6265720a",
+          "stderr": "",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 35200,
+              "indirectly lost": 2000,
+              "possibly lost": 0,
+              "still reachable": 60753
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733336"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-repeated-conversion-rboxc-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-repeated-conversion-rboxc-valgrind/stdout": "1e01a0c2d089c341ec709c6315a12e6697870a3b9aa42cee7b0238450f5e8e9f",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-repeated-conversion-rboxc-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/awk-repeated-conversion-rboxc-valgrind/memory.log": "53807ec84c137de0289b7dd1c615551c91fc14cdef7fcaa1c64a55fbd2223e53"
+          }
+        }
+      }
+    },
+    {
+      "alias": "gawk",
+      "name": "borrowed-string",
+      "program": "BEGIN { s=\"alpha\"; print sprintf(\"%1$s|%1$8.3s|%1$-8s\",s); print s }",
+      "equivalent": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "616c7068617c2020202020616c707c616c7068612020200a616c7068610a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-string-gnu/stdout": "a14d331f0900374c6bb505890f63994fd239955a49f7055f2964200eb4b419f5",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-string-gnu/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "616c7068617c2020202020616c707c616c7068612020200a616c7068610a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 58840
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733342"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-string-gnu-valgrind/memory.log",
+          "memory_clean": true,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-string-gnu-valgrind/stdout": "a14d331f0900374c6bb505890f63994fd239955a49f7055f2964200eb4b419f5",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-string-gnu-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-string-gnu-valgrind/memory.log": "4281be9a8a0887d7e5c75ef008229ea3c573253e03deb1a2a73710a90d8342f6"
+          }
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "616c7068617c2020202020616c707c616c7068612020200a616c7068610a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-string-rboxc/stdout": "a14d331f0900374c6bb505890f63994fd239955a49f7055f2964200eb4b419f5",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-string-rboxc/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "616c7068617c2020202020616c707c616c7068612020200a616c7068610a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 58840
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733344"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-string-rboxc-valgrind/memory.log",
+          "memory_clean": true,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-string-rboxc-valgrind/stdout": "a14d331f0900374c6bb505890f63994fd239955a49f7055f2964200eb4b419f5",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-string-rboxc-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-string-rboxc-valgrind/memory.log": "fdc7db5954812d2f853f3ae7fa93e6a428d9c3b86f62c15fed7356fc0d98621f"
+          }
+        }
+      }
+    },
+    {
+      "alias": "gawk",
+      "name": "borrowed-number",
+      "program": "BEGIN { x=42; print sprintf(\"%1$s|%1$04d|%1$s\",x); print x+1 }",
+      "equivalent": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "34327c303034327c34320a34330a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-number-gnu/stdout": "82d03786431c8276125eece74fc55a4727e7f3c0b59fb41b1bbfcbb1b4148f74",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-number-gnu/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "34327c303034327c34320a34330a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 58904
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733350"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-number-gnu-valgrind/memory.log",
+          "memory_clean": true,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-number-gnu-valgrind/stdout": "82d03786431c8276125eece74fc55a4727e7f3c0b59fb41b1bbfcbb1b4148f74",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-number-gnu-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-number-gnu-valgrind/memory.log": "147c8614c6312b36e10a7636c309d6d54b74bb87c15201e1f5a0860472a010ed"
+          }
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "34327c303034327c34320a34330a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-number-rboxc/stdout": "82d03786431c8276125eece74fc55a4727e7f3c0b59fb41b1bbfcbb1b4148f74",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-number-rboxc/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "34327c303034327c34320a34330a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 58904
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733352"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-number-rboxc-valgrind/memory.log",
+          "memory_clean": true,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-number-rboxc-valgrind/stdout": "82d03786431c8276125eece74fc55a4727e7f3c0b59fb41b1bbfcbb1b4148f74",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-number-rboxc-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-borrowed-number-rboxc-valgrind/memory.log": "5b7cc83b0c5ac362f416ec6da3d0722aaf1d0eaf563d359eea3108221f436233"
+          }
+        }
+      }
+    },
+    {
+      "alias": "gawk",
+      "name": "infinity-position",
+      "program": "BEGIN { x=-log(0); print sprintf(\"%1$s|%1$10s|%1$-8.3s\",x); print x>0 }",
+      "equivalent": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "2b696e667c2020202020202b696e667c2b696e20202020200a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-infinity-position-gnu/stdout": "b093688be47e527fbdfa8e008dc2842eca9382fbb61a235b68643facd88144e6",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-infinity-position-gnu/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "2b696e667c2020202020202b696e667c2b696e20202020200a",
+          "stderr": "",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 264,
+              "indirectly lost": 15,
+              "possibly lost": 0,
+              "still reachable": 59022
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733358"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-infinity-position-gnu-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-infinity-position-gnu-valgrind/stdout": "b093688be47e527fbdfa8e008dc2842eca9382fbb61a235b68643facd88144e6",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-infinity-position-gnu-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-infinity-position-gnu-valgrind/memory.log": "464a52a424f26f2a7776f0d9b5e781be5e5799ce18f8cb54b89cf75cca1d2155"
+          }
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "2b696e667c2020202020202b696e667c2b696e20202020200a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-infinity-position-rboxc/stdout": "b093688be47e527fbdfa8e008dc2842eca9382fbb61a235b68643facd88144e6",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-infinity-position-rboxc/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "2b696e667c2020202020202b696e667c2b696e20202020200a",
+          "stderr": "",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 264,
+              "indirectly lost": 15,
+              "possibly lost": 0,
+              "still reachable": 59022
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733362"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-infinity-position-rboxc-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-infinity-position-rboxc-valgrind/stdout": "b093688be47e527fbdfa8e008dc2842eca9382fbb61a235b68643facd88144e6",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-infinity-position-rboxc-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-infinity-position-rboxc-valgrind/memory.log": "5c2fba1f4e41cd8b35aa01fd601d5358089a880637017831a66f6b3036d5904d"
+          }
+        }
+      }
+    },
+    {
+      "alias": "gawk",
+      "name": "nan-signs",
+      "program": "BEGIN { x=sqrt(-1); print sprintf(\"%s|%s\",x,-x); print typeof(x) }",
+      "equivalent": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "2d6e616e7c2b6e616e0a6e756d6265720a",
+          "stderr": "6761776b3a20636d642e206c696e653a313a207761726e696e673a20737172743a207265636569766564206e6567617469766520617267756d656e74202d310a",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-nan-signs-gnu/stdout": "1a0ed19b43265c4aa96809c6287bc30b87b5331f5ce5721542b93f4bf9b8099c",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-nan-signs-gnu/stderr": "70f6cbd41b011d435b50cee9540f768624cf6a686458c7e53cb35e07edafaafd"
+          }
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "2d6e616e7c2b6e616e0a6e756d6265720a",
+          "stderr": "6761776b3a20636d642e206c696e653a313a207761726e696e673a20737172743a207265636569766564206e6567617469766520617267756d656e74202d310a",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 176,
+              "indirectly lost": 10,
+              "possibly lost": 0,
+              "still reachable": 58910
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733366"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-nan-signs-gnu-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-nan-signs-gnu-valgrind/stdout": "1a0ed19b43265c4aa96809c6287bc30b87b5331f5ce5721542b93f4bf9b8099c",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-nan-signs-gnu-valgrind/stderr": "70f6cbd41b011d435b50cee9540f768624cf6a686458c7e53cb35e07edafaafd",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-nan-signs-gnu-valgrind/memory.log": "b0f8219404073eb471e40fd3f84842dfa7953aaf8b36d83b765227af28795c71"
+          }
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "2d6e616e7c2b6e616e0a6e756d6265720a",
+          "stderr": "6761776b3a20636d642e206c696e653a313a207761726e696e673a20737172743a207265636569766564206e6567617469766520617267756d656e74202d310a",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-nan-signs-rboxc/stdout": "1a0ed19b43265c4aa96809c6287bc30b87b5331f5ce5721542b93f4bf9b8099c",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-nan-signs-rboxc/stderr": "70f6cbd41b011d435b50cee9540f768624cf6a686458c7e53cb35e07edafaafd"
+          }
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "2d6e616e7c2b6e616e0a6e756d6265720a",
+          "stderr": "6761776b3a20636d642e206c696e653a313a207761726e696e673a20737172743a207265636569766564206e6567617469766520617267756d656e74202d310a",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 176,
+              "indirectly lost": 10,
+              "possibly lost": 0,
+              "still reachable": 58910
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733370"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-nan-signs-rboxc-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-nan-signs-rboxc-valgrind/stdout": "1a0ed19b43265c4aa96809c6287bc30b87b5331f5ce5721542b93f4bf9b8099c",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-nan-signs-rboxc-valgrind/stderr": "70f6cbd41b011d435b50cee9540f768624cf6a686458c7e53cb35e07edafaafd",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-nan-signs-rboxc-valgrind/memory.log": "1cb36f5e309f25d56283645cc9e1ef89de44a8f13918ad426ab3690bdb0cd7e5"
+          }
+        }
+      }
+    },
+    {
+      "alias": "gawk",
+      "name": "mixed-tail",
+      "program": "BEGIN { x=-log(0); print sprintf(\"%s%c%s:%d\",x,65,-x,7); print typeof(x) }",
+      "equivalent": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "2b696e66412d696e663a370a6e756d6265720a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-mixed-tail-gnu/stdout": "5d73d8f5c0097b8d47ac15af21e883465eb28b5e45e8952678aaf0f1314bd0a8",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-mixed-tail-gnu/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "2b696e66412d696e663a370a6e756d6265720a",
+          "stderr": "",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 176,
+              "indirectly lost": 10,
+              "possibly lost": 0,
+              "still reachable": 59130
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733374"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-mixed-tail-gnu-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-mixed-tail-gnu-valgrind/stdout": "5d73d8f5c0097b8d47ac15af21e883465eb28b5e45e8952678aaf0f1314bd0a8",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-mixed-tail-gnu-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-mixed-tail-gnu-valgrind/memory.log": "dbe5a06bc7771c179e24fc8219027addff9bf63d240ad3a8003821cfa43569b3"
+          }
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "2b696e66412d696e663a370a6e756d6265720a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-mixed-tail-rboxc/stdout": "5d73d8f5c0097b8d47ac15af21e883465eb28b5e45e8952678aaf0f1314bd0a8",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-mixed-tail-rboxc/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "2b696e66412d696e663a370a6e756d6265720a",
+          "stderr": "",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 176,
+              "indirectly lost": 10,
+              "possibly lost": 0,
+              "still reachable": 59130
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733378"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-mixed-tail-rboxc-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-mixed-tail-rboxc-valgrind/stdout": "5d73d8f5c0097b8d47ac15af21e883465eb28b5e45e8952678aaf0f1314bd0a8",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-mixed-tail-rboxc-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-mixed-tail-rboxc-valgrind/memory.log": "08c92deed8ee697566789c7ab05918cb88d69d2e469f96965641c1eedca07594"
+          }
+        }
+      }
+    },
+    {
+      "alias": "gawk",
+      "name": "repeated-conversion",
+      "program": "BEGIN { x=-log(0); for(i=0;i<200;i++) { s=sprintf(\"%s|%s|%s\",x,-x,\"done\"); n+=length(s) } print n,s,typeof(x) }",
+      "equivalent": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "32383030202b696e667c2d696e667c646f6e65206e756d6265720a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-repeated-conversion-gnu/stdout": "1e01a0c2d089c341ec709c6315a12e6697870a3b9aa42cee7b0238450f5e8e9f",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-repeated-conversion-gnu/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "32383030202b696e667c2d696e667c646f6e65206e756d6265720a",
+          "stderr": "",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 35200,
+              "indirectly lost": 2000,
+              "possibly lost": 0,
+              "still reachable": 60756
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733382"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-repeated-conversion-gnu-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-repeated-conversion-gnu-valgrind/stdout": "1e01a0c2d089c341ec709c6315a12e6697870a3b9aa42cee7b0238450f5e8e9f",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-repeated-conversion-gnu-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-repeated-conversion-gnu-valgrind/memory.log": "2ef99c208bd5ac4fe9d7c3282f8af8184c305bb3e291e0a00b5c24290c2e8d68"
+          }
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "32383030202b696e667c2d696e667c646f6e65206e756d6265720a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-repeated-conversion-rboxc/stdout": "1e01a0c2d089c341ec709c6315a12e6697870a3b9aa42cee7b0238450f5e8e9f",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-repeated-conversion-rboxc/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "32383030202b696e667c2d696e667c646f6e65206e756d6265720a",
+          "stderr": "",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 35200,
+              "indirectly lost": 2000,
+              "possibly lost": 0,
+              "still reachable": 60756
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733386"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-repeated-conversion-rboxc-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-repeated-conversion-rboxc-valgrind/stdout": "1e01a0c2d089c341ec709c6315a12e6697870a3b9aa42cee7b0238450f5e8e9f",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-repeated-conversion-rboxc-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/gawk-repeated-conversion-rboxc-valgrind/memory.log": "cf0ed29d4a55d8dc8af41989f027d93302eb6a013a313de2001ce67f6e2ab889"
+          }
+        }
+      }
+    },
+    {
+      "alias": "nawk",
+      "name": "borrowed-string",
+      "program": "BEGIN { s=\"alpha\"; print sprintf(\"%1$s|%1$8.3s|%1$-8s\",s); print s }",
+      "equivalent": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "616c7068617c2020202020616c707c616c7068612020200a616c7068610a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-string-gnu/stdout": "a14d331f0900374c6bb505890f63994fd239955a49f7055f2964200eb4b419f5",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-string-gnu/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "616c7068617c2020202020616c707c616c7068612020200a616c7068610a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 58840
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733390"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-string-gnu-valgrind/memory.log",
+          "memory_clean": true,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-string-gnu-valgrind/stdout": "a14d331f0900374c6bb505890f63994fd239955a49f7055f2964200eb4b419f5",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-string-gnu-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-string-gnu-valgrind/memory.log": "4a25d0ee76cce98ecd606c1f3e31b875128b8d53ea023245f12ec2701858b641"
+          }
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "616c7068617c2020202020616c707c616c7068612020200a616c7068610a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-string-rboxc/stdout": "a14d331f0900374c6bb505890f63994fd239955a49f7055f2964200eb4b419f5",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-string-rboxc/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "616c7068617c2020202020616c707c616c7068612020200a616c7068610a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 58840
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733394"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-string-rboxc-valgrind/memory.log",
+          "memory_clean": true,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-string-rboxc-valgrind/stdout": "a14d331f0900374c6bb505890f63994fd239955a49f7055f2964200eb4b419f5",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-string-rboxc-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-string-rboxc-valgrind/memory.log": "1da6c72b25f4160e5195fba63ff30012c21af03ae62d145d261a2323e557b36a"
+          }
+        }
+      }
+    },
+    {
+      "alias": "nawk",
+      "name": "borrowed-number",
+      "program": "BEGIN { x=42; print sprintf(\"%1$s|%1$04d|%1$s\",x); print x+1 }",
+      "equivalent": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "34327c303034327c34320a34330a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-number-gnu/stdout": "82d03786431c8276125eece74fc55a4727e7f3c0b59fb41b1bbfcbb1b4148f74",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-number-gnu/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "34327c303034327c34320a34330a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 58904
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733398"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-number-gnu-valgrind/memory.log",
+          "memory_clean": true,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-number-gnu-valgrind/stdout": "82d03786431c8276125eece74fc55a4727e7f3c0b59fb41b1bbfcbb1b4148f74",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-number-gnu-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-number-gnu-valgrind/memory.log": "fd03897a1f55769934816f60fcbd2d6c19cb8a10b75c11767fc40b4e19c90707"
+          }
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "34327c303034327c34320a34330a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-number-rboxc/stdout": "82d03786431c8276125eece74fc55a4727e7f3c0b59fb41b1bbfcbb1b4148f74",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-number-rboxc/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "34327c303034327c34320a34330a",
+          "stderr": "",
+          "memory": {
+            "errors": 0,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 58904
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733402"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-number-rboxc-valgrind/memory.log",
+          "memory_clean": true,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-number-rboxc-valgrind/stdout": "82d03786431c8276125eece74fc55a4727e7f3c0b59fb41b1bbfcbb1b4148f74",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-number-rboxc-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-borrowed-number-rboxc-valgrind/memory.log": "56dc9184bb3bf2b48eb647d2ce3d9485197f528cafaa5a10b2bb2569aea81d63"
+          }
+        }
+      }
+    },
+    {
+      "alias": "nawk",
+      "name": "infinity-position",
+      "program": "BEGIN { x=-log(0); print sprintf(\"%1$s|%1$10s|%1$-8.3s\",x); print x>0 }",
+      "equivalent": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "2b696e667c2020202020202b696e667c2b696e20202020200a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-infinity-position-gnu/stdout": "b093688be47e527fbdfa8e008dc2842eca9382fbb61a235b68643facd88144e6",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-infinity-position-gnu/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "2b696e667c2020202020202b696e667c2b696e20202020200a",
+          "stderr": "",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 264,
+              "indirectly lost": 15,
+              "possibly lost": 0,
+              "still reachable": 59022
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733406"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-infinity-position-gnu-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-infinity-position-gnu-valgrind/stdout": "b093688be47e527fbdfa8e008dc2842eca9382fbb61a235b68643facd88144e6",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-infinity-position-gnu-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-infinity-position-gnu-valgrind/memory.log": "c159996d2984be512ed76b5558a1bea1aeff74076c5a660a101cdbe3492b474e"
+          }
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "2b696e667c2020202020202b696e667c2b696e20202020200a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-infinity-position-rboxc/stdout": "b093688be47e527fbdfa8e008dc2842eca9382fbb61a235b68643facd88144e6",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-infinity-position-rboxc/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "2b696e667c2020202020202b696e667c2b696e20202020200a",
+          "stderr": "",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 264,
+              "indirectly lost": 15,
+              "possibly lost": 0,
+              "still reachable": 59022
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733412"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-infinity-position-rboxc-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-infinity-position-rboxc-valgrind/stdout": "b093688be47e527fbdfa8e008dc2842eca9382fbb61a235b68643facd88144e6",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-infinity-position-rboxc-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-infinity-position-rboxc-valgrind/memory.log": "32d59da15531fa14f96b8b7fa47240229f21e07dd531256d31f67f6ef61dc16b"
+          }
+        }
+      }
+    },
+    {
+      "alias": "nawk",
+      "name": "nan-signs",
+      "program": "BEGIN { x=sqrt(-1); print sprintf(\"%s|%s\",x,-x); print typeof(x) }",
+      "equivalent": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "2d6e616e7c2b6e616e0a6e756d6265720a",
+          "stderr": "6e61776b3a20636d642e206c696e653a313a207761726e696e673a20737172743a207265636569766564206e6567617469766520617267756d656e74202d310a",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-nan-signs-gnu/stdout": "1a0ed19b43265c4aa96809c6287bc30b87b5331f5ce5721542b93f4bf9b8099c",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-nan-signs-gnu/stderr": "a591b36762bd62665bd14e752ccbf694224eaa3be34c521d88a7b780b2c75426"
+          }
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "2d6e616e7c2b6e616e0a6e756d6265720a",
+          "stderr": "6e61776b3a20636d642e206c696e653a313a207761726e696e673a20737172743a207265636569766564206e6567617469766520617267756d656e74202d310a",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 176,
+              "indirectly lost": 10,
+              "possibly lost": 0,
+              "still reachable": 58910
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733416"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-nan-signs-gnu-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-nan-signs-gnu-valgrind/stdout": "1a0ed19b43265c4aa96809c6287bc30b87b5331f5ce5721542b93f4bf9b8099c",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-nan-signs-gnu-valgrind/stderr": "a591b36762bd62665bd14e752ccbf694224eaa3be34c521d88a7b780b2c75426",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-nan-signs-gnu-valgrind/memory.log": "bfb882cdc9c44947aeacd6cb815f50b6db53750589c51eee11530e84acc36481"
+          }
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "2d6e616e7c2b6e616e0a6e756d6265720a",
+          "stderr": "6e61776b3a20636d642e206c696e653a313a207761726e696e673a20737172743a207265636569766564206e6567617469766520617267756d656e74202d310a",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-nan-signs-rboxc/stdout": "1a0ed19b43265c4aa96809c6287bc30b87b5331f5ce5721542b93f4bf9b8099c",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-nan-signs-rboxc/stderr": "a591b36762bd62665bd14e752ccbf694224eaa3be34c521d88a7b780b2c75426"
+          }
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "2d6e616e7c2b6e616e0a6e756d6265720a",
+          "stderr": "6e61776b3a20636d642e206c696e653a313a207761726e696e673a20737172743a207265636569766564206e6567617469766520617267756d656e74202d310a",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 176,
+              "indirectly lost": 10,
+              "possibly lost": 0,
+              "still reachable": 58910
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733420"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-nan-signs-rboxc-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-nan-signs-rboxc-valgrind/stdout": "1a0ed19b43265c4aa96809c6287bc30b87b5331f5ce5721542b93f4bf9b8099c",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-nan-signs-rboxc-valgrind/stderr": "a591b36762bd62665bd14e752ccbf694224eaa3be34c521d88a7b780b2c75426",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-nan-signs-rboxc-valgrind/memory.log": "a2255a82cddfe2fbcbc0db04c84b07e62d361b259ceb1cf113cb578abf88b70a"
+          }
+        }
+      }
+    },
+    {
+      "alias": "nawk",
+      "name": "mixed-tail",
+      "program": "BEGIN { x=-log(0); print sprintf(\"%s%c%s:%d\",x,65,-x,7); print typeof(x) }",
+      "equivalent": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "2b696e66412d696e663a370a6e756d6265720a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-mixed-tail-gnu/stdout": "5d73d8f5c0097b8d47ac15af21e883465eb28b5e45e8952678aaf0f1314bd0a8",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-mixed-tail-gnu/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "2b696e66412d696e663a370a6e756d6265720a",
+          "stderr": "",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 176,
+              "indirectly lost": 10,
+              "possibly lost": 0,
+              "still reachable": 59130
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733424"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-mixed-tail-gnu-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-mixed-tail-gnu-valgrind/stdout": "5d73d8f5c0097b8d47ac15af21e883465eb28b5e45e8952678aaf0f1314bd0a8",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-mixed-tail-gnu-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-mixed-tail-gnu-valgrind/memory.log": "5c1b500766eebb7181acb5574edc811fc90349e79acd2d520771911d6d6d9380"
+          }
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "2b696e66412d696e663a370a6e756d6265720a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-mixed-tail-rboxc/stdout": "5d73d8f5c0097b8d47ac15af21e883465eb28b5e45e8952678aaf0f1314bd0a8",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-mixed-tail-rboxc/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "2b696e66412d696e663a370a6e756d6265720a",
+          "stderr": "",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 176,
+              "indirectly lost": 10,
+              "possibly lost": 0,
+              "still reachable": 59130
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733428"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-mixed-tail-rboxc-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-mixed-tail-rboxc-valgrind/stdout": "5d73d8f5c0097b8d47ac15af21e883465eb28b5e45e8952678aaf0f1314bd0a8",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-mixed-tail-rboxc-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-mixed-tail-rboxc-valgrind/memory.log": "f7f4b5ebae4383ec3d585d436fa282816d32ace89365b89e6cae1aad10c4089f"
+          }
+        }
+      }
+    },
+    {
+      "alias": "nawk",
+      "name": "repeated-conversion",
+      "program": "BEGIN { x=-log(0); for(i=0;i<200;i++) { s=sprintf(\"%s|%s|%s\",x,-x,\"done\"); n+=length(s) } print n,s,typeof(x) }",
+      "equivalent": true,
+      "pass": false,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "32383030202b696e667c2d696e667c646f6e65206e756d6265720a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-repeated-conversion-gnu/stdout": "1e01a0c2d089c341ec709c6315a12e6697870a3b9aa42cee7b0238450f5e8e9f",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-repeated-conversion-gnu/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "32383030202b696e667c2d696e667c646f6e65206e756d6265720a",
+          "stderr": "",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 35200,
+              "indirectly lost": 2000,
+              "possibly lost": 0,
+              "still reachable": 60756
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733432"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-repeated-conversion-gnu-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-repeated-conversion-gnu-valgrind/stdout": "1e01a0c2d089c341ec709c6315a12e6697870a3b9aa42cee7b0238450f5e8e9f",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-repeated-conversion-gnu-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-repeated-conversion-gnu-valgrind/memory.log": "a865edbdc3b53fd933434b4157cd7a1296e4df240916b6d6230eee792676c95f"
+          }
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "32383030202b696e667c2d696e667c646f6e65206e756d6265720a",
+          "stderr": "",
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-repeated-conversion-rboxc/stdout": "1e01a0c2d089c341ec709c6315a12e6697870a3b9aa42cee7b0238450f5e8e9f",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-repeated-conversion-rboxc/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "32383030202b696e667c2d696e667c646f6e65206e756d6265720a",
+          "stderr": "",
+          "memory": {
+            "errors": 1,
+            "non_inherited_descriptors": 0,
+            "heap_bytes": {
+              "definitely lost": 35200,
+              "indirectly lost": 2000,
+              "possibly lost": 0,
+              "still reachable": 60756
+            },
+            "exec_images": 1,
+            "log_pids": [
+              "733436"
+            ],
+            "complete_exec_log": true
+          },
+          "memory_log": "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-repeated-conversion-rboxc-valgrind/memory.log",
+          "memory_clean": false,
+          "raw": {
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-repeated-conversion-rboxc-valgrind/stdout": "1e01a0c2d089c341ec709c6315a12e6697870a3b9aa42cee7b0238450f5e8e9f",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-repeated-conversion-rboxc-valgrind/stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "evidence/raw/gawk-format-lifetime-baseline-contract/run-xvl1_w23/nawk-repeated-conversion-rboxc-valgrind/memory.log": "b0bdd242c8ffab3f5ea1a6d93c5a9c8f6845b29cf3c4d22f75c606530281efda"
+          }
+        }
+      }
+    }
+  ]
+}
