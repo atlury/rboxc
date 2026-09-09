@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT/'tests/gnu'))
 from comparison_profile import fingerprint
 from gawk_child_profile import canonical_child
 import gawk_private_environment
+import gawk_dynamic_children
 spec = importlib.util.spec_from_file_location('reviewed', ROOT/'tests/gnu/reviewed-original.py')
 runner = importlib.util.module_from_spec(spec); spec.loader.exec_module(runner)
 parser = argparse.ArgumentParser(description=__doc__)
@@ -136,6 +137,7 @@ for row in original['results']:
         assert locale['probe']=={'status':0,'stdout':charmap.name+'\n','stderr':''}
     for key,outcome in row['outcomes'].items():
         gawk_private_environment.verify(reviewed_rows[row['selection']], outcome, original['inputs'])
+        children = gawk_dynamic_children.verify(reviewed_rows[row['selection']], outcome, ROOT)
         assert not outcome.get('timed_out') and not outcome.get('child_wait_timeout')
         assert outcome['status']==0
         if baseline:
@@ -185,7 +187,7 @@ report = {'scope':'All 85 focused comparisons pass. Original assertion passes an
           'original_assertion_passes':original['passed'],'baseline_failures_matched':len(baselines),'baseline_selections':sorted(baselines),'baseline_evidence':baseline_evidence,'driver_sha256':fingerprint(Path(__file__)),'results':processes}
 report['selected_targets']=requested
 report['extension_selections']=[n for n,r in reviewed_rows.items() if r.get('extension_profile')]
-report['child_dependency_processes']=sum(sum(r.get('child_commands',{}).values()) for r in reviewed_rows.values())
+report['child_dependency_processes']=sum(m['role']=='child-dependency' for r in original['results'] for m in r['outcomes']['rboxc-valgrind']['memory'])
 report['original_gawk_processes']=original_processes-report['child_dependency_processes']
 report['original_gawk_execution_images']=sum(m['exec_images'] for r in original['results'] for m in r['outcomes']['rboxc-valgrind']['memory'] if m['role']=='gawk')
 target.write_text(json.dumps(report,indent=2)+'\n')

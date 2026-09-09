@@ -74,7 +74,7 @@ there where available.
 | Tar | 1.35 | `tar` installed; 228 of 244 original groups validated across recorded profiles |
 | Sharutils | 4.15.2 | `uuencode`, `uudecode` installed; both assigned originals validated |
 | Cpio | 2.15 | `cpio`, `mt` installed; all 13 reviewed ordinary originals validated; tape-device operations untested |
-| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 539 reviewed originals pass; six failures match GNU; twelve memory profiles and one timing profile remain open |
+| Gawk | 5.4.1 | Three aliases in a candidate; 85 focused comparisons and 542 reviewed originals pass; six failures match GNU; twelve memory profiles and one timing profile remain open |
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
@@ -110,7 +110,7 @@ The current 187-command candidate is **14,717,992 bytes**, at
 `df802022e1d85caf26f6d514459110657e06e6bf0e44407f0573e93f8e74652e`.
 An independent rebuild is byte-identical. All 428 Coreutils smoke checks,
 11 dispatcher checks, 85 focused Gawk comparisons and 18 formatting ownership
-contracts pass. All 539 reviewed Gawk recipes were rerun on these bytes.
+contracts pass. A 539-recipe Gawk checkpoint was rerun on these bytes; subsequent batches bring reviewed coverage to 561 recipes on the same candidate.
 Earlier Tar and Screen evidence retains its actual candidate hashes. The installed
 133-command release remains unchanged; full GNU-wide acceptance remains open.
 
@@ -238,19 +238,21 @@ Seven further unchanged Gawk recipes pass for numeric and string formatting,
 separator arrays, record reading, multibyte substitution, process identifiers and
 script shebang dispatch. Recipe helpers use pinned GNU implementations; the
 substitution recipe uses the verified English UTF-8 profile.
-`evidence/gawk-sigpipe-iolint-coverage.json` audits **539 passing original recipes,
-six unchanged GNU baseline failures and 702 clean processes**: 565 original
-Gawk invocations, thirty-two shell children, twenty native helper children and
+`evidence/gawk-input-accounting-coverage.json` audits **542 passing original recipes,
+six unchanged GNU baseline failures and 731 clean processes**: 570 original
+Gawk invocations, forty-four shell children, thirty-two native helper children and
 85 focused cases counted once.
 Nine auxiliary inputs are accounted with reviewed recipes, including one unread
 second source argument and one program used solely as cross-reference text. Forty
 historical reproductions are excluded after source review. Twenty MPFR inputs and
 one ARRAYDEBUG input are unavailable in this build, verified by unchanged GNU
-capability guards; three other pending inputs remain. Three distributed utilities pass separate comparisons, adding no original-assertion count. Twelve further reviewed originals pass their
+capability guards. All 634 distributed AWK inputs are now accounted, with none pending review. Three distributed utilities pass separate comparisons, adding no original-assertion count. Twelve further reviewed originals pass their
 assertions but retain memory/descriptor findings. One timeout original passes normally but changes retry counts under Valgrind child startup in both GNU and Rboxc. These thirteen open profiles have 86 candidate logs, which are
 verified separately and excluded from the strict clean-process totals. The latest seven unchanged recipes cover indirect function calls, POSIX conversion
 and field behavior, namespace pretty printing, formatting, lint diagnostics and
 text matching. The installed release is unchanged, and full GNU acceptance remains open.
+
+The two fork originals and bounded date-comparison original now pass, adding 29 clean candidate/helper processes. Fork filenames are bound to the parent-child PID relation in raw logs; date retries are limited by the original ten-attempt loop. A private native date helper releases its owned timezone and optional format copy at normal exit, matching the translated date cleanup. Only its date archive member changes. The original helper’s 128-byte-per-process findings remain preserved; candidate bytes are unchanged.
 
 Two further I/O lint and closed-pipe originals pass their assertions in all four profiles. Their 22 candidate/helper logs retain native cat cached splice descriptors and shell child wait/descriptor findings, while candidate Gawk logs are clean. These remain outside strict clean coverage.
 
@@ -311,7 +313,7 @@ Nine debugger originals now pass for arrays, expression evaluation and typed
 regular expressions. Two restart the same process: their append-only Valgrind
 logs preserve both execution headers, with first-error termination enabled.
 Each restart counts as one process and two execution images; the strict aggregate
-contains 567 original Gawk execution images. Heap and descriptor summaries describe
+contains 572 original Gawk execution images. Heap and descriptor summaries describe
 the final image, not a separate pre-restart exit. The inherited log descriptor is
 part of the harness. Initial incomplete and intermediate runs remain preserved.
 
@@ -322,7 +324,7 @@ bounded debugger watchpoint session. All twelve Gawk/child logs are clean.
 guard with two clean candidate logs: both configured binaries lack MPFR. Its
 twenty distributed programs and one inline recipe are accounted as unavailable,
 with no execution or original-pass claim. These guard logs are outside the
-702-process aggregate.
+731-process aggregate.
 
 Eleven more originals now match GNU output for pipes, half-close diagnostics,
 inherited descriptors, getline side effects, virtual I/O and pretty printing.

@@ -44,10 +44,6 @@ helper_profile_path=ROOT/'evidence/gawk-sort-helper.json'
 helper_profile=json.loads(helper_profile_path.read_text())
 helpers['sort']=Path(helper_profile['binary'])
 assert fingerprint(helpers['sort'])==helper_profile['binary_sha256']
-date_profile_path=ROOT/'evidence/gawk-date-helper.json'
-date_profile=json.loads(date_profile_path.read_text())
-helpers['date']=Path(date_profile['binary'])
-assert fingerprint(helpers['date'])==date_profile['binary_sha256']
 cat_profile_path=ROOT/'evidence/gawk-cat-helper.json'
 cat_profile=json.loads(cat_profile_path.read_text())
 helpers['cat']=Path(cat_profile['binary'])
@@ -56,8 +52,6 @@ inputs={p:fingerprint(p) for p in {makefile,source/'test/Makefile.am',source/'te
     Path(__file__),ROOT/'tests/gawk_child_profile.py',ROOT/'tests/gawk_private_environment.py',ROOT/'tests/gawk_dynamic_children.py',Path('/usr/bin/make'),Path('/bin/bash').resolve(),Path('/bin/sh').resolve(),*helpers.values(),profile.oracle}}
 inputs[helper_profile_path]=fingerprint(helper_profile_path)
 inputs.update({Path(p):h for p,h in helper_profile['inputs'].items()})
-inputs[date_profile_path]=fingerprint(date_profile_path)
-inputs.update({Path(p):h for p,h in date_profile['inputs'].items()})
 inputs[cat_profile_path]=fingerprint(cat_profile_path)
 inputs.update({Path(p):h for p,h in cat_profile['inputs'].items()})
 for row in selected:

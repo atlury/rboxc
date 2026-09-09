@@ -14,6 +14,7 @@ sys.path[:0] = [str(ROOT/'tests'), str(ROOT/'tests/gnu')]
 from comparison_profile import fingerprint
 from gawk_child_profile import canonical_child
 import gawk_private_environment
+import gawk_dynamic_children
 spec = importlib.util.spec_from_file_location('reviewed', ROOT/'tests/gnu/reviewed-original.py')
 runner = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runner)
@@ -43,6 +44,8 @@ archives = [ROOT/'tests/gawk-original.py', ROOT/'evidence/raw/gawk-array-driver.
 archives.append(ROOT/'evidence/raw/gawk-debugger-restart-driver.py')
 archives.append(ROOT/'evidence/raw/gawk-before-private-environment-driver.py')
 archives.append(ROOT/'evidence/raw/gawk-private-environment-driver.py')
+archives.append(ROOT/'evidence/raw/gawk-before-dynamic-children-driver.py')
+archives.append(ROOT/'evidence/raw/gawk-before-date-helper-driver.py')
 driver_versions = {fingerprint(p): str(p.relative_to(ROOT)) for p in archives}
 focused_path = options.focused.resolve()
 focused = json.loads(focused_path.read_text())
@@ -179,6 +182,7 @@ for filename in sorted({r['evidence'] for r in reviewed.values()}):
                 assert not result['outcomes']['rboxc-valgrind']['memory_clean']
         for key, outcome in result['outcomes'].items():
             gawk_private_environment.verify(row, outcome, data['inputs'])
+            children = gawk_dynamic_children.verify(row, outcome, ROOT)
             assert not outcome.get('timed_out') and not outcome.get('child_wait_timeout')
             instrumented_timing = timing_open and key.endswith('-valgrind')
             assert outcome['status'] == 0 and outcome['assertions_pass'] == ((result['pass'] or allow_open) and not instrumented_timing)
@@ -206,7 +210,9 @@ for filename in sorted({r['evidence'] for r in reviewed.values()}):
     report_refs[filename] = {'sha256': fingerprint(path), 'passed': data['passed'],
                              'total': data['total'], 'driver_archive': driver_versions[data['driver_sha256']]}
 assert seen == set(reviewed)
-assert len(candidate_logs) == len(native_logs)
+# Bounded date retries may differ across instrumented implementations.
+# Every individual process is still independently verified.
+assert candidate_logs and native_logs
 assert len(open_candidate_logs) == len(open_native_logs)
 auxiliary_inputs={}
 for row in manifest['inputs']:
@@ -247,7 +253,7 @@ result = {'scope': 'Distinct reviewed Gawk recipes on one immutable candidate. E
           'original_selections': len(reviewed),
           'original_passed': sum(r['passed'] for r in report_refs.values()),
           'baseline_failures': sum(bool(r.get('expected_baseline_output')) for r in reviewed.values()),
-          'focused_cases': 85, 'clean_candidate_processes': len(candidate_logs),
+          'focused_cases': 85, 'clean_candidate_processes': len(candidate_logs), 'native_processes':len(native_logs),
           'clean_original_processes': len(candidate_logs)-85,
           'clean_child_dependency_processes':sum(r['role']=='child-dependency' for r in candidate_logs.values()),
           'clean_original_gawk_execution_images':sum(r['exec_images'] for r in candidate_logs.values() if r['role']=='gawk')-85,

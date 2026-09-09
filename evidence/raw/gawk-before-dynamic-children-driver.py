@@ -18,7 +18,6 @@ import tempfile
 from comparison_profile import ComparisonProfile,fingerprint
 from gawk_child_profile import canonical_child
 import gawk_private_environment
-import gawk_dynamic_children
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tests/gnu'))
@@ -44,20 +43,14 @@ helper_profile_path=ROOT/'evidence/gawk-sort-helper.json'
 helper_profile=json.loads(helper_profile_path.read_text())
 helpers['sort']=Path(helper_profile['binary'])
 assert fingerprint(helpers['sort'])==helper_profile['binary_sha256']
-date_profile_path=ROOT/'evidence/gawk-date-helper.json'
-date_profile=json.loads(date_profile_path.read_text())
-helpers['date']=Path(date_profile['binary'])
-assert fingerprint(helpers['date'])==date_profile['binary_sha256']
 cat_profile_path=ROOT/'evidence/gawk-cat-helper.json'
 cat_profile=json.loads(cat_profile_path.read_text())
 helpers['cat']=Path(cat_profile['binary'])
 assert fingerprint(helpers['cat'])==cat_profile['binary_sha256']
 inputs={p:fingerprint(p) for p in {makefile,source/'test/Makefile.am',source/'test/Makefile.in',
-    Path(__file__),ROOT/'tests/gawk_child_profile.py',ROOT/'tests/gawk_private_environment.py',ROOT/'tests/gawk_dynamic_children.py',Path('/usr/bin/make'),Path('/bin/bash').resolve(),Path('/bin/sh').resolve(),*helpers.values(),profile.oracle}}
+    Path(__file__),ROOT/'tests/gawk_child_profile.py',ROOT/'tests/gawk_private_environment.py',Path('/usr/bin/make'),Path('/bin/bash').resolve(),Path('/bin/sh').resolve(),*helpers.values(),profile.oracle}}
 inputs[helper_profile_path]=fingerprint(helper_profile_path)
 inputs.update({Path(p):h for p,h in helper_profile['inputs'].items()})
-inputs[date_profile_path]=fingerprint(date_profile_path)
-inputs.update({Path(p):h for p,h in date_profile['inputs'].items()})
 inputs[cat_profile_path]=fingerprint(cat_profile_path)
 inputs.update({Path(p):h for p,h in cat_profile['inputs'].items()})
 for row in selected:
@@ -168,7 +161,6 @@ def run_selection(row):
                 baseline_output=row.get('expected_baseline_output')
                 baseline_matches=baseline_output is not None and not passed and done.returncode==0 and residual.exists() and residual.read_bytes()==baseline_output.encode() and fingerprint(saved/'driver.log')==row['expected_baseline_driver_sha256']
                 shutil.copytree(work/'memory',saved/'memory')
-                children, dynamic_binding = gawk_dynamic_children.resolve(row, (saved/'memory').glob('*.log')) if instrument else (row.get('child_commands',{}), None)
                 logs=[]
                 for p in sorted((saved/'memory').glob('*.log')):
                     text=p.read_text();commands=re.findall(r'^==[0-9]+== Command: (.*)$',text,re.M)
@@ -180,7 +172,7 @@ def run_selection(row):
                         assert len(commands)==1
                     command=commands[0]
                     role='gawk' if command.split()[0]=='gawk' else 'child-dependency'
-                    canonical = command if role=='gawk' else canonical_child(command, children, str(work), row.get('child_dependencies'))
+                    canonical = command if role=='gawk' else canonical_child(command, row.get('child_commands',{}), str(work), row.get('child_dependencies'))
                     logs.append({**runner.parse_memory_log(text,p.stem,exec_only=True),
                         'log':str(p.relative_to(ROOT)),'sha256':fingerprint(p),
                         'command':command,'commands':commands,'canonical_command':canonical,'role':role})
@@ -188,11 +180,11 @@ def run_selection(row):
                     if row.get('self_exec_images'):
                         assert len(logs)==1 and logs[0]['exec_images']==row['self_exec_images']
                     assert any(m['role']=='gawk' for m in logs)
-                    assert Counter(m['canonical_command'] for m in logs if m['role']=='child-dependency')==children
+                    assert Counter(m['canonical_command'] for m in logs if m['role']=='child-dependency')==row.get('child_commands',{})
                 clean=bool(logs) and all(m['complete_exec_log'] and m['errors']==0
                     and m['non_inherited_descriptors']==0 and not any(m['heap_bytes'].get(k,0)
                     for k in ('definitely lost','indirectly lost','possibly lost')) for m in logs)
-                outcomes[key]={'dynamic_children':dynamic_binding,'private_environment':private_environment,'process_group':process.pid,'timed_out':timed_out,'child_wait_timeout':child_wait_timeout,'waited_children':sorted(waited_children),'private_work_directory':str(work),'status':done.returncode,'assertions_pass':passed,
+                outcomes[key]={'private_environment':private_environment,'process_group':process.pid,'timed_out':timed_out,'child_wait_timeout':child_wait_timeout,'waited_children':sorted(waited_children),'private_work_directory':str(work),'status':done.returncode,'assertions_pass':passed,
                     'baseline_failure_matches':baseline_matches,'actual_output':str((saved/'actual-output').relative_to(ROOT)) if residual.exists() else None,'actual_output_sha256':fingerprint(saved/'actual-output') if residual.exists() else None,
                     'driver_log':str((saved/'driver.log').relative_to(ROOT)),'driver_log_sha256':fingerprint(saved/'driver.log'),
                     'memory':logs,'memory_clean':clean if instrument else None}
