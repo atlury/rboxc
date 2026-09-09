@@ -22,6 +22,7 @@ parser.add_argument('--memory-open',nargs='*',default=[],help='Explicit failing 
 parser.add_argument('--assertion-baseline',nargs='*',default=[],help='GNU and candidate share a profile-specific assertion difference; exclude the entire script')
 parser.add_argument('--private-directory-baseline',nargs='*',default=[],help='For an assertion baseline only, compare the diagnostic using the private directory recorded in its process commands')
 parser.add_argument('--killed-child-open',nargs='*',default=[],help='Preserve incomplete logs from the original jobs recipe; never include these families in strict counts')
+parser.add_argument('--interpreter-baseline-open',nargs='*',default=[],help='Preserve the original invocation case rejected by Valgrind before the missing interpreter can execute')
 parser.add_argument('--report-name', required=True)
 args = parser.parse_args()
 assert re.fullmatch(r'[a-z0-9-]+', args.report_name)
@@ -33,6 +34,8 @@ assert set(args.assertion_baseline)<={r['selection'] for r in report['results'] 
 assert set(args.private_directory_baseline)<=set(args.assertion_baseline)
 assert set(args.killed_child_open)<=set(args.memory_open)
 assert set(args.killed_child_open)<={'jobs'}
+assert set(args.interpreter_baseline_open)<=set(args.assertion_baseline)
+assert set(args.interpreter_baseline_open)<={'invocation'}
 assert report['complete'] and report['total'] == report['planned_total'] == len(report['results'])
 assert report['passed'] == sum(r['pass'] for r in report['results'])
 assert fingerprint(Path(report['binary'])) == report['binary_sha256']
@@ -53,6 +56,7 @@ open_findings = []
 raw = {}
 private_directories = {}
 incomplete_commands = {}
+interpreter_commands = {}
 
 def baseline_output(result,key):
     outcome=result['outcomes'][key]
@@ -88,6 +92,14 @@ for result in report['results']:
         assert outcome.get('controlling_terminal',False)==bool(row.get('controlling_terminal'))
         assert outcome.get('stdin_terminal',False)==bool(row.get('stdin_terminal'))
         assert any(p.endswith('/terminal-output') for p in outcome['raw'])==bool(row.get('controlling_terminal'))
+        private_profile=outcome.get('private_profile')
+        assert bool(private_profile)==bool(row.get('empty_system_profile'))
+        if private_profile:
+            assert private_profile['destination']==str(Path('/etc/profile').resolve())
+            assert fingerprint(Path(private_profile['destination']))==row['host_inputs'][private_profile['destination']]
+            empty=Path(private_profile['source'])
+            assert str(empty.relative_to(ROOT)) in outcome['raw'] and empty.read_bytes()==b''
+            assert fingerprint(empty)==private_profile['source_sha256']
         reference = result['outcomes']['gnu-valgrind' if key.endswith('-valgrind') and baseline else 'gnu']
         if not baseline: assert outcome['expected_output_matches']
         assert outcome['status'] == reference['status']
@@ -105,10 +117,10 @@ for result in report['results']:
         mounts = outcome.get('private_mounts', [])
         assert [m['original'] for m in mounts] == row.get('absolute_helpers', [])
         for mount in mounts:
-            assert mount['original'] in ('/bin/echo','/bin/sh','/bin/true','/bin/cat','/bin/mkdir','/bin/touch','/bin/chmod','/bin/rm','/usr/bin/true','/usr/bin/false')
+            assert mount['original'] in ('/bin/echo','/bin/sh','/bin/sed','/bin/ls','/bin/true','/bin/cat','/bin/mkdir','/bin/touch','/bin/chmod','/bin/rm','/usr/bin/true','/usr/bin/false')
             assert str(Path(mount['original']).resolve()) == mount['destination']
             assert fingerprint(Path(mount['destination'])) == row['host_inputs'][mount['destination']]
-            native = ROOT/'build/gnu-bash/bash' if mount['original']=='/bin/sh' else ROOT/'build/gnu-coreutils/src/coreutils'
+            native = ROOT/'build/gnu-bash/bash' if mount['original']=='/bin/sh' else ROOT/'build/gnu-sed/sed/sed' if mount['original']=='/bin/sed' else ROOT/'build/gnu-coreutils/src/coreutils'
             replacement = native if key.startswith('gnu') else Path(report['binary'])
             assert mount['source'] == str(replacement) and fingerprint(replacement) == mount['source_sha256']
         assert bool(outcome['memory']) == key.endswith('-valgrind')
@@ -129,12 +141,17 @@ for result in report['results']:
             lost = any(parsed['heap_bytes'].get(k,0) for k in ('definitely lost','indirectly lost','possibly lost'))
             actual_clean = complete and parsed['errors']==0 and parsed['non_inherited_descriptors']==0 and not lost
             assert memory['clean'] == actual_clean
+            if not complete and result['selection'] in args.interpreter_baseline_open:
+                command,=re.findall(r'^==[0-9]+== Command: /tmp/rboxc-bash-original-[a-z0-9_]{8}/exec/(.*)',text,re.M)
+                assert command=='bash --noprofile --norc ./invocation.tests'
+                assert output.count(b'valgrind: ./x23: bad interpreter: No such file or directory\n')==1
+                interpreter_commands.setdefault(key,[]).append(command)
             if not complete and result['selection'] in args.killed_child_open:
                 command,=re.findall(r'^==[0-9]+== Command: /tmp/rboxc-bash-original-[a-z0-9_]{8}/exec/(.*)',text,re.M)
                 assert command in ('sleep 60','sleep 30','sleep 300','sleep 350','sleep 400','bash --noprofile --norc ./jobs.tests')
                 incomplete_commands.setdefault(key,[]).append(command)
             if key == 'rboxc-valgrind':
-                assert complete or result['selection'] in args.killed_child_open
+                assert complete or result['selection'] in args.killed_child_open+args.interpreter_baseline_open
                 if not allow_open: assert actual_clean
                 if not memory['clean']:
                     assert allow_open
@@ -154,6 +171,8 @@ assert len({p['log'] for p in clean+open_processes}) == len(clean)+len(open_proc
 if args.killed_child_open:
     expected=sorted(['sleep 60','sleep 30','sleep 300','sleep 350','sleep 400','bash --noprofile --norc ./jobs.tests'])
     assert sorted(incomplete_commands['gnu-valgrind'])==sorted(incomplete_commands['rboxc-valgrind'])==expected
+if args.interpreter_baseline_open:
+    assert interpreter_commands['gnu-valgrind']==interpreter_commands['rboxc-valgrind']==['bash --noprofile --norc ./invocation.tests']
 assert {r['selection'] for r in open_findings}|set(args.assertion_baseline)=={r['selection'] for r in report['results'] if not r['pass']}
 target.write_text(json.dumps({'scope':'Strict original scripts match unchanged GNU expected output and exit status. Explicit assertion baselines require candidate output and status to equal GNU separately with and without instrumentation; their entire families remain outside strict counts. Every raw process log is reparsed, and no timeout is accepted. Explicit memory-open profiles retain every finding. Private helper mounts leave host files unchanged. Native findings remain separate. This is batch evidence, not GNU-wide completion.',
     'binary':report['binary'], 'binary_sha256':report['binary_sha256'],
@@ -163,5 +182,6 @@ target.write_text(json.dumps({'scope':'Strict original scripts match unchanged G
     'open_processes':open_processes,'open_findings':open_findings,'explicit_memory_open':args.memory_open,'assertion_baselines':args.assertion_baseline,
     'private_directory_baselines':args.private_directory_baseline,'private_directories':private_directories,
     'killed_child_open':args.killed_child_open,'incomplete_commands':incomplete_commands,
+    'interpreter_baseline_open':args.interpreter_baseline_open,'interpreter_commands':interpreter_commands,
     'driver_sha256':fingerprint(Path(__file__)), 'processes':clean, 'raw':raw}, indent=2)+'\n')
 print('Audited', report['total'], 'original Bash scripts and', len(clean), 'clean candidate processes')

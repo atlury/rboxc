@@ -105,6 +105,8 @@ def prepare_archives(root,provider,mapping):
         prepare_parameter_cleanup(root, adapted)
         from bash_redirection_command_cleanup import prepare as prepare_redirection_command_cleanup
         prepare_redirection_command_cleanup(root, adapted)
+        from bash_script_input_cleanup import prepare as prepare_script_input_cleanup
+        prepare_script_input_cleanup(root, adapted)
     if provider=='gawk':
         from gawk_cleanup import prepare
         adapted=prepare(root)

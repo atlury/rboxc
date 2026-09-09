@@ -106,18 +106,29 @@ this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
 The current 187-command candidate is **14,723,016 bytes**, at
-`target/bash-parameter-descriptor-cleanup-candidate/release/rboxc`, SHA-256
-`e0ab5d913b7693adbe2fbfa96b99bae29dd7b4bc6247c0d6f41e446b72335e15`.
+`target/bash-script-input-cleanup-candidate/release/rboxc`, SHA-256
+`0599733d94b8649533edd2395fe9a108ca482a39a67e23596589b210135859f7`.
 An independent rebuild is byte-identical. All 428 Coreutils smoke checks,
 11 dispatcher checks, 44 focused Bash comparisons and 69 shell-adapter checks
 pass. Bash has **54 strict scripts from 53 original recipes**, with **12765 clean
 candidate process logs** across their recorded immutable candidates.
-[evidence/bash-parameter-descriptor-coverage.json](evidence/bash-parameter-descriptor-coverage.json)
-accounts for 62 reviewed scripts and all 88 original recipes; 22 recipes remain
+[evidence/bash-script-input-coverage.json](evidence/bash-script-input-coverage.json)
+accounts for 63 reviewed scripts and all 88 original recipes; 21 recipes remain
 pending, two are orchestration and three are held outside execution.
 
 
-Brace length, pattern and RHS expansion now retain heap owners through
+Opened script descriptors now retain exit ownership before startup validation.
+Sixteen regular, empty, directory and executable-input contracts pass across
+four shell aliases. The unchanged invocation recipe matches normally. Its
+Valgrind missing-interpreter diagnostic and one incomplete child image match
+GNU; the other 47 candidate process logs are clean, including both repaired
+startup error paths. The whole recipe remains outside strict counts.
+[evidence/bash-script-input-validation.json](evidence/bash-script-input-validation.json)
+audits the sole changed helper, rebuild, original outputs, raw logs and private
+startup profile.
+
+At the preceding parameter/descriptor checkpoint, brace length, pattern and RHS
+expansion retain heap owners through
 nested diagnostics and EXIT. External redirection failures release their
 command strings, and duplicated nonstandard descriptors retain exit ownership
 until an ordinary close or process exit. The complete POSIX expansion recipe
