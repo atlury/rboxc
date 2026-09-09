@@ -93,6 +93,15 @@ for result in report['results']:
         assert outcome.get('stdin_terminal',False)==bool(row.get('stdin_terminal'))
         assert any(p.endswith('/terminal-output') for p in outcome['raw'])==bool(row.get('controlling_terminal'))
         private_profile=outcome.get('private_profile')
+        private_locale=outcome.get('private_locale')
+        assert bool(private_locale)==bool(row.get('locale_archive'))
+        if private_locale:
+            assert private_locale['destination']==str(Path('/usr/lib/locale/locale-archive').resolve())
+            assert fingerprint(Path(private_locale['destination']))==row['host_inputs'][private_locale['destination']]
+            assert private_locale['source']==row['locale_archive']['path']
+            assert fingerprint(Path(private_locale['source']))==private_locale['source_sha256']==row['locale_archive']['sha256']
+            assert private_locale['native_locale_helper']=='/usr/bin/locale'
+            assert fingerprint(Path('/usr/bin/locale'))==row['host_inputs']['/usr/bin/locale']
         assert bool(private_profile)==bool(row.get('empty_system_profile'))
         if private_profile:
             assert private_profile['destination']==str(Path('/etc/profile').resolve())
@@ -117,7 +126,7 @@ for result in report['results']:
         mounts = outcome.get('private_mounts', [])
         assert [m['original'] for m in mounts] == row.get('absolute_helpers', [])
         for mount in mounts:
-            assert mount['original'] in ('/bin/echo','/bin/sh','/bin/sed','/bin/ls','/bin/true','/bin/false','/bin/cat','/bin/mkdir','/bin/touch','/bin/chmod','/bin/rm','/usr/bin/true','/usr/bin/false')
+            assert mount['original'] in ('/bin/echo','/bin/sh','/bin/sed','/bin/ls','/bin/true','/bin/false','/bin/cat','/bin/mkdir','/bin/touch','/bin/chmod','/bin/rm','/usr/bin/true','/usr/bin/false','/usr/bin/printf')
             assert str(Path(mount['original']).resolve()) == mount['destination']
             assert fingerprint(Path(mount['destination'])) == row['host_inputs'][mount['destination']]
             native = ROOT/'build/gnu-bash/bash' if mount['original']=='/bin/sh' else ROOT/'build/gnu-sed/sed/sed' if mount['original']=='/bin/sed' else ROOT/'build/gnu-coreutils/src/coreutils'

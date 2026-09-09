@@ -1,0 +1,2292 @@
+{
+  "runtime_helpers": {
+    "/root/rboxc/target/bash-multibyte-cleanup-candidate/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174"
+  },
+  "binary": "/root/rboxc/target/bash-multibyte-cleanup-candidate/release/rboxc",
+  "binary_sha256": "e7e3a22b792bf1f44740e651450114218c1bc8021e5b260739f251cf79841284",
+  "gnu_binary_sha256": "bd47035bca2886f8d61f564ae38ca9c807a8b0b98e914d28f909fb7b1bb1366f",
+  "inputs": {
+    "/root/rboxc/build/gnu-bash/bash": "bd47035bca2886f8d61f564ae38ca9c807a8b0b98e914d28f909fb7b1bb1366f",
+    "/root/rboxc/target/bash-multibyte-cleanup-candidate/release/rboxc": "e7e3a22b792bf1f44740e651450114218c1bc8021e5b260739f251cf79841284",
+    "/root/rboxc/tests/bash-multibyte-contract.py": "24e7ef6aff50818da1d9a7f724fca84e45a15480187ef576b0b4f69c97169874"
+  },
+  "scope": "Six ordinary multibyte splitting and missing-command diagnostic cases through four shell aliases compare native GNU with the immutable Rboxc candidate. Includes valid Unicode delimiters, ASCII delimiters, empty/mixed IFS and borrowed or quoted command display names. Complete parent and child Valgrind summaries are required. Native findings remain baseline observations; this is focused ownership evidence, not full Bash acceptance.",
+  "complete": true,
+  "planned_total": 24,
+  "passed": 24,
+  "total": 24,
+  "results": [
+    {
+      "name": "bash:unicode-ifs",
+      "command": "bash",
+      "args": [
+        "-c",
+        "export LC_ALL=en_US.UTF-8; IFS=\u00e9; v='a\u00e9b\u00e9c'; set -- $v; printf '%s:<%s>\\n' \"$#\" \"$@\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "333a3c613e0a623a3c633e0a",
+          "stderr": "",
+          "raw_stdout": "333a3c613e0a623a3c633e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "333a3c613e0a623a3c633e0a",
+          "stderr": "",
+          "raw_stdout": "333a3c613e0a623a3c633e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/0-gnu-valgrind/process-990195.log",
+              "sha256": "551e536470fd46e4713dce8967802cbb5c0622021c77f1db7ae00ad00fcbd215",
+              "pid": "990195",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47188
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "333a3c613e0a623a3c633e0a",
+          "stderr": "",
+          "raw_stdout": "333a3c613e0a623a3c633e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "333a3c613e0a623a3c633e0a",
+          "stderr": "",
+          "raw_stdout": "333a3c613e0a623a3c633e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/0-rboxc-valgrind/process-990204.log",
+              "sha256": "64016066bc219495620a476bd41a28b6be8c4e47020dfaea7113ad5d75e01bb5",
+              "pid": "990204",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47892
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:ascii-ifs",
+      "command": "bash",
+      "args": [
+        "-c",
+        "export LC_ALL=en_US.UTF-8; IFS=:; v='\u00e9:\u20ac:\u4e2d'; set -- $v; printf '%s:<%s>\\n' \"$#\" \"$@\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/1-gnu-valgrind/process-990216.log",
+              "sha256": "67c74160a3e1ded4997731ea5f516352f18fad7a380ea52757f2421ba0a7d136",
+              "pid": "990216",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47206
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/1-rboxc-valgrind/process-990224.log",
+              "sha256": "96c755a4406339ad68d546dfade5b7156eccf1b1188c6939b7c31dca9a66d34b",
+              "pid": "990224",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47910
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:empty-ifs",
+      "command": "bash",
+      "args": [
+        "-c",
+        "export LC_ALL=en_US.UTF-8; IFS=; v='\u00e9:\u20ac:\u4e2d'; set -- $v; printf '%s:<%s>\\n' \"$#\" \"$@\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/2-gnu-valgrind/process-990233.log",
+              "sha256": "c00419e40b992692eed1cba22be1923f54628f9b9b3044e6ff40d1b58335927e",
+              "pid": "990233",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47020
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/2-rboxc-valgrind/process-990241.log",
+              "sha256": "9d19ba2e587718ce2d4608278c306d0e971f37da1e10848eeaf84ffd210b129c",
+              "pid": "990241",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47724
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:mixed-ifs",
+      "command": "bash",
+      "args": [
+        "-c",
+        "export LC_ALL=en_US.UTF-8; IFS=' \u00e9'; v=' a \u00e9b\u00e9c '; set -- $v; printf '%s:<%s>\\n' \"$#\" \"$@\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "stderr": "",
+          "raw_stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "stderr": "",
+          "raw_stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/3-gnu-valgrind/process-990250.log",
+              "sha256": "0c7b7065ab9583e7a3a98557b4a32849dcd291a32212cd508c692524760b4bc4",
+              "pid": "990250",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47303
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "stderr": "",
+          "raw_stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "stderr": "",
+          "raw_stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/3-rboxc-valgrind/process-990254.log",
+              "sha256": "6ad14eb0f2ba4dfb1458f82b0b30bc4cd18ec7a9035fbf7647be8d21dd3e471b",
+              "pid": "990254",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48007
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:missing-ascii",
+      "command": "bash",
+      "args": [
+        "-c",
+        "command rboxc-missing-command; printf 'status:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d395f71626e3176632f657865632f626173683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d32327075723832642f657865632f626173683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/4-gnu-valgrind/process-990260.log",
+              "sha256": "df1e7cbc6cedfc8c76cb190b06142848c49384b8ff6bfd46b920827e858a20b0",
+              "pid": "990260",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46132
+              }
+            },
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/4-gnu-valgrind/process-990355.log",
+              "sha256": "c6510b79fe0f861e035924e9b1f24281e3cb04887023bfc66eba97c4ac0bf9ce",
+              "pid": "990355",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46219
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d676476615f61386e2f657865632f626173683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6d6f756d69617a652f657865632f626173683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/4-rboxc-valgrind/process-990358.log",
+              "sha256": "485e88a302616391c56284cf41a93af70114807d1dffad5a84458315ad27ac63",
+              "pid": "990358",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46612
+              }
+            },
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/4-rboxc-valgrind/process-990366.log",
+              "sha256": "2e43d609ed5b05ce0f7513b43540a805d485408976fa87f3a95953fc75f7d5ad",
+              "pid": "990366",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46699
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:missing-unicode",
+      "command": "bash",
+      "args": [
+        "-c",
+        "LC_ALL=C; command 'rboxc-missing-\u00e9'; printf 'status:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6b327a73647830722f657865632f626173683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d3775647a616d62702f657865632f626173683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/5-gnu-valgrind/process-990370.log",
+              "sha256": "071c2030d4fb2eac4db2d7348955f1582f6565e7f5bd7ac39887fb7c47fa1a61",
+              "pid": "990370",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46201
+              }
+            },
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/5-gnu-valgrind/process-990375.log",
+              "sha256": "b07b945e595edc4195c6323a8aad6fd81f86fe72b00d881eea4ecd5025846cf4",
+              "pid": "990375",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 68,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46592
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d30635f7736346e762f657865632f626173683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f626173683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d70743135697576632f657865632f626173683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/5-rboxc-valgrind/process-990378.log",
+              "sha256": "2601400b01f1399fea1985bde3f5fe0d7c287ec05d20842328a1cb3c6cce9581",
+              "pid": "990378",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46697
+              }
+            },
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/5-rboxc-valgrind/process-990382.log",
+              "sha256": "f82fa8bcc367635e2c07dcaa5ca56d90c0b7fe5327a52ea34551666d5ab37cfd",
+              "pid": "990382",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47088
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:unicode-ifs",
+      "command": "sh",
+      "args": [
+        "-c",
+        "export LC_ALL=en_US.UTF-8; IFS=\u00e9; v='a\u00e9b\u00e9c'; set -- $v; printf '%s:<%s>\\n' \"$#\" \"$@\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "333a3c613e0a623a3c633e0a",
+          "stderr": "",
+          "raw_stdout": "333a3c613e0a623a3c633e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "333a3c613e0a623a3c633e0a",
+          "stderr": "",
+          "raw_stdout": "333a3c613e0a623a3c633e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/6-gnu-valgrind/process-990384.log",
+              "sha256": "078e307dee5c784f95f3a17c93c4d1ab30dd44a0f5f46c93bf4e3d34ef078c55",
+              "pid": "990384",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47304
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "333a3c613e0a623a3c633e0a",
+          "stderr": "",
+          "raw_stdout": "333a3c613e0a623a3c633e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "333a3c613e0a623a3c633e0a",
+          "stderr": "",
+          "raw_stdout": "333a3c613e0a623a3c633e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/6-rboxc-valgrind/process-990390.log",
+              "sha256": "2e3841137294756f2386c87ce6a4b58484aec4103b95deb32ca7e13ee920d2f4",
+              "pid": "990390",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48008
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:ascii-ifs",
+      "command": "sh",
+      "args": [
+        "-c",
+        "export LC_ALL=en_US.UTF-8; IFS=:; v='\u00e9:\u20ac:\u4e2d'; set -- $v; printf '%s:<%s>\\n' \"$#\" \"$@\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/7-gnu-valgrind/process-990396.log",
+              "sha256": "d7774fdc78450f11972a8bf94687816f4d3d7203eb182f98f4daf81b25a2229b",
+              "pid": "990396",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47322
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/7-rboxc-valgrind/process-990401.log",
+              "sha256": "02303c1e598db5ce158a27f064550ff9d0673e60be94d85312e038b9c88b4661",
+              "pid": "990401",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48026
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:empty-ifs",
+      "command": "sh",
+      "args": [
+        "-c",
+        "export LC_ALL=en_US.UTF-8; IFS=; v='\u00e9:\u20ac:\u4e2d'; set -- $v; printf '%s:<%s>\\n' \"$#\" \"$@\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/8-gnu-valgrind/process-990407.log",
+              "sha256": "759f14bc1a26c7d3de370c0f17ebdda3322f36e955499ced3f898f45fd4dcd56",
+              "pid": "990407",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47136
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/8-rboxc-valgrind/process-990409.log",
+              "sha256": "e5297c0bb950b23b8075f264bb8b9817aa597e1ff5ae620d38a8d6247b732bfb",
+              "pid": "990409",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47840
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:mixed-ifs",
+      "command": "sh",
+      "args": [
+        "-c",
+        "export LC_ALL=en_US.UTF-8; IFS=' \u00e9'; v=' a \u00e9b\u00e9c '; set -- $v; printf '%s:<%s>\\n' \"$#\" \"$@\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "stderr": "",
+          "raw_stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "stderr": "",
+          "raw_stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/9-gnu-valgrind/process-990419.log",
+              "sha256": "5b11f498b625ed5dec5dd50bbbdc651679b95a9f1ac584fcb8a5c5597926264e",
+              "pid": "990419",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47419
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "stderr": "",
+          "raw_stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "stderr": "",
+          "raw_stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/9-rboxc-valgrind/process-990424.log",
+              "sha256": "e8fb05483f644f4d2bbf8e2929bbc473ddb7407bd206427ff0c25ff3632e3083",
+              "pid": "990424",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48123
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:missing-ascii",
+      "command": "sh",
+      "args": [
+        "-c",
+        "command rboxc-missing-command; printf 'status:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d36703773777976672f657865632f73683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6a6536676e7266622f657865632f73683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/10-gnu-valgrind/process-990431.log",
+              "sha256": "736a4add18bd19e3798a0d0e305b0523863a572bbfb4fe46868cba0eb298861b",
+              "pid": "990431",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46248
+              }
+            },
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/10-gnu-valgrind/process-990437.log",
+              "sha256": "1f52867cd300713881ddbbd30c38692346b13c4d5ec0b19d7a8132b84dbdef27",
+              "pid": "990437",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46333
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6977676d6e6270652f657865632f73683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d7a666235323966712f657865632f73683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/10-rboxc-valgrind/process-990440.log",
+              "sha256": "dfbf0d06c5034ead4b49b7df98fe8f42dd224f7e36a1c8a48dd565ea277c0c91",
+              "pid": "990440",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46728
+              }
+            },
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/10-rboxc-valgrind/process-990445.log",
+              "sha256": "a66b9291afcb3283bc4ff5596e8ad3910bb9f7162a4fd55fef75fbbba94052ef",
+              "pid": "990445",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46813
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:missing-unicode",
+      "command": "sh",
+      "args": [
+        "-c",
+        "LC_ALL=C; command 'rboxc-missing-\u00e9'; printf 'status:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d70766b77773939662f657865632f73683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d706174656b6378612f657865632f73683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/11-gnu-valgrind/process-990448.log",
+              "sha256": "66db1c285c394fe8e46a5e8d54d105108b459b026952ff5a43074f2b5b73b500",
+              "pid": "990448",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46317
+              }
+            },
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/11-gnu-valgrind/process-990451.log",
+              "sha256": "bab94af30a4d54932b958d1a0409551fedea2ccc3a80a53537aca28643bc1887",
+              "pid": "990451",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 68,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46708
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d795f376c786b765f2f657865632f73683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f73683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d65743174613263712f657865632f73683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/11-rboxc-valgrind/process-990454.log",
+              "sha256": "874c511723ba6d9e551aeec28a2f488b0960b1701a5ea1465f90a25d819b75ed",
+              "pid": "990454",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46813
+              }
+            },
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/11-rboxc-valgrind/process-990455.log",
+              "sha256": "9f838cc9ca947b355c0dcb555b661c5676d16b77095dcf1533a4f4b19a234b44",
+              "pid": "990455",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47204
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:unicode-ifs",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "export LC_ALL=en_US.UTF-8; IFS=\u00e9; v='a\u00e9b\u00e9c'; set -- $v; printf '%s:<%s>\\n' \"$#\" \"$@\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "333a3c613e0a623a3c633e0a",
+          "stderr": "",
+          "raw_stdout": "333a3c613e0a623a3c633e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "333a3c613e0a623a3c633e0a",
+          "stderr": "",
+          "raw_stdout": "333a3c613e0a623a3c633e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/12-gnu-valgrind/process-990460.log",
+              "sha256": "1d6878e28dde4a07a9aa831a3a3f3bbd322c81644d71a66c65e84885b9c1c22e",
+              "pid": "990460",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47190
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "333a3c613e0a623a3c633e0a",
+          "stderr": "",
+          "raw_stdout": "333a3c613e0a623a3c633e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "333a3c613e0a623a3c633e0a",
+          "stderr": "",
+          "raw_stdout": "333a3c613e0a623a3c633e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/12-rboxc-valgrind/process-990463.log",
+              "sha256": "321c6e065809dd7942950f682e77efe312e630056063732479ac3db19f3daf76",
+              "pid": "990463",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47894
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:ascii-ifs",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "export LC_ALL=en_US.UTF-8; IFS=:; v='\u00e9:\u20ac:\u4e2d'; set -- $v; printf '%s:<%s>\\n' \"$#\" \"$@\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/13-gnu-valgrind/process-990472.log",
+              "sha256": "8a6d091663d597f242ff0a08108a0c37baf5444cc3e9ce68b747e075c3c145ae",
+              "pid": "990472",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47208
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/13-rboxc-valgrind/process-990479.log",
+              "sha256": "660c71e275a63dbe341b143439cc58ae3557380e69082cbd21dcf4fc4e57421b",
+              "pid": "990479",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47912
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:empty-ifs",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "export LC_ALL=en_US.UTF-8; IFS=; v='\u00e9:\u20ac:\u4e2d'; set -- $v; printf '%s:<%s>\\n' \"$#\" \"$@\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/14-gnu-valgrind/process-990489.log",
+              "sha256": "dc9ab8c790b260108d13761dcb5141a1000e0b2007896386614a913ea0229801",
+              "pid": "990489",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47022
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/14-rboxc-valgrind/process-990497.log",
+              "sha256": "6b1133c2471dd9db25bcc3bce7b2298ef55fa6c7c75d7288648ebfdf8b9879ad",
+              "pid": "990497",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47726
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:mixed-ifs",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "export LC_ALL=en_US.UTF-8; IFS=' \u00e9'; v=' a \u00e9b\u00e9c '; set -- $v; printf '%s:<%s>\\n' \"$#\" \"$@\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "stderr": "",
+          "raw_stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "stderr": "",
+          "raw_stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/15-gnu-valgrind/process-990505.log",
+              "sha256": "bcf6e10652eabd614784c858af709a5df2935305c22383b53978279b015fcd7c",
+              "pid": "990505",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47305
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "stderr": "",
+          "raw_stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "stderr": "",
+          "raw_stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/15-rboxc-valgrind/process-990513.log",
+              "sha256": "2788f865bcf4af7bb2a86cf4dbf1878d71c2ffe8ed0c3d2989f2ba402fc93ae5",
+              "pid": "990513",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48009
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:missing-ascii",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "command rboxc-missing-command; printf 'status:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d793374663332326e2f657865632f2d626173683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d79636d67313932692f657865632f2d626173683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/16-gnu-valgrind/process-990523.log",
+              "sha256": "2fe137d2a2da4d30272a6c9461db1895ce5c22c78158ee7d4f325a7d1b309d0d",
+              "pid": "990523",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46134
+              }
+            },
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/16-gnu-valgrind/process-990524.log",
+              "sha256": "822fea729b9f79304214000ac6b2314ca975bbcc9f11726a07c6d476cec5c597",
+              "pid": "990524",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46222
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d746b7966337974752f657865632f2d626173683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d376573616a7033342f657865632f2d626173683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/16-rboxc-valgrind/process-990531.log",
+              "sha256": "208ce37a81ee781aeaa96040d41e01748b3fe2a2b86781787eb59e339b5b9bb7",
+              "pid": "990531",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46614
+              }
+            },
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/16-rboxc-valgrind/process-990534.log",
+              "sha256": "34ab27fd1dcd1cf5103539359342b435bc6d87260aee4ce15431ec555134f201",
+              "pid": "990534",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46702
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:missing-unicode",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "LC_ALL=C; command 'rboxc-missing-\u00e9'; printf 'status:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d696f77756830615f2f657865632f2d626173683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d66396c386c6b646f2f657865632f2d626173683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/17-gnu-valgrind/process-990544.log",
+              "sha256": "f473b79d27bd7187c3e793603aa0d54d51d19e9a465f3347af763310f0c4ffbf",
+              "pid": "990544",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46203
+              }
+            },
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/17-gnu-valgrind/process-990545.log",
+              "sha256": "cd164141e0c3310e9900b1f216a43b4b57e34ba474d29678a3857c176f5a862b",
+              "pid": "990545",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 68,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46594
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d3572327a5f7979692f657865632f2d626173683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f2d626173683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6676346b31676e642f657865632f2d626173683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/17-rboxc-valgrind/process-990552.log",
+              "sha256": "3bd1e6b57f4a101ffbcfbcbba9742d209f1186aa2fd089652ffa7c2fedb39b08",
+              "pid": "990552",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46699
+              }
+            },
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/17-rboxc-valgrind/process-990555.log",
+              "sha256": "f9f612cead3a7893504fa6d8d996d0267ab891ad1307fe0e177e79bbdac98988",
+              "pid": "990555",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47090
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:unicode-ifs",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "export LC_ALL=en_US.UTF-8; IFS=\u00e9; v='a\u00e9b\u00e9c'; set -- $v; printf '%s:<%s>\\n' \"$#\" \"$@\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "333a3c613e0a623a3c633e0a",
+          "stderr": "",
+          "raw_stdout": "333a3c613e0a623a3c633e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "333a3c613e0a623a3c633e0a",
+          "stderr": "",
+          "raw_stdout": "333a3c613e0a623a3c633e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/18-gnu-valgrind/process-990561.log",
+              "sha256": "b654347b0cc64e15f4ca1cf8f86146fe4b3f253a06570152976aba90c93f0d63",
+              "pid": "990561",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47186
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "333a3c613e0a623a3c633e0a",
+          "stderr": "",
+          "raw_stdout": "333a3c613e0a623a3c633e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "333a3c613e0a623a3c633e0a",
+          "stderr": "",
+          "raw_stdout": "333a3c613e0a623a3c633e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/18-rboxc-valgrind/process-990569.log",
+              "sha256": "c9494c0cae4df61b4d2f5e1c3b6d8934df0dc331a2852e15bd4f83edd1d43f59",
+              "pid": "990569",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47890
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:ascii-ifs",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "export LC_ALL=en_US.UTF-8; IFS=:; v='\u00e9:\u20ac:\u4e2d'; set -- $v; printf '%s:<%s>\\n' \"$#\" \"$@\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/19-gnu-valgrind/process-990578.log",
+              "sha256": "da839e17123a2cfbdf63c31504e3e52fb0b97fc3fb83d7cac560268724aad947",
+              "pid": "990578",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47204
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "333a3cc3a93e0ae282ac3a3ce4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/19-rboxc-valgrind/process-990585.log",
+              "sha256": "b1b48be937ff37ec3db5276551ae8049e01f494850097112761997a2a21a8734",
+              "pid": "990585",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47908
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:empty-ifs",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "export LC_ALL=en_US.UTF-8; IFS=; v='\u00e9:\u20ac:\u4e2d'; set -- $v; printf '%s:<%s>\\n' \"$#\" \"$@\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/20-gnu-valgrind/process-990591.log",
+              "sha256": "16fdc92804312ff233163519116486726d0ec3fd87c3498f5064080f45a82ef2",
+              "pid": "990591",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47018
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "stderr": "",
+          "raw_stdout": "313a3cc3a93ae282ac3ae4b8ad3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/20-rboxc-valgrind/process-990593.log",
+              "sha256": "969c844272ad76ebf7c936381fb3734a36f0f40f3c7a112954527e12005170d6",
+              "pid": "990593",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47722
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:mixed-ifs",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "export LC_ALL=en_US.UTF-8; IFS=' \u00e9'; v=' a \u00e9b\u00e9c '; set -- $v; printf '%s:<%s>\\n' \"$#\" \"$@\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "stderr": "",
+          "raw_stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "stderr": "",
+          "raw_stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/21-gnu-valgrind/process-990600.log",
+              "sha256": "4dc3297ff74b151f72c034d2b3e68713b967b0630f899883fd2961c8cc78750b",
+              "pid": "990600",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47301
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "stderr": "",
+          "raw_stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "stderr": "",
+          "raw_stdout": "343a3c613e0a3a3c623e0a633a3c3e0a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/21-rboxc-valgrind/process-990605.log",
+              "sha256": "3667023767f3605b926afd6b12a217a5cd4105d71fa43251d40e797aa18753d0",
+              "pid": "990605",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48005
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:missing-ascii",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "command rboxc-missing-command; printf 'status:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6975376c316f69732f657865632f2d73683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d61766739656933762f657865632f2d73683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/22-gnu-valgrind/process-990626.log",
+              "sha256": "933cd81f99c3001cdcab5f5c0a366cc7910990c8bd2b0be53ce0aa0bf33147cb",
+              "pid": "990626",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46130
+              }
+            },
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/22-gnu-valgrind/process-990630.log",
+              "sha256": "7d5f51fc07913b9bb3ca73db82cdc6d428b3d34a76d5aa2cd667214bee6b0058",
+              "pid": "990630",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46216
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d75766f746236685f2f657865632f2d73683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d31616a6a6c636c372f657865632f2d73683a206c696e6520313a2072626f78632d6d697373696e672d636f6d6d616e643a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/22-rboxc-valgrind/process-990633.log",
+              "sha256": "38a18142d808b5647eed42500d08927c18303c99b674843da3a1e3df278a69d0",
+              "pid": "990633",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46610
+              }
+            },
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/22-rboxc-valgrind/process-990636.log",
+              "sha256": "94e2cb8fbe1cc1d2ff678c969b60c90279776405608b25f86199dec3cdc5ef13",
+              "pid": "990636",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46696
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:missing-unicode",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "LC_ALL=C; command 'rboxc-missing-\u00e9'; printf 'status:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d7973716b333964302f657865632f2d73683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d7270685f3266776b2f657865632f2d73683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/23-gnu-valgrind/process-990639.log",
+              "sha256": "1ef94c4249a966b3205758130e5a5f5fdcf1e6805340018afa591bafac19bf2a",
+              "pid": "990639",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46199
+              }
+            },
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/23-gnu-valgrind/process-990647.log",
+              "sha256": "e85bf72b8d6a0862e2e0d921cb851507b3b216c9a7aa4ce72c86cd4515284b19",
+              "pid": "990647",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 68,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46590
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d6b315f387a7731792f657865632f2d73683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7374617475733a3132370a",
+          "stderr": "3c666978747572653e2f657865632f2d73683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "raw_stdout": "7374617475733a3132370a",
+          "raw_stderr": "2f746d702f72626f78632d626173682d7a786c5f323070742f657865632f2d73683a206c696e6520313a20242772626f78632d6d697373696e672d5c3330335c323531273a20636f6d6d616e64206e6f7420666f756e640a",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/23-rboxc-valgrind/process-990668.log",
+              "sha256": "236cc68b3492e200cfa24f56609cb90074293e2fae358770ae242ad1ce13e9d1",
+              "pid": "990668",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 46695
+              }
+            },
+            {
+              "log": "evidence/raw/bash-multibyte-contract/run-xx6a_jfp/23-rboxc-valgrind/process-990669.log",
+              "sha256": "e9d4e6bcaa46700abdc15b766b4063baa1f0577383584447afc282905c73549c",
+              "pid": "990669",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 47086
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

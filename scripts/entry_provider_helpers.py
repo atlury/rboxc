@@ -109,6 +109,8 @@ def prepare_archives(root,provider,mapping):
         prepare_script_input_cleanup(root, adapted)
         from bash_sigchld_cleanup import prepare as prepare_sigchld_cleanup
         prepare_sigchld_cleanup(root, adapted)
+        from bash_multibyte_cleanup import prepare as prepare_multibyte_cleanup
+        prepare_multibyte_cleanup(root, adapted)
     if provider=='gawk':
         from gawk_cleanup import prepare
         adapted=prepare(root)

@@ -78,7 +78,7 @@ there where available.
 | Patch | 2.8 | 23 focused comparisons and 38 original scripts pass; two GNU expected failures match; nine scripts held out |
 | Binutils | 2.47 | `ar`, `readelf`, `strings` compile and pass the selected local comparisons |
 | Inetutils | 2.8 | All 13 entries compile; option, local client and read-only interface checks pass; service profiles open |
-| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 53 original recipes (54 scripts) pass on their recorded candidates with 12765 clean process logs; four memory/signal profiles and four instrumentation/environment baselines remain open |
+| Bash | 5.3 | All 28 names integrated; 44 focused checks pass with clean Valgrind; 53 original recipes (54 scripts) pass on their recorded candidates with 12765 clean process logs; six memory/signal profiles and six instrumentation/environment baselines remain open |
 | Less | 704 | Ten focused checks, one production terminal check and all 18 original screen replays pass across declared profiles |
 | Screen | 5.0.2 | All three original targets pass across declared profiles; daemon cleanup and socket recovery pass Valgrind |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
@@ -106,18 +106,33 @@ this profile. Other termcap implementations require separate validation; see
 [ncurses memory cleanup documentation](https://invisible-island.net/ncurses/man/curs_memleaks.3x.html).
 
 The current 187-command candidate is **14,723,208 bytes**, at
-`target/bash-sigchld-cleanup-candidate/release/rboxc`, SHA-256
-`59a624bd18698c1aeca638e7ea8f11b79a52b4790027cf3330d280247158c95a`.
+`target/bash-multibyte-cleanup-candidate/release/rboxc`, SHA-256
+`e7e3a22b792bf1f44740e651450114218c1bc8021e5b260739f251cf79841284`.
 An independent rebuild is byte-identical. All 428 Coreutils smoke checks,
 11 dispatcher checks, 44 focused Bash comparisons and 69 shell-adapter checks
 pass. Bash has **54 strict scripts from 53 original recipes**, with **12765 clean
 candidate process logs** across their recorded immutable candidates.
-[evidence/bash-sigchld-coverage.json](evidence/bash-sigchld-coverage.json)
-accounts for 65 reviewed scripts and all 88 original recipes; 19 recipes remain
+[evidence/bash-multibyte-coverage.json](evidence/bash-multibyte-coverage.json)
+accounts for 66 reviewed scripts and all 88 original recipes; 18 recipes remain
 pending, two are orchestration and three are held outside execution.
 
 
-SIGCHLD dispatch now releases the replaced trap string after creating the
+Wide delimiter lists now receive an explicit terminator, including the
+conversion fallback, and missing-command diagnostics release allocated quoted
+names. All original internationalization assertions, including **1770 Unicode
+checks**, match normally and under Valgrind. All **83 candidate applet logs**
+are clean; four shared native `locale` helper logs retain the same heap findings
+as GNU, keeping the whole recipe outside strict counts. The private six-locale
+archive rebuilds byte-identically and leaves the system archive unchanged.
+Twenty-four focused Unicode splitting and command-diagnostic comparisons pass.
+The unchanged case, quote and POSIX splitting recipes also pass on this
+candidate, with **10433 clean candidate process logs**. The splitting matrix
+retains all **6856 original assertions** and contributes 10287 of those logs.
+[evidence/bash-multibyte-validation.json](evidence/bash-multibyte-validation.json)
+audits the source changes, rebuilds, assertions and preserved raw evidence.
+
+At the preceding child-signal checkpoint, SIGCHLD dispatch gained release of
+the replaced trap string after creating the
 independent execution/restore copy. Twenty child-signal and 32 RETURN contracts
 pass; queued-handler and POSIX-shell findings from the preceding candidate
 remain preserved. The original trap recipe matches normally and retains GNU’s
