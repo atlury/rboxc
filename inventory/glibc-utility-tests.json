@@ -1,7 +1,7 @@
 {
   "provider": "glibc",
   "version": "2.43",
-  "scope": "Direct utility test inventory. Both getconf originals and all three original iconv buffer recipes pass on their recorded candidates. Other iconv and library coverage remains open.",
+  "scope": "Direct utility test inventory. Both getconf originals and all three original iconv buffer recipes pass on their recorded candidates. The full ordinary TESTS/TESTS2 conversion selection passes 676 calls per implementation normally and under Valgrind; the separate historical decoder loop and other library coverage remain outside acceptance.",
   "tests": [
     {
       "path": "posix/tst-getconf.sh",
@@ -26,14 +26,30 @@
       "path": "iconv/tst-iconv_prog-buffer.sh",
       "source_sha256": "116b08766760b7828b75e563011225a0897dd5022e40e70b445b4ae27b8f444c",
       "state": "reviewed-passing",
-      "evidence": "evidence/iconv-spool-original.json",
+      "evidence": "evidence/iconv-charmap-buffer-original.json",
       "review": "Complete script reviewed: private temporary files, ordinary conversion, output preservation, invalid-encoding handling and repeated standard input. Original default, one-byte-buffer and 22-doubling recipes retained.",
       "variants": [
         "default",
         "tiny",
         "large"
       ],
-      "audit": "evidence/iconv-spool-validation.json"
+      "audit": "evidence/iconv-charmap-buffer-validation.json"
+    },
+    {
+      "path": "iconvdata/run-iconv-test.sh",
+      "source_sha256": "e858b40c1549033dddcbb7e0b5da3b87ef2f40731bf7b6310fcb0d03672ec355",
+      "state": "reviewed-selected-passing",
+      "full_script": false,
+      "selected_tables": [
+        "TESTS",
+        "TESTS2"
+      ],
+      "held_section": "Separate historical decoder crash loop remains unexecuted.",
+      "evidence": "evidence/iconv-charmap-conversions-native.json",
+      "valgrind_evidence": "evidence/iconv-charmap-conversions-valgrind.json",
+      "audit": "evidence/iconv-charmap-validation.json",
+      "calls_per_profile": 676,
+      "selection": "evidence/iconv-conversion-selection.json"
     }
   ]
 }

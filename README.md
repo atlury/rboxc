@@ -82,7 +82,7 @@ there where available.
 | Less | 704 | Ten focused checks, one production terminal check and all 18 original screen replays pass across declared profiles |
 | Screen | 5.0.2 | All three original targets pass across declared profiles; daemon cleanup and socket recovery pass Valgrind |
 | Wget | 1.25.0 | Candidate passes 14 focused comparisons and 71 original scripts; 14 optional-feature skips and one upstream-disabled script accounted for |
-| glibc | 2.43 | Both entries integrated; 50 focused checks, both getconf originals and three iconv buffer recipes pass |
+| glibc | 2.43 | Both entries integrated; 50 focused checks, both getconf originals, three iconv buffer recipes and the 676-call ordinary conversion selection pass |
 
 Screen's remaining daemon cleanup findings are resolved in the recorded Linux
 profile. It closes its owned server socket and successfully reopened standard
@@ -127,11 +127,15 @@ All **eight charmap comparisons** pass normally and under Valgrind, with no
 heap allocations outstanding. The three original buffer profiles and 50
 utility comparisons pass with **227 clean candidate process logs**:
 [evidence/iconv-charmap-buffer-validation.json](evidence/iconv-charmap-buffer-validation.json).
-The complete ordinary conversion tables also pass **676 calls per native
-implementation**, covering 136 data round trips, 134 ASCII round trips, 63
-charmap round trips and eight byte-order checks. Their full Valgrind matrix
-is still running. The separate historical decoder loop remains unexecuted;
-this is selected command coverage, with pinned shared host conversion modules.
+The complete ordinary conversion tables pass **676 calls per implementation**,
+both normally and under Valgrind, covering 136 data round trips, 134 ASCII
+round trips, 63 charmap round trips and eight byte-order checks. All **676
+candidate conversion logs are clean**. The native GNU findings remain
+preserved. [evidence/iconv-charmap-validation.json](evidence/iconv-charmap-validation.json)
+checks every command image, original assertion result, source transformation,
+helper rebuild and inventory transition. The separate historical decoder
+loop remains unexecuted; this is selected command coverage with pinned shared
+host conversion modules.
 
 At the preceding dispatch checkpoint, Linux applet selection gained use of the kernel's executed pathname when it names
 an applet, while passing the caller's `argv[0]` unchanged to GNU. This fixes
@@ -888,8 +892,9 @@ This 187-command candidate is `/root/rboxc/target/iconv-spool-candidate/release/
 14,714,024 bytes, SHA-256
 `5b48b3ff8338534e81a8357cff156f3ef1149851a2e9a13e57eb8db4467993d2`.
 An independent rebuild is byte-identical. The installed 133-command release
-and 354 deferred commands remain unchanged. Other iconv inputs, charmaps,
-provider originals and platform profiles remain open.
+and 354 deferred commands remain unchanged. Charmaps and the ordinary
+conversion tables were still open at that checkpoint; their current results
+are recorded above. Other provider originals and platform profiles remain open.
 
 The preceding batch of four Bash originals (`appendop`, `ifs`, `nquote4`, `quote`) pass
 with clean candidate Valgrind process trees in
@@ -1115,8 +1120,9 @@ libc. All 50 focused native/Valgrind comparisons pass, and both unchanged GNU
 getconf tests pass in all four modes. The strict audit reparses 242 clean
 candidate process logs. Thirteen iconv interface structures also match pinned
 GNU C sizes, alignments and field offsets. These results cover the host glibc
-2.43 profile; iconv originals, charmaps and other profiles remain open. The
-initial diagnostic and allocation findings are retained. All 20 selected
+2.43 profile. Iconv originals and charmaps were still open at this initial
+checkpoint; their later results are recorded above. Other profiles remain
+open, and the initial diagnostic and allocation findings are retained. All 20 selected
 combined-regression jobs now pass on this 154-command build: 428 Coreutils
 smoke checks, 107 instrumented help checks, 318 native and instrumented
 behavior comparisons, 11 dispatcher checks, 137 newer-entry comparisons, and
