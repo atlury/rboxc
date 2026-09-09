@@ -38,7 +38,7 @@ helpers={'cmp':ROOT/'build/gnu-diffutils/src/cmp',
          'grep':ROOT/'build/gnu-grep/src/grep',
          'egrep':ROOT/'build/gnu-grep/src/egrep',
          'sed':ROOT/'build/gnu-sed/sed/sed',
-         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('rm','echo','od','tr','cp','sort','ls','stat','uname','basename','chmod','cat','sleep','wc','mkdir','touch','yes','cksum','date')}}
+         **{n:ROOT/'build/gnu-coreutils/src/coreutils' for n in ('rm','echo','od','tr','cp','sort','ls','stat','uname','basename','chmod','cat','sleep','wc','mkdir','touch')}}
 helper_profile_path=ROOT/'evidence/gawk-sort-helper.json'
 helper_profile=json.loads(helper_profile_path.read_text())
 helpers['sort']=Path(helper_profile['binary'])

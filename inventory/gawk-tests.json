@@ -4181,8 +4181,34 @@
     {
       "path": "test/iolint.awk",
       "sha256": "05321dbbf4a6dcff23294d484e8d267387b682552e8012cbb143e0a242db6ff7",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-assertions-memory-open",
+      "target": "iolint",
+      "fixtures": {
+        "iolint.ok": "cf47f8ab08b7c235c4ea1e1e2cd712a945df3b276483b72d246f1766c1007a8b"
+      },
+      "configured_recipe_sha256": "a9e5701aa51bd53d1aec9ffd2b85ecc149f47ec4d41083bf827d969bdf5f34e0",
+      "review": "Complete source, recipe and fixture reviewed. Fixed private files and echo/cat/checksum pipes exercise I/O lint diagnostics; eval only receives the two fixed values echo hello and read junk. The race-sensitive two-way cat branch is commented out. Native helper paths are pinned and private data files are never executed. All four original assertion profiles pass and candidate Gawk logs are clean. Native cat cached splice descriptors or shell child wait/descriptor findings remain separately open.",
+      "child_commands": {
+        "/bin/sh -c echo\\ hello": 3,
+        "/bin/sh -c cat": 2,
+        "cat": 2,
+        "/bin/sh -c eval\\ $CMD_TO_RUN": 2,
+        "/bin/sh -c cksum": 1,
+        "cksum": 1
+      },
+      "child_dependencies": {
+        "cat": {
+          "path": "/root/rboxc/build/gawk-cat-helper/coreutils",
+          "sha256": "11d6087a6954e72d9acac9b2ea4795bb2ef52e175d3720f0054236e76d7f0184"
+        },
+        "cksum": {
+          "path": "/root/rboxc/build/gnu-coreutils/src/coreutils",
+          "sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4"
+        }
+      },
+      "evidence": "evidence/gawk-sigpipe-iolint-counted-original.json",
+      "audit": "evidence/gawk-sigpipe-iolint-coverage.json"
     },
     {
       "path": "test/isarrayunset.awk",
@@ -7871,8 +7897,26 @@
     {
       "path": "test/sigpipe1.awk",
       "sha256": "266ef0f261a7dd8ef324e873cc69aa5176c5921bb5ba301a92bb158e05e6277b",
-      "reviewed": false,
-      "state": "pending-review"
+      "reviewed": true,
+      "state": "reviewed-original-assertions-memory-open",
+      "target": "sigpipe1",
+      "fixtures": {
+        "sigpipe1.ok": "af5ff022420e00b4b2519140047f75d468fa8824ebcffa1b9dd72eef3b178f35"
+      },
+      "configured_recipe_sha256": "1f7700e4837bc88e52bf0f33b2d8f9e73edf43c033aa2a7c8754dce57a91f41f",
+      "review": "Complete source, original recipe and expected output reviewed. Three fixed yes | true pipelines check ordinary closed-pipe behavior. The shell builtin true immediately closes the reader and yes terminates on SIGPIPE. Harness bounds process groups. All four original assertion profiles pass and candidate Gawk logs are clean. Native cat cached splice descriptors or shell child wait/descriptor findings remain separately open.",
+      "child_commands": {
+        "/bin/sh -c yes\\ |\\ true": 6,
+        "yes": 3
+      },
+      "child_dependencies": {
+        "yes": {
+          "path": "/root/rboxc/build/gnu-coreutils/src/coreutils",
+          "sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4"
+        }
+      },
+      "evidence": "evidence/gawk-sigpipe-iolint-counted-original.json",
+      "audit": "evidence/gawk-sigpipe-iolint-coverage.json"
     },
     {
       "path": "test/sort1.awk",

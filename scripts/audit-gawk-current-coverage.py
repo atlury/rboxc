@@ -42,6 +42,7 @@ archives = [ROOT/'tests/gawk-original.py', ROOT/'evidence/raw/gawk-array-driver.
             ROOT/'evidence/raw/gawk-before-self-exec-driver.py']
 archives.append(ROOT/'evidence/raw/gawk-debugger-restart-driver.py')
 archives.append(ROOT/'evidence/raw/gawk-before-private-environment-driver.py')
+archives.append(ROOT/'evidence/raw/gawk-private-environment-driver.py')
 driver_versions = {fingerprint(p): str(p.relative_to(ROOT)) for p in archives}
 focused_path = options.focused.resolve()
 focused = json.loads(focused_path.read_text())
