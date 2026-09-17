@@ -119,6 +119,8 @@ def prepare_archives(root,provider,mapping):
         prepare_multibyte_cleanup(root, adapted)
         from bash_failglob_cleanup import prepare as prepare_failglob_cleanup
         prepare_failglob_cleanup(root, adapted)
+        from bash_exec_trap_cleanup import prepare as prepare_exec_trap_cleanup
+        prepare_exec_trap_cleanup(root, adapted)
     if provider=='gawk':
         from gawk_cleanup import prepare
         adapted=prepare(root)

@@ -1,0 +1,3749 @@
+{
+  "runtime_helpers": {
+    "/root/rboxc/target/bash-exec-trap-candidate/release/libstdbuf.so": "f718d205b170dea3110d96dc97d1f40cfe4dacba341a3fec21bea5137c736174",
+    "/root/rboxc/build/gnu-coreutils/src/libstdbuf.so": "ab0f38c3557ced06f914416c765a68c1ebf00c6cdacbe24c9ab9ec60e49a6ea4"
+  },
+  "binary": "/root/rboxc/target/bash-exec-trap-candidate/release/rboxc",
+  "binary_sha256": "d2692791645699a82d7bc946ed46ee53d94e1bb2558d7f8d45ecd81783a35552",
+  "gnu_binary_sha256": "d60f71411b03427593386ae0fdce0f29294ceb9ec573d69b88f9c9d1afececf4",
+  "inputs": {
+    "/root/rboxc/build/gnu-bash/bash": "bd47035bca2886f8d61f564ae38ca9c807a8b0b98e914d28f909fb7b1bb1366f",
+    "/root/rboxc/target/bash-exec-trap-candidate/release/rboxc": "d2692791645699a82d7bc946ed46ee53d94e1bb2558d7f8d45ecd81783a35552",
+    "/root/rboxc/tests/bash-sigchld-contract.py": "e3e7d4de2f9260deed6f92baf5dd2a38956451db6a9bd1e75c7d6b585c03c1ba"
+  },
+  "scope": "Five bounded child-signal lifetime cases through four shell aliases compare native GNU with the immutable Rboxc candidate. Includes queued and repeated dispatch, active replacement/reset and function status preservation. All child jobs belong to the test. Complete parent and child Valgrind summaries are required. Native findings remain baseline observations; this is focused ownership evidence, not full Bash acceptance.",
+  "complete": true,
+  "planned_total": 20,
+  "passed": 20,
+  "total": 20,
+  "results": [
+    {
+      "name": "bash:repeat",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap ':' CHLD; for ((i=0;i<12;i++)); do : & wait; done; trap - CHLD; printf 'complete\\n'"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-gnu-valgrind/process-1188290.log",
+              "sha256": "46d3c8ba944034d79e7398f511d842d2049b55e95140f64b800f29f77060bbbb",
+              "pid": "1188290",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51249
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-gnu-valgrind/process-1188294.log",
+              "sha256": "d3c7458210adce809ee96e20e24c8c52cbe1477e6daedb445b7b33828a4e696c",
+              "pid": "1188294",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48602
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-gnu-valgrind/process-1188299.log",
+              "sha256": "341a1ee2eb1b8b876991982b12264aa6e5e7afb187adce6ea706e6f60576b238",
+              "pid": "1188299",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50102
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-gnu-valgrind/process-1188300.log",
+              "sha256": "1cd02c93d8572c7c21ce0ae20ac44cb5a901d73b30369e8fde41971309326016",
+              "pid": "1188300",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51122
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-gnu-valgrind/process-1188301.log",
+              "sha256": "9467be60ccc1d2ed77c09ecc97d473555d44e1e508bf16217901d805e4fadf67",
+              "pid": "1188301",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52142
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-gnu-valgrind/process-1188302.log",
+              "sha256": "07a6d9320d78a15b541bdb7a9c18e625bcf6df5bcd4a652db8285be675204343",
+              "pid": "1188302",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53162
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-gnu-valgrind/process-1188303.log",
+              "sha256": "a7bad8f1cb3eb01a5a7389abc55e1dcdd3c4774b6795af04726002ed5d8d77d5",
+              "pid": "1188303",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53450
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-gnu-valgrind/process-1188304.log",
+              "sha256": "dac4a4cc12c40c31520577cc9e4cd93c940af546de7a724c20539b96c7575e87",
+              "pid": "1188304",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53450
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-gnu-valgrind/process-1188305.log",
+              "sha256": "5b5fe03201082ec0f8733247a0647be73f3e912960f061989e773e4f4ea63b8f",
+              "pid": "1188305",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53454
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-gnu-valgrind/process-1188306.log",
+              "sha256": "053164ac04367f0fd5865ff2bd65ec4d16c17f049a595951b7aa2ddc4f7fd35e",
+              "pid": "1188306",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53450
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-gnu-valgrind/process-1188307.log",
+              "sha256": "0dde03849ce8bd9e6bbd1df32d590c8ece3254f2951f1f05cba03e3727c65cf0",
+              "pid": "1188307",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53446
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-gnu-valgrind/process-1188308.log",
+              "sha256": "6d1dab39ccbfa23f01a73f01bea0684e6f6874aef1d7866f528a8bd75d61256d",
+              "pid": "1188308",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53443
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-gnu-valgrind/process-1188309.log",
+              "sha256": "d99add18c609379b540897a4ec45e7a0040744f913d38153eefd69e5890eb0f7",
+              "pid": "1188309",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53443
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-rboxc-valgrind/process-1188324.log",
+              "sha256": "3d8dd50b31ea30bc7afe8ee0eb30fa13e4d2f2676d5b4db9fa265ed18e0cf26d",
+              "pid": "1188324",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53213
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-rboxc-valgrind/process-1188330.log",
+              "sha256": "b4168ea63e93f0585cb25506d4c95d5216466d28f9dadc0eed8869e92672a373",
+              "pid": "1188330",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49162
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-rboxc-valgrind/process-1188331.log",
+              "sha256": "982911bbefee0873641c4cd8b02c5f6f9904f248a9dddab38ac4218e15eab8dc",
+              "pid": "1188331",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51302
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-rboxc-valgrind/process-1188332.log",
+              "sha256": "75c9980115bff08a6515c3f261bbbde369c3e5b89a2f55fd3b59f6453252d34c",
+              "pid": "1188332",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52722
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-rboxc-valgrind/process-1188333.log",
+              "sha256": "1c0030ddb2bb215f11587251c3913418a5766d706253a0d819fc54d3e14589e6",
+              "pid": "1188333",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54142
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-rboxc-valgrind/process-1188338.log",
+              "sha256": "4b35fb9ae3f9859c94d0531d7b3eaf4a306ec6f7165733be7f9414b07b49909a",
+              "pid": "1188338",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55562
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-rboxc-valgrind/process-1188339.log",
+              "sha256": "8e66db6e040211000c35fd9521393d632d2902fb793c88be0c8db2bac4571bf9",
+              "pid": "1188339",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55846
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-rboxc-valgrind/process-1188340.log",
+              "sha256": "777ab2ac44a59bfd697165ee6522b0fe79ca95645f2529bd395194ebe0c91690",
+              "pid": "1188340",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55850
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-rboxc-valgrind/process-1188341.log",
+              "sha256": "cc72803985d9121142e001fa48ea5dff9725e779a9e63dc7a58adde29782341b",
+              "pid": "1188341",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55854
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-rboxc-valgrind/process-1188342.log",
+              "sha256": "9fae90d5b4f54649f484732ee37eb67f9c69c827bbdfda124e5b799404011119",
+              "pid": "1188342",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55846
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-rboxc-valgrind/process-1188343.log",
+              "sha256": "bd6bb6cbc1a11c7f45f682eb043f70449695e3b81792ee742fa586974b48ebb9",
+              "pid": "1188343",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55842
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-rboxc-valgrind/process-1188344.log",
+              "sha256": "fe2c2c37e0a01f3806cdda2d49a96185c960386c27c1e57748f5b483876fc818",
+              "pid": "1188344",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55839
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/0-rboxc-valgrind/process-1188345.log",
+              "sha256": "3896edd612efc3982425ee24cdbecfee55da865b08657a035471a2978627a415",
+              "pid": "1188345",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55839
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:replace",
+      "command": "bash",
+      "args": [
+        "-c",
+        "seen=; trap 'seen=yes; trap \"seen=yes\" CHLD' CHLD; : & wait; trap - CHLD; printf 'seen:%s\\n' \"$seen\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/1-gnu-valgrind/process-1188351.log",
+              "sha256": "df5a023a91a074d63f5360eb295f1539c0e728fe6584da6e496f8669c685e294",
+              "pid": "1188351",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49280
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/1-gnu-valgrind/process-1188353.log",
+              "sha256": "d8c6da3cb9a57ac5cf907ffefe0f3d0efa873e54d714b7d1fe02fc3898f01d72",
+              "pid": "1188353",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48621
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/1-rboxc-valgrind/process-1188358.log",
+              "sha256": "1cc0ea18193aeb78262c9a7b8aa519355d11fdff927a9341f2d2615ba43928d2",
+              "pid": "1188358",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50688
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/1-rboxc-valgrind/process-1188362.log",
+              "sha256": "1fc7109f25578ac43d69fbd98ff0e63aa52307921e7d00ed26b50063ab616fdb",
+              "pid": "1188362",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49197
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:reset",
+      "command": "bash",
+      "args": [
+        "-c",
+        "seen=; trap 'seen=yes; trap - CHLD' CHLD; : & wait; printf 'seen:%s\\n' \"$seen\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/2-gnu-valgrind/process-1188366.log",
+              "sha256": "1fc45f9b35cf841b228540fbe43e76a73b379093db3796694a7011e28784ad10",
+              "pid": "1188366",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48966
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/2-gnu-valgrind/process-1188370.log",
+              "sha256": "dfe9596a64d824283b0383af6faa1272027546bf16a2955ec90f7ce74bc4c373",
+              "pid": "1188370",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48165
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/2-rboxc-valgrind/process-1188373.log",
+              "sha256": "3b9b466114c56559e572311155c6490b05a6c3f88b09dec2ea2c1ab7c0f812f6",
+              "pid": "1188373",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50086
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/2-rboxc-valgrind/process-1188378.log",
+              "sha256": "46fcdaddfee2380004657f8264ed36f6aef3a578f014fe76722c9ea77ed7d60e",
+              "pid": "1188378",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48693
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:function",
+      "command": "bash",
+      "args": [
+        "-c",
+        "f(){ seen=; trap 'seen=yes' CHLD; : & wait; trap - CHLD; printf 'seen:%s\\n' \"$seen\"; return 7; }; f; printf 'status:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/3-gnu-valgrind/process-1188381.log",
+              "sha256": "2f4afcee15913cf27397ad20727eaf3dcf58749c9512d08e8004718fd7fb6923",
+              "pid": "1188381",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52818
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/3-gnu-valgrind/process-1188384.log",
+              "sha256": "7a817ec6dc4b591cd42b6554f71dbaf0378b27e4e29b99ca6d8c99d5b7c4a380",
+              "pid": "1188384",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54203
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/3-rboxc-valgrind/process-1188389.log",
+              "sha256": "6d0fed9f96fc77d9bed7c157207b8824d120e923025bc8315448117a486f6471",
+              "pid": "1188389",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54546
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/3-rboxc-valgrind/process-1188391.log",
+              "sha256": "b23311ca8e2299fe924fa0e0d73baaa1aed1f40991358ae3f921cefdbbe81564",
+              "pid": "1188391",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55259
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bash:queued",
+      "command": "bash",
+      "args": [
+        "-c",
+        "trap ':' CHLD; : & for ((i=0;i<10000;i++)); do :; done; wait; trap - CHLD; printf 'queued\\n'"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/4-gnu-valgrind/process-1188396.log",
+              "sha256": "e322f97f4a359eed600a286d31bfc1ec510f581f044d3f777d5bd0f712943e1f",
+              "pid": "1188396",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 2,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50685
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/4-gnu-valgrind/process-1188400.log",
+              "sha256": "4de259a0d418ef52cb93b48e975064ffef847346245043c6161f249a047c281e",
+              "pid": "1188400",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48691
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/4-rboxc-valgrind/process-1188408.log",
+              "sha256": "63e7ccea9805dc385da47be1b564806ca8eb5492e0889bde4f85692d99c1c682",
+              "pid": "1188408",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52653
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/4-rboxc-valgrind/process-1188413.log",
+              "sha256": "f970844ffadc239588f9d6fcddd643d9ad7e111ab177f654c7d0db023eff01b2",
+              "pid": "1188413",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49299
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:repeat",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap ':' CHLD; for ((i=0;i<12;i++)); do : & wait; done; trap - CHLD; printf 'complete\\n'"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-gnu-valgrind/process-1188437.log",
+              "sha256": "a04c66d497167f4d5512247a97de293a11e4d438eaff6f90e1cef3a6e8fb3934",
+              "pid": "1188437",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 24,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52917
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-gnu-valgrind/process-1188441.log",
+              "sha256": "d7f10206c0c4b46d61caf5a3bbd2fe95566bb97a3085519cf49d1b16166a32a9",
+              "pid": "1188441",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48726
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-gnu-valgrind/process-1188442.log",
+              "sha256": "69a434faea867fd4bfdcb61c4c1ca8d2e36c753f2790ccbd63e7d5fff4daaadd",
+              "pid": "1188442",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 2,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 2,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49937
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-gnu-valgrind/process-1188443.log",
+              "sha256": "4c5977b7037151bd3b5490776f683d76d3d0e2317e231437a52a34a6b5a771cf",
+              "pid": "1188443",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 4,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50957
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-gnu-valgrind/process-1188448.log",
+              "sha256": "99eb7f776b21551c148a4c867e52838a544cf3d08430546938d279abde8f30d5",
+              "pid": "1188448",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 6,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51977
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-gnu-valgrind/process-1188449.log",
+              "sha256": "da04712e538323dcd5a425140cc6c00bc0cb9f91925dafe3dd83408d8bc01e20",
+              "pid": "1188449",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 8,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52997
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-gnu-valgrind/process-1188450.log",
+              "sha256": "519a2db40b2781a3f8ee4103f8e5b68463d4de02ceb7eb62deb02aaf9f877152",
+              "pid": "1188450",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 10,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53585
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-gnu-valgrind/process-1188451.log",
+              "sha256": "d704a074de215bccd48dbe99c0d1d10fd8d96baee429939bcbea25780f56b5b6",
+              "pid": "1188451",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 12,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53397
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-gnu-valgrind/process-1188452.log",
+              "sha256": "104d76f8763c0e8769aff74bce7ca445ac27728aaf643603199c21887e2aaeb9",
+              "pid": "1188452",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 14,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53401
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-gnu-valgrind/process-1188453.log",
+              "sha256": "bdcb919c41e3ae6ae2783dece7b5b9a4f8c48be1474d3e220017bf82145ba757",
+              "pid": "1188453",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 16,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53405
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-gnu-valgrind/process-1188454.log",
+              "sha256": "068df94e93136bccd62ea9f0a930f1a9675c61523e4e799089404003ca2de829",
+              "pid": "1188454",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 18,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53401
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-gnu-valgrind/process-1188455.log",
+              "sha256": "c6807c81013e69c4572b8b6d24439c3e9c56500d717b68a642e15eed7b02b5ae",
+              "pid": "1188455",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 20,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53402
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-gnu-valgrind/process-1188457.log",
+              "sha256": "735c806c299973f4ae9c32fe03bd29b79f5d7c6fc1f06b2a7553a29d6cb8878b",
+              "pid": "1188457",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 3,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 22,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53402
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-rboxc-valgrind/process-1188471.log",
+              "sha256": "14ac25bbf5084767a09d831e634e9ec9286627ba956a4400312479f049ab418b",
+              "pid": "1188471",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54877
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-rboxc-valgrind/process-1188479.log",
+              "sha256": "0e931618d966b4698f862d86c96ab8d43b231a1e80bdf645259c3a8a416019e7",
+              "pid": "1188479",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49286
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-rboxc-valgrind/process-1188480.log",
+              "sha256": "c338e42b330915b0b398a63606c9e2d269c14f634311b3fd7d9b5b5e254f1820",
+              "pid": "1188480",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51137
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-rboxc-valgrind/process-1188482.log",
+              "sha256": "954f218d017e82f6e8e20941b57c4a80c08403a8cfe802e665ecad80148d42ef",
+              "pid": "1188482",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52557
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-rboxc-valgrind/process-1188483.log",
+              "sha256": "92cea4491f767757cadda611c7d7316ee0c7cae11116da300b9245ce30dab996",
+              "pid": "1188483",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53977
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-rboxc-valgrind/process-1188485.log",
+              "sha256": "67e0d6b1c6d552e3ed7a13c1b5772b76b7c0bc8b905237d68fcedf8976a2b6e9",
+              "pid": "1188485",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55397
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-rboxc-valgrind/process-1188486.log",
+              "sha256": "db1624a7b08d4d448e8440a4f96a95530660398250f6296bd78e6e13411a6bfc",
+              "pid": "1188486",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55977
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-rboxc-valgrind/process-1188487.log",
+              "sha256": "05ccb7c5fc3669079927bb63d53806dc40d7702c26d3fca7e2991975a9f205b6",
+              "pid": "1188487",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55785
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-rboxc-valgrind/process-1188492.log",
+              "sha256": "31e49940ba00eaf90605e5dd11cbf2fa990975529b8767c008b2b6d9de81a5a1",
+              "pid": "1188492",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55789
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-rboxc-valgrind/process-1188493.log",
+              "sha256": "0dc2d2cbb6aafce33baa04cda5e9310b4a20cc979d47eed3b43913683beb8a5b",
+              "pid": "1188493",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55793
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-rboxc-valgrind/process-1188494.log",
+              "sha256": "1957ed827dfa1f9006e2bd2232e625be01862bb147847ba531f85400cc3b56bb",
+              "pid": "1188494",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55793
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-rboxc-valgrind/process-1188495.log",
+              "sha256": "d510af93dec9a984ea60d8212379f4379fee0d00964cc1df0db26b573b757c15",
+              "pid": "1188495",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55790
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/5-rboxc-valgrind/process-1188496.log",
+              "sha256": "e0f664f8d289d8de3c6f2c299d81390982bf1e5a78bf3d5561216d7d3c1b3cd2",
+              "pid": "1188496",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55790
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:replace",
+      "command": "sh",
+      "args": [
+        "-c",
+        "seen=; trap 'seen=yes; trap \"seen=yes\" CHLD' CHLD; : & wait; trap - CHLD; printf 'seen:%s\\n' \"$seen\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/6-gnu-valgrind/process-1188501.log",
+              "sha256": "7f0acefd8b24da8ed97a57a951dca3bcf1bd6be9065f1e16ae3a81932e6b9f88",
+              "pid": "1188501",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 31,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49205
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/6-gnu-valgrind/process-1188509.log",
+              "sha256": "5e7746ae4f318dcee8c74057ad20ad1bc448fdba4b94b81eff05aeaa1657f773",
+              "pid": "1188509",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48745
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/6-rboxc-valgrind/process-1188512.log",
+              "sha256": "957805a0333500f42327ce36705e9b5378a1f75c57dcc424f791ffc2133ff6a2",
+              "pid": "1188512",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50613
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/6-rboxc-valgrind/process-1188522.log",
+              "sha256": "7f0ba8d1d9e6ebf1f7d02a8eecdc326f6f380f15d598cde5c3bb7cdcf9c34052",
+              "pid": "1188522",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49321
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:reset",
+      "command": "sh",
+      "args": [
+        "-c",
+        "seen=; trap 'seen=yes; trap - CHLD' CHLD; : & wait; printf 'seen:%s\\n' \"$seen\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/7-gnu-valgrind/process-1188525.log",
+              "sha256": "493ac917bc1e79a7d7df1633961fc3942a4ad2b6cea047dac6d9ea8b0a9f9644",
+              "pid": "1188525",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 22,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48869
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/7-gnu-valgrind/process-1188533.log",
+              "sha256": "4512810a88c51ea07e4e7df298aa0064e6401932039cc5e3ca65c1b4b718cdb8",
+              "pid": "1188533",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48289
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/7-rboxc-valgrind/process-1188536.log",
+              "sha256": "407cc2f6fb8466940355332f73b390a2f86e1177177c3be770292ba7894c78b3",
+              "pid": "1188536",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49989
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/7-rboxc-valgrind/process-1188545.log",
+              "sha256": "70e4b6a224e430bacf59d77e06556b0bb5a75f1e7299feecdfa600f558c60322",
+              "pid": "1188545",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48817
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:function",
+      "command": "sh",
+      "args": [
+        "-c",
+        "f(){ seen=; trap 'seen=yes' CHLD; : & wait; trap - CHLD; printf 'seen:%s\\n' \"$seen\"; return 7; }; f; printf 'status:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/8-gnu-valgrind/process-1188548.log",
+              "sha256": "119ffbeb39f3e86154b9c186297089c6e14622ace25d77972af9dac8d31e0e2a",
+              "pid": "1188548",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 9,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52805
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/8-gnu-valgrind/process-1188555.log",
+              "sha256": "4a1c846e7ccaac505ba0f4f2a8d7ecd425266e31bf33e0f725996f19b5fa32a0",
+              "pid": "1188555",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54321
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/8-rboxc-valgrind/process-1188559.log",
+              "sha256": "b19762123f95b443813c4814b3eec8120728a598f44d0c9bef2038c078c9101b",
+              "pid": "1188559",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54501
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/8-rboxc-valgrind/process-1188564.log",
+              "sha256": "92b43bf0c80d5627bc352bc2efcf88bfa1f1e7c72b0dbf974ba6a925ef824029",
+              "pid": "1188564",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55377
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sh:queued",
+      "command": "sh",
+      "args": [
+        "-c",
+        "trap ':' CHLD; : & for ((i=0;i<10000;i++)); do :; done; wait; trap - CHLD; printf 'queued\\n'"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/9-gnu-valgrind/process-1188568.log",
+              "sha256": "a3bd6f9803c9a3be2b29ea6e8f91f0ae3d08e3fa31c98c491c40e5f590a312d3",
+              "pid": "1188568",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 2,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50809
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/9-gnu-valgrind/process-1188572.log",
+              "sha256": "87ad0aa4525770793c2f989fc29f41e47159530452243cb7bc711b804302ac8b",
+              "pid": "1188572",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48815
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/9-rboxc-valgrind/process-1188602.log",
+              "sha256": "b2fd5dc74c0ff3cec2cda0542f0c2046b783a5917c74d7ceb06cda22bb0d8cb4",
+              "pid": "1188602",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52777
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/9-rboxc-valgrind/process-1188610.log",
+              "sha256": "2a51ad1b625182b9d6250d1b6b705ecec6e73e0a0dbb217a2d934876f551fcb5",
+              "pid": "1188610",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49423
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:repeat",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap ':' CHLD; for ((i=0;i<12;i++)); do : & wait; done; trap - CHLD; printf 'complete\\n'"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-gnu-valgrind/process-1188635.log",
+              "sha256": "ac09eb8f909a02fbc94681cc7394955b45f53ca78085d3697ff9ecc039133443",
+              "pid": "1188635",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51251
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-gnu-valgrind/process-1188637.log",
+              "sha256": "3387e82e9807753e83ae37e5122b50466579e1be5a5f0fcfe2577f87d83399db",
+              "pid": "1188637",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48604
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-gnu-valgrind/process-1188638.log",
+              "sha256": "c81705bdec4de4ee86c1a7ce5ab258bb3f6ab4a29e819b0d69d9c5970aa9c689",
+              "pid": "1188638",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50104
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-gnu-valgrind/process-1188640.log",
+              "sha256": "306e4b73af22fca04bb7a02b1a929388c9b892e59b7a8fd6ef0390ddd3815bf0",
+              "pid": "1188640",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51124
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-gnu-valgrind/process-1188644.log",
+              "sha256": "3b64d3a42b69f2928da87563a4b7ee616f767fee516c692f7e4a400c1504f309",
+              "pid": "1188644",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52144
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-gnu-valgrind/process-1188645.log",
+              "sha256": "b559098c0a4111a20ef64d020be7e085ac467fcf0bde843a2a8ab9529adb6ae6",
+              "pid": "1188645",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53164
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-gnu-valgrind/process-1188646.log",
+              "sha256": "0636210d9775645d9bfb21ea186d891bea65824848bd46ce7379e08a4c3d4810",
+              "pid": "1188646",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53452
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-gnu-valgrind/process-1188647.log",
+              "sha256": "7cddf84f0a8b193e95a65c008c374928adfbbf4739b9dad5027a06a11c7c5893",
+              "pid": "1188647",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53452
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-gnu-valgrind/process-1188648.log",
+              "sha256": "90277aa2be1d8f35fce98966362fdf8819e8f73cc8e8462d2cfdb2b3e6022351",
+              "pid": "1188648",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53456
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-gnu-valgrind/process-1188649.log",
+              "sha256": "61ed0d2c330b552e3be471d2233ae765930765dcb839e30f87679be6139e6179",
+              "pid": "1188649",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53452
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-gnu-valgrind/process-1188650.log",
+              "sha256": "4a0331e082b73407e60a000fc198a5a47a69042b8b723809296764e8df1225f6",
+              "pid": "1188650",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53448
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-gnu-valgrind/process-1188651.log",
+              "sha256": "757de97ee593be9a3b83b2ec30daf930e0832ac4afa8adb8636a55fa182faa7b",
+              "pid": "1188651",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53445
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-gnu-valgrind/process-1188652.log",
+              "sha256": "1f19c1152ba5cbf146209165791ab1df19c6f9378f75b34145448c19209b7cd4",
+              "pid": "1188652",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53445
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-rboxc-valgrind/process-1188667.log",
+              "sha256": "554ae5a2790c34d10ebc84ee8c73bbbd6980d54d8ac331e0ba884e3cb88a5944",
+              "pid": "1188667",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53215
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-rboxc-valgrind/process-1188674.log",
+              "sha256": "263309a5a7eb4f64c4c699e17bb7abe644af588d9d7872902929315b40f15ccc",
+              "pid": "1188674",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49164
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-rboxc-valgrind/process-1188675.log",
+              "sha256": "a121dae6e11ee311c1b59bda88242f6271b98220102a79e9c50786c498c5eaa1",
+              "pid": "1188675",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51304
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-rboxc-valgrind/process-1188676.log",
+              "sha256": "64612b28e0c58af02b273694e1829d9c3b9c9fe7a48b451a82763a95693976c3",
+              "pid": "1188676",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52724
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-rboxc-valgrind/process-1188677.log",
+              "sha256": "ea51f21577faefae8479756b2a753b0a46bcd4fac0dda500c9e926c8f167ff46",
+              "pid": "1188677",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54144
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-rboxc-valgrind/process-1188678.log",
+              "sha256": "b70514239e177a499afa3bf82e8d117e32347d9396d3cdbe2a5013c934bf249d",
+              "pid": "1188678",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55564
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-rboxc-valgrind/process-1188680.log",
+              "sha256": "63d2bb520cfd4a1b136937b695159c28b9fe0ef439445552fbd2bfad48abc42c",
+              "pid": "1188680",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55848
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-rboxc-valgrind/process-1188682.log",
+              "sha256": "2cfd883c4bf13b50ac8e8a743e1c0b6f49c96b54aa1b5c0019713f37eadbd522",
+              "pid": "1188682",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55852
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-rboxc-valgrind/process-1188683.log",
+              "sha256": "bdcc4b79b89454abab940fee457e0f80eb10be79ab99b50c65c6c71f7b75deff",
+              "pid": "1188683",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55856
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-rboxc-valgrind/process-1188687.log",
+              "sha256": "5d40a73a62ef3e6e5713ebc825e19a55dda1e254470e7968c4e19a5bfef1b542",
+              "pid": "1188687",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55848
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-rboxc-valgrind/process-1188688.log",
+              "sha256": "faed6c02159d0c6e0779c95a20eddf830e74625d93480399fd1f582b2e1e0db5",
+              "pid": "1188688",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55844
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-rboxc-valgrind/process-1188689.log",
+              "sha256": "25d3e4d461245f6fe544b248ecd963abdf1a8dc348735087c88f5487ca2e9cf1",
+              "pid": "1188689",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55841
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/10-rboxc-valgrind/process-1188690.log",
+              "sha256": "fea666755059a0620236779eb30c7a5e31d675c229d69e9f9acc63668ba9df49",
+              "pid": "1188690",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55841
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:replace",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "seen=; trap 'seen=yes; trap \"seen=yes\" CHLD' CHLD; : & wait; trap - CHLD; printf 'seen:%s\\n' \"$seen\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/11-gnu-valgrind/process-1188695.log",
+              "sha256": "3edc1a66129d6a4fac61c0be98c6c25bbe3010a48927496b230d19d4a662a422",
+              "pid": "1188695",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49282
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/11-gnu-valgrind/process-1188701.log",
+              "sha256": "7fd6da14ff6974667da484f22004cf04f736c19af70f171a641e1faeaf72f420",
+              "pid": "1188701",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48623
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/11-rboxc-valgrind/process-1188704.log",
+              "sha256": "289cafb079ac0068e44ca5de7c2dd63d201f228b0116e45a3f5a607a1df323fd",
+              "pid": "1188704",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50690
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/11-rboxc-valgrind/process-1188712.log",
+              "sha256": "f23d6a027a5e30008bd4fed1d8f449f647caea74864031096f32ed9af7a34f5f",
+              "pid": "1188712",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49199
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:reset",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "seen=; trap 'seen=yes; trap - CHLD' CHLD; : & wait; printf 'seen:%s\\n' \"$seen\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/12-gnu-valgrind/process-1188715.log",
+              "sha256": "d7af8cd6c45af7e6d4bf367755ed9ea272e97334c3c139be689034036bd3272f",
+              "pid": "1188715",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48968
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/12-gnu-valgrind/process-1188721.log",
+              "sha256": "1b82c110e4aa092867420496ffeddf36dad847978d205e5195f95357b1285f33",
+              "pid": "1188721",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48167
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/12-rboxc-valgrind/process-1188724.log",
+              "sha256": "f14e96a5b0ccf053dd59a2e083b94cd7f6c20d72a89eb3dadee46803db22045f",
+              "pid": "1188724",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50088
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/12-rboxc-valgrind/process-1188729.log",
+              "sha256": "7743a1c10ccee384a4dae1bc2ce28bdd7e9b83d064924321bb604440408526db",
+              "pid": "1188729",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48695
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:function",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "f(){ seen=; trap 'seen=yes' CHLD; : & wait; trap - CHLD; printf 'seen:%s\\n' \"$seen\"; return 7; }; f; printf 'status:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/13-gnu-valgrind/process-1188734.log",
+              "sha256": "ff498bb5513bcf29a4d83715efe794ad6b72269c283968aec6cf7b52be8b522f",
+              "pid": "1188734",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52821
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/13-gnu-valgrind/process-1188738.log",
+              "sha256": "42308b4b5f54e2f2b5e2a275cb7858b7f56f3bf06acf97f4aefecf3a087824cf",
+              "pid": "1188738",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54208
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/13-rboxc-valgrind/process-1188742.log",
+              "sha256": "bcb0799ebc572fd8dc5dd24cabd4aa4661f7b6bd55227de7f2b8b33b42cdd6ed",
+              "pid": "1188742",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54549
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/13-rboxc-valgrind/process-1188745.log",
+              "sha256": "57c79cf7c9c7e9ba4c68e2f17bce475956f302fa4cf1e595c4e7adad668a2ed0",
+              "pid": "1188745",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55264
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-bash:queued",
+      "command": "-bash",
+      "args": [
+        "-c",
+        "trap ':' CHLD; : & for ((i=0;i<10000;i++)); do :; done; wait; trap - CHLD; printf 'queued\\n'"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/14-gnu-valgrind/process-1188749.log",
+              "sha256": "faf386507f47dfcc0f4c09b4b2f2e5744894607f6cbca175663d2fd80ab1c682",
+              "pid": "1188749",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 2,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50687
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/14-gnu-valgrind/process-1188753.log",
+              "sha256": "df680687c9da8225b703a78107259bde513a6a75cffed18eddea3224587d29c2",
+              "pid": "1188753",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48693
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/14-rboxc-valgrind/process-1188765.log",
+              "sha256": "a966193f11783bd21f75620bd44b3252e682eebc5187a7eb10a1cedbdbf163a5",
+              "pid": "1188765",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52655
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/14-rboxc-valgrind/process-1188776.log",
+              "sha256": "887d3fef89d68eee8d163d6059e101c15ce7873d6e562cda86355c7a5f342600",
+              "pid": "1188776",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49301
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:repeat",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap ':' CHLD; for ((i=0;i<12;i++)); do : & wait; done; trap - CHLD; printf 'complete\\n'"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-gnu-valgrind/process-1188802.log",
+              "sha256": "4f559c44833e8fcedda5f9c9a63cf8eb53957b24441c72c1e0d82897ebca6f75",
+              "pid": "1188802",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51247
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-gnu-valgrind/process-1188809.log",
+              "sha256": "1b9ad443a7387da08122040156b3a4c7a4ed71b3b76b37ce56a1295db9e211cd",
+              "pid": "1188809",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48600
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-gnu-valgrind/process-1188810.log",
+              "sha256": "19034d4d25e35c2b04b2e7124111a0131db60f588cc45f525afa07e00dd8af7c",
+              "pid": "1188810",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50100
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-gnu-valgrind/process-1188811.log",
+              "sha256": "a0a18ebbeba8b53ac6bea928a000b94855661520b1b9185e4c88dc264123abfe",
+              "pid": "1188811",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51120
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-gnu-valgrind/process-1188812.log",
+              "sha256": "7bf1f3f17af08475017e04ae9d6621b7276d331aca70105388c3ac0db4ee7f6e",
+              "pid": "1188812",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52140
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-gnu-valgrind/process-1188813.log",
+              "sha256": "764e72d4e7542ffd00c4edb5ae50fdd4dc6980d9bcf617deac1eca70667ba79e",
+              "pid": "1188813",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53160
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-gnu-valgrind/process-1188814.log",
+              "sha256": "436fa75b8e7841864c87e87855a3791d392d730ffca822e400c9a38af1d22f97",
+              "pid": "1188814",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53448
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-gnu-valgrind/process-1188815.log",
+              "sha256": "2647507e3f368ff8298c589adfe74dcdebc443b335b76d5990d32273a6e25c53",
+              "pid": "1188815",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53448
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-gnu-valgrind/process-1188816.log",
+              "sha256": "665107c36dbc46d3a4e9901f9ddc5546632900630b50036740f2a39646712caf",
+              "pid": "1188816",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53452
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-gnu-valgrind/process-1188817.log",
+              "sha256": "e14777593b17ca7830668542675197ded1bd0bc8830126d1f1e05885c44401ea",
+              "pid": "1188817",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53448
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-gnu-valgrind/process-1188819.log",
+              "sha256": "35cd3de8974301def40503cfa73c7bd1e204978c986f68324f2dadc9b8fcb1a8",
+              "pid": "1188819",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53444
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-gnu-valgrind/process-1188820.log",
+              "sha256": "606f3488ad0c3b63db2c94de5a0a6f9455247dda550efa77f190512d783cd111",
+              "pid": "1188820",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53441
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-gnu-valgrind/process-1188822.log",
+              "sha256": "d6fff2c6546e75ce000033dd6fcab1f767887e557755d06784631f954cd31b48",
+              "pid": "1188822",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53441
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "636f6d706c6574650a",
+          "stderr": "",
+          "raw_stdout": "636f6d706c6574650a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-rboxc-valgrind/process-1188839.log",
+              "sha256": "f019c9cf1840a4aa130caa25ecd08915cd4be4d94e577dcf373fca7b9febc284",
+              "pid": "1188839",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 53211
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-rboxc-valgrind/process-1188842.log",
+              "sha256": "909bd39722b448ea2bdedf45f47cd3b8498d2bf9d778fe2ff11dc3f7c536620d",
+              "pid": "1188842",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49160
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-rboxc-valgrind/process-1188843.log",
+              "sha256": "7be63df6900666aa4c32953535095f9c6edf7aa44d1a0c50341726eba57674ba",
+              "pid": "1188843",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 51300
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-rboxc-valgrind/process-1188845.log",
+              "sha256": "e98926cfeb993388b1f94929f8194ea95d312baface9819cac0a36237a08ff3b",
+              "pid": "1188845",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52720
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-rboxc-valgrind/process-1188847.log",
+              "sha256": "3011a6fa10720068924bab3d5909a67e54652ae119c987f108f304d50f30dc32",
+              "pid": "1188847",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54140
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-rboxc-valgrind/process-1188848.log",
+              "sha256": "0f76da75c5fc25b3a3b58d8616307207caac42952f91a429a59c0cef5c94c09b",
+              "pid": "1188848",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55560
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-rboxc-valgrind/process-1188850.log",
+              "sha256": "5eb828c05881e87309a0c6063c67ad805c1d4e7215d0e549b5312efda9013dcc",
+              "pid": "1188850",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55844
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-rboxc-valgrind/process-1188853.log",
+              "sha256": "8e5bfd95fb7a992f7f64d0885050fc315b3f0b2e923295122b547e3cbe9e5a59",
+              "pid": "1188853",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55848
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-rboxc-valgrind/process-1188854.log",
+              "sha256": "1727a3f4b6a42c412f8aa0f572421b27a7768d76d6b6e1424c678e881e0033b1",
+              "pid": "1188854",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55852
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-rboxc-valgrind/process-1188857.log",
+              "sha256": "e2209977e7198af3d2696d7c8d8ec65eb137f3c74913db0409ad4ab1ccd98a00",
+              "pid": "1188857",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55844
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-rboxc-valgrind/process-1188861.log",
+              "sha256": "40951f750abf3c52e8d3135bf29095b9f9603d0c8e27d23fa7dd5cb9d2ad892e",
+              "pid": "1188861",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55840
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-rboxc-valgrind/process-1188862.log",
+              "sha256": "4f226c84fdb4af9def6ffac7a4f71238454c944bb41c0a52f82a768c106c9938",
+              "pid": "1188862",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55837
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/15-rboxc-valgrind/process-1188863.log",
+              "sha256": "77f17dc51781af02d7f1061cec01e11c1ab941a4045c4547b5e64dee41fd20f7",
+              "pid": "1188863",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55837
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:replace",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "seen=; trap 'seen=yes; trap \"seen=yes\" CHLD' CHLD; : & wait; trap - CHLD; printf 'seen:%s\\n' \"$seen\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/16-gnu-valgrind/process-1188866.log",
+              "sha256": "01cc52104208ccbbb7a2ac9df823253e8ed0109ba3e8744b7b2a390d5e7d173b",
+              "pid": "1188866",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49278
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/16-gnu-valgrind/process-1188872.log",
+              "sha256": "0e2e656b6d1e5a814c65b22a13d28cccd661bf959e2ee4d26b2efe22a6b8d918",
+              "pid": "1188872",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48619
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/16-rboxc-valgrind/process-1188876.log",
+              "sha256": "5c74c70d7280c900f4e2d30d89ecabe0599d75d9aeeed693df182a7dcee575a7",
+              "pid": "1188876",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50686
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/16-rboxc-valgrind/process-1188880.log",
+              "sha256": "156069c1d605971b5b56aac61ff4e84799a721da3353f979e8be7bdc8bec8ccf",
+              "pid": "1188880",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49195
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:reset",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "seen=; trap 'seen=yes; trap - CHLD' CHLD; : & wait; printf 'seen:%s\\n' \"$seen\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/17-gnu-valgrind/process-1188885.log",
+              "sha256": "26f9a85058662a740b25a07dcfb105c000c4527b7d27990a185b3e9f53c445e9",
+              "pid": "1188885",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48964
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/17-gnu-valgrind/process-1188887.log",
+              "sha256": "dd098bd7a8d4245dbc2ca153b4b71d2b7bc0c3243ff674dff53bb0d0b2304571",
+              "pid": "1188887",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48163
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/17-rboxc-valgrind/process-1188891.log",
+              "sha256": "49da7e5ffb5cf5b5ac26d6f3bfde15ac5318bd6301dd230b3017539ff4b81685",
+              "pid": "1188891",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50084
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/17-rboxc-valgrind/process-1188895.log",
+              "sha256": "c27a81590ea4bd8fbe3445482ec9f73dfcb6b615d26a0d5805a3ff6db090ed5c",
+              "pid": "1188895",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48691
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:function",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "f(){ seen=; trap 'seen=yes' CHLD; : & wait; trap - CHLD; printf 'seen:%s\\n' \"$seen\"; return 7; }; f; printf 'status:%s\\n' \"$?\""
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/18-gnu-valgrind/process-1188900.log",
+              "sha256": "5d4cdb4a2285786f2ae8ce37244a21fbcc3403925f588a223b07809331860530",
+              "pid": "1188900",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52815
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/18-gnu-valgrind/process-1188901.log",
+              "sha256": "abb4fe119fbc540ef42b5fcfe8b3f1506008a97f48dfa74425bf74b8bc809fbb",
+              "pid": "1188901",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54198
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7365656e3a7965730a7374617475733a370a",
+          "stderr": "",
+          "raw_stdout": "7365656e3a7965730a7374617475733a370a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/18-rboxc-valgrind/process-1188904.log",
+              "sha256": "f37dc74ad0068da23aed718c0802238c6eae7a8e0309292bbb8c52c7755623fd",
+              "pid": "1188904",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 54543
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/18-rboxc-valgrind/process-1188908.log",
+              "sha256": "7cd8f1fcba72f3cea6eead1a0698942344a089b2c6a8d1c488fb754b0ab667dd",
+              "pid": "1188908",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 55254
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "-sh:queued",
+      "command": "-sh",
+      "args": [
+        "-c",
+        "trap ':' CHLD; : & for ((i=0;i<10000;i++)); do :; done; wait; trap - CHLD; printf 'queued\\n'"
+      ],
+      "input": "",
+      "equivalent": true,
+      "memory_clean": true,
+      "pass": true,
+      "outcomes": {
+        "gnu": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "gnu-valgrind": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/19-gnu-valgrind/process-1188912.log",
+              "sha256": "2a2f6c1d109af88922fdea30b87856faf71be0244924dd5d0f4e1086960f144d",
+              "pid": "1188912",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 2,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 50683
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/19-gnu-valgrind/process-1188913.log",
+              "sha256": "72e37d290ffefd2fb93d5931844197e1c03b9805a5062ba64b77d1795f281cdb",
+              "pid": "1188913",
+              "images": 1,
+              "complete": true,
+              "clean": false,
+              "errors": 1,
+              "non_inherited_descriptors": 1,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 48689
+              }
+            }
+          ]
+        },
+        "rboxc": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": []
+        },
+        "rboxc-valgrind": {
+          "status": 0,
+          "stdout": "7175657565640a",
+          "stderr": "",
+          "raw_stdout": "7175657565640a",
+          "raw_stderr": "",
+          "tree": {},
+          "memory": [
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/19-rboxc-valgrind/process-1189067.log",
+              "sha256": "0a5142898b03695672a18d481b341f41303adb1da3687bd705de25f7566f89e8",
+              "pid": "1189067",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 52651
+              }
+            },
+            {
+              "log": "evidence/raw/bash-exec-trap-sigchld-contract/run-wbjg1p36/19-rboxc-valgrind/process-1189227.log",
+              "sha256": "8d8f3cfa5b52e1c3ffc1424e6305f8e037de1e2a61438c4b6e9a245edeef6f66",
+              "pid": "1189227",
+              "images": 1,
+              "complete": true,
+              "clean": true,
+              "errors": 0,
+              "non_inherited_descriptors": 0,
+              "heap_bytes": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 49297
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

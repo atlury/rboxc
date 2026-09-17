@@ -4,6 +4,7 @@
 import ctypes
 import json
 import os
+import signal
 import stat
 from pathlib import Path
 import sys
@@ -28,4 +29,6 @@ assert 'CapEff:\t0000000000000000\n' in status
 profile={'uid':os.geteuid(),'gid':os.getegid(),'groups':os.getgroups(),'no_new_privileges':True,
  'cap_effective':'0000000000000000','stdio':stdio,'work':str(work),'mount_namespace':os.readlink('/proc/self/ns/mnt')}
 Path(config['journal']).write_text(json.dumps(profile,indent=2)+'\n')
+# Python ignores these on startup; restore the ordinary subprocess defaults.
+for sig in (signal.SIGPIPE,signal.SIGXFSZ):signal.signal(sig,signal.SIG_DFL)
 os.execv(sys.argv[2],sys.argv[2:])
