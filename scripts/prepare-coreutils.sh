@@ -19,15 +19,16 @@ if [ ! -f Makefile ] || [ "$reconfigure" = yes ]; then
         --enable-install-program=arch,hostname,kill,uptime \
         --enable-no-install-program=chcon,runcon \
         --enable-acl --enable-xattr \
+        --enable-libcap \
         --without-selinux --without-libsmack \
         > "$root/evidence/raw/coreutils-configure.log" 2>&1
 fi
 python3 - <<'PY'
 from pathlib import Path
 header = Path('lib/config.h').read_text().splitlines()
-for feature in ('USE_ACL', 'USE_XATTR'):
+for feature in ('USE_ACL', 'USE_XATTR', 'HAVE_CAP'):
     if f'#define {feature} 1' not in header:
-        raise SystemExit(f'{feature} is disabled: install libacl/libattr development headers '
+        raise SystemExit(f'{feature} is disabled: install libacl/libattr/libcap development headers '
                          'and rerun sh scripts/prepare-coreutils.sh --reconfigure')
 PY
 RBOXC_CC_RECORDS="$root/build/cc-records" \
@@ -44,7 +45,7 @@ def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 report = {
     'provider': 'GNU Coreutils 9.11',
-    'features': {'acl': True, 'xattr': True, 'selinux': False, 'smack': False},
+    'features': {'acl': True, 'xattr': True, 'capabilities': True, 'selinux': False, 'smack': False},
     'configure_arguments': subprocess.check_output(['./config.status', '--config'], text=True).strip(),
     'config_header_sha256': digest('lib/config.h'),
     'oracle_sha256': digest('src/coreutils'),
