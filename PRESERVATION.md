@@ -10,8 +10,11 @@ before the owner removes the local workspace to reclaim disk space.
   This historical profile is preserved independently; it is not merged into
   the current implementation.
 - The owner explicitly declined preservation of `evidence/raw/`. It remains
-  ignored, as do generated `build/`, `target/` and `.tools/` directories.
-  A Git clone does not contain those files or the historical binaries.
+  ignored for new files, as do generated `build/`, `target/` and `.tools/`
+  directories. Some raw files were already committed historically and remain
+  in Git; this checkpoint neither adds the bulk raw directory nor rewrites
+  history. A Git clone does not restore the full local evidence or historical
+  build outputs.
 
 The structured reports retain their original results, limitations, paths and
 hashes. Referenced raw logs, fixtures and build outputs may no longer exist
